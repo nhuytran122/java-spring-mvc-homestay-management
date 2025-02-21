@@ -26,8 +26,8 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mb-4 text-center">Sửa FAQ</h4>
-                        <form:form class="form-horizontal" action="/admin/faq/update" method="post"
-                            modelAttribute="faq" enctype="multipart/form-data">
+                        <form:form class="form-horizontal" action="/admin/homestay-infor/faq/update" method="post"
+                            modelAttribute="faq">
                             <form:input type="hidden" path="faqID" />
                             <c:set var="errorQuestion">
                                 <form:errors path="question" cssClass="invalid-feedback" />
@@ -56,7 +56,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-offset-2 col-sm-10 text-center">
-                                <a href="/admin/faq" class="btn btn-secondary">Hủy</a>
+                                <a href="/admin/homestay-infor/faq" class="btn btn-secondary">Hủy</a>
                                 <button type="submit" class="btn btn-primary">Sửa</button>
                             </div>
                         </div>

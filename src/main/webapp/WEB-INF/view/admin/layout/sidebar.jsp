@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<nav class="sidebar sidebar-offcanvas" id="sidebar">
+<nav class="sidebar sidebar-offcanvas" id="sidebar" style="margin-left: -1%;">
     <ul class="nav">
       <li class="nav-item">
         <a class="nav-link" href="index.html">
@@ -33,9 +33,10 @@
         </a>
         <div class="collapse" id="homestay">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="/admin/homestay">Thông tin</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/homestay-infor">Thông tin</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/branch">Chi nhánh</a></li>
-            <li class="nav-item"><a class="nav-link" href="/admin/faq">FAQ</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/homestay-infor/rule">Quy tắc chung</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/homestay-infor/faq">FAQ</a></li>
           </ul>
         </div>
       </li>
@@ -75,12 +76,12 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+        <a class="nav-link" data-toggle="collapse" href="#items" aria-expanded="false" aria-controls="items">
           <i class="bi bi-basket menu-icon"></i>
           <span class="menu-title">Vật tư & Hàng hóa</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse" id="tables">
+        <div class="collapse" id="items">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="">Hàng hiện có</a></li>
             <li class="nav-item"> <a class="nav-link" href="">Hàng hóa</a></li>

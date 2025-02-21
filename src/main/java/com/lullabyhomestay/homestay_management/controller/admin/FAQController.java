@@ -27,7 +27,7 @@ public class FAQController {
 
     private final FAQService faqService;
 
-    @GetMapping("/admin/faq")
+    @GetMapping("/admin/homestay-infor/faq")
     public String getFaqPage(Model model,
             @RequestParam("page") Optional<String> pageOptional,
             @RequestParam("keyword") Optional<String> keyword) {
@@ -50,16 +50,16 @@ public class FAQController {
         model.addAttribute("keyword", keyword.orElse(""));
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", faqs.getTotalPages());
-        return "admin/faq/show";
+        return "admin/homestay-infor/faq/show";
     }
 
-    @GetMapping("/admin/faq/create")
+    @GetMapping("/admin/homestay-infor/faq/create")
     public String getCreateFaqPage(Model model) {
         model.addAttribute("newFAQ", new FAQ());
-        return "admin/faq/create";
+        return "admin/homestay-infor/faq/create";
     }
 
-    @PostMapping("/admin/faq/create")
+    @PostMapping("/admin/homestay-infor/faq/create")
     public String postCreateFaq(Model model,
             @ModelAttribute("newFAQ") @Valid FAQ faq,
             BindingResult newFaqBindingResult,
@@ -68,25 +68,25 @@ public class FAQController {
         // HttpSession session = request.getSession(false);
 
         if (newFaqBindingResult.hasErrors()) {
-            return "admin/faq/create";
+            return "admin/homestay-infor/faq/create";
         }
 
         this.faqService.handleSaveFAQ(faq);
-        return "redirect:/admin/faq";
+        return "redirect:/admin/homestay-infor/faq";
     }
 
-    @GetMapping("/admin/faq/update/{id}")
+    @GetMapping("/admin/homestay-infor/faq/update/{id}")
     public String getUpdateFaqPage(Model model, @PathVariable long id) {
         Optional<FAQ> faq = faqService.getFAQByFAQID(id);
         if (!faq.isPresent()) {
-            return "admin/faq";
+            return "admin/homestay-infor/faq";
         }
         
         model.addAttribute("faq", faq.get());
-        return "admin/faq/update";
+        return "admin/homestay-infor/faq/update";
     }
 
-    @PostMapping("/admin/faq/update")
+    @PostMapping("/admin/homestay-infor/faq/update")
     public String postUpdateFaq(Model model,
             @ModelAttribute("faq") @Valid FAQ faq,
             BindingResult newFaqBindingResult,
@@ -97,7 +97,7 @@ public class FAQController {
         FAQ currentFAQ = this.faqService.getFAQByFAQID(faq.getFaqID()).get();
 
         if (newFaqBindingResult.hasErrors()) {
-            return "admin/faq/update";
+            return "admin/homestay-infor/faq/update";
         }
 
         if (currentFAQ != null) {
@@ -106,12 +106,12 @@ public class FAQController {
 
             this.faqService.handleSaveFAQ(currentFAQ);
         }
-        return "redirect:/admin/faq";
+        return "redirect:/admin/homestay-infor/faq";
     }
 
-    @PostMapping("/admin/faq/delete")
+    @PostMapping("/admin/homestay-infor/faq/delete")
     public String postDeleteFaq(@RequestParam("faqID") long faqID) {
         this.faqService.deleteByFAQID(faqID);
-        return "redirect:/admin/faq";
+        return "redirect:/admin/homestay-infor/faq";
     }
 }

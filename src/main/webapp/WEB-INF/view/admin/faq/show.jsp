@@ -20,7 +20,7 @@
             <div class="main-panel">
                 <ul class="navbar-nav mr-lg-2 my-4 nav-search">
                     <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
-                        <form action="/admin/faq" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
+                        <form action="/admin/homestay-infor/faq" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
                             <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm FAQ..." 
                                    value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
                             <button type="submit" class="btn btn-primary btn-sm p-2">
@@ -32,7 +32,7 @@
                 <div class="content-wrapper">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="card-title">Danh sách FAQs</h4>
-                        <a href="/admin/faq/create" class="btn btn-primary btn-sm">
+                        <a href="/admin/homestay-infor/faq/create" class="btn btn-primary btn-sm">
                             <i class="bi bi-plus-circle"></i> Thêm mới FAQ
                         </a>
                     </div>
@@ -46,21 +46,21 @@
                                 <c:forEach var="faq" items="${faqs}" varStatus="status">
                                     <div class="accordion-item">
                                         <h2 class="accordion-header" id="heading${status.index}">
-                                            <button class="accordion-button ${status.index == 0 ? '' : 'collapsed'}" 
+                                            <button class="accordion-button collapsed" 
                                                     type="button" data-bs-toggle="collapse" 
                                                     data-bs-target="#collapse${status.index}" 
-                                                    aria-expanded="${status.index == 0 ? 'true' : 'false'}" 
+                                                    aria-expanded="false" 
                                                     aria-controls="collapse${status.index}">
                                                 ${faq.question}
                                             </button>
                                         </h2>
-                                        <div id="collapse${status.index}" class="accordion-collapse collapse ${status.index == 0 ? 'show' : ''}" 
+                                        <div id="collapse${status.index}" class="accordion-collapse collapse" 
                                              aria-labelledby="heading${status.index}" 
                                              data-bs-parent="#faqAccordion">
                                             <div class="accordion-body">
                                                 ${faq.answer}
                                                 <div class="text-end mt-2">
-                                                    <a href="/admin/faq/update/${faq.faqID}" class="btn btn-warning btn-sm">
+                                                    <a href="/admin/homestay-infor/faq/update/${faq.faqID}" class="btn btn-warning btn-sm">
                                                         <i class="bi bi-pencil"></i> Sửa
                                                     </a>
                                                     <button class="btn btn-danger btn-sm" data-faq-id="${faq.faqID}"
@@ -75,6 +75,56 @@
                                 </c:forEach>
                             </c:otherwise>
                         </c:choose>
+                    </div>
+                    
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <c:if test="${totalPages > 0}">
+                            <div class="text-center">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
+                                            <c:choose>
+                                                <c:when test="${currentPage > 1}">
+                                                    <a class="page-link" href="/admin/homestay-infor/faq?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Trước">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <a class="page-link disabled" href="#" aria-label="Trước">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </li>                                
+
+                                        <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
+                                            <li class="page-item">
+                                                <a class="${(loop.index + 1) eq currentPage ? 'active page-link' : 'page-link'} "
+                                                    href="/admin/homestay-infor/faq?page=${loop.index + 1}">
+                                                    ${loop.index + 1}
+                                                </a>
+                                            </li>
+                                        </c:forEach>
+
+                                        <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
+                                            <c:choose>
+                                                <c:when test="${currentPage < totalPages}">
+                                                    <a class="page-link" href="/admin/homestay-infor/faq?page=${currentPage + 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Tiếp theo">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <a class="page-link disabled" href="#" aria-label="Tiếp theo">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </li>                                
+                                    </ul>
+                                </nav>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -93,7 +143,7 @@
                     Bạn có chắc chắn muốn xóa câu hỏi <b class="text-primary" id="questionConfirm"></b> không?
                 </div>
                 <div class="modal-footer">
-                    <form action="/admin/faq/delete" method="post">
+                    <form action="/admin/homestay-infor/faq/delete" method="post">
                         <input type="hidden" name="faqID" id="faqIdInput">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <button type="submit" class="btn btn-danger">Xóa</button>

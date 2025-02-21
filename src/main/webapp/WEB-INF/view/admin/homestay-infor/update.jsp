@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Thêm FAQ</title>
+  <title>Sửa thông tin homestay</title>
   <jsp:include page="../layout/import-css.jsp" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
@@ -25,38 +25,39 @@
                 <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4 text-center">Thêm mới FAQ</h4>
-                        <form:form class="form-horizontal" action="/admin/homestay-infor/faq/create" method="post"
-                            modelAttribute="newFAQ">
-                            <c:set var="errorQuestion">
-                                <form:errors path="question" cssClass="invalid-feedback" />
+                        <h4 class="card-title mb-4 text-center">Sửa thông tin homestay</h4>
+                        <form:form class="form-horizontal" action="/admin/homestay-infor/update" method="post"
+                            modelAttribute="infor">
+                            <form:input type="hidden" path="inforID" />
+                            <c:set var="errorTitle">
+                                <form:errors path="title" cssClass="invalid-feedback" />
                             </c:set>
-                            <c:set var="errorAnswer">
-                                <form:errors path="answer" cssClass="invalid-feedback" />
+                            <c:set var="errorDescription">
+                                <form:errors path="description" cssClass="invalid-feedback" />
                             </c:set>
 
                             <div class="form-group row">
-                                <label class="control-label col-sm-2">Câu hỏi <span class="text-danger">*</span></label>
+                                <label class="control-label col-sm-2">Tiêu đề <span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
-                                    <form:input type="text" class="form-control ${not empty errorQuestion ? 'is-invalid' : ''}" 
-                                    path="question" /> 
-                                    ${errorQuestion}
+                                    <form:input type="text" class="form-control ${not empty errorTitle ? 'is-invalid' : ''}" 
+                                    path="title" /> 
+                                    ${errorTitle}
                                 </div>
                             </div>
 
                             <div class="form-group row">
-                                <label class="control-label col-sm-2">Câu trả lời <span class="text-danger">*</span></label>
+                                <label class="control-label col-sm-2">Mô tả chi tiết <span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
-                                    <form:textarea type="text" class="form-control ${not empty errorAnswer ? 'is-invalid' : ''}" 
-                                    path="answer" />
-                                    ${errorAnswer}
+                                    <form:textarea type="text" class="form-control ${not empty errorDescription ? 'is-invalid' : ''}" 
+                                    path="description" />
+                                    ${errorDescription}
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-offset-2 col-sm-10 text-center">
-                                <a href="/admin/homestay-infor/faq" class="btn btn-secondary">Hủy</a>
-                                <button type="submit" class="btn btn-primary">Tạo</button>
+                                <a href="/admin/homestay-infor" class="btn btn-secondary">Hủy</a>
+                                <button type="submit" class="btn btn-warning">Sửa</button>
                             </div>
                         </div>
                     </form:form>

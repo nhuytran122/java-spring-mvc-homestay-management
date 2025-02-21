@@ -12,23 +12,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "HomestayDetails")
-public class HomestayDetail {
+@Table(name = "Rules")
+public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "InforID")
-    private long inforID;
+    @Column(name = "RuleID")
+    private long ruleID;
 
-    @NotBlank(message = "Vui lòng nhập tiêu đề thông tin")
-    @Column(name = "Title")
-    private String title;
+    @Column(name = "RuleTitle")
+    @NotBlank(message = "Vui lòng nhập tiêu đề quy tắc")
+    private String ruleTitle; 
 
-    @NotBlank(message = "Vui lòng nhập mô tả")
+    @NotBlank(message = "Vui lòng nhập mô tả quy tắc")
     @Column(name = "Description")
     private String description;
+
+    @Column(name = "IsFixed")
+    private Boolean isFixed;
+
+    @Column(name = "IsHidden")
+    private Boolean isHidden;
 }

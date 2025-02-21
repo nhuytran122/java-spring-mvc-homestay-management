@@ -49,7 +49,8 @@ public class BranchService {
 
     @Transactional
     public void deleteByBranchID(long branchID) {
-        this.branchRepository.deleteByBranchID(branchID);
+        if(canDeleteBranch(branchID)){
+            this.branchRepository.deleteByBranchID(branchID);
+        }
     }
-
 }
