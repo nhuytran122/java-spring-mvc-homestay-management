@@ -12,7 +12,6 @@ import com.lullabyhomestay.homestay_management.domain.Branch;
 
 @Repository
 public interface BranchRepository extends JpaRepository<Branch, Long> {
-    List<Branch> findAll();
 
     Page<Branch> findAll(Pageable page);
 

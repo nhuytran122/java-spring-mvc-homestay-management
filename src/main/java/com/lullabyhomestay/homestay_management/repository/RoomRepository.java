@@ -14,8 +14,9 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
     List<Room> findAll();
 
     Page<Room> findAll(Pageable page);
-    // boolean existsByBranchID(long branchID);
 
     boolean existsByBranch_BranchID(long branchID);
+
+    boolean existsByRoomType_RoomTypeID(long roomType);
 
 }

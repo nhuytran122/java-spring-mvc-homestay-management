@@ -9,7 +9,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Sửa FAQ</title>
   <jsp:include page="../layout/import-css.jsp" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
   <div class="container-scroller">
@@ -57,7 +56,7 @@
                         <div class="form-group row">
                             <div class="col-sm-offset-2 col-sm-10 text-center">
                                 <a href="/admin/homestay-infor/faq" class="btn btn-secondary">Hủy</a>
-                                <button type="submit" class="btn btn-primary">Sửa</button>
+                                <button type="submit" class="btn btn-warning">Sửa</button>
                             </div>
                         </div>
                     </form:form>

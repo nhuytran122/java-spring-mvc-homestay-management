@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,18 +35,22 @@ public class RoomType {
     private String name;
     
     @NotNull(message = "Vui lòng nhập số lượng khách tối đa")
+    @Min(value = 1, message = "Số lượng khách tối đa phải lớn hơn 0")
     @Column(name = "MaxGuest")
     private int maxGuest;
     
-    @Column(name = "Area")
-    private float area;
-    
-    @NotNull(message = "Vui lòng nhập giá phòng mỗi đêm")
-    @Column(name = "PricePerNight")
-    private double pricePerNight;
+    @NotNull(message = "Vui lòng nhập giá phòng mỗi giờ")
+    @Min(value = 1, message = "Giá phòng phải lớn hơn 0")
+    @Column(name = "PricePerHour")
+    private double pricePerHour;
     
     @Column(name = "Description")
     private String description;   
+
+    @NotNull(message = "Vui lòng nhập giá phòng bù giờ")
+    @Min(value = 1, message = "Giá phòng bù giờ phải lớn hơn 0")
+    @Column(name = "ExtraPricePerHour")
+    private double extraPricePerHour;
     
     @OneToMany(mappedBy = "roomType")
     private List<Room> rooms;

@@ -1,12 +1,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Quản lý thông tin homestay</title>
+  <title>Quản lý loại phòng</title>
   <jsp:include page="../layout/import-css.jsp" />
 </head>
 
@@ -19,8 +20,8 @@
         <div class="main-panel">
             <ul class="navbar-nav mr-lg-2 my-4">
                 <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
-                    <form action="/admin/homestay-infor" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
-                        <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm thông tin..." 
+                    <form action="/admin/room-type" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
+                        <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm loại phòng..." 
                                value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
                         <button type="submit" class="btn btn-primary btn-sm p-2">
                             <i class="bi bi-search"></i>
@@ -35,9 +36,9 @@
                         <div class="card position-relative">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 class="card-title">Danh sách thông tin</h4>
-                                    <a href="/admin/homestay-infor/create" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-plus-circle"></i> Thêm mới thông tin
+                                    <h4 class="card-title">Danh sách loại phòng</h4>
+                                    <a href="/admin/room-type/create" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-plus-circle"></i> Thêm mới loại phòng
                                     </a>
                                 </div>
 
@@ -45,37 +46,48 @@
                                     <table class="table table-hover">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Tiêu đề</th>
-                                                <th>Mô tả chi tiết</th>
+                                                <th>Tên loại phòng</th>
+                                                <th>Giá mỗi giờ</th>
+                                                <th>Số lượng khách tối đa</th>
+                                                <th>Phí bù giờ</th>
                                                 <th>Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <c:choose>
-                                                <c:when test="${empty infors}">
+                                                <c:when test="${empty roomTypes}">
                                                     <tr>
-                                                        <td colspan="7" class="text-center text-danger">Không tìm thấy thông tin nào.</td>
+                                                        <td colspan="7" class="text-center text-danger">Không tìm thấy loại phòng nào.</td>
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:forEach var="infor" items="${infors}">
+                                                    <c:forEach var="roomType" items="${roomTypes}">
                                                         <tr>
-                                                            <td>${infor.title}</td>
-                                                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                                ${infor.description}
+                                                            <td>${roomType.name}</td>
+                                                            <td>
+                                                                <fmt:formatNumber type="number"
+                                                                    value="${roomType.pricePerHour}" />
+                                                                đ
                                                             </td>
+                                                            <td>${roomType.maxGuest}</td>
+                                                            <td>
+                                                                <fmt:formatNumber type="number"
+                                                                    value="${roomType.extraPricePerHour}" />
+                                                                đ</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <button class="btn btn-success btn-sm" data-infor-id="${infor.inforID}" onclick="showDetail(this)">
+                                                                    <a href="/admin/room-type/${roomType.roomTypeID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
-                                                                    </button>
-                                                                    <a href="/admin/homestay-infor/update/${infor.inforID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    </a>
+                                                                    <a href="/admin/room-type/update/${roomType.roomTypeID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <button class="btn btn-danger btn-sm" data-infor-id="${infor.inforID}"
-                                                                        data-home-title="${infor.title}"
-                                                                        onclick="checkBeforeDelete(this)">
-                                                                        <i class="bi bi-trash"></i> Xóa
+                                                                    <button class="btn btn-danger btn-sm"
+                                                                        data-roomType-id="${roomType.roomTypeID}"
+                                                                        data-roomType-name="${roomType.name}"
+                                                                        onclick="checkBeforeDelete(this)"
+                                                                        title="Xóa">
+                                                                        <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>
                                                             </td>
@@ -98,7 +110,7 @@
                                 <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
                                     <c:choose>
                                         <c:when test="${currentPage > 1}">
-                                            <a class="page-link" href="/admin/homestay-infor?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Trước">
+                                            <a class="page-link" href="/admin/room-type?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Trước">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
                                         </c:when>
@@ -113,7 +125,7 @@
                                 <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
                                     <li class="page-item">
                                         <a class="${(loop.index + 1) eq currentPage ? 'active page-link' : 'page-link'} "
-                                            href="/admin/homestay-infor?page=${loop.index + 1}">
+                                            href="/admin/room-type?page=${loop.index + 1}">
                                             ${loop.index + 1}
                                         </a>
                                     </li>
@@ -122,7 +134,7 @@
                                 <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
                                     <c:choose>
                                         <c:when test="${currentPage < totalPages}">
-                                            <a class="page-link" href="/admin/homestay-infor?page=${currentPage + 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Tiếp theo">
+                                            <a class="page-link" href="/admin/room-type?page=${currentPage + 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Tiếp theo">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>
                                         </c:when>
@@ -142,71 +154,7 @@
     </div>
   </div>
 
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog" style="margin-top: 1%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chi tiết thông tin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h5 id="detailTitle"></h5>
-                    
-                    <p id="detailDescription"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận xóa thông tin 
-                </h5>
-            </div>
-            <div class="modal-body">
-                Bạn có chắc chắn muốn xóa thông tin <b class="text-primary" id="titleInfor"></b> không?
-            </div>
-            <div class="modal-footer">
-                <form action="/admin/homestay-infor/delete" method="post">
-                    <input type="hidden" name="inforID" id="inforIdInput">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-danger">Xóa</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    </div>
-
-<script>
-    function showDetail(button) {
-        let inforID = button.getAttribute("data-infor-id");
-        $.ajax({
-            url: '/admin/homestay-infor/' + inforID,
-            type: 'GET',
-            success: function(response) {
-                $('#detailTitle').text(response.title);
-                $('#detailDescription').html(response.description.replace(/\n/g, "<br>"));
-                $('#detailModal').modal('show');
-            },
-            error: function(xhr) {
-                alert('Lỗi: ' + xhr.responseText);
-            }
-        });
-    }
-    function checkBeforeDelete(button) {
-        let inforID = button.getAttribute("data-infor-id");
-        let title = button.getAttribute("data-home-title");
-        $("#titleInfor").text(title);
-        $("#inforIdInput").val(inforID);
-        $("#deleteConfirmModal").modal("show");
-    }
-</script>
-<jsp:include page="../layout/import-js.jsp" />
+  <jsp:include page="_modal-delete.jsp" />
+  <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>
