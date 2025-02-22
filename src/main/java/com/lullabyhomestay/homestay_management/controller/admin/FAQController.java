@@ -50,13 +50,13 @@ public class FAQController {
         model.addAttribute("keyword", keyword.orElse(""));
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", faqs.getTotalPages());
-        return "admin/homestay-infor/faq/show";
+        return "admin/faq/show";
     }
 
     @GetMapping("/admin/homestay-infor/faq/create")
     public String getCreateFaqPage(Model model) {
         model.addAttribute("newFAQ", new FAQ());
-        return "admin/homestay-infor/faq/create";
+        return "admin/faq/create";
     }
 
     @PostMapping("/admin/homestay-infor/faq/create")
@@ -68,7 +68,7 @@ public class FAQController {
         // HttpSession session = request.getSession(false);
 
         if (newFaqBindingResult.hasErrors()) {
-            return "admin/homestay-infor/faq/create";
+            return "admin/faq/create";
         }
 
         this.faqService.handleSaveFAQ(faq);
@@ -83,7 +83,7 @@ public class FAQController {
         }
         
         model.addAttribute("faq", faq.get());
-        return "admin/homestay-infor/faq/update";
+        return "admin/faq/update";
     }
 
     @PostMapping("/admin/homestay-infor/faq/update")
@@ -97,7 +97,7 @@ public class FAQController {
         FAQ currentFAQ = this.faqService.getFAQByFAQID(faq.getFaqID()).get();
 
         if (newFaqBindingResult.hasErrors()) {
-            return "admin/homestay-infor/faq/update";
+            return "admin/faq/update";
         }
 
         if (currentFAQ != null) {

@@ -17,7 +17,11 @@ public class RuleService {
     public final RuleRepository ruleRepository;
 
     public List<Rule> getAllRules() {
-        return this.ruleRepository.findAllByOrderByIsFixedDesc();
+        return this.ruleRepository.findAll();
+    }
+
+    public List<Rule> getRulesByIsHidden(Boolean isHidden) {
+        return this.ruleRepository.findByIsHidden(isHidden);
     }
 
     public void handleSaveRule(Rule rule) {
@@ -27,10 +31,4 @@ public class RuleService {
     public Optional<Rule> getRuleByRuleID(long ruleID) {
         return this.ruleRepository.findByRuleID(ruleID);
     }
-
-    @Transactional
-    public void deleteByRuleID(long ruleID) {
-        this.ruleRepository.deleteByRuleID(ruleID);
-    }
-
 }

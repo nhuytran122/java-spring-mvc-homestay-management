@@ -1,21 +1,20 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lullabyhomestay.homestay_management.domain.Rule;
 import com.lullabyhomestay.homestay_management.service.RuleService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -25,70 +24,43 @@ public class RuleController {
 
     @GetMapping("/admin/homestay-infor/rule")
     public String getRulePage(Model model) {
-        model.addAttribute("rules", ruleService.getAllRules());
+        model.addAttribute("inactiveRules", ruleService.getRulesByIsHidden(true));
+        model.addAttribute("activeRules", ruleService.getRulesByIsHidden(false));
         return "admin/rule/show";
     }
 
-    @GetMapping("/admin/homestay-infor/rule/create")
-    public String getCreateRulePage(Model model) {
-        model.addAttribute("newRule", new Rule());
-        return "admin/rule/create";
-    }
-
     @PostMapping("/admin/homestay-infor/rule/create")
-    public String postCreateRule(Model model,
-            @ModelAttribute("newRule") @Valid Rule fule,
-            BindingResult newRuleBindingResult,
-            HttpServletRequest request) {
-
-        // HttpSession session = request.getSession(false);
-
-        if (newRuleBindingResult.hasErrors()) {
-            return "admin/rule/create";
+    @ResponseBody
+    public ResponseEntity<?> postCreateRules(@RequestBody List<Rule> listRules) {
+        for (Rule request : listRules) {
+            Optional<Rule> optionalRule = ruleService.getRuleByRuleID(request.getRuleID());
+            if (optionalRule.isPresent()) {
+                Rule currentRule = optionalRule.get();
+                currentRule.setIsHidden(false);
+                currentRule.setDescription(request.getDescription());
+                ruleService.handleSaveRule(currentRule);
+            }
         }
-
-        this.ruleService.handleSaveRule(fule);
-        return "redirect:/admin/homestay-infor/rule";
-    }
-
-    @GetMapping("/admin/homestay-infor/rule/update/{id}")
-    public String getUpdateRulePage(Model model, @PathVariable long id) {
-        Optional<Rule> rule = ruleService.getRuleByRuleID(id);
-        if (!rule.isPresent()) {
-            return "admin/homestay-infor/rule";
-        }
-
-        model.addAttribute("rule", rule.get());
-        return "admin/rule/update";
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/admin/homestay-infor/rule/update")
-    public String postUpdateRule(Model model,
-            @ModelAttribute("rule") @Valid Rule rule,
-            BindingResult newRuleBindingResult,
-            HttpServletRequest request) {
-
-        // HttpSession session = request.getSession(false);
-
+    public String postUpdateRule(@RequestBody Rule rule) {
         Rule currentRule = this.ruleService.getRuleByRuleID(rule.getRuleID()).get();
-
-        if (newRuleBindingResult.hasErrors()) {
-            return "admin/rule/update";
-        }
-
         if (currentRule != null) {
-            currentRule.setRuleTitle(rule.getRuleTitle());
             currentRule.setDescription(rule.getDescription());
-            // currentRule.setIsFixed(currentRule.getIsFixed());
-            currentRule.setIsHidden(rule.getIsHidden());
             this.ruleService.handleSaveRule(currentRule);
         }
         return "redirect:/admin/homestay-infor/rule";
     }
 
     @PostMapping("/admin/homestay-infor/rule/delete")
-    public String postDeleteRule(@RequestParam("ruleID") long ruleID) {
-        this.ruleService.deleteByRuleID(ruleID);
+    public String postHiddenRule(Model model,
+            @ModelAttribute("rule") Rule rule) {
+        Rule currentRule = ruleService.getRuleByRuleID(rule.getRuleID()).get();
+        currentRule.setIsHidden(true);
+        currentRule.setDescription("");
+        this.ruleService.handleSaveRule(currentRule);
         return "redirect:/admin/homestay-infor/rule";
     }
 }

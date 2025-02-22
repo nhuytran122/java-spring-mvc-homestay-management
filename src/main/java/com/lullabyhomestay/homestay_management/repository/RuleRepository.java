@@ -11,11 +11,11 @@ import com.lullabyhomestay.homestay_management.domain.Rule;
 @Repository
 public interface RuleRepository extends JpaRepository<Rule, Long> {
 
-    public List<Rule> findAllByOrderByIsFixedDesc();
+    List<Rule> findAll();
+
+    List<Rule> findByIsHidden(Boolean isHidden);
+
     Optional<Rule> findByRuleID(long ruleID);
 
-    Rule save(Rule rule);
-
-    void deleteByRuleID(long id);
-    
+    Rule save(Rule rule);    
 }

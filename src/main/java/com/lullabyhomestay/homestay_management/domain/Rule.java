@@ -26,14 +26,13 @@ public class Rule {
 
     @Column(name = "RuleTitle")
     @NotBlank(message = "Vui lòng nhập tiêu đề quy tắc")
-    private String ruleTitle; 
+    private String ruleTitle;
 
-    @NotBlank(message = "Vui lòng nhập mô tả quy tắc")
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "IsFixed")
-    private Boolean isFixed;
+    @Column(name = "icon")
+    private String icon;
 
     @Column(name = "IsHidden")
     private Boolean isHidden;

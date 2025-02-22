@@ -156,7 +156,7 @@
     </div>
   </div>
 
-  <jsp:include page="partial-modal-delete.jsp" />
+  <jsp:include page="_modal-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>
