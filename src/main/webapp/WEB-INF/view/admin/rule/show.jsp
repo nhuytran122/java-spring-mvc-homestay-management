@@ -31,7 +31,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="card-title">Danh sách quy tắc chung</h4>
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addRuleModal">
-                            <i class="fa fa-plus-circle"></i> Thêm mới
+                            <i class="fa fa-plus-circle"></i> Thêm mới quy tắc
                         </button>
                     </div>
 

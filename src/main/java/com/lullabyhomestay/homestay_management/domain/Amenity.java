@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,15 +28,16 @@ public class Amenity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "AmenityID") 
+    @Column(name = "AmenityID")
     private long amenityID;
 
-    @NotBlank(message = "Vui lòng tên tiện nghi")
-    @Column(name = "AmenityName") 
+    @NotBlank(message = "Vui lòng nhập tên tiện nghi")
+    @Column(name = "AmenityName")
     private String amenityName;
 
     @ManyToOne
-    @JoinColumn(name = "AmenityCategoryID")
+    @JoinColumn(name = "CategoryID")
+    @NotNull(message = "Vui lòng chọn danh mục tiện nghi")
     private AmenityCategory amenityCategory;
 
     @OneToMany(mappedBy = "amenity")
