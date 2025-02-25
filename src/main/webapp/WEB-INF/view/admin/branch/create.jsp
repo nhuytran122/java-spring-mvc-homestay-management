@@ -33,6 +33,9 @@
                                     <c:set var="errorAddress">
                                         <form:errors path="address" cssClass="invalid-feedback" />
                                     </c:set>
+                                    <c:set var="errorPassword">
+                                        <form:errors path="branchPassword" cssClass="invalid-feedback" />
+                                    </c:set>
 
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Tên chi nhánh <span class="text-danger">*</span></label>
@@ -57,6 +60,15 @@
                                         <div class="col-sm-10">
                                             <form:input type="text" class="form-control" 
                                             path="phone" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Mật khẩu cổng<span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:input type="number" class="form-control ${not empty errorPassword ? 'is-invalid' : ''}" 
+                                            path="branchPassword" />
+                                            ${errorPassword}
                                         </div>
                                     </div>
                                     
@@ -91,16 +103,6 @@
   </div>
 
   <jsp:include page="../layout/import-js.jsp" />
-  <script>
-    $(document).ready(() => {
-      const file = $("#fileInput");
-      $('.imagePreview').css('display', 'none');
-      file.change(function (e) {
-        const imgURL = URL.createObjectURL(e.target.files[0]);
-        $(".imagePreview").attr("src", imgURL);
-        $(".imagePreview").css({ "display": "block"});
-      });
-    });
-  </script>
+  <jsp:include page="../layout/partial/_script-preview-image.jsp" />
 </body>
 </html>

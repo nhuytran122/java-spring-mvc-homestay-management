@@ -1,5 +1,7 @@
 package com.lullabyhomestay.homestay_management.domain;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,8 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,21 +19,28 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "RoomPhotos")
-public class RoomPhoto {
-
+public class RoomStatusHistory {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PhotoID")
-    private long photoID;
+    @Column(name = "RoomStatusID")
+    private long roomStatusID;
 
-    @Column(name = "Photo")
-    private String photo;
+    @Column(name = "StartedAt")
+    private Date startedAt;
 
-    @Column(name = "IsHidden")
-    private boolean hidden;
+    @Column(name = "EndedAt")
+    private Date endedAt;
 
     @ManyToOne
-    @JoinColumn(name = "RoomID")
+    @JoinColumn(name = "roomID")
     private Room room;
+
+    @ManyToOne
+    @JoinColumn(name = "roomStatusID")
+    private RoomStatus roomStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "bookingID")
+    private Booking booking;
 }

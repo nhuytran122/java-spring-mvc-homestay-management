@@ -34,6 +34,7 @@ public class AmenityController {
             @RequestParam("page") Optional<String> pageOptional,
             @RequestParam("keyword") Optional<String> keyword,
             @RequestParam("categoryID") Optional<Long> categoryID) {
+        // todo: sửa lại logic search
         int page = 1;
         try {
             if (pageOptional.isPresent()) {
@@ -43,9 +44,10 @@ public class AmenityController {
             e.printStackTrace();
         }
         Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<Amenity> amenities = (keyword.isPresent() || categoryID.isPresent())
-                ? amenityService.searchAmenities(keyword.get(), categoryID.get(), pageable)
-                : amenityService.getAllAmenities(pageable);
+        //TODO
+        // Page<Amenity> amenities = amenityService.searchAmenities(keyword, categoryID,
+        // pageable);
+        Page<Amenity> amenities = amenityService.getAllAmenities(pageable);
 
         List<Amenity> listAmenities = amenities.getContent();
         model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
@@ -57,10 +59,11 @@ public class AmenityController {
         return "admin/amenity/show";
     }
 
+    // todo: xem chi tiết phòng nào có tiện nghi này
     // @GetMapping("/admin/amenity/{id}")
     // @ResponseBody
-    // public ResponseEntity<?> getDetailInfor(@PathVariable("id") long id) {
-    // Optional<Amenity> infor = amenityService.getInforHomestayByInforID(id);
+    // public ResponseEntity<?> getDetailAmenity(@PathVariable("id") long id) {
+    // Optional<Amenity> infor = amenityService.getAmenityHomestayByAmenityID(id);
     // if (!infor.isPresent()) {
     // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thông
     // tin!");
@@ -76,7 +79,7 @@ public class AmenityController {
     }
 
     @PostMapping("/admin/amenity/create")
-    public String postCreateInfor(Model model,
+    public String postCreateAmenity(Model model,
             @ModelAttribute("newAmenity") @Valid Amenity amenity,
             BindingResult newAmenityBindingResult,
             HttpServletRequest request) {
@@ -92,7 +95,7 @@ public class AmenityController {
     }
 
     @GetMapping("/admin/amenity/update/{id}")
-    public String getUpdateInforPage(Model model, @PathVariable long id) {
+    public String getUpdateAmenityPage(Model model, @PathVariable long id) {
         Optional<Amenity> amenity = amenityService.getAmenityByID(id);
         if (!amenity.isPresent()) {
             return "admin/amenity";
@@ -104,7 +107,7 @@ public class AmenityController {
     }
 
     @PostMapping("/admin/amenity/update")
-    public String postUpdateInfor(Model model,
+    public String postUpdateAmenity(Model model,
             @ModelAttribute("amenity") @Valid Amenity amenity,
             BindingResult newAmenityBindingResult,
             HttpServletRequest request) {
@@ -115,7 +118,7 @@ public class AmenityController {
 
         if (amenity.getAmenityCategory().getCategoryID() == 0) {
             newAmenityBindingResult.rejectValue("amenityCategory",
-                    "error.amenityCategory", "Vui lòng chọn phân loại hợp lệ.");
+                    "error.amenityCategory", "Vui lòng chọn phân loại");
         }
 
         if (newAmenityBindingResult.hasErrors()) {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import com.lullabyhomestay.homestay_management.domain.Branch;
 import com.lullabyhomestay.homestay_management.domain.RoomType;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 
@@ -23,33 +24,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @AllArgsConstructor
 @Controller
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
 
     @GetMapping("/admin/room-type")
-    public String getRoomTypePage(Model model, 
-        @RequestParam("page") Optional<String> pageOptional,
-        @RequestParam("keyword") Optional<String> keyword) {
-            int page = 1;
-            try {
-                if (pageOptional.isPresent()) {
-                    page = Integer.parseInt(pageOptional.get());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+    public String getRoomTypePage(Model model,
+            @RequestParam("page") Optional<String> pageOptional,
+            @RequestParam("keyword") Optional<String> keyword) {
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
             }
-            Pageable pageable = PageRequest.of(page - 1, 2);
-            Page<RoomType> roomTypes = (keyword.isPresent())
-                ? roomTypeService.searchRoomTypesByName(keyword.get(), pageable)
-                : roomTypeService.getAllRoomTypes(pageable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Pageable pageable = PageRequest.of(page - 1, 2);
+        Page<RoomType> roomTypes = roomTypeService.searchRoomTypes(keyword, pageable);
 
-            List<RoomType> listRoomTypes = roomTypes.getContent();
-            model.addAttribute("roomTypes", listRoomTypes);
-            model.addAttribute("keyword", keyword.orElse(""));
-            model.addAttribute("currentPage", page);
+        List<RoomType> listRoomTypes = roomTypes.getContent();
+        model.addAttribute("roomTypes", listRoomTypes);
+        model.addAttribute("keyword", keyword.orElse(""));
+        model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", roomTypes.getTotalPages());
         return "admin/room-type/show";
     }
@@ -72,12 +70,12 @@ public class RoomTypeController {
 
     @PostMapping("/admin/room-type/create")
     public String postCreateRoomType(Model model,
-        @ModelAttribute("newRoomType") @Valid RoomType roomType,
-        BindingResult newRoomTypeBindingResult,
-        HttpServletRequest request) {
+            @ModelAttribute("newRoomType") @Valid RoomType roomType,
+            BindingResult newRoomTypeBindingResult,
+            HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        if(newRoomTypeBindingResult.hasErrors()){
+        if (newRoomTypeBindingResult.hasErrors()) {
             return "admin/room-type/create";
         }
         roomTypeService.handleSaveRoomType(roomType);
@@ -91,28 +89,28 @@ public class RoomTypeController {
             return "admin/room-type";
         }
         model.addAttribute("roomType", roomType.get());
-        return "admin/room-type/update";    
+        return "admin/room-type/update";
     }
 
     @PostMapping("/admin/room-type/update")
     public String postUpdateRoomType(Model model,
-        @ModelAttribute("roomType") @Valid RoomType roomType,
-        BindingResult roomTypeBindingResult,
-        HttpServletRequest request) {
-            
+            @ModelAttribute("roomType") @Valid RoomType roomType,
+            BindingResult roomTypeBindingResult,
+            HttpServletRequest request) {
+
         // HttpSession session = request.getSession(false);
         RoomType currentRoomType = roomTypeService.getRoomTypeById(roomType.getRoomTypeID()).get();
-        if(roomTypeBindingResult.hasErrors()){
+        if (roomTypeBindingResult.hasErrors()) {
             return "admin/room-type/update";
         }
 
-        if(currentRoomType != null){
+        if (currentRoomType != null) {
             currentRoomType.setName(roomType.getName());
             currentRoomType.setDescription(roomType.getDescription());
             currentRoomType.setMaxGuest(roomType.getMaxGuest());
             currentRoomType.setPricePerHour(roomType.getPricePerHour());
             currentRoomType.setExtraPricePerHour(roomType.getExtraPricePerHour());
-            
+
             roomTypeService.handleSaveRoomType(currentRoomType);
         }
         return "redirect:/admin/room-type";

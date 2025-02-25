@@ -20,9 +20,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "MaintainanceRequests")
-public class MaintainanceRequest {
-    
+@Table(name = "MaintenanceRequests")
+public class MaintenanceRequest {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RequestID")
@@ -30,13 +30,13 @@ public class MaintainanceRequest {
 
     @Column(name = "Description")
     private String description;
-    
+
     @Column(name = "Status")
     private String status;
-    
+
     @Column(name = "CreatedAt")
     private Date createdAt;
-    
+
     @Column(name = "UpdatedAt")
     private Date updatedAt;
 

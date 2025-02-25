@@ -21,8 +21,10 @@ public class FAQService {
         return this.faqRepository.findAll(pageable);
     }
 
-    public Page<FAQ> searchFAQs(String keyword, Pageable pageable) {
-        return faqRepository.findByQuestionContainingIgnoreCaseOrAnswerContainingIgnoreCase(keyword, keyword, pageable);
+    public Page<FAQ> searchFAQs(Optional<String> keyword, Pageable pageable) {
+        return (keyword.isPresent()) 
+        ? faqRepository.findByQuestionContainingIgnoreCaseOrAnswerContainingIgnoreCase(keyword.get(), keyword.get(), pageable) 
+        : faqRepository.findAll(pageable);
     }
 
     public void handleSaveFAQ(FAQ faq) {

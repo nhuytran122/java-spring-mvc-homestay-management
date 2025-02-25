@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -21,9 +22,12 @@ public class AmenityService {
         return this.amenityRepository.findAll(pageable);
     }
 
-    public Page<Amenity> searchAmenities(String keyword, long categoryID, Pageable pageable) {
-        return amenityRepository.findByAmenityNameContainingIgnoreCaseAndAmenityCategory_CategoryIDOrderByAmenityCategory_CategoryIDDesc(
-            keyword, categoryID, pageable);
+    // TODO: Search theo keyword, categoryID
+    public Page<Amenity> searchAmenities(Optional<String> keyword, Optional<Long> categoryID,
+            Pageable pageable) {
+        return amenityRepository
+                .findByAmenityNameContainingIgnoreCaseAndAmenityCategory_CategoryIDOrderByAmenityCategory_CategoryIDDesc(
+                        keyword.get(), categoryID.get(), pageable);
     }
 
     public void handleSaveAmenity(Amenity amenity) {

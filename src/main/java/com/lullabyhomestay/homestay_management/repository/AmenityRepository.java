@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -11,10 +12,11 @@ import com.lullabyhomestay.homestay_management.domain.Amenity;
 
 @Repository
 public interface AmenityRepository extends JpaRepository<Amenity, Long> {
+    List<Amenity> findAll();
+
     Page<Amenity> findAll(Pageable page);
 
-    Page<Amenity> findByAmenityNameContainingIgnoreCaseAndAmenityCategory_CategoryIDOrderByAmenityCategory_CategoryIDDesc
-    (
+    Page<Amenity> findByAmenityNameContainingIgnoreCaseAndAmenityCategory_CategoryIDOrderByAmenityCategory_CategoryIDDesc(
             String amenityName, long categoryID, Pageable pageable);
 
     Optional<Amenity> findByAmenityID(long amenityID);

@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,8 @@ import com.lullabyhomestay.homestay_management.domain.RoomType;
 
 @Repository
 public interface RoomTypeRepository extends JpaRepository<RoomType, Long> {
+    List<RoomType> findAll();
+
     Page<RoomType> findAll(Pageable page);
 
     Optional<RoomType> findByRoomTypeID(long roomTypeId);

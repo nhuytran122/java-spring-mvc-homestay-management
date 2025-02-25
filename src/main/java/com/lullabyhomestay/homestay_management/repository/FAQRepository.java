@@ -12,12 +12,11 @@ import com.lullabyhomestay.homestay_management.domain.FAQ;
 
 @Repository
 public interface FAQRepository extends JpaRepository<FAQ, Long> {
-    List<FAQ> findAll();
 
     Page<FAQ> findAll(Pageable page);
 
     Page<FAQ> findByQuestionContainingIgnoreCaseOrAnswerContainingIgnoreCase(
-    String ques, String ans, Pageable pageable);
+            String ques, String ans, Pageable pageable);
 
     Optional<FAQ> findByFaqID(long faqID);
 

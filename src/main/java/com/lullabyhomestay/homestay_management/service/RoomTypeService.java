@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,16 +19,18 @@ public class RoomTypeService {
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
 
-    public Page<RoomType> getAllRoomTypes(Pageable pageable) {
-        return roomTypeRepository.findAll(pageable);
+    public List<RoomType> getAllRoomTypes() {
+        return roomTypeRepository.findAll();
     }
 
     public Optional<RoomType> getRoomTypeById(long id) {
         return roomTypeRepository.findByRoomTypeID(id);
     }
 
-    public Page<RoomType> searchRoomTypesByName(String roomTypeName, Pageable page) {
-        return roomTypeRepository.findByNameContainingIgnoreCase(roomTypeName, page);
+    public Page<RoomType> searchRoomTypes(Optional<String> keyword, Pageable pageable) {
+        return (keyword.isPresent())
+                ? roomTypeRepository.findByNameContainingIgnoreCase(keyword.get(), pageable)
+                : roomTypeRepository.findAll(pageable);
     }
 
     public RoomType handleSaveRoomType(RoomType roomType) {

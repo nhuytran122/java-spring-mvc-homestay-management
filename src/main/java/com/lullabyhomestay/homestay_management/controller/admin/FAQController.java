@@ -40,9 +40,7 @@ public class FAQController {
             e.printStackTrace();
         }
         Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<FAQ> faqs = (keyword.isPresent()) 
-        ? faqService.searchFAQs(keyword.get(), pageable) 
-        : faqService.getAllFAQs(pageable);
+        Page<FAQ> faqs = faqService.searchFAQs(keyword, pageable);
 
         List<FAQ> listFAQs = faqs.getContent();
         model.addAttribute("faqs", listFAQs);
@@ -81,7 +79,7 @@ public class FAQController {
         if (!faq.isPresent()) {
             return "admin/homestay-infor/faq";
         }
-        
+
         model.addAttribute("faq", faq.get());
         return "admin/faq/update";
     }
@@ -93,7 +91,7 @@ public class FAQController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        
+
         FAQ currentFAQ = this.faqService.getFAQByFAQID(faq.getFaqID()).get();
 
         if (newFaqBindingResult.hasErrors()) {

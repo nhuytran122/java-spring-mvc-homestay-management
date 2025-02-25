@@ -5,15 +5,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận xóa chi nhánh
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận xóa phòng
                 </h5>
             </div>
             <div class="modal-body">
-                Bạn có chắc chắn muốn xóa chi nhánh <b class="text-primary" id="branchNameConfirm"></b> không?
+                Bạn có chắc chắn muốn xóa phòng <b class="text-primary" id="roomNumberConfirm"></b> không?
             </div>
             <div class="modal-footer">
-                <form action="/admin/branch/delete" method="post">
-                    <input type="hidden" name="branchID" value="${branch.branchID}">
+                <form action="/admin/room/delete" method="post">
+                    <input type="hidden" name="roomID" value="${room.roomID}">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-danger">Xóa</button>
                 </form>
@@ -27,11 +27,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Không thể xóa chi nhánh
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Không thể xóa phòng
                 </h5>
             </div>
             <div class="modal-body">
-                Chi nhánh <b class="text-primary" id="branchNameWarning"></b> đang có dữ liệu liên quan, không thể xóa.
+                Phòng <b class="text-primary" id="roomNumberWarning"></b> đang có dữ liệu liên quan, không thể xóa.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -42,19 +42,19 @@
 
 <script>
     function checkBeforeDelete(button) {
-        let branchID = button.getAttribute("data-branch-id");
-        let branchName = button.getAttribute("data-branch-name");
+        let roomID = button.getAttribute("data-room-id");
+        let roomName = button.getAttribute("data-room-number");
 
         $.ajax({
-            url: "/admin/branch/can-delete/" + branchID,
+            url: "/admin/room/can-delete/" + roomID,
             type: "GET",
             dataType: "json",
             success: function(response) {
                 if (response === true) {
-                    $("#branchNameConfirm").text(branchName);
+                    $("#roomNumberConfirm").text(roomName);
                     $("#deleteConfirmModal").modal("show");
                 } else {
-                    $("#branchNameWarning").text(branchName);
+                    $("#roomNumberWarning").text(roomName);
                     $("#deleteWarningModal").modal("show");
                 }
             },

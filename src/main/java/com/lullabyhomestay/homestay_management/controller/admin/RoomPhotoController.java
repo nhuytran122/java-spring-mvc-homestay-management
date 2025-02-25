@@ -1,0 +1,106 @@
+package com.lullabyhomestay.homestay_management.controller.admin;
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.domain.RoomPhoto;
+import com.lullabyhomestay.homestay_management.service.RoomPhotoService;
+import com.lullabyhomestay.homestay_management.service.RoomService;
+import com.lullabyhomestay.homestay_management.service.UploadService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+@Controller
+public class RoomPhotoController {
+    private final RoomPhotoService roomPhotoService;
+    private final UploadService uploadService;
+    private final RoomService roomService;
+
+    @GetMapping("/admin/room/photo/create")
+    public String getCreateRoomPhotoPage(Model model, @RequestParam long roomID) {
+        model.addAttribute("newRoomPhoto", new RoomPhoto());
+        model.addAttribute("roomID", roomID);
+        return "admin/room/room-photo/create";
+    }
+
+    @PostMapping("/admin/room/photo/create")
+    public String postCreateRoomPhoto(Model model,
+            @ModelAttribute("newRoomPhoto") @Valid RoomPhoto roomPhoto,
+            BindingResult newRoomPhotoBindingResult,
+            @RequestParam("fileImg") MultipartFile file,
+            @RequestParam("roomID") long roomID,
+            HttpServletRequest request) {
+
+        // HttpSession session = request.getSession(false);
+        if (file.isEmpty()) {
+            newRoomPhotoBindingResult.rejectValue("photo", "error.photo", "Vui lòng upload ảnh");
+        }
+
+        if (newRoomPhotoBindingResult.hasErrors()) {
+            model.addAttribute("roomID", roomID);
+            return "admin/room/room-photo/create";
+        }
+        String img;
+        if (!file.isEmpty()) {
+            img = this.uploadService.handleSaveUploadFile(file, "room");
+            roomPhoto.setPhoto(img);
+        }
+        Optional<Room> room = roomService.getRoomByID(roomID);
+        if (!room.isPresent()) {
+            return "redirect:/admin/room";
+        }
+        roomPhoto.setRoom(room.get());
+        this.roomPhotoService.handleSaveRoomPhoto(roomPhoto);
+        return "redirect:/admin/room/update/" + roomID;
+    }
+
+    @GetMapping("/admin/room/photo/update/{id}")
+    public String getUpdateRoomPhotoPage(Model model, @PathVariable long id) {
+        Optional<RoomPhoto> roomPhoto = roomPhotoService.getPhotoByPhotoID(id);
+        if (!roomPhoto.isPresent()) {
+            return "admin/room";
+        }
+        model.addAttribute("roomPhoto", roomPhoto.get());
+        return "admin/room/room-photo/update";
+    }
+
+    @PostMapping("/admin/room/photo/update")
+    public String postUpdateRoomPhoto(Model model,
+            @ModelAttribute("roomPhoto") @Valid RoomPhoto roomPhoto,
+            @RequestParam("fileImg") MultipartFile file,
+            HttpServletRequest request) {
+        // HttpSession session = request.getSession(false);
+        Long roomPhotoID = roomPhoto.getPhotoID();
+        RoomPhoto currentRoomPhoto = this.roomPhotoService.getPhotoByPhotoID(roomPhotoID).get();
+        if (currentRoomPhoto != null) {
+            if (!file.isEmpty()) {
+                String img = this.uploadService.handleSaveUploadFile(file, "room");
+                currentRoomPhoto.setPhoto(img);
+            }
+            // currentRoomPhoto.setRoom(null);
+            currentRoomPhoto.setHidden(roomPhoto.isHidden());
+            this.roomPhotoService.handleSaveRoomPhoto(currentRoomPhoto);
+        }
+        return "redirect:/admin/room/update/" + currentRoomPhoto.getRoom().getRoomID();
+    }
+
+    @PostMapping("/admin/room/photo/delete")
+    public String postDeleteRoomPhoto(@RequestParam("photoID") long roomPhotoID) {
+        Optional<RoomPhoto> roomPhoto = roomPhotoService.getPhotoByPhotoID(roomPhotoID);
+        this.roomPhotoService.deleteByPhotoID(roomPhotoID);
+        return "redirect:/admin/room/update/" + (roomPhoto.get()).getRoom().getRoomID();
+    }
+}

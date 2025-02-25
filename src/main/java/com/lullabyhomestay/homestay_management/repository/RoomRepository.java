@@ -1,19 +1,24 @@
 package com.lullabyhomestay.homestay_management.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import com.lullabyhomestay.homestay_management.domain.Room;
+import java.util.Optional;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificationExecutor<Room> {
-    List<Room> findAll();
+public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Page<Room> findAll(Pageable page);
+
+    Page<Room> findByBranch_BranchIDAndRoomType_RoomTypeID(long branchID, long roomTypeID, Pageable page);
+
+    Optional<Room> findByRoomID(long roomID);
+
+    Room save(Room room);
+
+    void deleteByRoomID(long roomID);
 
     boolean existsByBranch_BranchID(long branchID);
 

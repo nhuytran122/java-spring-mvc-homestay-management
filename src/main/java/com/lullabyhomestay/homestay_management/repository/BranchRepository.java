@@ -13,10 +13,12 @@ import com.lullabyhomestay.homestay_management.domain.Branch;
 @Repository
 public interface BranchRepository extends JpaRepository<Branch, Long> {
 
+    List<Branch> findAll();
+
     Page<Branch> findAll(Pageable page);
 
     Page<Branch> findByBranchNameContainingIgnoreCaseOrAddressContainingIgnoreCase(
-    String name, String address, Pageable pageable);
+            String name, String address, Pageable pageable);
 
     Optional<Branch> findByBranchID(long branchID);
 

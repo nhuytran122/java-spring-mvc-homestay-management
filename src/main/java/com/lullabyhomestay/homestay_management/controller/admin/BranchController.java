@@ -31,7 +31,7 @@ public class BranchController {
 
     private final BranchService branchService;
     private final UploadService uploadService;
-    
+
     @GetMapping("/admin/branch")
     public String getBranchPage(Model model,
             @RequestParam("page") Optional<String> pageOptional,
@@ -45,9 +45,8 @@ public class BranchController {
             e.printStackTrace();
         }
         Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<Branch> branches = (keyword.isPresent())
-                ? branchService.searchBranches(keyword.get(), pageable)
-                : branchService.getAllBranches(pageable);
+
+        Page<Branch> branches = branchService.searchBranches(keyword, pageable);
 
         List<Branch> listBranches = branches.getContent();
         model.addAttribute("branches", listBranches);
@@ -131,6 +130,7 @@ public class BranchController {
             currentBranch.setBranchName(branch.getBranchName());
             currentBranch.setAddress(branch.getAddress());
             currentBranch.setPhone(branch.getPhone());
+            currentBranch.setBranchPassword(branch.getBranchPassword());
 
             this.branchService.handleSaveBranch(currentBranch);
         }
@@ -144,7 +144,7 @@ public class BranchController {
     }
 
     @PostMapping("/admin/branch/delete")
-        public String postDeleteBranch(@RequestParam("branchID") long branchID) {
+    public String postDeleteBranch(@RequestParam("branchID") long branchID) {
         this.branchService.deleteByBranchID(branchID);
         return "redirect:/admin/branch";
     }

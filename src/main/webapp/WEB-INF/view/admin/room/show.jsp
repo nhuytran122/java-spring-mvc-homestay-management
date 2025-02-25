@@ -46,6 +46,7 @@
                                     <table class="table table-hover">
                                         <thead class="table-light">
                                             <tr>
+                                                <th style="width: 150px;">Thumbnail</th>
                                                 <th>Số phòng</th>
                                                 <th>Giá mỗi giờ</th>
                                                 <th>Loại phòng</th>
@@ -63,52 +64,40 @@
                                                 <c:otherwise>
                                                     <c:forEach var="room" items="${rooms}">
                                                         <tr>
-                                                            <td>${room.RoomNumber}</td>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${not empty room.thumbnail}">
+                                                                        <img src="/images/room/${room.thumbnail}" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <img src="/images/room/default-img.jpg" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                            <td>${room.roomNumber}</td>
                                                             
                                                             <td><fmt:formatNumber type="number"
-                                                                value="${room.roomType.PricePerNight}" /> đ</td>
-                                                            <td>${room.roomType.Name}</td>
-                                                            <td>${room.branch.BranchName}</td>
+                                                                value="${room.roomType.pricePerHour}" /> đ</td>
+                                                            <td>${room.roomType.name}</td>
+                                                            <td>${room.branch.branchName}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/room/delete/${room.RoomID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <a href="/admin/room/${room.roomID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
-                                                                    <a href="/admin/room/${room.RoomID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/room/update/${room.roomID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <a href="/admin/room/update/${room.RoomID}" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal${room.RoomID}" title="Xóa">
+                                                                    <button class="btn btn-danger btn-sm"
+                                                                        data-room-id="${room.roomID}"
+                                                                        data-room-number="${room.roomNumber}"
+                                                                        onclick="checkBeforeDelete(this)"
+                                                                        title="Xóa">
                                                                         <i class="bi bi-trash"></i>
-                                                                    </a>
+                                                                    </button>
                                                                 </div>
                                                             </td>
                                                         </tr>
-
-                                                        <!-- Modal xác nhận xóa -->
-                                                        <div class="modal fade" id="deleteModal${room.RoomID}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title text-danger">
-                                                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                            Xác nhận xóa phòng
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        Bạn có chắc chắn muốn xóa phòng <b class="text-primary">${room.RoomNumber}</b> không?
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <form:form method="post" action="/admin/room/delete"
-                                                                            modelAttribute="room">
-                                                                                <form:input value="${room.RoomID}" type="text" class="form-control"
-                                                                                    path="RoomID" />
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                                            <button type="submit" class="btn btn-danger">Xóa</button>
-                                                                        </form:form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
@@ -119,10 +108,13 @@
                         </div>
                     </div>
                 </div>
+
+                <!--TODO: phân trang theo các tiêu chí search-->
             </div>
         </div>
     </div>
   </div>
+  <jsp:include page="_modal-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>

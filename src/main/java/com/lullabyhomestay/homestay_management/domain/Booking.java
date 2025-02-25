@@ -70,4 +70,7 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "BookingStatusID")
     private BookingStatus bookingStatus;
+
+    @OneToMany(mappedBy = "booking")
+    List<RoomStatusHistory> roomStatusHistories;
 }

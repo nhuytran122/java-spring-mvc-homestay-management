@@ -24,23 +24,26 @@ import lombok.Setter;
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "BranchID")
     private long branchID;
 
     @NotBlank(message = "Vui lòng nhập tên chi nhánh")
-    @Column(name = "BranchName") 
+    @Column(name = "BranchName")
     private String branchName;
 
     @NotBlank(message = "Vui lòng nhập địa chỉ")
-    @Column(name = "Address") 
+    @Column(name = "Address")
     private String address;
 
-    @Column(name = "Phone") 
+    @Column(name = "Phone")
     private String phone;
-    
-    @Column(name = "Image") 
+
+    @Column(name = "Image")
     private String image;
+
+    @NotBlank(message = "Vui lòng nhập mật khẩu chi nhánh")
+    @Column(name = "BranchPassword")
+    private String branchPassword;
 
     @OneToMany(mappedBy = "branch")
     List<InventoryStock> inventoryStocks;

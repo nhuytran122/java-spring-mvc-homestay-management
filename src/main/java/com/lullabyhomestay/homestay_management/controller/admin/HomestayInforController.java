@@ -43,9 +43,7 @@ public class HomestayInforController {
             e.printStackTrace();
         }
         Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<HomestayDetail> infors = (keyword.isPresent()) 
-        ? homestayService.searchInforHomestay(keyword.get(), pageable) 
-        : homestayService.getAllInforHomestay(pageable);
+        Page<HomestayDetail> infors = homestayService.searchInforHomestay(keyword, pageable);
 
         List<HomestayDetail> listInfors = infors.getContent();
         model.addAttribute("infors", listInfors);
@@ -94,7 +92,7 @@ public class HomestayInforController {
         if (!infor.isPresent()) {
             return "admin/homestay-infor";
         }
-        
+
         model.addAttribute("infor", infor.get());
         return "admin/homestay-infor/update";
     }
@@ -106,7 +104,7 @@ public class HomestayInforController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        
+
         HomestayDetail currentInfor = this.homestayService.getInforHomestayByInforID(infor.getInforID()).get();
 
         if (newFaqBindingResult.hasErrors()) {

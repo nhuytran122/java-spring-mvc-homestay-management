@@ -1,10 +1,12 @@
 package com.lullabyhomestay.homestay_management.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,17 +20,19 @@ import lombok.Setter;
 @Entity
 @Table(name = "RoomAmenities")
 public class RoomAmenity {
-    
+
+    @EmbeddedId
+    private RoomAmenityID roomAmenityID;
+
     @Column(name = "Quantity")
     private int quantity;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "AmenityID")
     private Amenity amenity;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "RoomID")
     private Room room;
+    
 }

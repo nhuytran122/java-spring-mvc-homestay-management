@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -23,13 +24,15 @@ public class BranchService {
     private final InventoryTransactionRepository inventoryTransactionRepository;
     private final InventoryStockRepository inventoryStockRepository;
 
-    public Page<Branch> getAllBranches(Pageable pageable) {
-        return this.branchRepository.findAll(pageable);
+    public List<Branch> getAllBranches() {
+        return this.branchRepository.findAll();
     }
 
-    public Page<Branch> searchBranches(String keyword, Pageable pageable) {
-        return branchRepository.findByBranchNameContainingIgnoreCaseOrAddressContainingIgnoreCase(keyword, keyword,
-                pageable);
+    public Page<Branch> searchBranches(Optional<String> keyword, Pageable pageable) {
+        return (keyword.isPresent())
+                ? branchRepository.findByBranchNameContainingIgnoreCaseOrAddressContainingIgnoreCase(keyword.get(),
+                        keyword.get(), pageable)
+                : branchRepository.findAll(pageable);
     }
 
     public void handleSaveBranch(Branch branch) {
@@ -49,7 +52,7 @@ public class BranchService {
 
     @Transactional
     public void deleteByBranchID(long branchID) {
-        if(canDeleteBranch(branchID)){
+        if (canDeleteBranch(branchID)) {
             this.branchRepository.deleteByBranchID(branchID);
         }
     }

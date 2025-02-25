@@ -21,8 +21,12 @@ public class HomestayService {
         return this.homestayDetailRepository.findAll(pageable);
     }
 
-    public Page<HomestayDetail> searchInforHomestay(String keyword, Pageable pageable) {
-        return homestayDetailRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword, pageable);
+    public Page<HomestayDetail> searchInforHomestay(Optional<String> keyword, Pageable pageable) {
+        return (keyword.isPresent())
+                ? homestayDetailRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                        keyword.get(), keyword.get(), pageable)
+                : homestayDetailRepository
+                        .findAll(pageable);
     }
 
     public void handleSaveInforHomestay(HomestayDetail infor) {

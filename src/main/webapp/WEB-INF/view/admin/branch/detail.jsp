@@ -64,7 +64,11 @@
                                             <div class="row mb-3 d-flex align-items-center">
                                                 <div class="col-md-4 fw-bold text-md-start">Số điện thoại:</div>
                                                 <div class="col-md-8">${branch.phone}</div>
-                                            </div>                                        
+                                            </div> 
+                                            <div class="row mb-3 d-flex align-items-center">
+                                                <div class="col-md-4 fw-bold text-md-start">Mật khẩu cổng:</div>
+                                                <div class="col-md-8">${branch.branchPassword}</div>
+                                            </div>                                             
                                         </div>
                                     </div>
                                     

@@ -62,5 +62,5 @@ public class Employee {
     private Role role;
 
     @OneToMany(mappedBy = "employee")
-    private List<MaintainanceRequest> maintainanceRequests;
+    private List<MaintenanceRequest> maintenanceRequests;
 }
