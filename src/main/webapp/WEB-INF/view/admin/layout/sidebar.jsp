@@ -19,7 +19,7 @@
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="/admin/booking">Danh sách Booking</a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/booking/schedule">Lịch đặt phòng</a></li>
-            <li class="nav-item"> <a class="nav-link" href="/admin/service-booking">Dịch vụ đã đặt</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/admin/booked-requests">Dịch vụ đã đặt</a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/payment">Thanh toán</a></li>
           </ul>
         </div>
@@ -68,8 +68,8 @@
         </div>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="/admin/service" aria-expanded="false" aria-controls="service">
+      <li class="nav-item" id="service">
+        <a class="nav-link" href="/admin/service" aria-expanded="false" aria-controls="service">
           <i class="bi bi-house-add menu-icon"></i>
           <span class="menu-title">Dịch vụ</span>
         </a>

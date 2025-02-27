@@ -62,10 +62,15 @@
                                                     <a href="/admin/homestay-infor/faq/update/${faq.faqID}" class="btn btn-warning btn-sm">
                                                         <i class="bi bi-pencil"></i> Sửa
                                                     </a>
-                                                    <button class="btn btn-danger btn-sm" data-faq-id="${faq.faqID}"
-                                                        data-faq-question="${faq.question}"
-                                                        onclick="checkBeforeDelete(this)">
-                                                        <i class="bi bi-trash"></i> Xóa
+
+                                                    <button class="btn btn-danger btn-sm"
+                                                        onclick="checkBeforeDelete(this)" 
+                                                            data-entity-id="${faq.faqID}" 
+                                                            data-entity-name="${faq.question}" 
+                                                            data-entity-type="FAQ" 
+                                                            data-delete-url="/admin/homestay-infor/faq/delete" 
+                                                            data-id-name="faqID">
+                                                            <i class="bi bi-trash"></i> Xóa
                                                     </button>
                                                 </div>
                                             </div>
@@ -129,38 +134,7 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận xóa FAQ
-                    </h5>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa câu hỏi <b class="text-primary" id="questionConfirm"></b> không?
-                </div>
-                <div class="modal-footer">
-                    <form action="/admin/homestay-infor/faq/delete" method="post">
-                        <input type="hidden" name="faqID" id="faqIdInput">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <jsp:include page="../layout/import-js.jsp" />
-    <script>
-        function checkBeforeDelete(button) {
-            let faqID = button.getAttribute("data-faq-id");
-            let question = button.getAttribute("data-faq-question");
-            $("#questionConfirm").text(question);
-            $("#faqIdInput").val(faqID);
-            $("#deleteConfirmModal").modal("show");
-        }
-    </script>
+    <jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
 </body>
 </html>

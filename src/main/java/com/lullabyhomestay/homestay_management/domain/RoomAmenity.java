@@ -1,5 +1,7 @@
 package com.lullabyhomestay.homestay_management.domain;
 
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

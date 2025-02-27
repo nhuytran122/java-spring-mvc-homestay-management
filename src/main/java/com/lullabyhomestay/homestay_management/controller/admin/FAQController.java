@@ -39,6 +39,7 @@ public class FAQController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         Pageable pageable = PageRequest.of(page - 1, 2);
         Page<FAQ> faqs = faqService.searchFAQs(keyword, pageable);
 

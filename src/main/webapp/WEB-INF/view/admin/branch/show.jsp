@@ -83,11 +83,15 @@
                                                                     <a href="/admin/branch/update/${branch.branchID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <button class="btn btn-danger btn-sm"
-                                                                        data-branch-id="${branch.branchID}"
-                                                                        data-branch-name="${branch.branchName}"
-                                                                        onclick="checkBeforeDelete(this)"
-                                                                        title="Xóa">
+
+                                                                    <button class="btn btn-danger btn-sm" title="Xóa"
+                                                                        onclick="checkBeforeDelete(this)" 
+                                                                            data-entity-id="${branch.branchID}" 
+                                                                            data-entity-name="${branch.branchName}" 
+                                                                            data-entity-type="Chi nhánh" 
+                                                                            data-delete-url="/admin/branch/delete" 
+                                                                            data-check-url="/admin/branch/can-delete/" 
+                                                                            data-id-name="branchID">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>
@@ -111,7 +115,7 @@
                                 <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
                                     <c:choose>
                                         <c:when test="${currentPage > 1}">
-                                            <a class="page-link" href="/admin/branch?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Trước">
+                                            <a class="page-link" href="/admin/branch?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Trước">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
                                         </c:when>
@@ -155,7 +159,7 @@
     </div>
   </div>
 
-  <jsp:include page="_modal-delete.jsp" />
+  <jsp:include page="../layout/partial/_modals-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>

@@ -89,6 +89,17 @@
                                                                         title="Xóa">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
+
+                                                                    <button class="btn btn-danger btn-sm" title="Xóa"
+                                                                        onclick="checkBeforeDelete(this)" 
+                                                                            data-entity-id="${roomType.roomTypeID}" 
+                                                                            data-entity-name="${roomType.name}" 
+                                                                            data-entity-type="Loại phòng" 
+                                                                            data-delete-url="/admin/room-type/delete" 
+                                                                            data-check-url="/admin/room-type/can-delete/" 
+                                                                            data-id-name="roomTypeID">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -154,7 +165,7 @@
     </div>
   </div>
 
-  <jsp:include page="_modal-delete.jsp" />
+  <jsp:include page="../layout/partial/_modals-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>

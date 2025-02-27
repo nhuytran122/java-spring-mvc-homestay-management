@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
-import com.lullabyhomestay.homestay_management.domain.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
 
 @Repository
 public interface RoomAmenityRepository extends JpaRepository<RoomAmenity, RoomAmenityID> {

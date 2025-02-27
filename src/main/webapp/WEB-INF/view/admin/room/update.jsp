@@ -133,7 +133,7 @@
   <%@ include file="room-amenity/_modal-add.jsp" %>
 
   <jsp:include page="../layout/import-js.jsp" />
-  <jsp:include page="room-photo/_modal-delete-photo.jsp" />
+  <jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
   <jsp:include page="../layout/partial/_script-preview-image-update.jsp" />
 
   <jsp:include page="room-amenity/_script-handle.jsp" />

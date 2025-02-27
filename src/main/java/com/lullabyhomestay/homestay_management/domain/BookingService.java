@@ -20,19 +20,21 @@ import lombok.Setter;
 @Entity
 @Table(name = "BookingServices")
 public class BookingService {
-    
-    @Column(name = "Quantity") 
+
+    @Id
+    @Column(name = "BookingServiceID")
+    private long bookingServiceID;
+
+    @Column(name = "Quantity")
     private int quantity;
 
-    @Column(name = "CreatedAt") 
+    @Column(name = "CreatedAt")
     private Date createdAt;
-    
-    @Id
+
     @ManyToOne
     @JoinColumn(name = "ServiceID")
     private Service service;
-    
-    @Id
+
     @ManyToOne
     @JoinColumn(name = "BookingID")
     private Booking booking;

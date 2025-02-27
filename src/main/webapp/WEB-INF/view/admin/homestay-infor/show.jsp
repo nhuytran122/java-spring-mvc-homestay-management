@@ -72,10 +72,15 @@
                                                                     <a href="/admin/homestay-infor/update/${infor.inforID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <button class="btn btn-danger btn-sm" data-infor-id="${infor.inforID}"
-                                                                        data-home-title="${infor.title}"
-                                                                        onclick="checkBeforeDelete(this)">
-                                                                        <i class="bi bi-trash"></i> Xóa
+
+                                                                    <button class="btn btn-danger btn-sm"
+                                                                        onclick="checkBeforeDelete(this)" 
+                                                                            data-entity-id="${infor.inforID}" 
+                                                                            data-entity-name="${infor.title}" 
+                                                                            data-entity-type="thông tin" 
+                                                                            data-delete-url="/admin/homestay-infor/delete" 
+                                                                            data-id-name="inforID">
+                                                                        <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>
                                                             </td>
@@ -161,28 +166,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận xóa thông tin 
-                </h5>
-            </div>
-            <div class="modal-body">
-                Bạn có chắc chắn muốn xóa thông tin <b class="text-primary" id="titleInfor"></b> không?
-            </div>
-            <div class="modal-footer">
-                <form action="/admin/homestay-infor/delete" method="post">
-                    <input type="hidden" name="inforID" id="inforIdInput">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-danger">Xóa</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    </div>
-
 <script>
     function showDetail(button) {
         let inforID = button.getAttribute("data-infor-id");
@@ -199,14 +182,8 @@
             }
         });
     }
-    function checkBeforeDelete(button) {
-        let inforID = button.getAttribute("data-infor-id");
-        let title = button.getAttribute("data-home-title");
-        $("#titleInfor").text(title);
-        $("#inforIdInput").val(inforID);
-        $("#deleteConfirmModal").modal("show");
-    }
 </script>
 <jsp:include page="../layout/import-js.jsp" />
+<jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
 </body>
 </html>

@@ -46,9 +46,14 @@
                                                     <a href="/admin/room/photo/update/${photo.photoID}" class="btn btn-warning btn-sm" title="Sửa">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <button class="btn btn-danger btn-sm" data-photo-id="${photo.photoID}"
-                                                        onclick="checkBeforeDeletePhoto(this)">
-                                                        <i class="bi bi-trash"></i>
+
+                                                    <button class="btn btn-danger btn-sm"
+                                                        onclick="checkBeforeDelete(this)" 
+                                                            data-entity-id="${photo.photoID}" 
+                                                            data-entity-type="ảnh" 
+                                                            data-delete-url="/admin/room/photo/delete" 
+                                                            data-id-name="photoID">
+                                                            <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
                                             </td>

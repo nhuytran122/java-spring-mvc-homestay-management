@@ -20,6 +20,7 @@
         <div class="main-panel">
             <ul class="navbar-nav mr-lg-2 my-4">
                 <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
+                    <!--TODO: SEARCH DÙNG Specification-->
                     <form action="/admin/amenity" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
                         <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm tiện nghi..." 
                                value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
@@ -85,10 +86,15 @@
                                                                     <a href="/admin/amenity/update/${amenity.amenityID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <button class="btn btn-danger btn-sm" data-amenity-id="${amenity.amenityID}"
-                                                                        data-amenity-name="${amenity.amenityName}"
-                                                                        onclick="checkBeforeDelete(this)">
-                                                                        <i class="bi bi-trash"></i>
+
+                                                                    <button class="btn btn-danger btn-sm"
+                                                                        onclick="checkBeforeDelete(this)" 
+                                                                            data-entity-id="${amenity.amenityID}" 
+                                                                            data-entity-name="${amenity.amenityName}" 
+                                                                            data-entity-type="tiện nghi" 
+                                                                            data-delete-url="/admin/amenity/delete" 
+                                                                            data-id-name="amenityID">
+                                                                        <i class="bi bi-trash"></i> 
                                                                     </button>
                                                                 </div>
                                                             </td>
@@ -155,71 +161,9 @@
     </div>
   </div>
 
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog" style="margin-top: 1%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chi tiết tiện nghi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h5 id="amenityName"></h5>
-                    
-                    <p id="detailDescription"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận xóa tiện nghi 
-                    </h5>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa tiện nghi <b class="text-primary" id="amenityNameTitle"></b> không?
-                </div>
-                <div class="modal-footer">
-                    <form action="/admin/amenity/delete" method="post">
-                        <input type="hidden" name="amenityID" id="amenityIdInput">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<script>
-    function showDetail(button) {
-        let amenityID = button.getAttribute("data-amenity-id");
-        $.ajax({
-            url: '/admin/amenity/' + amenityID,
-            type: 'GET',
-            success: function(response) {
-                $('#amenityName').text(response.title);
-                $('#detailDescription').html(response.description.replace(/\n/g, "<br>"));
-                $('#detailModal').modal('show');
-            },
-            error: function(xhr) {
-                alert('Lỗi: ' + xhr.responseText);
-            }
-        });
-    }
-    function checkBeforeDelete(button) {
-        let amenityID = button.getAttribute("data-amenity-id");
-        let title = button.getAttribute("data-amenity-name");
-        $("#amenityNameTitle").text(title);
-        $("#amenityIdInput").val(amenityID);
-        $("#deleteConfirmModal").modal("show");
-    }
-</script>
+    
+    <jsp:include page="_modal-view-detail.jsp" />
+    <jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
 <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.lullabyhomestay.homestay_management.domain;
+package com.lullabyhomestay.homestay_management.domain.id;
 
 import java.io.Serializable;
 

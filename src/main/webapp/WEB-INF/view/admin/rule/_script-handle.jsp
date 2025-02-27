@@ -92,12 +92,4 @@
             }
         });
     }
-    
-    function checkBeforeDelete(button) {
-        let ruleID = $(button).data("rule-id");
-        let title = $(button).data("rule-title");
-        $("#titleConfirm").text(title);
-        $("#ruleIdInput").val(ruleID);
-        $("#deleteConfirmModal").modal("show");
-    }
 </script>

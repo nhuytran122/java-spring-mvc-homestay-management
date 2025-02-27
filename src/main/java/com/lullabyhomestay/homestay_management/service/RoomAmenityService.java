@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
-import com.lullabyhomestay.homestay_management.domain.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
 import com.lullabyhomestay.homestay_management.repository.RoomAmenityRepository;
 
 import lombok.AllArgsConstructor;

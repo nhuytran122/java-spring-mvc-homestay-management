@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lullabyhomestay.homestay_management.domain.Amenity;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
-import com.lullabyhomestay.homestay_management.domain.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
 import com.lullabyhomestay.homestay_management.service.AmenityService;
 import com.lullabyhomestay.homestay_management.service.RoomAmenityService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
@@ -75,7 +75,7 @@ public class RoomAmenityController {
     }
 
     @PostMapping("/admin/room/room-amenity/delete")
-    public String postHiddenRoomAmenity(Model model,
+    public String postDeleteRoomAmenity(Model model,
             @ModelAttribute("roomAmenity") RoomAmenity roomAmenity) {
         long roomID = roomAmenity.getRoomAmenityID().getRoomID();
         RoomAmenity currentRoomAmenity = (this.roomAmenityService.getRoomAmenityByID(

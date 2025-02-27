@@ -13,7 +13,7 @@
             </div>
             <div class="modal-footer">
                 <form action="/admin/room/delete" method="post">
-                    <input type="hidden" name="roomID" value="${room.roomID}">
+                    <input type="hidden" name="roomID" id="roomIdInput">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-danger">Xóa</button>
                 </form>
@@ -53,6 +53,7 @@
                 if (response === true) {
                     $("#roomNumberConfirm").text(roomName);
                     $("#deleteConfirmModal").modal("show");
+                    $("#roomIdInput").val(roomID);
                 } else {
                     $("#roomNumberWarning").text(roomName);
                     $("#deleteWarningModal").modal("show");

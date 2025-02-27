@@ -99,6 +99,7 @@
         let amenityID = $(button).data("amenity-id");
         let roomID = $(button).data("room-id");
         let title = $(button).data("amenity-name");
+        
         $("#titleConfirm").text(title);
         $("#amenityIdInput").val(amenityID);
         $("#roomAmenityIdInput").val(roomID);

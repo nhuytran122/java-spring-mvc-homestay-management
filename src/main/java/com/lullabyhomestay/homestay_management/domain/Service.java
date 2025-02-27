@@ -3,6 +3,7 @@ package com.lullabyhomestay.homestay_management.domain;
 import java.util.List;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class Service {
 
     @NotNull(message = "Vui lòng nhập giá dịch vụ")
     @Column(name = "Price")
-    private Long price;
+    private double price;
 
     @Column(name = "Description")
     private String description;
