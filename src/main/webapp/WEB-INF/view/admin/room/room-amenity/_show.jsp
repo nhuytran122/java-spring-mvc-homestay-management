@@ -16,8 +16,8 @@
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <td>Tên</td>
-                                <td>Phân loại</td>
+                                <th>Tên</th>
+                                <th>Phân loại</th>
                                 <th>Số lượng</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -33,10 +33,11 @@
                                     <c:forEach var="roomAmenity" items="${room.roomAmenities}">
                                         <tr>
                                             <td>
-                                                <i class="fas ${roomAmenity.amenity.amenityCategory.icon} amenity-icon me-2"></i> ${roomAmenity.amenity.amenityName}
+                                                ${roomAmenity.amenity.amenityName}
                                             </td>
                                             <td>
-                                                ${roomAmenity.amenity.amenityName}
+                                                <i class="fas ${roomAmenity.amenity.amenityCategory.icon} amenity-icon me-2"></i> 
+                                                ${roomAmenity.amenity.amenityCategory.categoryName}
                                             </td>
                                             <td>
                                                 ${roomAmenity.quantity}

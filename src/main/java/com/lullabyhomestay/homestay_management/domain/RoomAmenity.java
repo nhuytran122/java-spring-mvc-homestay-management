@@ -25,7 +25,7 @@ public class RoomAmenity {
     private RoomAmenityID roomAmenityID;
 
     @Column(name = "Quantity")
-    private int quantity;
+    private Integer quantity;
 
     @ManyToOne
     @MapsId("amenityID")

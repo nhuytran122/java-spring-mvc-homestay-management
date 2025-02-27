@@ -22,19 +22,14 @@
             let quantityInput = $(".amenity-quantity[data-amenity-id='" + amenityID + "']");
             let quantity = quantityInput.val();
 
-            if (quantity === "" || quantity <= 0) { 
-                hasError = true;
-                quantityInput.addClass("is-invalid");
-                quantityInput.after("<span class='text-danger error-message'>Vui lòng nhập số lượng!</span>");
-            } else {
-                selectedItems.push({
+            selectedItems.push({
                 roomAmenityID: { // Lồng vào object roomAmenityID
                     roomID: roomID,
                     amenityID: amenityID
                 },
                 quantity: quantity
             });
-            }
+            
         });
 
         if (hasError) return;
@@ -79,16 +74,6 @@
         let roomID = $("#editRoomId").val();
         let quantity = $("#editAmenityQuantity").val().trim();
 
-        if (quantity === "" || quantity <= 0) { 
-            $("#editAmenityQuantity").addClass("is-invalid");
-
-            $("#editAmenityQuantity").removeClass("is-invalid");
-            $(".error-message").remove(); 
-            
-            $("#editAmenityQuantity").after("<span class='text-danger error-message'>Vui lòng nhập số lượng hợp lệ!</span>");
-            return;
-        }
-
         $.ajax({
             url: "/admin/room/room-amenity/update",
             type: "POST",
@@ -98,7 +83,8 @@
                     roomID: roomID,
                     amenityID: amenityID
                 },
-                quantity: quantity }),
+                quantity: quantity 
+            }),
             success: function () {
                 location.reload();
             },
