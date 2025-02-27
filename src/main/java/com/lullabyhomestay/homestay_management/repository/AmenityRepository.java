@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lullabyhomestay.homestay_management.domain.Amenity;
@@ -24,5 +26,9 @@ public interface AmenityRepository extends JpaRepository<Amenity, Long> {
     Amenity save(Amenity amenity);
 
     void deleteByAmenityID(long amenityID);
+
+    @Query("SELECT a FROM Amenity a WHERE a.amenityID NOT IN " +
+            "(SELECT ra.amenity.amenityID FROM RoomAmenity ra WHERE ra.room.roomID = :roomId)")
+    List<Amenity> findAmenitiesNotInRoom(@Param("roomId") long roomId);
 
 }

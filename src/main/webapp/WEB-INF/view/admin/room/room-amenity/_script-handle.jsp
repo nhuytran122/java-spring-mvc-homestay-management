@@ -1,0 +1,121 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<script>
+    $(document).ready(function () {
+        $("#addRoomAmenityModal").on("show.bs.modal", function () {
+            $(".error-message").remove(); 
+            $(".amenity-quantity").removeClass("is-invalid");
+        });
+
+        $(".amenity-quantity").on("input", function () {
+            $(this).removeClass("is-invalid"); 
+            $(this).next(".error-message").remove();
+        });
+    });
+
+    function saveSelectedAmenities() {
+        let selectedItems = [];
+        let hasError = false;
+
+        $(".item-checkbox:checked").each(function () {
+            let roomID = $(this).data("room-id");
+            let amenityID = $(this).data("amenity-id");
+            let quantityInput = $(".amenity-quantity[data-amenity-id='" + amenityID + "']");
+            let quantity = quantityInput.val();
+
+            if (quantity === "" || quantity <= 0) { 
+                hasError = true;
+                quantityInput.addClass("is-invalid");
+                quantityInput.after("<span class='text-danger error-message'>Vui lòng nhập số lượng!</span>");
+            } else {
+                selectedItems.push({
+                roomAmenityID: { // Lồng vào object roomAmenityID
+                    roomID: roomID,
+                    amenityID: amenityID
+                },
+                quantity: quantity
+            });
+            }
+        });
+
+        if (hasError) return;
+
+        if (selectedItems.length === 0) {
+            $("#errorModal .modal-body").html("<p class='text-danger'>Vui lòng chọn ít nhất một tiện nghi để lưu!</p>");
+            $("#errorModal").modal("show");
+            return;
+        }
+
+        $.ajax({
+            url: "/admin/room/room-amenity/create",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(selectedItems),
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                $("#errorModal .modal-body").html("<p class='text-danger'>Có lỗi xảy ra, vui lòng thử lại!</p>");
+                $("#errorModal").modal("show");
+            }
+        });
+    }
+
+    function openEditModal(button) {
+        let amenityID = $(button).data("amenity-id");
+        let roomID = $(button).data("room-id");
+        let amenityTitle = $(button).data("amenity-name");
+        let quantity = $(button).data("amenity-quantity");
+
+        $("#editAmenityId").val(amenityID);
+        $("#editRoomId").val(roomID);
+        $("#editAmenityName").val(amenityTitle);
+        $("#editAmenityQuantity").val(quantity);
+
+        $("#updateRoomAmenityModal").modal("show");
+    }
+
+    function updateRoomAmenity() {
+        let amenityID = $("#editAmenityId").val();
+        let roomID = $("#editRoomId").val();
+        let quantity = $("#editAmenityQuantity").val().trim();
+
+        if (quantity === "" || quantity <= 0) { 
+            $("#editAmenityQuantity").addClass("is-invalid");
+
+            $("#editAmenityQuantity").removeClass("is-invalid");
+            $(".error-message").remove(); 
+            
+            $("#editAmenityQuantity").after("<span class='text-danger error-message'>Vui lòng nhập số lượng hợp lệ!</span>");
+            return;
+        }
+
+        $.ajax({
+            url: "/admin/room/room-amenity/update",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ 
+                roomAmenityID: { 
+                    roomID: roomID,
+                    amenityID: amenityID
+                },
+                quantity: quantity }),
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                $("#errorModal .modal-body").html("<p class='text-danger'>Có lỗi xảy ra, vui lòng thử lại!</p>");
+                $("#errorModal").modal("show");
+            }
+        });
+    }
+    
+    function checkBeforeDeleteAmenity(button) {
+        let amenityID = $(button).data("amenity-id");
+        let roomID = $(button).data("room-id");
+        let title = $(button).data("amenity-name");
+        $("#titleConfirm").text(title);
+        $("#amenityIdInput").val(amenityID);
+        $("#roomAmenityIdInput").val(roomID);
+        $("#deleteAmenityConfirmModal").modal("show");
+    }
+</script>

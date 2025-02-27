@@ -28,11 +28,13 @@ public class RoomAmenity {
     private int quantity;
 
     @ManyToOne
+    @MapsId("amenityID")
     @JoinColumn(name = "AmenityID")
     private Amenity amenity;
 
     @ManyToOne
+    @MapsId("roomID")
     @JoinColumn(name = "RoomID")
     private Room room;
-    
+
 }

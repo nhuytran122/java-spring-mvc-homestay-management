@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lullabyhomestay.homestay_management.domain.Branch;
 import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.service.AmenityService;
 import com.lullabyhomestay.homestay_management.service.BranchService;
+import com.lullabyhomestay.homestay_management.service.RoomAmenityService;
 import com.lullabyhomestay.homestay_management.service.RoomPhotoService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
@@ -36,6 +39,8 @@ public class RoomController {
     private final BranchService branchService;
     private final UploadService uploadService;
     private final RoomPhotoService photoService;
+    private final RoomAmenityService roomAmenityService;
+    private final AmenityService amenityService;
 
     @GetMapping("/admin/room")
     public String getProducts(Model model,
@@ -57,6 +62,16 @@ public class RoomController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", rooms.getTotalPages());
         return "admin/room/show";
+    }
+
+    @GetMapping("/admin/room/{id}")
+    public String getDetailRoomPage(Model model, @PathVariable long id) {
+        Optional<Room> room = roomService.getRoomByID(id);
+        if (!room.isPresent()) {
+            return "admin/room";
+        }
+        model.addAttribute("room", room.get());
+        return "admin/room/detail";
     }
 
     @GetMapping("/admin/room/create")
@@ -93,7 +108,7 @@ public class RoomController {
         model.addAttribute("room", room.get());
         model.addAttribute("listBranches", this.branchService.getAllBranches());
         model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
-        model.addAttribute("listPhotos", this.photoService.getRoomPhotosByRoomID(id));
+        model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(id));
         return "admin/room/update";
     }
 
@@ -118,7 +133,7 @@ public class RoomController {
         if (newRoomBindingResult.hasErrors()) {
             model.addAttribute("listBranches", this.branchService.getAllBranches());
             model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
-            model.addAttribute("listPhotos", this.photoService.getRoomPhotosByRoomID(roomID));
+            model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(roomID));
             return "admin/room/update";
         }
         if (currentRoom != null) {
@@ -148,5 +163,4 @@ public class RoomController {
         return "redirect:/admin/room";
     }
 
-    
 }

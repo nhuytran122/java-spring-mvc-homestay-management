@@ -50,12 +50,12 @@
                                         data-rule-id="${rule.ruleID}" 
                                         data-rule-title="${rule.ruleTitle}" 
                                         data-rule-description="${rule.description}">
-                                        <i class="fa fa-edit"></i> Sửa
+                                        <i class="bi bi-pencil"></i> Sửa
                                     </button>
 
                                     <button class="btn btn-danger btn-sm" onclick="checkBeforeDelete(this)"
                                         data-rule-id="${rule.ruleID}" data-rule-title="${rule.ruleTitle}">
-                                        <i class="fa fa-trash"></i> Xóa
+                                        <i class="bi bi-trash"></i> Xóa
                                     </button>
                                 </div>
                             </div>

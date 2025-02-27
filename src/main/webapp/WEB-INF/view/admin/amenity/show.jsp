@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Quản lý tiện nghi</title>
   <jsp:include page="../layout/import-css.jsp" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -73,6 +74,7 @@
                                                         <tr>
                                                             <td>${amenity.amenityName}</td>
                                                             <td>
+                                                                <i class="fas ${amenity.amenityCategory.icon} amenity-icon me-2"></i>
                                                                 ${amenity.amenityCategory.categoryName}
                                                             </td>
                                                             <td>

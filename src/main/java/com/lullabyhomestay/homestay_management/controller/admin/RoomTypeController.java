@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import com.lullabyhomestay.homestay_management.domain.Branch;
 import com.lullabyhomestay.homestay_management.domain.RoomType;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 

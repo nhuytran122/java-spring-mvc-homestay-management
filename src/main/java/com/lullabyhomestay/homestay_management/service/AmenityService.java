@@ -18,6 +18,10 @@ import lombok.AllArgsConstructor;
 public class AmenityService {
     private final AmenityRepository amenityRepository;
 
+    public List<Amenity> getAllAmenities() {
+        return this.amenityRepository.findAll();
+    }
+
     public Page<Amenity> getAllAmenities(Pageable pageable) {
         return this.amenityRepository.findAll(pageable);
     }
@@ -41,5 +45,9 @@ public class AmenityService {
     @Transactional
     public void deleteByAmenityID(long amenityID) {
         this.amenityRepository.deleteByAmenityID(amenityID);
+    }
+
+    public List<Amenity> getAmenitiesNotInRoom(long roomId) {
+        return amenityRepository.findAmenitiesNotInRoom(roomId);
     }
 }

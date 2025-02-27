@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="deletePhotoConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -22,9 +22,9 @@
 </div>
 
 <script>
-    function checkBeforeDelete(button) {
+    function checkBeforeDeletePhoto(button) {
         let photoID = button.getAttribute("data-photo-id");
         $("#photoIdInput").val(photoID);
-        $("#deleteConfirmModal").modal("show");
+        $("#deletePhotoConfirmModal").modal("show");
     }
 </script>
