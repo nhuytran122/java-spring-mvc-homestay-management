@@ -31,7 +31,7 @@ public class RoomService {
         return this.roomRepository.findAll(pageable);
     }
 
-    // todo: search by branchID & roomTypeID
+    // todo: search by branchID & roomTypeID & description
     // public Page<Room> searchRooms(long branchID, long roomTypeID, Pageable
     // pageable){
     // return

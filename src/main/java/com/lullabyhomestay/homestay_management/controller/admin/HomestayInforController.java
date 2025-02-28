@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,23 +30,16 @@ public class HomestayInforController {
 
     @GetMapping("/admin/homestay-infor")
     public String getInforHomestayPage(Model model,
-            @RequestParam("page") Optional<String> pageOptional,
-            @RequestParam("keyword") Optional<String> keyword) {
-        int page = 1;
-        try {
-            if (pageOptional.isPresent()) {
-                page = Integer.parseInt(pageOptional.get());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<HomestayDetail> infors = homestayService.searchInforHomestay(keyword, pageable);
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword) {
+        int validPage = Math.max(1, page);
+        Page<HomestayDetail> infors = homestayService.searchInforHomestay(keyword,
+                validPage);
 
         List<HomestayDetail> listInfors = infors.getContent();
         model.addAttribute("infors", listInfors);
 
-        model.addAttribute("keyword", keyword.orElse(""));
+        model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", infors.getTotalPages());
         return "admin/homestay-infor/show";

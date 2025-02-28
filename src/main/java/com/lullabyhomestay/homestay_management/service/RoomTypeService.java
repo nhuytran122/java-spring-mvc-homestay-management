@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.RoomType;
 import com.lullabyhomestay.homestay_management.repository.RoomRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomTypeRepository;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -27,10 +30,14 @@ public class RoomTypeService {
         return roomTypeRepository.findByRoomTypeID(id);
     }
 
-    public Page<RoomType> searchRoomTypes(Optional<String> keyword, Pageable pageable) {
-        return (keyword.isPresent())
-                ? roomTypeRepository.findByNameContainingIgnoreCase(keyword.get(), pageable)
-                : roomTypeRepository.findAll(pageable);
+    public Page<RoomType> searchRoomTypes(String keyword, int page, String sortOrder) {
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
+                "asc".equals(sortOrder) ? Sort.by("PricePerHour").ascending()
+                        : "desc".equals(sortOrder) ? Sort.by("PricePerHour").descending() : Sort.unsorted());
+
+        return (keyword != null && !keyword.isEmpty())
+                ? this.roomTypeRepository.findAll(pageable)
+                : this.roomTypeRepository.findByNameContainingIgnoreCase(keyword, pageable);
     }
 
     public RoomType handleSaveRoomType(RoomType roomType) {

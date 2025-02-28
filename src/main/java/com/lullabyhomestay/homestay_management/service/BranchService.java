@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import com.lullabyhomestay.homestay_management.repository.BranchRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryTransactionRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomRepository;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -28,11 +30,13 @@ public class BranchService {
         return this.branchRepository.findAll();
     }
 
-    public Page<Branch> searchBranches(Optional<String> keyword, Pageable pageable) {
-        return (keyword.isPresent())
-                ? branchRepository.findByBranchNameContainingIgnoreCaseOrAddressContainingIgnoreCase(keyword.get(),
-                        keyword.get(), pageable)
-                : branchRepository.findAll(pageable);
+    public Page<Branch> searchBranches(String keyword, int page) {
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
+        return (keyword != null && !keyword.isEmpty())
+                ? branchRepository.findByBranchNameContainingIgnoreCaseOrAddressContainingIgnoreCase(
+                        keyword, keyword, pageable)
+                : branchRepository
+                        .findAll(pageable);
     }
 
     public void handleSaveBranch(Branch branch) {

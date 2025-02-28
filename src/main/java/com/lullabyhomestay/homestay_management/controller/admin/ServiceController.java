@@ -30,14 +30,16 @@ public class ServiceController {
     public String getServicePage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(defaultValue = "") String sortOrder) {
-        Page<Service> services = service.searchServices(keyword, page, sortOrder);
+            @RequestParam(defaultValue = "") String sort) {
+        int validPage = Math.max(1, page);
+        Page<Service> services = service.searchServices(keyword,
+                validPage, sort);
 
         List<Service> listServices = services.getContent();
         model.addAttribute("listServices", listServices);
 
         model.addAttribute("keyword", keyword);
-        model.addAttribute("sort", sortOrder);
+        model.addAttribute("sort", sort);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", services.getTotalPages());
         return "admin/service/show";

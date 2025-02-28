@@ -3,12 +3,14 @@ package com.lullabyhomestay.homestay_management.service;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.HomestayDetail;
 import com.lullabyhomestay.homestay_management.repository.HomestayDetailRepository;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -21,10 +23,11 @@ public class HomestayService {
         return this.homestayDetailRepository.findAll(pageable);
     }
 
-    public Page<HomestayDetail> searchInforHomestay(Optional<String> keyword, Pageable pageable) {
-        return (keyword.isPresent())
+    public Page<HomestayDetail> searchInforHomestay(String keyword, int page) {
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
+        return (keyword != null && !keyword.isEmpty())
                 ? homestayDetailRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                        keyword.get(), keyword.get(), pageable)
+                        keyword, keyword, pageable)
                 : homestayDetailRepository
                         .findAll(pageable);
     }

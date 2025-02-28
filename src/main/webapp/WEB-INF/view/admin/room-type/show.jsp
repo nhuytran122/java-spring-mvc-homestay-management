@@ -23,6 +23,17 @@
                     <form action="/admin/room-type" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
                         <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm loại phòng..." 
                                value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
+                        <select name="sort" class="form-select form-control form-select-sm me-2" style="width: 200px; font-size: 14px; height: 41px;">
+                            <option value="" ${sort == '' ? 'selected' : ''}>
+                                Không sắp xếp
+                            </option>
+                            <option value="desc" ${sort == 'desc' ? 'selected' : ''}>
+                                Giá giảm dần
+                            </option>
+                            <option value="asc" ${sort == 'asc' ? 'selected' : ''}>
+                                Giá tăng dần
+                            </option>
+                        </select>
                         <button type="submit" class="btn btn-primary btn-sm p-2">
                             <i class="bi bi-search"></i>
                         </button>
@@ -104,52 +115,13 @@
                     </div>
                 </div>
 
-                <c:if test="${totalPages > 0}">
-                    <div class="text-center">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
-                                    <c:choose>
-                                        <c:when test="${currentPage > 1}">
-                                            <a class="page-link" href="/admin/room-type?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Trước">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a class="page-link disabled" href="#" aria-label="Trước">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </li>                                
-
-                                <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
-                                    <li class="page-item">
-                                        <a class="${(loop.index + 1) eq currentPage ? 'active page-link' : 'page-link'} "
-                                            href="/admin/room-type?page=${loop.index + 1}">
-                                            ${loop.index + 1}
-                                        </a>
-                                    </li>
-                                </c:forEach>
-
-                                <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
-                                    <c:choose>
-                                        <c:when test="${currentPage < totalPages}">
-                                            <a class="page-link" href="/admin/room-type?page=${currentPage + 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Tiếp theo">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a class="page-link disabled" href="#" aria-label="Tiếp theo">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </li>                                
-                            </ul>
-                        </nav>
-                    </div>
-                </c:if>
+                <jsp:include page="../layout/partial/_pagination-with-keyword-and-sort.jsp">
+                    <jsp:param name="url" value="/admin/room-type" />
+                    <jsp:param name="currentPage" value="${currentPage}" />
+                    <jsp:param name="totalPages" value="${totalPages}" />
+                    <jsp:param name="keyword" value="${keyword}" />
+                    <jsp:param name="sort" value="${sort}" />
+                </jsp:include>
             </div>
         </div>
     </div>

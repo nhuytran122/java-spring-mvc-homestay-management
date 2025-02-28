@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,22 +28,17 @@ public class RoomTypeController {
 
     @GetMapping("/admin/room-type")
     public String getRoomTypePage(Model model,
-            @RequestParam("page") Optional<String> pageOptional,
-            @RequestParam("keyword") Optional<String> keyword) {
-        int page = 1;
-        try {
-            if (pageOptional.isPresent()) {
-                page = Integer.parseInt(pageOptional.get());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<RoomType> roomTypes = roomTypeService.searchRoomTypes(keyword, pageable);
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "") String sort) {
+        int validPage = Math.max(1, page);
+        Page<RoomType> roomTypes = roomTypeService.searchRoomTypes(keyword,
+                validPage, sort);
 
         List<RoomType> listRoomTypes = roomTypes.getContent();
         model.addAttribute("roomTypes", listRoomTypes);
-        model.addAttribute("keyword", keyword.orElse(""));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", roomTypes.getTotalPages());
         return "admin/room-type/show";

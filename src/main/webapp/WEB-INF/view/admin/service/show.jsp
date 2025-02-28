@@ -109,38 +109,13 @@
                     </div>
                 </div>
 
-                
-
-            <c:if test="${totalPages > 0}">
-                <div class="text-center">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
-                            <!-- Nút Trước -->
-                            <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
-                                <a class="page-link" href="/admin/service?page=${currentPage - 1}${params}" aria-label="Trước">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-
-                            <!-- Danh sách trang -->
-                            <c:forEach begin="1" end="${totalPages}" var="page">
-                                <li class="page-item ${page eq currentPage ? 'active' : ''}">
-                                    <a class="page-link" href="/admin/service?page=${page}${params}">${page}</a>
-                                </li>
-                            </c:forEach>
-
-                            <!-- Nút Tiếp theo -->
-                            <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
-                                <a class="page-link" href="/admin/service?page=${currentPage + 1}${params}" aria-label="Tiếp theo">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </c:if>
-
-                
+                <jsp:include page="../layout/partial/_pagination-with-keyword-and-sort.jsp">
+                    <jsp:param name="url" value="/admin/service" />
+                    <jsp:param name="currentPage" value="${currentPage}" />
+                    <jsp:param name="totalPages" value="${totalPages}" />
+                    <jsp:param name="keyword" value="${keyword}" />
+                    <jsp:param name="sort" value="${sort}" />
+                </jsp:include>
             </div>
         </div>
     </div>

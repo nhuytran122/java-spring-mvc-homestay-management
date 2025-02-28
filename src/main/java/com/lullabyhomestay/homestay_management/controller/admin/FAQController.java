@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.lullabyhomestay.homestay_management.domain.FAQ;
+import com.lullabyhomestay.homestay_management.domain.HomestayDetail;
 import com.lullabyhomestay.homestay_management.service.FAQService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,24 +28,16 @@ public class FAQController {
 
     @GetMapping("/admin/homestay-infor/faq")
     public String getFaqPage(Model model,
-            @RequestParam("page") Optional<String> pageOptional,
-            @RequestParam("keyword") Optional<String> keyword) {
-        int page = 1;
-        try {
-            if (pageOptional.isPresent()) {
-                page = Integer.parseInt(pageOptional.get());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<FAQ> faqs = faqService.searchFAQs(keyword, pageable);
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword) {
+        int validPage = Math.max(1, page);
+        Page<FAQ> faqs = faqService.searchFAQs(keyword,
+                validPage);
 
         List<FAQ> listFAQs = faqs.getContent();
         model.addAttribute("faqs", listFAQs);
 
-        model.addAttribute("keyword", keyword.orElse(""));
+        model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", faqs.getTotalPages());
         return "admin/faq/show";
