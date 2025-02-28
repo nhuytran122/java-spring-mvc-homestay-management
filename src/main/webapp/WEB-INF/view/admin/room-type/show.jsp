@@ -76,19 +76,9 @@
                                                                 đ</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/room-type/${roomType.roomTypeID}" class="btn btn-success btn-sm" title="Xem chi tiết">
-                                                                        <i class="bi bi-eye"></i>
-                                                                    </a>
                                                                     <a href="/admin/room-type/update/${roomType.roomTypeID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <button class="btn btn-danger btn-sm"
-                                                                        data-roomType-id="${roomType.roomTypeID}"
-                                                                        data-roomType-name="${roomType.name}"
-                                                                        onclick="checkBeforeDelete(this)"
-                                                                        title="Xóa">
-                                                                        <i class="bi bi-trash"></i>
-                                                                    </button>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 

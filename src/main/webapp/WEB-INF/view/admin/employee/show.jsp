@@ -1,0 +1,196 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Quản lý nhân viên</title>
+  <jsp:include page="../layout/import-css.jsp" />
+</head>
+
+<body>
+  <div class="container-scroller">
+    <jsp:include page="../layout/header.jsp" />
+    <div class="container-fluid page-body-wrapper">
+        <jsp:include page="../layout/theme-settings.jsp" />
+        <jsp:include page="../layout/sidebar.jsp" />
+        <div class="main-panel">
+            <ul class="navbar-nav mr-lg-2 my-4">
+                <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
+                    <form action="/admin/employee" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
+                        <input type="text" class="form-control form-control-sm me-2" name="keyword" 
+                               placeholder="Tìm kiếm nhân viên (Tên, SĐT, Địa chỉ, Email...)" 
+                               value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;" />
+                               
+                        <select name="isWorking" class="form-select form-select-sm me-2" style="width: 150px; font-size: 14px; height: 41px;">
+                            <option value="">Tất cả trạng thái</option>
+                            <c:forEach var="option" items="${isWorkingOptions}">
+                                <option value="${option}" ${option == selectedIsWorking ? 'selected' : ''}>
+                                    ${option ? 'Đang làm việc' : 'Nghỉ làm'}
+                                </option>
+                            </c:forEach>
+                        </select>
+            
+                        <select name="roleId" class="form-select form-select-sm me-2" style="width: 150px; font-size: 14px; height: 41px;">
+                            <option value="">Tất cả vai trò</option>
+                            <c:forEach var="role" items="${listRoles}">
+                                <option value="${role.roleID}" ${role.roleID == selectedRoleId ? 'selected' : ''}>
+                                    ${role.roleName}
+                                </option>
+                            </c:forEach>
+                        </select>
+            
+                        <button type="submit" class="btn btn-primary btn-sm p-2">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </li>
+            </ul>
+            
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card position-relative">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-title">Danh sách nhân viên</h4>
+                                    <a href="/admin/employee/create" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-plus-circle"></i> Thêm mới nhân viên
+                                    </a>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 150px;">Hình ảnh</th>
+                                                <th>Tên nhân viên</th>
+                                                <th>Số điện thoại</th>
+                                                <th>Vai trò</th>
+                                                <th>Mức lương</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:choose>
+                                                <c:when test="${empty listEmployees}">
+                                                    <tr>
+                                                        <td colspan="7" class="text-center text-danger">Không tìm thấy nhân viên nào.</td>
+                                                    </tr>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:forEach var="employee" items="${listEmployees}">
+                                                        <tr>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${not empty employee.avatar}">
+                                                                        <img src="/images/employee/${employee.avatar}" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <img src="/images/employee/default-img.jpg" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                            <td>${employee.fullName}</td>
+                                                            <td>${employee.phone}</td>
+                                                            <td>${employee.role.roleName}</td>
+                                                            <td><fmt:formatNumber type="number"
+                                                                value="${employee.salary}" /> đ</td>
+                                                            <td>
+                                                                <div class="btn-group" role="group">
+                                                                    <a href="/admin/employee/${employee.employeeID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <i class="bi bi-eye"></i>
+                                                                    </a>
+                                                                    <a href="/admin/employee/update/${employee.employeeID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                        <i class="bi bi-pencil"></i>
+                                                                    </a>
+
+                                                                    <button class="btn btn-danger btn-sm" title="Xóa"
+                                                                        onclick="checkBeforeDelete(this)" 
+                                                                            data-entity-id="${employee.employeeID}" 
+                                                                            data-entity-name="${employee.fullName}" 
+                                                                            data-entity-type="Nhân viên" 
+                                                                            data-delete-url="/admin/employee/delete" 
+                                                                            data-check-url="/admin/employee/can-delete/" 
+                                                                            data-id-name="employeeID">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <c:if test="${totalPages > 0}">
+                    <div class="text-center">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <!-- Trang trước -->
+                                <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
+                                    <c:choose>
+                                        <c:when test="${currentPage > 1}">
+                                            <a class="page-link" 
+                                            href="/admin/employee?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}${selectedIsWorking != null ? '&isWorking=' : ''}${selectedIsWorking}${selectedRoleId != null ? '&roleId=' : ''}${selectedRoleId}" 
+                                            aria-label="Trước">
+                                                <span aria-hidden="true">«</span>
+                                            </a>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a class="page-link disabled" href="#" aria-label="Trước">
+                                                <span aria-hidden="true">«</span>
+                                            </a>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </li>
+
+                                <!-- Các số trang -->
+                                <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
+                                    <li class="page-item">
+                                        <a class="${(loop.index + 1) == currentPage ? 'page-link active' : 'page-link'}" 
+                                        href="/admin/employee?page=${loop.index + 1}${not empty keyword ? '&keyword=' : ''}${keyword}${selectedIsWorking != null ? '&isWorking=' : ''}${selectedIsWorking}${selectedRoleId != null ? '&roleId=' : ''}${selectedRoleId}">
+                                            ${loop.index + 1}
+                                        </a>
+                                    </li>
+                                </c:forEach>
+
+                                <!-- Trang sau -->
+                                <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
+                                    <c:choose>
+                                        <c:when test="${currentPage < totalPages}">
+                                            <a class="page-link" 
+                                            href="/admin/employee?page=${currentPage + 1}${not empty keyword ? '&keyword=' : ''}${keyword}${selectedIsWorking != null ? '&isWorking=' : ''}${selectedIsWorking}${selectedRoleId != null ? '&roleId=' : ''}${selectedRoleId}" 
+                                            aria-label="Tiếp theo">
+                                                <span aria-hidden="true">»</span>
+                                            </a>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a class="page-link disabled" href="#" aria-label="Tiếp theo">
+                                                <span aria-hidden="true">»</span>
+                                            </a>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </c:if>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <jsp:include page="../layout/partial/_modals-delete.jsp" />
+  <jsp:include page="../layout/import-js.jsp" />
+</body>
+</html>

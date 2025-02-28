@@ -106,7 +106,7 @@
         <div class="collapse" id="employees">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="/admin/employee">Nhân viên</a></li>
-            <li class="nav-item"> <a class="nav-link" href="/admin/employee-role">Phân loại</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/admin/employee-role">Chức vụ</a></li>
           </ul>
         </div>
       </li>

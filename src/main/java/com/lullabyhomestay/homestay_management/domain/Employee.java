@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class Employee {
     @Column(name = "EmployeeID")
     private Long employeeID;
 
-    @NotBlank(message = "Vui lòng nhập họ tên")
+    @NotBlank(message = "Vui lòng nhập họ tên nhân viên")
     @Column(name = "FullName")
     private String fullName;
 
@@ -50,14 +51,15 @@ public class Employee {
     @Column(name = "Password")
     private String password;
 
-    @NotBlank(message = "Vui lòng nhập mức lương")
+    @NotNull(message = "Vui lòng nhập mức lương")
     @Column(name = "Salary")
-    private double salary;
+    private Double salary;
 
     @Column(name = "IsWorking")
     private boolean isWorking;
 
     @ManyToOne
+    @NotNull(message = "Vui lòng chọn vai trò")
     @JoinColumn(name = "RoleID")
     private Role role;
 

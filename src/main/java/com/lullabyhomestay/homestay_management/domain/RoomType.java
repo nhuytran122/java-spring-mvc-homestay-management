@@ -34,12 +34,10 @@ public class RoomType {
     @Column(name = "Name")
     private String name;
     
-    @NotNull(message = "Vui lòng nhập số lượng khách tối đa")
     @Min(value = 1, message = "Số lượng khách tối đa phải lớn hơn 0")
     @Column(name = "MaxGuest")
     private int maxGuest;
     
-    @NotNull(message = "Vui lòng nhập giá phòng mỗi giờ")
     @Min(value = 1, message = "Giá phòng phải lớn hơn 0")
     @Column(name = "PricePerHour")
     private double pricePerHour;
@@ -47,7 +45,6 @@ public class RoomType {
     @Column(name = "Description")
     private String description;   
 
-    @NotNull(message = "Vui lòng nhập giá phòng bù giờ")
     @Min(value = 1, message = "Giá phòng bù giờ phải lớn hơn 0")
     @Column(name = "ExtraPricePerHour")
     private double extraPricePerHour;

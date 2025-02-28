@@ -31,7 +31,6 @@ public class Room {
     @Column(name = "RoomID")
     private long roomID;
 
-    @NotNull(message = "Vui lòng nhập số phòng")
     @Min(value = 1, message = "Vui lòng nhập số phòng")
     @Column(name = "RoomNumber")
     private int roomNumber;

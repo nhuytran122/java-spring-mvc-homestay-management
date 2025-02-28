@@ -27,6 +27,21 @@
                   <h4 class="card-title">Chi tiết phòng ${room.roomNumber}</h4>
                   
                   <div class="row g-4">
+                    <div class="d-flex justify-content-end">
+                      <div class="btn-group" role="group">
+                          <a href="/admin/room/update/${room.roomID}" class="btn btn-warning btn-sm" title="Sửa">
+                              <i class="bi bi-pencil"></i> Sửa
+                          </a>
+                          <button class="btn btn-danger btn-sm"
+                              data-room-id="${room.roomID}"
+                              data-room-number="${room.roomNumber}"
+                              onclick="checkBeforeDelete(this)"
+                              title="Xóa">
+                              <i class="bi bi-trash"></i> Xóa
+                          </button>
+                      </div>
+                  </div>
+                  
                     <div class="col-lg-8">
                         <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner rounded-4">
@@ -115,7 +130,8 @@
       </div>
     </div>
   </div>
+
+  <jsp:include page="_modal-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
 </body>
-
 </html>

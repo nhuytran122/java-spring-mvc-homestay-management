@@ -22,16 +22,19 @@ import lombok.Setter;
 @Entity
 @Table(name = "Roles")
 public class Role {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoleID")
-    private long roleID;
-    
+    private Long roleID;
+
     @NotBlank(message = "Vui lòng nhập tên vai trò")
     @Column(name = "RoleName")
     private String roleName;
-    
+
+    @Column(name = "Description")
+    private String description;
+
     @OneToMany(mappedBy = "role")
     private List<Employee> employees;
 }

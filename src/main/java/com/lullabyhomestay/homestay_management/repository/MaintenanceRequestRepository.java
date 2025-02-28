@@ -24,4 +24,6 @@ public interface MaintenanceRequestRepository extends JpaRepository<MaintenanceR
     void deleteByRequestID(long id);
 
     boolean existsByRoom_RoomID(long roomID);
+
+    boolean existsByEmployee_EmployeeID(long employeeID);
 }
