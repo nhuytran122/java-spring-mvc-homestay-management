@@ -46,7 +46,14 @@
                         <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner rounded-4">
                                 <div class="carousel-item active">
-                                    <img src="/images/room/${room.thumbnail}" class="d-block w-100" alt="Thumbnail" style="height: 400px; object-fit: cover">
+                                  <c:choose>
+                                      <c:when test="${not empty room.thumbnail}">
+                                          <img src="/images/room/${room.thumbnail}" class="d-block w-100" alt="Thumbnail" style="height: 400px; object-fit: cover">
+                                      </c:when>
+                                      <c:otherwise>
+                                          <img src="/images/room/default-img.jpg" class="d-block w-100" alt="Default Img" style="height: 400px; object-fit: cover">
+                                      </c:otherwise>
+                                  </c:choose>
                                 </div>
                                 <c:forEach var="photo" items="${room.roomPhotos}">
                                   <div class="carousel-item">
@@ -106,16 +113,25 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                          <c:forEach var="item" items="${room.roomAmenities}">
-                                            <tr style="height: 50px;">
-                                                <td>${item.amenity.amenityName}</td>
-                                                <td><i class="fas ${item.amenity.amenityCategory.icon} amenity-icon me-2"></i>
-                                                  ${item.amenity.amenityCategory.categoryName}
-                                                </td>
-                                                <td>${item.quantity}</td>
-                                            </tr>
-                                          </c:forEach>
-                                        </tbody>
+                                          <c:choose>
+                                            <c:when test="${empty room.roomAmenities}">
+                                                <tr>
+                                                    <td colspan="7" class="text-center text-danger">Hiện phòng ${room.roomNumber} không có tiện nghi nào</td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                              <c:forEach var="item" items="${room.roomAmenities}">
+                                                <tr style="height: 50px;">
+                                                    <td>${item.amenity.amenityName}</td>
+                                                    <td><i class="fas ${item.amenity.amenityCategory.icon} amenity-icon me-2"></i>
+                                                      ${item.amenity.amenityCategory.categoryName}
+                                                    </td>
+                                                    <td>${item.quantity}</td>
+                                                </tr>
+                                              </c:forEach>
+                                            </c:otherwise>
+                                          </c:choose>
+                                      </tbody>
                                     </table>
                                 </div>
                             </div>

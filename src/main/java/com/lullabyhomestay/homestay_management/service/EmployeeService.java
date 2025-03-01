@@ -6,15 +6,17 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Employee;
-import com.lullabyhomestay.homestay_management.domain.Role;
 import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
 import com.lullabyhomestay.homestay_management.repository.EmployeeRepository;
 import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
+import com.lullabyhomestay.homestay_management.service.specifications.EmployeeSpecifications;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -39,10 +41,24 @@ public class EmployeeService {
         return employeePage.map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
-    public Page<EmployeeDTO> searchEmployees(String keyword, Boolean isWorking, Long roleId, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<Employee> employeePage = employeeRepository.searchEmployees(keyword, isWorking, roleId, pageable);
-        return employeePage.map(employee -> mapper.map(employee, EmployeeDTO.class));
+    public Page<EmployeeDTO> searchEmployees(String keyword, Boolean isWorking, Long roleID, int page) {
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
+        Specification<Employee> spec = Specification.where(null);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            spec = spec.and(Specification.where(EmployeeSpecifications.nameLike(keyword))
+                    .or(EmployeeSpecifications.addressLike(keyword))
+                    .or(EmployeeSpecifications.emailEqual(keyword))
+                    .or(EmployeeSpecifications.phoneEqual(keyword)));
+        }
+        if (isWorking != null) {
+            spec = spec.and(EmployeeSpecifications.isWorking(isWorking));
+        }
+        if (roleID != null) {
+            spec = spec.and(EmployeeSpecifications.hasRole(roleID));
+        }
+
+        return employeeRepository.findAll(spec, pageable).map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
     public Optional<EmployeeDTO> getEmployeeByID(long employeeID) {

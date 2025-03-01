@@ -1,5 +1,7 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,12 +36,21 @@ public class RoomTypeController {
         int validPage = Math.max(1, page);
         Page<RoomType> roomTypes = roomTypeService.searchRoomTypes(keyword,
                 validPage, sort);
-
         List<RoomType> listRoomTypes = roomTypes.getContent();
+
+        StringBuilder extraParams = new StringBuilder();
+        if (sort != null) {
+            extraParams.append("&sort=").append(sort);
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
+        }
+        model.addAttribute("extraParams", extraParams);
+        
         model.addAttribute("roomTypes", listRoomTypes);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sort", sort);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", roomTypes.getTotalPages());
         return "admin/room-type/show";
     }

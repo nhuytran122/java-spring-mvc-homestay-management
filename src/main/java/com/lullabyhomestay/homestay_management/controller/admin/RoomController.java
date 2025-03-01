@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lullabyhomestay.homestay_management.domain.Branch;
 import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.AmenityService;
 import com.lullabyhomestay.homestay_management.service.BranchService;
-import com.lullabyhomestay.homestay_management.service.RoomAmenityService;
-import com.lullabyhomestay.homestay_management.service.RoomPhotoService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
@@ -38,28 +34,25 @@ public class RoomController {
     private final RoomTypeService roomTypeService;
     private final BranchService branchService;
     private final UploadService uploadService;
-    private final RoomPhotoService photoService;
-    private final RoomAmenityService roomAmenityService;
     private final AmenityService amenityService;
 
     @GetMapping("/admin/room")
-    public String getProducts(Model model,
-            @RequestParam("page") Optional<String> pageOptional) {
-        int page = 1;
-        try {
-            if (pageOptional.isPresent()) {
-                page = Integer.parseInt(pageOptional.get());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<Room> rooms = this.roomService.getAllRooms(pageable);
+    public String getRoomsPage(Model model,
+            @RequestParam(defaultValue = "1") int page,
+            @ModelAttribute SearchRoomCriteriaDTO criteria) {
+        int validPage = Math.max(1, page);
 
+        Page<Room> rooms = roomService.searchRooms(criteria.getKeyword(), criteria.getRoomTypeID(),
+                criteria.getBranchID(), validPage);
         List<Room> listRooms = rooms.getContent();
-        model.addAttribute("rooms", listRooms);
 
-        model.addAttribute("currentPage", page);
+        model.addAttribute("criteria", criteria);
+        model.addAttribute("listBranches", this.branchService.getAllBranches());
+        model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
+        model.addAttribute("extraParams", criteria.convertToExtraParams());
+
+        model.addAttribute("rooms", listRooms);
+        model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", rooms.getTotalPages());
         return "admin/room/show";
     }
@@ -95,8 +88,8 @@ public class RoomController {
             model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
             return "admin/room/create";
         }
-        this.roomService.handleSaveRoom(room);
-        return "redirect:/admin/update";
+        Room newRoom = this.roomService.handleSaveRoom(room);
+        return "redirect:/admin/room/update/" + newRoom.getRoomID();
     }
 
     @GetMapping("/admin/room/update/{id}")

@@ -33,7 +33,7 @@ public class BranchController {
     @GetMapping("/admin/branch")
     public String getBranchPage(Model model,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(required = false) String keyword) {
+            @RequestParam(defaultValue = "") String keyword) {
         int validPage = Math.max(1, page);
 
         Page<Branch> branches = branchService.searchBranches(keyword, validPage);
@@ -42,7 +42,7 @@ public class BranchController {
         model.addAttribute("branches", listBranches);
 
         model.addAttribute("keyword", keyword);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", branches.getTotalPages());
         return "admin/branch/show";
     }

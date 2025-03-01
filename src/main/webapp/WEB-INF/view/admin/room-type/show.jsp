@@ -115,12 +115,12 @@
                     </div>
                 </div>
 
-                <jsp:include page="../layout/partial/_pagination-with-keyword-and-sort.jsp">
+                
+                <jsp:include page="../layout/partial/_pagination-with-param.jsp">
                     <jsp:param name="url" value="/admin/room-type" />
                     <jsp:param name="currentPage" value="${currentPage}" />
                     <jsp:param name="totalPages" value="${totalPages}" />
-                    <jsp:param name="keyword" value="${keyword}" />
-                    <jsp:param name="sort" value="${sort}" />
+                    <jsp:param name="extraParams" value="${extraParams}" />
                 </jsp:include>
             </div>
         </div>

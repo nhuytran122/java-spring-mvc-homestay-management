@@ -1,11 +1,11 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,31 +31,29 @@ public class AmenityController {
 
     @GetMapping("/admin/amenity")
     public String getAmenityPage(Model model,
-            @RequestParam("page") Optional<String> pageOptional,
-            @RequestParam("keyword") Optional<String> keyword,
-            @RequestParam("categoryID") Optional<Long> categoryID) {
-        // todo: sửa lại logic search
-        int page = 1;
-        try {
-            if (pageOptional.isPresent()) {
-                page = Integer.parseInt(pageOptional.get());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Pageable pageable = PageRequest.of(page - 1, 2);
-        //TODO
-        // Page<Amenity> amenities = amenityService.searchAmenities(keyword, categoryID,
-        // pageable);
-        Page<Amenity> amenities = amenityService.getAllAmenities(pageable);
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(required = false) Long categoryID) {
+        int validPage = Math.max(1, page);
 
+        Page<Amenity> amenities = amenityService.searchAmenities(keyword, categoryID, validPage);
         List<Amenity> listAmenities = amenities.getContent();
-        model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
+
+        StringBuilder extraParams = new StringBuilder();
+        if (categoryID != null) {
+            extraParams.append("&categoryID=").append(categoryID);
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
+        }
+        model.addAttribute("extraParams", extraParams);
         model.addAttribute("amenities", listAmenities);
-        model.addAttribute("keyword", keyword.orElse(""));
-        model.addAttribute("categoryID", categoryID.orElse(0L));
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", amenities.getTotalPages());
+
+        model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryID", categoryID);
         return "admin/amenity/show";
     }
 

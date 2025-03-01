@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.lullabyhomestay.homestay_management.domain.FAQ;
-import com.lullabyhomestay.homestay_management.domain.HomestayDetail;
 import com.lullabyhomestay.homestay_management.service.FAQService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +28,7 @@ public class FAQController {
     @GetMapping("/admin/homestay-infor/faq")
     public String getFaqPage(Model model,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(required = false) String keyword) {
+            @RequestParam(defaultValue = "") String keyword) {
         int validPage = Math.max(1, page);
         Page<FAQ> faqs = faqService.searchFAQs(keyword,
                 validPage);
@@ -38,7 +37,7 @@ public class FAQController {
         model.addAttribute("faqs", listFAQs);
 
         model.addAttribute("keyword", keyword);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", faqs.getTotalPages());
         return "admin/faq/show";
     }

@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,13 +15,10 @@ import org.springframework.stereotype.Repository;
 import com.lullabyhomestay.homestay_management.domain.Amenity;
 
 @Repository
-public interface AmenityRepository extends JpaRepository<Amenity, Long> {
+public interface AmenityRepository extends JpaRepository<Amenity, Long>, JpaSpecificationExecutor<Amenity> {
     List<Amenity> findAll();
 
     Page<Amenity> findAll(Pageable page);
-
-    Page<Amenity> findByAmenityNameContainingIgnoreCaseAndAmenityCategory_CategoryIDOrderByAmenityCategory_CategoryIDDesc(
-            String amenityName, long categoryID, Pageable pageable);
 
     Optional<Amenity> findByAmenityID(long amenityID);
 
@@ -31,4 +30,5 @@ public interface AmenityRepository extends JpaRepository<Amenity, Long> {
             "(SELECT ra.amenity.amenityID FROM RoomAmenity ra WHERE ra.room.roomID = :roomId)")
     List<Amenity> findAmenitiesNotInRoom(@Param("roomId") long roomId);
 
+    Page<Amenity> findAll(Specification<Amenity> spec, Pageable page);
 }

@@ -3,7 +3,9 @@ package com.lullabyhomestay.homestay_management.service;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,8 @@ import com.lullabyhomestay.homestay_management.repository.RoomAmenityRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomPhotoRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomStatusHistoryRepository;
+import com.lullabyhomestay.homestay_management.service.specifications.RoomSpecifications;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -31,16 +35,19 @@ public class RoomService {
         return this.roomRepository.findAll(pageable);
     }
 
-    // todo: search by branchID & roomTypeID & description
-    // public Page<Room> searchRooms(long branchID, long roomTypeID, Pageable
-    // pageable){
-    // return
-    // this.roomRepository.findByBranch_BranchIDAndRoomType_RoomTypeID(branchID,
-    // roomTypeID, pageable);
-    // }
+    public Page<Room> searchRooms(String keyword, Long roomTypeID, Long branchID, int page) {
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
+        if ((keyword == null || keyword.trim().isEmpty()) && roomTypeID == null && branchID == null) {
+            return roomRepository.findAll(pageable);
+        }
+        Specification<Room> spec = Specification.where(RoomSpecifications.hasBranch(branchID))
+                .and(RoomSpecifications.hasRoomType(roomTypeID))
+                .and(RoomSpecifications.descriptionLike(keyword));
+        return roomRepository.findAll(spec, pageable);
+    }
 
-    public void handleSaveRoom(Room room) {
-        this.roomRepository.save(room);
+    public Room handleSaveRoom(Room room) {
+        return this.roomRepository.save(room);
     }
 
     public Optional<Room> getRoomByID(long roomID) {

@@ -20,7 +20,6 @@
         <div class="main-panel">
             <ul class="navbar-nav mr-lg-2 my-4">
                 <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
-                    <!--TODO: SEARCH DÙNG Specification-->
                     <form action="/admin/amenity" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
                         <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm tiện nghi..." 
                                value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
@@ -110,52 +109,12 @@
                     </div>
                 </div>
 
-                <c:if test="${totalPages > 0}">
-                    <div class="text-center">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
-                                    <c:choose>
-                                        <c:when test="${currentPage > 1}">
-                                            <a class="page-link" href="/admin/amenity?page=${currentPage - 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Trước">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a class="page-link disabled" href="#" aria-label="Trước">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </li>                                
-
-                                <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
-                                    <li class="page-item">
-                                        <a class="${(loop.index + 1) eq currentPage ? 'active page-link' : 'page-link'} "
-                                            href="/admin/amenity?page=${loop.index + 1}">
-                                            ${loop.index + 1}
-                                        </a>
-                                    </li>
-                                </c:forEach>
-
-                                <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
-                                    <c:choose>
-                                        <c:when test="${currentPage < totalPages}">
-                                            <a class="page-link" href="/admin/amenity?page=${currentPage + 1}${not empty keyword ? '&keyword=' : ''}${keyword}" aria-label="Tiếp theo">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a class="page-link disabled" href="#" aria-label="Tiếp theo">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </li>                                
-                            </ul>
-                        </nav>
-                    </div>
-                </c:if>
+                <jsp:include page="../layout/partial/_pagination-with-param.jsp">
+                    <jsp:param name="url" value="/admin/amenity" />
+                    <jsp:param name="currentPage" value="${currentPage}" />
+                    <jsp:param name="totalPages" value="${totalPages}" />
+                    <jsp:param name="extraParams" value="${extraParams}" />
+                </jsp:include>
             </div>
         </div>
     </div>

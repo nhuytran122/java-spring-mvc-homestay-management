@@ -8,7 +8,7 @@
                 <li class="page-item ${currentPage > 1 ? '' : 'disabled'}">
                     <c:choose>
                         <c:when test="${currentPage > 1}">
-                            <a class="page-link" href="${url}?page=${currentPage - 1}${not empty keyword ? '&keyword=' += keyword : ''}${not empty sort ? '&sort=' += sort : ''}" aria-label="Trước">
+                            <a class="page-link" href="${url}?page=${currentPage - 1}${extraParams}" aria-label="Trước">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </c:when>
@@ -24,7 +24,7 @@
                 <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
                     <li class="page-item">
                         <a class="${(loop.index + 1) eq currentPage ? 'active page-link' : 'page-link'}"
-                           href="${url}?page=${loop.index + 1}${not empty keyword ? '&keyword=' += keyword : ''}${not empty sort ? '&sort=' += sort : ''}">
+                           href="${url}?page=${loop.index + 1}${extraParams}">
                             ${loop.index + 1}
                         </a>
                     </li>
@@ -34,7 +34,7 @@
                 <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
                     <c:choose>
                         <c:when test="${currentPage < totalPages}">
-                            <a class="page-link" href="${url}?page=${currentPage + 1}${not empty keyword ? '&keyword=' += keyword : ''}${not empty sort ? '&sort=' += sort : ''}" aria-label="Tiếp theo">
+                            <a class="page-link" href="${url}?page=${currentPage + 1}$${extraParams}" aria-label="Tiếp theo">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </c:when>

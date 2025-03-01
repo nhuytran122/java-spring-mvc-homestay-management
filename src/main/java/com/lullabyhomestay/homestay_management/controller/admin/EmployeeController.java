@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lullabyhomestay.homestay_management.domain.Employee;
-import com.lullabyhomestay.homestay_management.domain.Employee;
 import com.lullabyhomestay.homestay_management.domain.Role;
 import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.SearchEmployeeCriterialDTO;
 import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.RoleService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
@@ -38,27 +37,22 @@ public class EmployeeController {
     @GetMapping("/admin/employee")
     public String getEmployeePage(
             Model model,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Boolean isWorking,
-            @RequestParam(required = false) Long roleId,
-            @RequestParam(defaultValue = "1") int page) {
+            @RequestParam(defaultValue = "1") int page,
+            @ModelAttribute SearchEmployeeCriterialDTO criteria) {
 
-        Page<EmployeeDTO> employees = employeeService.searchEmployees(keyword, isWorking, roleId, page);
-
+        Page<EmployeeDTO> employees = employeeService.searchEmployees(criteria.getKeyword(), criteria.getIsWorking(), criteria.getRoleID(), page);
         List<EmployeeDTO> listEmployees = employees.getContent();
-        model.addAttribute("listEmployees", listEmployees);
-
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", employees.getTotalPages());
-
-        List<Boolean> isWorkingOptions = Arrays.asList(true, false);
-        model.addAttribute("isWorkingOptions", isWorkingOptions);
-        model.addAttribute("selectedIsWorking", isWorking);
 
         List<Role> roleOptions = roleService.getAllRoles();
+        List<Boolean> isWorkingOptions = Arrays.asList(true, false);
+        model.addAttribute("isWorkingOptions", isWorkingOptions);
         model.addAttribute("listRoles", roleOptions);
-        model.addAttribute("selectedRoleId", roleId);
+        model.addAttribute("criteria", criteria);
+        model.addAttribute("extraParams", criteria.convertToExtraParams());
+
+        model.addAttribute("listEmployees", listEmployees);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", employees.getTotalPages());
         return "admin/employee/show";
     }
 

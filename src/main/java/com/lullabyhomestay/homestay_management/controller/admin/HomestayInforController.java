@@ -31,7 +31,7 @@ public class HomestayInforController {
     @GetMapping("/admin/homestay-infor")
     public String getInforHomestayPage(Model model,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(required = false) String keyword) {
+            @RequestParam(defaultValue = "") String keyword) {
         int validPage = Math.max(1, page);
         Page<HomestayDetail> infors = homestayService.searchInforHomestay(keyword,
                 validPage);
@@ -40,7 +40,7 @@ public class HomestayInforController {
         model.addAttribute("infors", listInfors);
 
         model.addAttribute("keyword", keyword);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", infors.getTotalPages());
         return "admin/homestay-infor/show";
     }
