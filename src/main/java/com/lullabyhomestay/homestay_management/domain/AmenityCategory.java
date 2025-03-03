@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,11 +28,16 @@ public class AmenityCategory {
     @Column(name = "CategoryID")
     private long categoryID;
 
+    @NotBlank(message = "Vui lòng nhập tên phân loại")
     @Column(name = "CategoryName")
     private String categoryName;
 
-    @Column(name = "icon")
+    @NotBlank(message = "Vui lòng chọn icon")
+    @Column(name = "Icon")
     private String icon;
+
+    @Column(name = "Description")
+    private String description;
 
     @OneToMany(mappedBy = "amenityCategory")
     List<Amenity> amenities;

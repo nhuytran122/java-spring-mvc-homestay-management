@@ -31,4 +31,6 @@ public interface AmenityRepository extends JpaRepository<Amenity, Long>, JpaSpec
     List<Amenity> findAmenitiesNotInRoom(@Param("roomId") long roomId);
 
     Page<Amenity> findAll(Specification<Amenity> spec, Pageable page);
+
+    boolean existsByAmenityCategory_CategoryID(long categoryID);
 }
