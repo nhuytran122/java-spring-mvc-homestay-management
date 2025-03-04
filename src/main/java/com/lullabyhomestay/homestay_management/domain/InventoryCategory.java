@@ -28,8 +28,11 @@ public class InventoryCategory {
     private long categoryID;
 
     @NotBlank(message = "Vui lòng nhập tên danh mục")
-    @Column(name = "Name")
-    private String name;
+    @Column(name = "CategoryName")
+    private String categoryName;
+
+    @Column(name = "Description")
+    private String description;
 
     @OneToMany(mappedBy = "inventoryCategory")
     private List<InventoryItem> inventoryItems;

@@ -16,4 +16,13 @@ public class BaseSpecifications {
         return (root, query, cb) -> valueID == null ? cb.conjunction()
                 : cb.equal(root.get(joinField).get(subField), valueID);
     }
+
+    public static <T> Specification<T> likeJoin(String joinField, String subField, String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return (root, query, cb) -> cb.conjunction();
+        }
+        String normalizedValue = value.trim().toLowerCase();
+        String searchPattern = "%" + normalizedValue + "%";
+        return (root, query, cb) -> cb.like(cb.lower(root.get(joinField).get(subField)), searchPattern);
+    }
 }

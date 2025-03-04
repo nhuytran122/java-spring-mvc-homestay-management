@@ -1,0 +1,125 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Nhập kho</title>
+  <jsp:include page="../layout/import-css.jsp" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container .select2-selection--single {
+        height: 46px; 
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        padding-left: 12px; 
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 46px; 
+        padding-left: 0;
+        color: #C9C8C8; 
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 100%;
+        right: 10px;
+    }
+
+</style>
+</head>
+<body>
+  <div class="container-scroller">
+    <jsp:include page="../layout/header.jsp" />
+    
+    <div class="container-fluid page-body-wrapper">
+        <jsp:include page="../layout/theme-settings.jsp" />
+        <jsp:include page="../layout/sidebar.jsp" />
+      
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4 text-center">Nhập kho</h4>
+                                <form:form class="form-horizontal" action="/admin/warehouse/import" method="post"
+                                    modelAttribute="newImport">
+                                    <c:set var="errorItemID">
+                                        <form:errors path="inventoryItem" cssClass="invalid-feedback" />
+                                    </c:set>
+                                    <c:set var="errorBranchID">
+                                        <form:errors path="branch" cssClass="invalid-feedback" />
+                                    </c:set>
+                                    <c:set var="errorQuantity">
+                                        <form:errors path="quantity" cssClass="invalid-feedback" />
+                                    </c:set>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Đồ dùng <span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:select class="form-select select2 form-control ${not empty errorItemID ? 'is-invalid' : ''}" path="inventoryItem">
+                                                <form:option value="">Chọn đồ dùng</form:option>
+                                                <c:forEach var="item" items="${listItems}">
+                                                    <form:option value="${item.itemID}">${item.itemName}</form:option>
+                                                </c:forEach>
+                                            </form:select>
+                                            ${errorItemID}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Chi nhánh <span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:select class="form-select form-control ${not empty errorBranchID ? 'is-invalid' : ''}" path="branch">
+                                                <form:option value="">Chọn chi nhánh</form:option>
+                                                <c:forEach var="branch" items="${listBranches}">
+                                                    <form:option value="${branch.branchID}">${branch.branchName}</form:option>
+                                                </c:forEach>
+                                            </form:select>
+                                            ${errorBranchID}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Số lượng <span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:input type="text" class="form-control number-separator
+                                                ${not empty errorQuantity ? 'is-invalid' : ''}" 
+                                                path="quantity" />
+                                            ${errorQuantity}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                    <div class="col-sm-offset-2 col-sm-10 text-center">
+                                        <a href="/admin/warehouse" class="btn btn-secondary">Hủy</a>
+                                        <button type="submit" class="btn btn-primary">Nhập kho</button>
+                                    </div>
+                                    </div>
+                                </form:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>   
+  </div>
+
+  <jsp:include page="../layout/import-js.jsp" />
+  <jsp:include page="../layout/partial/_script-number-separator.jsp" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function () {
+        $('.select2').select2();
+    })
+</script>
+</body>
+</html>

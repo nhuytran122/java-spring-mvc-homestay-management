@@ -1,6 +1,8 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import com.lullabyhomestay.homestay_management.utils.TransactionType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,16 +32,22 @@ public class InventoryTransaction {
     private long transactionID;
 
     @Column(name = "Quantity")
+    @Min(value = 1, message = "Số lượng phải lớn hơn 0")
     private int quantity;
 
     @Column(name = "Date")
-    private Date date;
+    private LocalDateTime date;
+
+    @Column(name = "TransactionType")
+    private TransactionType transactionType;
 
     @ManyToOne
     @JoinColumn(name = "ItemID")
+    @NotNull(message = "Vui lòng chọn đồ dùng")
     private InventoryItem inventoryItem;
 
     @ManyToOne
     @JoinColumn(name = "BranchID")
+    @NotNull(message = "Vui lòng chọn chi nhánh")
     private Branch branch;
 }

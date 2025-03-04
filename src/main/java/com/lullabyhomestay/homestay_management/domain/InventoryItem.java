@@ -11,7 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,19 +29,23 @@ public class InventoryItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ItemID")
-    private long itemID;
+    private Long itemID;
 
-    @NotBlank(message = "Vui lòng nhập tên mặt hàng")
+    @NotBlank(message = "Vui lòng nhập tên đồ dùng")
     @Column(name = "ItemName")
     private String itemName;
 
-    @NotBlank(message = "Vui lòng nhập đơn vị")
+    @NotBlank(message = "Vui lòng nhập đơn vị tính")
     @Column(name = "Unit")
     private String unit;
 
-    @NotBlank(message = "Vui lòng nhập giá")
+    @Min(value = 1, message = "Giá cả phải lớn hơn 0")
     @Column(name = "Price")
     private double price;
+
+    @Min(value = 1, message = "Số lượng tối thiểu phải lớn hơn 0")
+    @Column(name = "MinQuantity")
+    private int minQuantity;
 
     @OneToMany(mappedBy = "inventoryItem")
     private List<InventoryStock> inventoryStocks;
@@ -49,5 +55,6 @@ public class InventoryItem {
 
     @ManyToOne
     @JoinColumn(name = "CategoryID")
+    @NotNull(message = "Vui lòng chọn danh mục đồ dùng")
     private InventoryCategory inventoryCategory;
 }

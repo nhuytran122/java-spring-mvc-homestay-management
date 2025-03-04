@@ -20,7 +20,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "InventoryStocks")
 public class InventoryStock {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "StockID")
@@ -28,9 +28,6 @@ public class InventoryStock {
 
     @Column(name = "Quantity")
     private int quantity;
-    
-    @Column(name = "MinQuantity")
-    private int minQuantity;
 
     @ManyToOne
     @JoinColumn(name = "ItemID")
