@@ -18,51 +18,45 @@
         <jsp:include page="../../layout/theme-settings.jsp" />
         <jsp:include page="../../layout/sidebar.jsp" />
         <div class="main-panel">
-            <ul class="navbar-nav mr-lg-2 my-4" style="display: flex; justify-content: center; width: 100%;">
-                <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
-                    <form action="/admin/warehouse/transaction" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
-                        <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm giao dịch (tên đồ dùng)..." 
-                               value="${criteria.keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
-                    
-                        <select name="branchID" class="form-select form-control form-select-sm me-2" style="width: 200px; font-size: 14px; height: 41px;">
-                            <option value="">Chọn chi nhánh</option>
-                            <c:forEach var="branch" items="${listBranches}">
-                                <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
-                                    ${branch.branchName}
-                                </option>
-                            </c:forEach>
-                        </select>
-                        <select name="filter" class="form-select form-control form-select-sm me-2" style="width: 200px; font-size: 14px; height: 41px;">
-                            <option value="" ${criteria.transactionType == '' ? 'selected' : ''}>
-                                Tất cả loại
+            <div class="search-form-container my-4">
+                <form action="/admin/warehouse/transaction" method="get" class="search-form">
+                    <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm giao dịch (tên đồ dùng)..." 
+                           value="${criteria.keyword}">
+                    <select name="branchID" class="form-select form-control form-select-sm">
+                        <option value="">Chọn chi nhánh</option>
+                        <c:forEach var="branch" items="${listBranches}">
+                            <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
+                                ${branch.branchName}
                             </option>
-                            <option value="IMPORT" ${criteria.transactionType == 'IMPORT' ? 'selected' : ''}>
-                                Nhập kho
-                            </option>
-                            <option value="EXPORT" ${criteria.transactionType == 'EXPORT' ? 'selected' : ''}>
-                                Xuất kho
-                            </option>
-                        </select>
-
-                        <select name="sort" class="form-select form-control form-select-sm me-2" style="width: 200px; font-size: 14px; height: 41px;">
-                            <option value="" ${criteria.sort == '' ? 'selected' : ''}>
-                                Không sắp xếp
-                            </option>
-                            <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
-                                Sớm nhất
-                            </option>
-                            <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
-                                Muộn nhất
-                            </option>
-                        </select>
-                    
-                        <button type="submit" class="btn btn-primary btn-sm p-2">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </form>                    
-                </li>
-            </ul>
-
+                        </c:forEach>
+                     </select>
+                     <select name="filter" class="form-select form-control form-select-sm" style="width: 200px; font-size: 14px; height: 41px;">
+                           <option value="" ${criteria.transactionType == '' ? 'selected' : ''}>
+                             Tất cả loại
+                        </option>
+                         <option value="IMPORT" ${criteria.transactionType == 'IMPORT' ? 'selected' : ''}>
+                            Nhập kho
+                         </option>
+                         <option value="EXPORT" ${criteria.transactionType == 'EXPORT' ? 'selected' : ''}>
+                             Xuất kho
+                         </option>
+                     </select>
+                     <select name="sort" class="form-select form-control form-select-sm" style="width: 200px; font-size: 14px; height: 41px;">
+                        <option value="" ${criteria.sort == '' ? 'selected' : ''}>
+                            Không sắp xếp
+                        </option>
+                        <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
+                           Cũ nhất
+                        </option>
+                        <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
+                            Mới nhất
+                        </option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm p-2">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>                    
+            </div>
             <div class="content-wrapper">
                 <div class="row">
                     <div class="col-md-12 grid-margin stretch-card">

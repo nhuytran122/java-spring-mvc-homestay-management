@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Service;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
 import com.lullabyhomestay.homestay_management.repository.ServiceRepository;
 
@@ -43,8 +44,12 @@ public class HomestayServiceService {
         this.serviceRepository.save(service);
     }
 
-    public Optional<Service> getServiceByID(long serviceID) {
-        return this.serviceRepository.findByServiceID(serviceID);
+    public Service getServiceByID(long serviceID) {
+        Optional<Service> serviceOpt = serviceRepository.findByServiceID(serviceID);
+        if (!serviceOpt.isPresent()) {
+            throw new NotFoundException("Dịch vụ");
+        }
+        return serviceOpt.get();
     }
 
     public boolean canDeleteService(long serviceID) {

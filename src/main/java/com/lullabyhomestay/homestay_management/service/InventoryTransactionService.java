@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lullabyhomestay.homestay_management.domain.InventoryItem;
 import com.lullabyhomestay.homestay_management.domain.InventoryStock;
 import com.lullabyhomestay.homestay_management.domain.InventoryTransaction;
+import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
 import com.lullabyhomestay.homestay_management.exception.InventoryException;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryTransactionRepository;
@@ -33,8 +35,12 @@ public class InventoryTransactionService {
     private final InventoryStockRepository stockRepository;
     private final InventoryItemRepository itemRepository;
 
-    public Optional<InventoryTransaction> getTransactionByID(Long transactionID) {
-        return this.transactionRepository.findByTransactionID(transactionID);
+    public InventoryTransaction getTransactionByID(Long transactionID) {
+        Optional<InventoryTransaction> transactionOpt = transactionRepository.findByTransactionID(transactionID);
+        if (!transactionOpt.isPresent()) {
+            throw new NotFoundException("Giao dịch");
+        }
+        return transactionOpt.get();
     }
 
     public Page<InventoryTransaction> searchTransactions(String keyword, Long branchID,
@@ -107,13 +113,14 @@ public class InventoryTransactionService {
         LocalDateTime transactionDate = transaction.getDate();
         LocalDateTime now = LocalDateTime.now();
 
-        long hoursDifference = ChronoUnit.HOURS.between(transactionDate, now);
-        return hoursDifference <= 3;
+        long minutesDifference = ChronoUnit.MINUTES.between(transactionDate, now);
+        return minutesDifference <= 2 * 60;
     }
 
     @Transactional
     public void updateTransaction(InventoryTransaction updatedTransaction, int oldQuantity) {
-        InventoryTransaction existingTransaction = transactionRepository.findById(updatedTransaction.getTransactionID()).get();
+        InventoryTransaction existingTransaction = transactionRepository.findById(updatedTransaction.getTransactionID())
+                .get();
         int newQuantity = updatedTransaction.getQuantity();
 
         existingTransaction.setQuantity(newQuantity);
@@ -127,7 +134,8 @@ public class InventoryTransactionService {
 
         InventoryStock currentStock = stockRepository
                 .findByInventoryItem_ItemIDAndBranch_BranchID(currentItem.getItemID(),
-                        transaction.getBranch().getBranchID()).get();
+                        transaction.getBranch().getBranchID())
+                .get();
 
         int newStockQuantity;
         if (transaction.getTransactionType() == TransactionType.IMPORT) {

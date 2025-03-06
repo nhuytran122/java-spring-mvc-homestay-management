@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -59,11 +58,8 @@ public class RoomController {
 
     @GetMapping("/admin/room/{id}")
     public String getDetailRoomPage(Model model, @PathVariable long id) {
-        Optional<Room> room = roomService.getRoomByID(id);
-        if (!room.isPresent()) {
-            return "admin/room";
-        }
-        model.addAttribute("room", room.get());
+        Room room = roomService.getRoomByID(id);
+        model.addAttribute("room", room);
         return "admin/room/detail";
     }
 
@@ -94,17 +90,14 @@ public class RoomController {
 
     @GetMapping("/admin/room/update/{id}")
     public String getUpdateRoomPage(Model model, @PathVariable long id) {
-        Optional<Room> room = roomService.getRoomByID(id);
-        if (!room.isPresent()) {
-            return "admin/room";
-        }
-        model.addAttribute("room", room.get());
+        Room room = roomService.getRoomByID(id);
+        model.addAttribute("room", room);
         model.addAttribute("listBranches", this.branchService.getAllBranches());
         model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
         model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(id));
 
-        model.addAttribute("listPhotos", room.get().getRoomPhotos());
-        model.addAttribute("listAmenities", room.get().getRoomAmenities());
+        model.addAttribute("listPhotos", room.getRoomPhotos());
+        model.addAttribute("listAmenities", room.getRoomAmenities());
         return "admin/room/update";
     }
 
@@ -117,7 +110,7 @@ public class RoomController {
 
         // HttpSession session = request.getSession(false);
         Long roomID = room.getRoomID();
-        Room currentRoom = this.roomService.getRoomByID(roomID).get();
+        Room currentRoom = this.roomService.getRoomByID(roomID);
         if (room.getBranch().getBranchID() == null) {
             newRoomBindingResult.rejectValue("branch",
                     "error.branch", "Vui lòng chọn chi nhánh");
@@ -129,25 +122,23 @@ public class RoomController {
         if (newRoomBindingResult.hasErrors()) {
             model.addAttribute("listBranches", this.branchService.getAllBranches());
             model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
-            Optional<Room> roomWithDetails = this.roomService.getRoomByID(roomID);
+            Room roomWithDetails = this.roomService.getRoomByID(roomID);
             model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(roomID));
 
-            model.addAttribute("listPhotos", roomWithDetails.get().getRoomPhotos());
-            model.addAttribute("listAmenities", roomWithDetails.get().getRoomAmenities());
+            model.addAttribute("listPhotos", roomWithDetails.getRoomPhotos());
+            model.addAttribute("listAmenities", roomWithDetails.getRoomAmenities());
             return "admin/room/update";
         }
-        if (currentRoom != null) {
-            if (!file.isEmpty()) {
-                String img = this.uploadService.handleSaveUploadFile(file, "room");
-                currentRoom.setThumbnail(img);
-            }
-            currentRoom.setRoomNumber(room.getRoomNumber());
-            currentRoom.setRoomType(room.getRoomType());
-            currentRoom.setBranch(room.getBranch());
-            currentRoom.setArea(room.getArea());
-            currentRoom.setDescription(room.getDescription());
-            this.roomService.handleSaveRoom(currentRoom);
+        if (!file.isEmpty()) {
+            String img = this.uploadService.handleSaveUploadFile(file, "room");
+            currentRoom.setThumbnail(img);
         }
+        currentRoom.setRoomNumber(room.getRoomNumber());
+        currentRoom.setRoomType(room.getRoomType());
+        currentRoom.setBranch(room.getBranch());
+        currentRoom.setArea(room.getArea());
+        currentRoom.setDescription(room.getDescription());
+        this.roomService.handleSaveRoom(currentRoom);
         return "redirect:/admin/room";
     }
 

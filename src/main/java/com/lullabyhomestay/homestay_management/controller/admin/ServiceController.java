@@ -3,7 +3,6 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +46,6 @@ public class ServiceController {
         }
 
         model.addAttribute("listServices", listServices);
-
         model.addAttribute("extraParams", extraParams);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sort", sort);
@@ -73,19 +71,14 @@ public class ServiceController {
         if (newServiceBindingResult.hasErrors()) {
             return "admin/service/create";
         }
-
         this.service.handleSaveService(service);
         return "redirect:/admin/service";
     }
 
     @GetMapping("/admin/service/update/{id}")
     public String getUpdateServicePage(Model model, @PathVariable long id) {
-        Optional<Service> currentService = service.getServiceByID(id);
-        if (!currentService.isPresent()) {
-            return "admin/service";
-        }
-
-        model.addAttribute("service", currentService.get());
+        Service currentService = service.getServiceByID(id);
+        model.addAttribute("service", currentService);
         return "admin/service/update";
     }
 
@@ -96,20 +89,16 @@ public class ServiceController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-
-        Service currentService = this.service.getServiceByID(service.getServiceID()).get();
+        Service currentService = this.service.getServiceByID(service.getServiceID());
         if (newServiceBindingResult.hasErrors()) {
             return "admin/service/update";
         }
+        currentService.setServiceName(service.getServiceName());
+        currentService.setUnit(service.getUnit());
+        currentService.setPrice(service.getPrice());
+        currentService.setDescription(service.getDescription());
 
-        if (currentService != null) {
-            currentService.setServiceName(service.getServiceName());
-            currentService.setUnit(service.getUnit());
-            currentService.setPrice(service.getPrice());
-            currentService.setDescription(service.getDescription());
-
-            this.service.handleSaveService(currentService);
-        }
+        this.service.handleSaveService(currentService);
         return "redirect:/admin/service";
     }
 

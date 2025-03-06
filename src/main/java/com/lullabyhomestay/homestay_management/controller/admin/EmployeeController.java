@@ -2,7 +2,6 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -59,11 +58,8 @@ public class EmployeeController {
 
     @GetMapping("/admin/employee/{id}")
     public String getDetailEmployeePage(Model model, @PathVariable long id) {
-        Optional<EmployeeDTO> employee = employeeService.getEmployeeByID(id);
-        if (!employee.isPresent()) {
-            return "admin/employee";
-        }
-        model.addAttribute("employee", employee.get());
+        EmployeeDTO employee = employeeService.getEmployeeByID(id);
+        model.addAttribute("employee", employee);
         return "admin/employee/detail";
     }
 
@@ -83,33 +79,27 @@ public class EmployeeController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-
         if (newEmployeeBindingResult.hasErrors()) {
             List<Role> roleOptions = roleService.getAllRoles();
             model.addAttribute("listRoles", roleOptions);
             return "admin/employee/create";
         }
-
         String img;
         if (!file.isEmpty()) {
             img = this.uploadService.handleSaveUploadFile(file, "employee");
             employee.setAvatar(img);
         }
-
         this.employeeService.handleSaveEmployee(employee);
         return "redirect:/admin/employee";
     }
 
     @GetMapping("/admin/employee/update/{id}")
     public String getUpdateEmployeePage(Model model, @PathVariable long id) {
-        Optional<EmployeeDTO> employee = employeeService.getEmployeeByID(id);
-        if (!employee.isPresent()) {
-            return "admin/employee";
-        }
+        EmployeeDTO employee = employeeService.getEmployeeByID(id);
         List<Role> roleOptions = roleService.getAllRoles();
         model.addAttribute("listRoles", roleOptions);
 
-        model.addAttribute("employee", employee.get());
+        model.addAttribute("employee", employee);
         return "admin/employee/update";
     }
 
@@ -121,7 +111,7 @@ public class EmployeeController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        EmployeeDTO currentEmployee = (employeeService.getEmployeeByID(employee.getEmployeeID())).get();
+        EmployeeDTO currentEmployee = (employeeService.getEmployeeByID(employee.getEmployeeID()));
         if (employee.getRole().getRoleID() == null) {
             newEmployeeBindingResult.rejectValue("role",
                     "error.role", "Vui lòng chọn chức vụ");
@@ -131,22 +121,19 @@ public class EmployeeController {
             model.addAttribute("listRoles", roleOptions);
             return "admin/employee/update";
         }
-
-        if (currentEmployee != null) {
-            if (!file.isEmpty()) {
-                String img = this.uploadService.handleSaveUploadFile(file, "employee");
-                currentEmployee.setAvatar(img);
-            }
-            currentEmployee.setFullName(employee.getFullName());
-            currentEmployee.setEmail(employee.getEmail());
-            currentEmployee.setAddress(employee.getAddress());
-            currentEmployee.setPhone(employee.getPhone());
-            currentEmployee.setRole(employee.getRole());
-            currentEmployee.setSalary(employee.getSalary());
-            currentEmployee.setWorking(employee.isWorking());
-
-            this.employeeService.handleSaveEmployee(currentEmployee);
+        if (!file.isEmpty()) {
+            String img = this.uploadService.handleSaveUploadFile(file, "employee");
+            currentEmployee.setAvatar(img);
         }
+        currentEmployee.setFullName(employee.getFullName());
+        currentEmployee.setEmail(employee.getEmail());
+        currentEmployee.setAddress(employee.getAddress());
+        currentEmployee.setPhone(employee.getPhone());
+        currentEmployee.setRole(employee.getRole());
+        currentEmployee.setSalary(employee.getSalary());
+        currentEmployee.setWorking(employee.isWorking());
+
+        this.employeeService.handleSaveEmployee(currentEmployee);
         return "redirect:/admin/employee";
     }
 

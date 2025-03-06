@@ -1,9 +1,7 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,17 +36,13 @@ public class RoomAmenityController {
             long amenityID = request.getRoomAmenityID().getAmenityID();
             RoomAmenityID id = new RoomAmenityID(roomId, amenityID);
 
-            Optional<Room> room = roomService.getRoomByID(roomId);
-            Optional<Amenity> amenity = amenityService.getAmenityByID(amenityID);
-
-            if (room.isEmpty() || amenity.isEmpty()) {
-                return ResponseEntity.badRequest().body("Room hoặc Amenity không tồn tại");
-            }
+            Room room = roomService.getRoomByID(roomId);
+            Amenity amenity = amenityService.getAmenityByID(amenityID);
 
             roomAmenity.setRoomAmenityID(id);
             roomAmenity.setQuantity(request.getQuantity());
-            roomAmenity.setRoom(room.get());
-            roomAmenity.setAmenity(amenity.get());
+            roomAmenity.setRoom(room);
+            roomAmenity.setAmenity(amenity);
             this.roomAmenityService.handleSaveRoomAmenity(roomAmenity);
         }
         return ResponseEntity.ok().build();
@@ -59,16 +53,13 @@ public class RoomAmenityController {
     public ResponseEntity<?> postUpdateRoomAmenity(@RequestBody RoomAmenity roomAmenity) {
         long roomID = roomAmenity.getRoomAmenityID().getRoomID();
         RoomAmenity currentRoomAmenity = (this.roomAmenityService.getRoomAmenityByID(
-                roomID, roomAmenity.getRoomAmenityID().getAmenityID())).get();
-        if (currentRoomAmenity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room amenity not found");
-        }
-        Optional<Room> room = roomService.getRoomByID(roomID);
-        Optional<Amenity> amenity = amenityService.getAmenityByID(roomAmenity.getRoomAmenityID().getAmenityID());
+                roomID, roomAmenity.getRoomAmenityID().getAmenityID()));
+        Room room = roomService.getRoomByID(roomID);
+        Amenity amenity = amenityService.getAmenityByID(roomAmenity.getRoomAmenityID().getAmenityID());
 
         currentRoomAmenity.setQuantity(roomAmenity.getQuantity());
-        roomAmenity.setRoom(room.get());
-        roomAmenity.setAmenity(amenity.get());
+        roomAmenity.setRoom(room);
+        roomAmenity.setAmenity(amenity);
         this.roomAmenityService.handleSaveRoomAmenity(currentRoomAmenity);
         // return "redirect:/admin/room/update/room-amenity/" + roomID;
         return ResponseEntity.ok().build();
@@ -79,10 +70,7 @@ public class RoomAmenityController {
             @ModelAttribute("roomAmenity") RoomAmenity roomAmenity) {
         long roomID = roomAmenity.getRoomAmenityID().getRoomID();
         RoomAmenity currentRoomAmenity = (this.roomAmenityService.getRoomAmenityByID(
-                roomID, roomAmenity.getRoomAmenityID().getAmenityID())).get();
-        if (currentRoomAmenity == null) {
-            return "redirect:/admin/room/update/" + roomID;
-        }
+                roomID, roomAmenity.getRoomAmenityID().getAmenityID()));
         this.roomAmenityService.deleteByRoomAmenityID(roomID, currentRoomAmenity.getRoomAmenityID().getAmenityID());
         return "redirect:/admin/room/update/" + roomID;
     }

@@ -1,10 +1,8 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,11 +46,8 @@ public class HomestayInforController {
     @GetMapping("/admin/homestay-infor/{id}")
     @ResponseBody
     public ResponseEntity<?> getDetailInfor(@PathVariable("id") long id) {
-        Optional<HomestayDetail> infor = homestayService.getInforHomestayByInforID(id);
-        if (!infor.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thông tin!");
-        }
-        return ResponseEntity.ok(infor.get());
+        HomestayDetail infor = homestayService.getInforHomestayByInforID(id);
+        return ResponseEntity.ok(infor);
     }
 
     @GetMapping("/admin/homestay-infor/create")
@@ -79,12 +74,9 @@ public class HomestayInforController {
 
     @GetMapping("/admin/homestay-infor/update/{id}")
     public String getUpdateInforPage(Model model, @PathVariable long id) {
-        Optional<HomestayDetail> infor = homestayService.getInforHomestayByInforID(id);
-        if (!infor.isPresent()) {
-            return "admin/homestay-infor";
-        }
+        HomestayDetail infor = homestayService.getInforHomestayByInforID(id);
 
-        model.addAttribute("infor", infor.get());
+        model.addAttribute("infor", infor);
         return "admin/homestay-infor/update";
     }
 
@@ -96,18 +88,14 @@ public class HomestayInforController {
 
         // HttpSession session = request.getSession(false);
 
-        HomestayDetail currentInfor = this.homestayService.getInforHomestayByInforID(infor.getInforID()).get();
+        HomestayDetail currentInfor = this.homestayService.getInforHomestayByInforID(infor.getInforID());
 
         if (newFaqBindingResult.hasErrors()) {
             return "admin/homestay-infor/update";
         }
-
-        if (currentInfor != null) {
-            currentInfor.setTitle(infor.getTitle());
-            currentInfor.setDescription(infor.getDescription());
-
-            this.homestayService.handleSaveInforHomestay(currentInfor);
-        }
+        currentInfor.setTitle(infor.getTitle());
+        currentInfor.setDescription(infor.getDescription());
+        this.homestayService.handleSaveInforHomestay(currentInfor);
         return "redirect:/admin/homestay-infor";
     }
 

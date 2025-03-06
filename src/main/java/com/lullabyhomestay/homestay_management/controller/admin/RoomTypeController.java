@@ -3,7 +3,6 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +45,7 @@ public class RoomTypeController {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
         }
         model.addAttribute("extraParams", extraParams);
-        
+
         model.addAttribute("roomTypes", listRoomTypes);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sort", sort);
@@ -57,11 +56,8 @@ public class RoomTypeController {
 
     @GetMapping("/admin/room-type/{id}")
     public String getDetailRoomType(Model model, @PathVariable long id) {
-        Optional<RoomType> roomType = roomTypeService.getRoomTypeById(id);
-        if (!roomType.isPresent()) {
-            return "admin/room-type";
-        }
-        model.addAttribute("roomType", roomType.get());
+        RoomType roomType = roomTypeService.getRoomTypeById(id);
+        model.addAttribute("roomType", roomType);
         return "admin/room-type/detail";
     }
 
@@ -87,11 +83,8 @@ public class RoomTypeController {
 
     @GetMapping("/admin/room-type/update/{id}")
     public String getUpdateRoomTypePage(Model model, @PathVariable long id) {
-        Optional<RoomType> roomType = roomTypeService.getRoomTypeById(id);
-        if (!roomType.isPresent()) {
-            return "admin/room-type";
-        }
-        model.addAttribute("roomType", roomType.get());
+        RoomType roomType = roomTypeService.getRoomTypeById(id);
+        model.addAttribute("roomType", roomType);
         return "admin/room-type/update";
     }
 
@@ -102,20 +95,17 @@ public class RoomTypeController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        RoomType currentRoomType = roomTypeService.getRoomTypeById(roomType.getRoomTypeID()).get();
+        RoomType currentRoomType = roomTypeService.getRoomTypeById(roomType.getRoomTypeID());
         if (roomTypeBindingResult.hasErrors()) {
             return "admin/room-type/update";
         }
+        currentRoomType.setName(roomType.getName());
+        currentRoomType.setDescription(roomType.getDescription());
+        currentRoomType.setMaxGuest(roomType.getMaxGuest());
+        currentRoomType.setPricePerHour(roomType.getPricePerHour());
+        currentRoomType.setExtraPricePerHour(roomType.getExtraPricePerHour());
 
-        if (currentRoomType != null) {
-            currentRoomType.setName(roomType.getName());
-            currentRoomType.setDescription(roomType.getDescription());
-            currentRoomType.setMaxGuest(roomType.getMaxGuest());
-            currentRoomType.setPricePerHour(roomType.getPricePerHour());
-            currentRoomType.setExtraPricePerHour(roomType.getExtraPricePerHour());
-
-            roomTypeService.handleSaveRoomType(currentRoomType);
-        }
+        roomTypeService.handleSaveRoomType(currentRoomType);
         return "redirect:/admin/room-type";
     }
 

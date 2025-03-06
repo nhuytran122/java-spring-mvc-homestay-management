@@ -3,7 +3,6 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -94,12 +93,9 @@ public class AmenityController {
 
     @GetMapping("/admin/amenity/update/{id}")
     public String getUpdateAmenityPage(Model model, @PathVariable long id) {
-        Optional<Amenity> amenity = amenityService.getAmenityByID(id);
-        if (!amenity.isPresent()) {
-            return "admin/amenity";
-        }
+        Amenity amenity = amenityService.getAmenityByID(id);
 
-        model.addAttribute("amenity", amenity.get());
+        model.addAttribute("amenity", amenity);
         model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
         return "admin/amenity/update";
     }
@@ -112,7 +108,7 @@ public class AmenityController {
 
         // HttpSession session = request.getSession(false);
 
-        Amenity currentAmenity = this.amenityService.getAmenityByID(amenity.getAmenityID()).get();
+        Amenity currentAmenity = this.amenityService.getAmenityByID(amenity.getAmenityID());
 
         if (amenity.getAmenityCategory().getCategoryID() == null) {
             newAmenityBindingResult.rejectValue("amenityCategory",
@@ -124,11 +120,10 @@ public class AmenityController {
             return "admin/amenity/update";
         }
 
-        if (currentAmenity != null) {
-            currentAmenity.setAmenityName(amenity.getAmenityName());
-            currentAmenity.setAmenityCategory(amenity.getAmenityCategory());
-            this.amenityService.handleSaveAmenity(currentAmenity);
-        }
+        currentAmenity.setAmenityName(amenity.getAmenityName());
+        currentAmenity.setAmenityCategory(amenity.getAmenityCategory());
+        this.amenityService.handleSaveAmenity(currentAmenity);
+
         return "redirect:/admin/amenity";
     }
 
@@ -137,5 +132,4 @@ public class AmenityController {
         this.amenityService.deleteByAmenityID(amenityID);
         return "redirect:/admin/amenity";
     }
-
 }

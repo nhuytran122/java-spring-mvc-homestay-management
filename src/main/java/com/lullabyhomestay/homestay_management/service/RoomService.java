@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomAmenityRepository;
@@ -50,8 +51,12 @@ public class RoomService {
         return this.roomRepository.save(room);
     }
 
-    public Optional<Room> getRoomByID(long roomID) {
-        return this.roomRepository.findByRoomID(roomID);
+    public Room getRoomByID(long roomID) {
+        Optional<Room> roomOpt = this.roomRepository.findByRoomID(roomID);
+        if (!roomOpt.isPresent()) {
+            throw new NotFoundException("Phòng");
+        }
+        return roomOpt.get();
     }
 
     public boolean canDeleteRoom(long roomID) {

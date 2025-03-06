@@ -1,8 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,12 +64,9 @@ public class FAQController {
 
     @GetMapping("/admin/homestay-infor/faq/update/{id}")
     public String getUpdateFaqPage(Model model, @PathVariable long id) {
-        Optional<FAQ> faq = faqService.getFAQByFAQID(id);
-        if (!faq.isPresent()) {
-            return "admin/homestay-infor/faq";
-        }
+        FAQ faq = faqService.getFAQByFAQID(id);
 
-        model.addAttribute("faq", faq.get());
+        model.addAttribute("faq", faq);
         return "admin/faq/update";
     }
 
@@ -83,18 +78,16 @@ public class FAQController {
 
         // HttpSession session = request.getSession(false);
 
-        FAQ currentFAQ = this.faqService.getFAQByFAQID(faq.getFaqID()).get();
+        FAQ currentFAQ = this.faqService.getFAQByFAQID(faq.getFaqID());
 
         if (newFaqBindingResult.hasErrors()) {
             return "admin/faq/update";
         }
 
-        if (currentFAQ != null) {
-            currentFAQ.setQuestion(faq.getQuestion());
-            currentFAQ.setAnswer(faq.getAnswer());
+        currentFAQ.setQuestion(faq.getQuestion());
+        currentFAQ.setAnswer(faq.getAnswer());
 
-            this.faqService.handleSaveFAQ(currentFAQ);
-        }
+        this.faqService.handleSaveFAQ(currentFAQ);
         return "redirect:/admin/homestay-infor/faq";
     }
 

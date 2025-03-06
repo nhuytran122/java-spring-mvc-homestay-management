@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Employee;
 import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.EmployeeRepository;
 import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.EmployeeSpecifications;
@@ -61,12 +62,13 @@ public class EmployeeService {
         return employeeRepository.findAll(spec, pageable).map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
-    public Optional<EmployeeDTO> getEmployeeByID(long employeeID) {
-        Optional<Employee> employee = employeeRepository.findByEmployeeID(employeeID);
-        if (employee.isPresent()) {
-            return Optional.of(mapper.map(employee.get(), EmployeeDTO.class));
+    public EmployeeDTO getEmployeeByID(long employeeID) {
+        Optional<Employee> employeeOpt = employeeRepository.findByEmployeeID(employeeID);
+        if (!employeeOpt.isPresent()) {
+            throw new NotFoundException("Nhân viên");
         }
-        return Optional.empty();
+        return mapper.map(employeeOpt.get(), EmployeeDTO.class);
+
     }
 
     public boolean canDeleteEmployee(long employeeID) {

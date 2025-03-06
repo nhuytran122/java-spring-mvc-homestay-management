@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryCategory;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryCategoryRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
 import com.lullabyhomestay.homestay_management.utils.Constants;
@@ -26,8 +27,12 @@ public class InventoryCategoryService {
         return this.inventoryCategoryRepository.findAll();
     }
 
-    public Optional<InventoryCategory> getInventoryCategoryByID(long id) {
-        return this.inventoryCategoryRepository.findByCategoryID(id);
+    public InventoryCategory getInventoryCategoryByID(long id) {
+        Optional<InventoryCategory> categoryOpt = inventoryCategoryRepository.findByCategoryID(id);
+        if (!categoryOpt.isPresent()) {
+            throw new NotFoundException("Phân loại đồ dùng");
+        }
+        return categoryOpt.get();
     }
 
     public InventoryCategory handleSaveInventoryCategory(InventoryCategory amenityCategory) {

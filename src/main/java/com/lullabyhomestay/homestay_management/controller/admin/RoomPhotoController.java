@@ -1,7 +1,5 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,22 +56,16 @@ public class RoomPhotoController {
             img = this.uploadService.handleSaveUploadFile(file, "room");
             roomPhoto.setPhoto(img);
         }
-        Optional<Room> room = roomService.getRoomByID(roomID);
-        if (!room.isPresent()) {
-            return "redirect:/admin/room";
-        }
-        roomPhoto.setRoom(room.get());
+        Room room = roomService.getRoomByID(roomID);
+        roomPhoto.setRoom(room);
         this.roomPhotoService.handleSaveRoomPhoto(roomPhoto);
         return "redirect:/admin/room/update/" + roomID;
     }
 
     @GetMapping("/admin/room/photo/update/{id}")
     public String getUpdateRoomPhotoPage(Model model, @PathVariable long id) {
-        Optional<RoomPhoto> roomPhoto = roomPhotoService.getPhotoByPhotoID(id);
-        if (!roomPhoto.isPresent()) {
-            return "admin/room";
-        }
-        model.addAttribute("roomPhoto", roomPhoto.get());
+        RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoID(id);
+        model.addAttribute("roomPhoto", roomPhoto);
         return "admin/room/room-photo/update";
     }
 
@@ -84,23 +76,21 @@ public class RoomPhotoController {
             HttpServletRequest request) {
         // HttpSession session = request.getSession(false);
         Long roomPhotoID = roomPhoto.getPhotoID();
-        RoomPhoto currentRoomPhoto = this.roomPhotoService.getPhotoByPhotoID(roomPhotoID).get();
-        if (currentRoomPhoto != null) {
-            if (!file.isEmpty()) {
-                String img = this.uploadService.handleSaveUploadFile(file, "room");
-                currentRoomPhoto.setPhoto(img);
-            }
-            // currentRoomPhoto.setRoom(null);
-            currentRoomPhoto.setHidden(roomPhoto.isHidden());
-            this.roomPhotoService.handleSaveRoomPhoto(currentRoomPhoto);
+        RoomPhoto currentRoomPhoto = this.roomPhotoService.getPhotoByPhotoID(roomPhotoID);
+        if (!file.isEmpty()) {
+            String img = this.uploadService.handleSaveUploadFile(file, "room");
+            currentRoomPhoto.setPhoto(img);
         }
+        currentRoomPhoto.setHidden(roomPhoto.isHidden());
+        this.roomPhotoService.handleSaveRoomPhoto(currentRoomPhoto);
+
         return "redirect:/admin/room/update/" + currentRoomPhoto.getRoom().getRoomID();
     }
 
     @PostMapping("/admin/room/photo/delete")
     public String postDeleteRoomPhoto(@RequestParam("photoID") long roomPhotoID) {
-        Optional<RoomPhoto> roomPhoto = roomPhotoService.getPhotoByPhotoID(roomPhotoID);
+        RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoID(roomPhotoID);
         this.roomPhotoService.deleteByPhotoID(roomPhotoID);
-        return "redirect:/admin/room/update/" + (roomPhoto.get()).getRoom().getRoomID();
+        return "redirect:/admin/room/update/" + roomPhoto.getRoom().getRoomID();
     }
 }

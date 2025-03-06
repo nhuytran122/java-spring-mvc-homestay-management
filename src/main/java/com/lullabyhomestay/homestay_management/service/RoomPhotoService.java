@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.RoomPhoto;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RoomPhotoRepository;
 
 import lombok.AllArgsConstructor;
@@ -20,8 +21,12 @@ public class RoomPhotoService {
         return this.roomPhotoRepository.findByRoom_RoomID(roomID);
     }
 
-    public Optional<RoomPhoto> getPhotoByPhotoID(long photoID) {
-        return this.roomPhotoRepository.findByPhotoID(photoID);
+    public RoomPhoto getPhotoByPhotoID(long photoID) {
+        Optional<RoomPhoto> roomPhotoOpt = roomPhotoRepository.findByPhotoID(photoID);
+        if (!roomPhotoOpt.isPresent()) {
+            throw new NotFoundException("Ảnh phòng");
+        }
+        return roomPhotoOpt.get();
     }
 
     public RoomPhoto handleSaveRoomPhoto(RoomPhoto roomPhoto) {

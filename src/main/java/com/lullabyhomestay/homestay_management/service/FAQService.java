@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.FAQ;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.FAQRepository;
 import com.lullabyhomestay.homestay_management.utils.Constants;
 
@@ -36,8 +37,12 @@ public class FAQService {
         this.faqRepository.save(faq);
     }
 
-    public Optional<FAQ> getFAQByFAQID(long faqID) {
-        return this.faqRepository.findByFaqID(faqID);
+    public FAQ getFAQByFAQID(long faqID) {
+        Optional<FAQ> faqOpt = faqRepository.findByFaqID(faqID);
+        if (!faqOpt.isPresent()) {
+            throw new NotFoundException("FAQ");
+        }
+        return faqOpt.get();
     }
 
     @Transactional

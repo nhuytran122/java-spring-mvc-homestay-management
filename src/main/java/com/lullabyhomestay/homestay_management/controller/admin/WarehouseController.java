@@ -4,9 +4,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
-import org.hibernate.dialect.function.TransactSQLStrFunction;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,14 +14,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.lullabyhomestay.homestay_management.domain.Branch;
 import com.lullabyhomestay.homestay_management.domain.InventoryStock;
 import com.lullabyhomestay.homestay_management.domain.InventoryTransaction;
-import com.lullabyhomestay.homestay_management.domain.InventoryTransaction_;
-import com.lullabyhomestay.homestay_management.domain.Room;
-import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchTransactionCriterialDTO;
 import com.lullabyhomestay.homestay_management.service.BranchService;
 import com.lullabyhomestay.homestay_management.service.InventoryItemService;
@@ -113,6 +105,8 @@ public class WarehouseController {
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchTransactionCriterialDTO criteria) {
         int validPage = Math.max(1, page);
+        String sort = (criteria.getSort() != null && !criteria.getSort().isEmpty()) ? criteria.getSort() : "desc";
+        criteria.setSort(sort);
         Page<InventoryTransaction> transactions = transactionService.searchTransactions(criteria.getKeyword(),
                 criteria.getBranchID(), validPage,
                 criteria.getSort());
@@ -136,12 +130,8 @@ public class WarehouseController {
 
     @GetMapping("/admin/warehouse/transaction/update/{id}")
     public String getUpdateTransactionPage(Model model, @PathVariable Long id) {
-        Optional<InventoryTransaction> transactionOpt = transactionService.getTransactionByID(id);
-        if (!transactionOpt.isPresent()) {
-            return "admin/warehouse/transaction";
-        }
-
-        model.addAttribute("transaction", transactionOpt.get());
+        InventoryTransaction transactionOpt = transactionService.getTransactionByID(id);
+        model.addAttribute("transaction", transactionOpt);
         return "admin/warehouse/transaction/update";
     }
 
@@ -153,16 +143,14 @@ public class WarehouseController {
 
         // HttpSession session = request.getSession(false);
         Long transactionId = transaction.getTransactionID();
-        InventoryTransaction currentTransaction = this.transactionService.getTransactionByID(transactionId).get();
+        InventoryTransaction currentTransaction = this.transactionService.getTransactionByID(transactionId);
         if (result.hasErrors()) {
             return "admin/warehouse/transaction/update";
         }
-        if (currentTransaction != null) {
-            int oldQuantity = currentTransaction.getQuantity();
-            currentTransaction.setQuantity(transaction.getQuantity());
-            currentTransaction.setDate(LocalDateTime.now());
-            this.transactionService.updateTransaction(currentTransaction, oldQuantity);
-        }
+        int oldQuantity = currentTransaction.getQuantity();
+        currentTransaction.setQuantity(transaction.getQuantity());
+        currentTransaction.setDate(LocalDateTime.now());
+        this.transactionService.updateTransaction(currentTransaction, oldQuantity);
         return "redirect:/admin/warehouse/transaction";
     }
 
@@ -175,12 +163,9 @@ public class WarehouseController {
     private InventoryTransaction createTransactionFromParams(Long branchID, Long itemID) {
         InventoryTransaction transaction = new InventoryTransaction();
         if (branchID != null && itemID != null) {
-            Optional<InventoryStock> stockOptional = stockService.findStockByItemIDAndBranchID(itemID, branchID);
-            if (stockOptional.isPresent()) {
-                InventoryStock stock = stockOptional.get();
-                transaction.setInventoryItem(stock.getInventoryItem());
-                transaction.setBranch(stock.getBranch());
-            }
+            InventoryStock stock = stockService.findStockByItemIDAndBranchID(itemID, branchID);
+            transaction.setInventoryItem(stock.getInventoryItem());
+            transaction.setBranch(stock.getBranch());
         }
         return transaction;
     }

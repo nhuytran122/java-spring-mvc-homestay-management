@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Role;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.EmployeeRepository;
 import com.lullabyhomestay.homestay_management.repository.RoleRepository;
 
@@ -22,8 +23,12 @@ public class RoleService {
         return this.roleRepository.findAll();
     }
 
-    public Optional<Role> getRoleByRoleID(long roleID) {
-        return this.roleRepository.findByRoleID(roleID);
+    public Role getRoleByRoleID(long roleID) {
+        Optional<Role> roleOpt = this.roleRepository.findByRoleID(roleID);
+        if (!roleOpt.isPresent()) {
+            throw new NotFoundException("Vai trò");
+        }
+        return roleOpt.get();
     }
 
     public Role handleSaveRole(Role role) {

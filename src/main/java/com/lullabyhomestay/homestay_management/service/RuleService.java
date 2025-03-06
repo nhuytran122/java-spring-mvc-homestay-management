@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.Rule;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RuleRepository;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +28,11 @@ public class RuleService {
         this.ruleRepository.save(rule);
     }
 
-    public Optional<Rule> getRuleByRuleID(long ruleID) {
-        return this.ruleRepository.findByRuleID(ruleID);
+    public Rule getRuleByRuleID(long ruleID) {
+        Optional<Rule> ruleOpt = ruleRepository.findByRuleID(ruleID);
+        if (!ruleOpt.isPresent()) {
+            throw new NotFoundException("Quy tắc");
+        }
+        return ruleOpt.get();
     }
 }

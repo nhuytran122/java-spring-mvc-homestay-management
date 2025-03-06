@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -49,11 +48,8 @@ public class BranchController {
 
     @GetMapping("/admin/branch/{id}")
     public String getDetailBranchPage(Model model, @PathVariable long id) {
-        Optional<Branch> branch = branchService.getBranchByID(id);
-        if (!branch.isPresent()) {
-            return "admin/branch";
-        }
-        model.addAttribute("branch", branch.get());
+        Branch branch = branchService.getBranchByID(id);
+        model.addAttribute("branch", branch);
         return "admin/branch/detail";
     }
 
@@ -88,12 +84,9 @@ public class BranchController {
 
     @GetMapping("/admin/branch/update/{id}")
     public String getUpdateBranchPage(Model model, @PathVariable long id) {
-        Optional<Branch> branch = branchService.getBranchByID(id);
-        if (!branch.isPresent()) {
-            return "admin/branch";
-        }
+        Branch branch = branchService.getBranchByID(id);
 
-        model.addAttribute("branch", branch.get());
+        model.addAttribute("branch", branch);
         return "admin/branch/update";
     }
 
@@ -106,24 +99,23 @@ public class BranchController {
 
         // HttpSession session = request.getSession(false);
 
-        Branch currentBranch = this.branchService.getBranchByID(branch.getBranchID()).get();
+        Branch currentBranch = this.branchService.getBranchByID(branch.getBranchID());
 
         if (newBranchBindingResult.hasErrors()) {
             return "admin/branch/update";
         }
 
-        if (currentBranch != null) {
-            if (!file.isEmpty()) {
-                String img = this.uploadService.handleSaveUploadFile(file, "branch");
-                currentBranch.setImage(img);
-            }
-            currentBranch.setBranchName(branch.getBranchName());
-            currentBranch.setAddress(branch.getAddress());
-            currentBranch.setPhone(branch.getPhone());
-            currentBranch.setBranchPassword(branch.getBranchPassword());
-
-            this.branchService.handleSaveBranch(currentBranch);
+        if (!file.isEmpty()) {
+            String img = this.uploadService.handleSaveUploadFile(file, "branch");
+            currentBranch.setImage(img);
         }
+        currentBranch.setBranchName(branch.getBranchName());
+        currentBranch.setAddress(branch.getAddress());
+        currentBranch.setPhone(branch.getPhone());
+        currentBranch.setBranchPassword(branch.getBranchPassword());
+
+        this.branchService.handleSaveBranch(currentBranch);
+
         return "redirect:/admin/branch";
     }
 

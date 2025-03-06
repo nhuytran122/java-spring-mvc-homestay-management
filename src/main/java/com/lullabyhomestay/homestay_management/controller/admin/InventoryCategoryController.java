@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -59,19 +58,15 @@ public class InventoryCategoryController {
         if (newCategoryBindingResult.hasErrors()) {
             return "admin/inventory-category/create";
         }
-
         inventoryCategoryService.handleSaveInventoryCategory(inventoryCategory);
         return "redirect:/admin/inventory-category";
     }
 
     @GetMapping("/admin/inventory-category/update/{id}")
     public String getUpdateCategoryPage(Model model, @PathVariable long id) {
-        Optional<InventoryCategory> category = inventoryCategoryService.getInventoryCategoryByID(id);
-        if (!category.isPresent()) {
-            return "admin/inventory-category";
-        }
+        InventoryCategory category = inventoryCategoryService.getInventoryCategoryByID(id);
 
-        model.addAttribute("category", category.get());
+        model.addAttribute("category", category);
         return "admin/inventory-category/update";
     }
 
@@ -84,18 +79,15 @@ public class InventoryCategoryController {
         // HttpSession session = request.getSession(false);
 
         InventoryCategory currentCategory = this.inventoryCategoryService
-                .getInventoryCategoryByID(category.getCategoryID())
-                .get();
+                .getInventoryCategoryByID(category.getCategoryID());
 
         if (newCategoryBindingResult.hasErrors()) {
             return "admin/inventory-category/update";
         }
 
-        if (currentCategory != null) {
-            currentCategory.setCategoryName(category.getCategoryName());
-            currentCategory.setDescription(category.getDescription());
-            this.inventoryCategoryService.handleSaveInventoryCategory(currentCategory);
-        }
+        currentCategory.setCategoryName(category.getCategoryName());
+        currentCategory.setDescription(category.getDescription());
+        this.inventoryCategoryService.handleSaveInventoryCategory(currentCategory);
         return "redirect:/admin/inventory-category";
     }
 

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
 import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RoomAmenityRepository;
 
 import lombok.AllArgsConstructor;
@@ -25,9 +26,13 @@ public class RoomAmenityService {
         return this.roomAmenityRepository.save(roomAmenity);
     }
 
-    public Optional<RoomAmenity> getRoomAmenityByID(long roomID, long amenityID) {
+    public RoomAmenity getRoomAmenityByID(long roomID, long amenityID) {
         RoomAmenityID id = new RoomAmenityID(roomID, amenityID);
-        return roomAmenityRepository.findByRoomAmenityID(id);
+        Optional<RoomAmenity> roomAmenityOpt = roomAmenityRepository.findByRoomAmenityID(id);
+        if (!roomAmenityOpt.isPresent()) {
+            throw new NotFoundException("Tiện nghi phòng");
+        }
+        return roomAmenityOpt.get();
     }
 
     @Transactional

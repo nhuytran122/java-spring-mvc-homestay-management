@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.AmenityCategory;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.AmenityCategoryRepository;
 import com.lullabyhomestay.homestay_management.repository.AmenityRepository;
 import com.lullabyhomestay.homestay_management.utils.Constants;
@@ -26,8 +27,12 @@ public class AmenityCategoryService {
         return this.amenityCategoryRepository.findAll();
     }
 
-    public Optional<AmenityCategory> getAmenityCategoryByID(long id) {
-        return this.amenityCategoryRepository.findByCategoryID(id);
+    public AmenityCategory getAmenityCategoryByID(long id) {
+        Optional<AmenityCategory> categoryOpt = amenityCategoryRepository.findByCategoryID(id);
+        if (!categoryOpt.isPresent()) {
+            throw new NotFoundException("Phân loại tiện nghi");
+        }
+        return categoryOpt.get();
     }
 
     public AmenityCategory handleSaveAmenityCategory(AmenityCategory amenityCategory) {

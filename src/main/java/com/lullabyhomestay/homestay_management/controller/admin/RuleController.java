@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,31 +32,26 @@ public class RuleController {
     @ResponseBody
     public ResponseEntity<?> postCreateRules(@RequestBody List<Rule> listRules) {
         for (Rule request : listRules) {
-            Optional<Rule> optionalRule = ruleService.getRuleByRuleID(request.getRuleID());
-            if (optionalRule.isPresent()) {
-                Rule currentRule = optionalRule.get();
-                currentRule.setIsHidden(false);
-                currentRule.setDescription(request.getDescription());
-                ruleService.handleSaveRule(currentRule);
-            }
+            Rule optionalRule = ruleService.getRuleByRuleID(request.getRuleID());
+            optionalRule.setIsHidden(false);
+            optionalRule.setDescription(request.getDescription());
+            ruleService.handleSaveRule(optionalRule);
         }
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/admin/homestay-infor/rule/update")
     public String postUpdateRule(@RequestBody Rule rule) {
-        Rule currentRule = this.ruleService.getRuleByRuleID(rule.getRuleID()).get();
-        if (currentRule != null) {
-            currentRule.setDescription(rule.getDescription());
-            this.ruleService.handleSaveRule(currentRule);
-        }
+        Rule currentRule = this.ruleService.getRuleByRuleID(rule.getRuleID());
+        currentRule.setDescription(rule.getDescription());
+        this.ruleService.handleSaveRule(currentRule);
         return "redirect:/admin/homestay-infor/rule";
     }
 
     @PostMapping("/admin/homestay-infor/rule/delete")
     public String postHiddenRule(Model model,
             @ModelAttribute("rule") Rule rule) {
-        Rule currentRule = ruleService.getRuleByRuleID(rule.getRuleID()).get();
+        Rule currentRule = ruleService.getRuleByRuleID(rule.getRuleID());
         currentRule.setIsHidden(true);
         currentRule.setDescription("");
         this.ruleService.handleSaveRule(currentRule);

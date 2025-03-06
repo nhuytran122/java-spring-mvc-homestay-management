@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -55,11 +54,8 @@ public class RoleController {
 
     @GetMapping("/admin/employee-role/update/{id}")
     public String getUpdateRolePage(Model model, @PathVariable long id) {
-        Optional<Role> role = roleService.getRoleByRoleID(id);
-        if (!role.isPresent()) {
-            return "admin/employee-role";
-        }
-        model.addAttribute("role", role.get());
+        Role role = roleService.getRoleByRoleID(id);
+        model.addAttribute("role", role);
         return "admin/role/update";
     }
 
@@ -70,15 +66,12 @@ public class RoleController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        Role currentRole = roleService.getRoleByRoleID(role.getRoleID()).get();
+        Role currentRole = roleService.getRoleByRoleID(role.getRoleID());
         if (roleBindingResult.hasErrors()) {
             return "admin/role/update";
         }
-
-        if (currentRole != null) {
-            currentRole.setRoleName(role.getRoleName());
-            roleService.handleSaveRole(currentRole);
-        }
+        currentRole.setRoleName(role.getRoleName());
+        roleService.handleSaveRole(currentRole);
         return "redirect:/admin/employee-role";
     }
 
@@ -93,5 +86,4 @@ public class RoleController {
         roleService.deleteByRoleID(roleID);
         return "redirect:/admin/employee-role";
     }
-    
 }

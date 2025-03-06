@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.HomestayDetail;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.HomestayDetailRepository;
 import com.lullabyhomestay.homestay_management.utils.Constants;
 
@@ -36,8 +37,12 @@ public class HomestayService {
         this.homestayDetailRepository.save(infor);
     }
 
-    public Optional<HomestayDetail> getInforHomestayByInforID(long inforID) {
-        return this.homestayDetailRepository.findByInforID(inforID);
+    public HomestayDetail getInforHomestayByInforID(long inforID) {
+        Optional<HomestayDetail> infOpt = homestayDetailRepository.findByInforID(inforID);
+        if (!infOpt.isPresent()) {
+            throw new NotFoundException("Thông tin");
+        }
+        return infOpt.get();
     }
 
     @Transactional

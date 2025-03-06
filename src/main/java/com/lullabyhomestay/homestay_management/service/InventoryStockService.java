@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryStock;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.InventoryStockSpecifications;
 import com.lullabyhomestay.homestay_management.utils.Constants;
@@ -36,7 +37,12 @@ public class InventoryStockService {
         this.stockRepository.save(stock);
     }
 
-    public Optional<InventoryStock> findStockByItemIDAndBranchID(long itemID, long branchID) {
-        return this.stockRepository.findByInventoryItem_ItemIDAndBranch_BranchID(itemID, branchID);
+    public InventoryStock findStockByItemIDAndBranchID(long itemID, long branchID) {
+        Optional<InventoryStock> stockOpt = stockRepository.findByInventoryItem_ItemIDAndBranch_BranchID(itemID,
+                branchID);
+        if (!stockOpt.isPresent()) {
+            throw new NotFoundException("Đồ trong kho");
+        }
+        return stockOpt.get();
     }
 }

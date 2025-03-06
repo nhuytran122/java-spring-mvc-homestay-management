@@ -1,0 +1,51 @@
+:root {
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --secondary: #f8fafc;
+    --foreground: #0f172a;
+    --radius: 0.75rem;
+    --font-family: 'Inter', system-ui, sans-serif;
+}
+
+body.error-page {
+    font-family: var(--font-family);
+    background: linear-gradient(135deg, var(--secondary), #e2e8f0);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-image img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.error-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    color: var(--primary-foreground);
+}

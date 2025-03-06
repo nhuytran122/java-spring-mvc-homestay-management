@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.RoomType;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RoomRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomTypeRepository;
 import com.lullabyhomestay.homestay_management.utils.Constants;
@@ -26,8 +27,12 @@ public class RoomTypeService {
         return roomTypeRepository.findAll();
     }
 
-    public Optional<RoomType> getRoomTypeById(long id) {
-        return roomTypeRepository.findByRoomTypeID(id);
+    public RoomType getRoomTypeById(long id) {
+        Optional<RoomType> roomTypeOpt = roomTypeRepository.findByRoomTypeID(id);
+        if (!roomTypeOpt.isPresent()) {
+            throw new NotFoundException("Loại phòng");
+        }
+        return roomTypeOpt.get();
     }
 
     public Page<RoomType> searchRoomTypes(String keyword, int page, String sortOrder) {

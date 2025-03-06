@@ -17,18 +17,15 @@
         <jsp:include page="../layout/theme-settings.jsp" />
         <jsp:include page="../layout/sidebar.jsp" />
         <div class="main-panel">
-            <ul class="navbar-nav mr-lg-2 my-4">
-                <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
-                    <form action="/admin/homestay-infor" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
-                        <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm thông tin..." 
-                               value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
-                        <button type="submit" class="btn btn-primary btn-sm p-2">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </form>
-                </li>
-            </ul>
-            
+            <div class="search-form-container my-4">
+                <form action="/admin/homestay-infor" method="get" class="search-form">
+                    <input type="text" class="form-control form-control-sm" name="keyword" placeholder="Tìm kiếm thông tin..." 
+                            value="${keyword}">
+                    <button type="submit" class="btn btn-primary btn-sm p-2">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
             <div class="content-wrapper">
                 <div class="row">
                     <div class="col-md-12 grid-margin stretch-card">

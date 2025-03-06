@@ -3,7 +3,6 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -86,12 +85,9 @@ public class InventoryItemController {
 
     @GetMapping("/admin/inventory-item/update/{id}")
     public String getUpdateInventoryItemPage(Model model, @PathVariable long id) {
-        Optional<InventoryItem> item = itemService.getInventoryItemByID(id);
-        if (!item.isPresent()) {
-            return "admin/inventory-item";
-        }
+        InventoryItem item = itemService.getInventoryItemByID(id);
 
-        model.addAttribute("item", item.get());
+        model.addAttribute("item", item);
         model.addAttribute("listCategories", this.categoryService.getAllInventoryCategories());
         return "admin/inventory-item/update";
     }
@@ -104,7 +100,7 @@ public class InventoryItemController {
 
         // HttpSession session = request.getSession(false);
 
-        InventoryItem currentItem = this.itemService.getInventoryItemByID(item.getItemID()).get();
+        InventoryItem currentItem = this.itemService.getInventoryItemByID(item.getItemID());
 
         if (item.getInventoryCategory().getCategoryID() == null) {
             newInventoryItemBindingResult.rejectValue("itemCategory",
@@ -116,14 +112,12 @@ public class InventoryItemController {
             return "admin/inventory-item/update";
         }
 
-        if (currentItem != null) {
-            currentItem.setItemName(item.getItemName());
-            currentItem.setInventoryCategory(item.getInventoryCategory());
-            currentItem.setPrice(item.getPrice());
-            currentItem.setMinQuantity(item.getMinQuantity());
-            currentItem.setUnit(item.getUnit());
-            this.itemService.handleSaveInventoryItem(currentItem);
-        }
+        currentItem.setItemName(item.getItemName());
+        currentItem.setInventoryCategory(item.getInventoryCategory());
+        currentItem.setPrice(item.getPrice());
+        currentItem.setMinQuantity(item.getMinQuantity());
+        currentItem.setUnit(item.getUnit());
+        this.itemService.handleSaveInventoryItem(currentItem);
         return "redirect:/admin/inventory-item";
     }
 
@@ -138,5 +132,4 @@ public class InventoryItemController {
         this.itemService.deleteByInventoryItemID(itemID);
         return "redirect:/admin/inventory-item";
     }
-
 }

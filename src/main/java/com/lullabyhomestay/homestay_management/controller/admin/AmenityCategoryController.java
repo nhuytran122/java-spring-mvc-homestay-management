@@ -16,7 +16,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -66,12 +65,9 @@ public class AmenityCategoryController {
 
     @GetMapping("/admin/amenity-category/update/{id}")
     public String getUpdateCategoryPage(Model model, @PathVariable long id) {
-        Optional<AmenityCategory> category = amenityCategoryService.getAmenityCategoryByID(id);
-        if (!category.isPresent()) {
-            return "admin/amenity-category";
-        }
+        AmenityCategory category = amenityCategoryService.getAmenityCategoryByID(id);
 
-        model.addAttribute("category", category.get());
+        model.addAttribute("category", category);
         model.addAttribute("iconList", iconService.getCachedIconList());
         return "admin/amenity-category/update";
     }
@@ -84,21 +80,19 @@ public class AmenityCategoryController {
 
         // HttpSession session = request.getSession(false);
 
-        AmenityCategory currentCategory = this.amenityCategoryService.getAmenityCategoryByID(category.getCategoryID())
-                .get();
+        AmenityCategory currentCategory = this.amenityCategoryService.getAmenityCategoryByID(category.getCategoryID());
 
         if (newCategoryBindingResult.hasErrors()) {
             model.addAttribute("iconList", iconService.getCachedIconList());
             return "admin/amenity-category/update";
         }
 
-        if (currentCategory != null) {
-            currentCategory.setCategoryName(category.getCategoryName());
-            currentCategory.setIcon(category.getIcon());
-            currentCategory.setDescription(category.getDescription());
+        currentCategory.setCategoryName(category.getCategoryName());
+        currentCategory.setIcon(category.getIcon());
+        currentCategory.setDescription(category.getDescription());
 
-            this.amenityCategoryService.handleSaveAmenityCategory(currentCategory);
-        }
+        this.amenityCategoryService.handleSaveAmenityCategory(currentCategory);
+
         return "redirect:/admin/amenity-category";
     }
 

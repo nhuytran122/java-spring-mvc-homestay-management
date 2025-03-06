@@ -18,28 +18,26 @@
         <jsp:include page="../layout/theme-settings.jsp" />
         <jsp:include page="../layout/sidebar.jsp" />
         <div class="main-panel">
-            <ul class="navbar-nav mr-lg-2 my-4">
-                <li class="nav-item nav-search d-none d-lg-block" style="display: flex; align-items: center;">
-                    <form action="/admin/room-type" method="get" class="d-flex" style="width: 100%; justify-content: center; align-items: center;">
-                        <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm loại phòng..." 
-                               value="${keyword}" style="width: 400px; font-size: 14px; margin-right: 10px;">
-                        <select name="sort" class="form-select form-control form-select-sm me-2" style="width: 200px; font-size: 14px; height: 41px;">
-                            <option value="" ${sort == '' ? 'selected' : ''}>
-                                Không sắp xếp
-                            </option>
-                            <option value="desc" ${sort == 'desc' ? 'selected' : ''}>
-                                Giá giảm dần
-                            </option>
-                            <option value="asc" ${sort == 'asc' ? 'selected' : ''}>
-                                Giá tăng dần
-                            </option>
-                        </select>
-                        <button type="submit" class="btn btn-primary btn-sm p-2">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </form>
-                </li>
-            </ul>
+            <div class="search-form-container my-4">
+                <form action="/admin/room-type" method="get" class="search-form">
+                    <input type="text" class="form-control form-control-sm" name="keyword" placeholder="Tìm kiếm loại phòng..." 
+                            value="${keyword}">
+                    <select name="sort" class="form-select form-control form-select-sm">
+                        <option value="" ${sort == '' ? 'selected' : ''}>
+                            Không sắp xếp
+                        </option>
+                        <option value="desc" ${sort == 'desc' ? 'selected' : ''}>
+                            Giá giảm dần
+                        </option>
+                        <option value="asc" ${sort == 'asc' ? 'selected' : ''}>
+                            Giá tăng dần
+                        </option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm p-2">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
             
             <div class="content-wrapper">
                 <div class="row">

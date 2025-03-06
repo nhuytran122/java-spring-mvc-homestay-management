@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryItem;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryTransactionRepository;
@@ -52,8 +53,12 @@ public class InventoryItemService {
         this.itemRepository.save(amenity);
     }
 
-    public Optional<InventoryItem> getInventoryItemByID(long itemID) {
-        return this.itemRepository.findByItemID(itemID);
+    public InventoryItem getInventoryItemByID(long itemID) {
+        Optional<InventoryItem> itemOpt = itemRepository.findByItemID(itemID);
+        if (!itemOpt.isPresent()) {
+            throw new NotFoundException("Đồ dùng");
+        }
+        return itemOpt.get();
     }
 
     @Transactional

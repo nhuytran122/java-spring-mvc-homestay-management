@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Branch;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BranchRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryTransactionRepository;
@@ -43,8 +44,12 @@ public class BranchService {
         this.branchRepository.save(branch);
     }
 
-    public Optional<Branch> getBranchByID(long branchID) {
-        return this.branchRepository.findByBranchID(branchID);
+    public Branch getBranchByID(long branchID) {
+        Optional<Branch> branchOpt = branchRepository.findByBranchID(branchID);
+        if (!branchOpt.isPresent()) {
+            throw new NotFoundException("Chi nhánh");
+        }
+        return branchOpt.get();
     }
 
     public boolean canDeleteBranch(long branchID) {
