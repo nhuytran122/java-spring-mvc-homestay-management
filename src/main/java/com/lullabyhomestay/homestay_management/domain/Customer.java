@@ -27,7 +27,7 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CustomerID")
-    private long customerID;
+    private Long customerID;
 
     @NotBlank(message = "Vui lòng nhập họ tên")
     @Column(name = "FullName")

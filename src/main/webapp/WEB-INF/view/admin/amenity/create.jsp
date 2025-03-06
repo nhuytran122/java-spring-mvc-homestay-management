@@ -46,7 +46,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-2">Phân loại <span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
-                                    <form:select class="form-select form-control ${not empty errorCategoryID ? 'is-invalid' : ''}" path="amenityCategory">
+                                    <form:select class="form-select form-control ${not empty errorCategoryID ? 'is-invalid' : ''}" path="amenityCategory.categoryID">
                                         <form:option value="">Chọn phân loại</form:option>
                                         <c:forEach var="category" items="${listCategories}">
                                             <form:option value="${category.categoryID}">${category.categoryName}</form:option>

@@ -102,6 +102,9 @@ public class RoomController {
         model.addAttribute("listBranches", this.branchService.getAllBranches());
         model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
         model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(id));
+
+        model.addAttribute("listPhotos", room.get().getRoomPhotos());
+        model.addAttribute("listAmenities", room.get().getRoomAmenities());
         return "admin/room/update";
     }
 
@@ -115,18 +118,22 @@ public class RoomController {
         // HttpSession session = request.getSession(false);
         Long roomID = room.getRoomID();
         Room currentRoom = this.roomService.getRoomByID(roomID).get();
-        if (room.getBranch().getBranchID() == 0) {
+        if (room.getBranch().getBranchID() == null) {
             newRoomBindingResult.rejectValue("branch",
                     "error.branch", "Vui lòng chọn chi nhánh");
         }
-        if (room.getRoomType().getRoomTypeID() == 0) {
+        if (room.getRoomType().getRoomTypeID() == null) {
             newRoomBindingResult.rejectValue("roomType",
                     "error.roomType", "Vui lòng chọn loại phòng");
         }
         if (newRoomBindingResult.hasErrors()) {
             model.addAttribute("listBranches", this.branchService.getAllBranches());
             model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
+            Optional<Room> roomWithDetails = this.roomService.getRoomByID(roomID);
             model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(roomID));
+
+            model.addAttribute("listPhotos", roomWithDetails.get().getRoomPhotos());
+            model.addAttribute("listAmenities", roomWithDetails.get().getRoomAmenities());
             return "admin/room/update";
         }
         if (currentRoom != null) {

@@ -1,7 +1,14 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +19,9 @@ import com.lullabyhomestay.homestay_management.exception.InventoryException;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryTransactionRepository;
+import com.lullabyhomestay.homestay_management.service.specifications.InventoryStockSpecifications;
+import com.lullabyhomestay.homestay_management.service.specifications.InventoryTransactionSpecifications;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.TransactionType;
 
 import lombok.AllArgsConstructor;
@@ -23,17 +33,36 @@ public class InventoryTransactionService {
     private final InventoryStockRepository stockRepository;
     private final InventoryItemRepository itemRepository;
 
+    public Optional<InventoryTransaction> getTransactionByID(Long transactionID) {
+        return this.transactionRepository.findByTransactionID(transactionID);
+    }
+
+    public Page<InventoryTransaction> searchTransactions(String keyword, Long branchID,
+            int page, String sortOrder) {
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
+                "asc".equals(sortOrder) ? Sort.by("Date").ascending()
+                        : "desc".equals(sortOrder) ? Sort.by("Date").descending() : Sort.unsorted());
+
+        if ((keyword == null || keyword.isEmpty()) && branchID == null)
+            return transactionRepository
+                    .findAll(pageable);
+        Specification<InventoryTransaction> spec = Specification
+                .where(InventoryTransactionSpecifications.hasBranch(branchID))
+                .and(InventoryTransactionSpecifications.nameItemLike(keyword));
+        return transactionRepository.findAll(spec, pageable);
+    }
+
     @Transactional
     public void handleSaveTransaction(InventoryTransaction transaction) {
         this.transactionRepository.save(transaction);
         this.handleChangeStock(transaction);
     }
 
-    public boolean handleChangeStock(InventoryTransaction transaction) {
+    private boolean handleChangeStock(InventoryTransaction transaction) {
         Optional<InventoryItem> currentItem = this.itemRepository
                 .findByItemID(transaction.getInventoryItem().getItemID());
         if (!currentItem.isPresent()) {
-            throw new InventoryException("Không tìm thấy đồ dùng");
+            throw new InventoryException("Không tìm thấy đồ dùng", transaction);
         }
 
         Optional<InventoryStock> currentStockOpt = stockRepository.findByInventoryItem_ItemIDAndBranch_BranchID(
@@ -42,7 +71,7 @@ public class InventoryTransactionService {
         if (!currentStockOpt.isPresent()) {
             if (transaction.getTransactionType() == TransactionType.EXPORT) {
                 throw new InventoryException(
-                        "Hiện không có " + transaction.getInventoryItem().getItemName() + " trong kho.");
+                        "Hiện không có đồ dùng này trong kho.", transaction);
             }
             currentStock = new InventoryStock();
             currentStock.setQuantity(0);
@@ -60,11 +89,57 @@ public class InventoryTransactionService {
             newQuantity = currentStock.getQuantity() - transaction.getQuantity();
             if (newQuantity < 0) {
                 throw new InventoryException(
-                        "Số lượng xuất vượt quá tồn kho.");
+                        "Số lượng xuất vượt quá tồn kho.", transaction);
             }
         }
         currentStock.setQuantity(newQuantity);
         this.stockRepository.save(currentStock); // cập nhật
         return true;
+    }
+
+    public boolean canUpdateTransaction(Long transactionID) {
+        Optional<InventoryTransaction> transactionOpt = transactionRepository.findById(transactionID);
+        if (!transactionOpt.isPresent()) {
+            throw new InventoryException("Không tìm thấy giao dịch", null);
+        }
+
+        InventoryTransaction transaction = transactionOpt.get();
+        LocalDateTime transactionDate = transaction.getDate();
+        LocalDateTime now = LocalDateTime.now();
+
+        long hoursDifference = ChronoUnit.HOURS.between(transactionDate, now);
+        return hoursDifference <= 3;
+    }
+
+    @Transactional
+    public void updateTransaction(InventoryTransaction updatedTransaction, int oldQuantity) {
+        InventoryTransaction existingTransaction = transactionRepository.findById(updatedTransaction.getTransactionID()).get();
+        int newQuantity = updatedTransaction.getQuantity();
+
+        existingTransaction.setQuantity(newQuantity);
+
+        transactionRepository.save(existingTransaction);
+        updateStockWithDifference(existingTransaction, newQuantity - oldQuantity);
+    }
+
+    private void updateStockWithDifference(InventoryTransaction transaction, int quantityDifference) {
+        InventoryItem currentItem = itemRepository.findById(transaction.getInventoryItem().getItemID()).get();
+
+        InventoryStock currentStock = stockRepository
+                .findByInventoryItem_ItemIDAndBranch_BranchID(currentItem.getItemID(),
+                        transaction.getBranch().getBranchID()).get();
+
+        int newStockQuantity;
+        if (transaction.getTransactionType() == TransactionType.IMPORT) {
+            newStockQuantity = currentStock.getQuantity() + quantityDifference;
+        } else {
+            newStockQuantity = currentStock.getQuantity() - quantityDifference;
+            if (newStockQuantity < 0) {
+                throw new InventoryException("Số lượng xuất vượt quá tồn kho.", transaction);
+            }
+        }
+
+        currentStock.setQuantity(newStockQuantity);
+        stockRepository.save(currentStock);
     }
 }

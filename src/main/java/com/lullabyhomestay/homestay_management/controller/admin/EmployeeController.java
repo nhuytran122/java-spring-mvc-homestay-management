@@ -40,7 +40,8 @@ public class EmployeeController {
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchEmployeeCriterialDTO criteria) {
 
-        Page<EmployeeDTO> employees = employeeService.searchEmployees(criteria.getKeyword(), criteria.getIsWorking(), criteria.getRoleID(), page);
+        Page<EmployeeDTO> employees = employeeService.searchEmployees(criteria.getKeyword(), criteria.getIsWorking(),
+                criteria.getRoleID(), page);
         List<EmployeeDTO> listEmployees = employees.getContent();
 
         List<Role> roleOptions = roleService.getAllRoles();
@@ -121,7 +122,10 @@ public class EmployeeController {
 
         // HttpSession session = request.getSession(false);
         EmployeeDTO currentEmployee = (employeeService.getEmployeeByID(employee.getEmployeeID())).get();
-
+        if (employee.getRole().getRoleID() == null) {
+            newEmployeeBindingResult.rejectValue("role",
+                    "error.role", "Vui lòng chọn chức vụ");
+        }
         if (newEmployeeBindingResult.hasErrors()) {
             List<Role> roleOptions = roleService.getAllRoles();
             model.addAttribute("listRoles", roleOptions);

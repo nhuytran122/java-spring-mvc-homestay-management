@@ -78,12 +78,13 @@
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#items" aria-expanded="false" aria-controls="items">
           <i class="bi bi-basket menu-icon"></i>
-          <span class="menu-title">Đồ dùng</span>
+          <span class="menu-title">Quản lý kho</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="items">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="/admin/warehouse">Quản lý kho</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/admin/warehouse">Kho hiện có</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/admin/warehouse/transaction">Lịch sử giao dịch kho</a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/inventory-item">Đồ dùng</a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/inventory-category">Phân loại</a></li>
           </ul>

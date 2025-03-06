@@ -52,7 +52,7 @@
                                         <label class="control-label col-sm-2">Chi nhánh <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
                                             <form:select class="form-select form-control ${not empty errorBranchID ? 'is-invalid' : ''}" path="branch.branchID">
-                                                <form:option value="0">Chọn chi nhánh</form:option>
+                                                <form:option value="">Chọn chi nhánh</form:option>
                                                 <c:forEach var="branch" items="${listBranches}">
                                                     <form:option value="${branch.branchID}">${branch.branchName}</form:option>
                                                 </c:forEach>
@@ -65,7 +65,7 @@
                                         <label class="control-label col-sm-2">Loại phòng <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
                                             <form:select class="form-select form-control ${not empty errorRoomTypeID ? 'is-invalid' : ''}" path="roomType.roomTypeID">
-                                                <form:option value="0">Chọn loại phòng</form:option>
+                                                <form:option value="">Chọn loại phòng</form:option>
                                                 <c:forEach var="roomType" items="${listRoomTypes}">
                                                     <form:option value="${roomType.roomTypeID}">${roomType.name}</form:option>
                                                 </c:forEach>

@@ -25,20 +25,20 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ReviewID")
-    private long reviewID;
-    
+    private Long reviewID;
+
     @Column(name = "Rating")
     private int rating;
-    
+
     @Column(name = "Comment")
     private String comment;
-    
+
     @Column(name = "CreatedAt")
     private Date createdAt;
-    
+
     @Column(name = "Image")
     private String image;
-    
+
     @ManyToOne
     @JoinColumn(name = "BookingID")
     private Booking booking;

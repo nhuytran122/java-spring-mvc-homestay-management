@@ -29,7 +29,7 @@ public class Amenity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AmenityID")
-    private long amenityID;
+    private Long amenityID;
 
     @NotBlank(message = "Vui lòng nhập tên tiện nghi")
     @Column(name = "AmenityName")

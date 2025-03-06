@@ -25,7 +25,7 @@ public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BranchID")
-    private long branchID;
+    private Long branchID;
 
     @NotBlank(message = "Vui lòng nhập tên chi nhánh")
     @Column(name = "BranchName")

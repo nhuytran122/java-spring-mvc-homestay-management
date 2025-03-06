@@ -26,7 +26,7 @@ public class MaintenanceRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RequestID")
-    private long requestID;
+    private Long requestID;
 
     @Column(name = "Description")
     private String description;

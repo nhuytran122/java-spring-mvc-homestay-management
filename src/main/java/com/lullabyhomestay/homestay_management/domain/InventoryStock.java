@@ -24,7 +24,7 @@ public class InventoryStock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "StockID")
-    private long stockID;
+    private Long stockID;
 
     @Column(name = "Quantity")
     private int quantity;

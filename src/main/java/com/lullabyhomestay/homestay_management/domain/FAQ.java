@@ -22,7 +22,7 @@ public class FAQ {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FAQID")
-    private long faqID;
+    private Long faqID;
 
     @NotBlank(message = "Vui lòng nhập câu hỏi")
     @Column(name = "Question")
@@ -32,4 +32,3 @@ public class FAQ {
     @Column(name = "Answer")
     private String answer;
 }
-

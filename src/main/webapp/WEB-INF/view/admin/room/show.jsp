@@ -107,11 +107,14 @@
                                                                     <a href="/admin/room/update/${room.roomID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <button class="btn btn-danger btn-sm"
-                                                                        data-room-id="${room.roomID}"
-                                                                        data-room-number="${room.roomNumber}"
-                                                                        onclick="checkBeforeDelete(this)"
-                                                                        title="Xóa">
+                                                                    <button class="btn btn-danger btn-sm" title="Xóa"
+                                                                        onclick="checkBeforeDelete(this)" 
+                                                                            data-entity-id="${room.roomID}" 
+                                                                            data-entity-name="${room.roomNumber}" 
+                                                                            data-entity-type="Phòng" 
+                                                                            data-delete-url="/admin/room/delete" 
+                                                                            data-check-url="/admin/room/can-delete/" 
+                                                                            data-id-name="roomID">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>
@@ -138,7 +141,8 @@
         </div>
     </div>
   </div>
-  <jsp:include page="_modal-delete.jsp" />
+  
+  <jsp:include page="../layout/partial/_modals-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>

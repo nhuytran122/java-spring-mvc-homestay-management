@@ -64,7 +64,7 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Đồ dùng <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select select2 form-control ${not empty errorItemID ? 'is-invalid' : ''}" path="inventoryItem">
+                                            <form:select class="form-select select2 form-control ${not empty errorItemID ? 'is-invalid' : ''}" path="inventoryItem.itemID">
                                                 <form:option value="">Chọn đồ dùng</form:option>
                                                 <c:forEach var="item" items="${listItems}">
                                                     <form:option value="${item.itemID}">${item.itemName}</form:option>
@@ -77,7 +77,7 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Chi nhánh <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select form-control ${not empty errorBranchID ? 'is-invalid' : ''}" path="branch">
+                                            <form:select class="form-select form-control ${not empty errorBranchID ? 'is-invalid' : ''}" path="branch.branchID">
                                                 <form:option value="">Chọn chi nhánh</form:option>
                                                 <c:forEach var="branch" items="${listBranches}">
                                                     <form:option value="${branch.branchID}">${branch.branchName}</form:option>

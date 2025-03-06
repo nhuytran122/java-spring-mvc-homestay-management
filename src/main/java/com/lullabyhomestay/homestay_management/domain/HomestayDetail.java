@@ -22,7 +22,7 @@ public class HomestayDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "InforID")
-    private long inforID;
+    private Long inforID;
 
     @NotBlank(message = "Vui lòng nhập tiêu đề thông tin")
     @Column(name = "Title")

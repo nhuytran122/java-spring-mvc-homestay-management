@@ -12,6 +12,7 @@ public class InventoryItemSpecifications {
     }
 
     public static Specification<InventoryItem> hasCategory(Long categoryID) {
-        return BaseSpecifications.equalJoin(InventoryItem_.INVENTORY_CATEGORY, InventoryCategory_.CATEGORY_ID, categoryID);
+        return BaseSpecifications.equalJoin(InventoryItem_.INVENTORY_CATEGORY, InventoryCategory_.CATEGORY_ID,
+                categoryID);
     }
 }

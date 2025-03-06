@@ -24,7 +24,7 @@ public class RoomPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PhotoID")
-    private long photoID;
+    private Long photoID;
 
     @Column(name = "Photo")
     private String photo;

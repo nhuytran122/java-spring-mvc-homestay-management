@@ -58,7 +58,7 @@
                                 <div class="col-sm-10">
                                     <form:select class="form-select form-control ${not empty errorCategoryID ? 'is-invalid' : ''}" 
                                     path="inventoryCategory.categoryID">
-                                        <form:option value="0">Chọn phân loại</form:option>
+                                        <form:option value="">Chọn phân loại</form:option>
                                         <c:forEach var="category" items="${listCategories}">
                                             <form:option value="${category.categoryID}">${category.categoryName}</form:option>
                                         </c:forEach>

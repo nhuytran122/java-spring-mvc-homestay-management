@@ -24,21 +24,21 @@ import lombok.Setter;
 @Entity
 @Table(name = "Payments")
 public class Payment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PaymentID")
-    private long paymentID;
+    private Long paymentID;
 
     @Column(name = "PaymentMethod")
     private String paymentMethod;
-    
+
     @Column(name = "Status")
     private boolean status;
-    
+
     @Column(name = "PaymentDate")
     private Date paymentDate;
-    
+
     @Column(name = "TotalAmount")
     private double totalAmount;
 

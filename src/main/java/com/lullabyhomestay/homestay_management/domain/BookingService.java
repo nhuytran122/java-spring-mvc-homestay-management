@@ -23,7 +23,7 @@ public class BookingService {
 
     @Id
     @Column(name = "BookingServiceID")
-    private long bookingServiceID;
+    private Long bookingServiceID;
 
     @Column(name = "Quantity")
     private int quantity;

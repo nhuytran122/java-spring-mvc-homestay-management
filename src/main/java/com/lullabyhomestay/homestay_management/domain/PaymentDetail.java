@@ -20,17 +20,17 @@ import lombok.Setter;
 @Entity
 @Table(name = "PaymentDetails")
 public class PaymentDetail {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PaymentDetailID")
-    private long paymentDetailID;
-    
+    private Long paymentDetailID;
+
     @Column(name = "Amount")
     private double amount;
 
     @Column(name = "ReferenceID")
-    private long referenceId;
+    private Long referenceId;
 
     @ManyToOne
     @JoinColumn(name = "PaymentID")

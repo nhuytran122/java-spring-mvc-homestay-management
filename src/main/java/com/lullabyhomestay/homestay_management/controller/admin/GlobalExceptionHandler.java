@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorMessage", ex.getMessage());
         model.addAttribute("listItems", itemRepository.findAll());
         model.addAttribute("listBranches", branchRepository.findAll());
-        model.addAttribute("newExport", new InventoryTransaction());
+        model.addAttribute("newExport", ex.getData());
         return "admin/warehouse/export";
     }
 }

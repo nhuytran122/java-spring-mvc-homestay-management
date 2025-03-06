@@ -21,12 +21,12 @@ import lombok.Setter;
 @Entity
 @Table(name = "PaymentTypes")
 public class PaymentType {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PaymentTypeID")
-    private long paymentTypeID;
-    
+    private Long paymentTypeID;
+
     @Column(name = "Description")
     private String description;
 

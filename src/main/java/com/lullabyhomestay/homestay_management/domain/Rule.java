@@ -22,7 +22,7 @@ public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RuleID")
-    private long ruleID;
+    private Long ruleID;
 
     @Column(name = "RuleTitle")
     @NotBlank(message = "Vui lòng nhập tiêu đề quy tắc")

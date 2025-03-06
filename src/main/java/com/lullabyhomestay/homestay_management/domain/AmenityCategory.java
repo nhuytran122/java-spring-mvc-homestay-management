@@ -26,7 +26,7 @@ public class AmenityCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CategoryID")
-    private long categoryID;
+    private Long categoryID;
 
     @NotBlank(message = "Vui lòng nhập tên phân loại")
     @Column(name = "CategoryName")

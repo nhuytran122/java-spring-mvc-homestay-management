@@ -24,31 +24,31 @@ import lombok.Setter;
 @Entity
 @Table(name = "RoomTypes")
 public class RoomType {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoomTypeID")
-    private long roomTypeID;
-    
+    private Long roomTypeID;
+
     @NotBlank(message = "Vui lòng nhập tên loại phòng")
     @Column(name = "Name")
     private String name;
-    
+
     @Min(value = 1, message = "Số lượng khách tối đa phải lớn hơn 0")
     @Column(name = "MaxGuest")
     private int maxGuest;
-    
+
     @Min(value = 1, message = "Giá phòng phải lớn hơn 0")
     @Column(name = "PricePerHour")
     private double pricePerHour;
-    
+
     @Column(name = "Description")
-    private String description;   
+    private String description;
 
     @Min(value = 1, message = "Giá phòng bù giờ phải lớn hơn 0")
     @Column(name = "ExtraPricePerHour")
     private double extraPricePerHour;
-    
+
     @OneToMany(mappedBy = "roomType")
     private List<Room> rooms;
 }

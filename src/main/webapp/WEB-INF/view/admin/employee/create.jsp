@@ -81,7 +81,7 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Vai trò <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select form-control ${not empty errorRoleID ? 'is-invalid' : ''}" path="role">
+                                            <form:select class="form-select form-control ${not empty errorRoleID ? 'is-invalid' : ''}" path="role.roleID">
                                                 <form:option value="">Chọn vai trò</form:option>
                                                 <c:forEach var="role" items="${listRoles}">
                                                     <form:option value="${role.roleID}">${role.roleName}</form:option>

@@ -23,22 +23,22 @@ import lombok.Setter;
 @Entity
 @Table(name = "Reports")
 public class Report {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ReportID")
-    private long reportID;
-    
+    private Long reportID;
+
     @NotBlank(message = "Vui lòng nhập mô tả")
     @Column(name = "Description")
     private String description;
-    
+
     @Column(name = "Status")
     private String status;
-    
+
     @Column(name = "CreatedAt")
     private Date createdAt;
-    
+
     @Column(name = "UpdatedAt")
     private Date updatedAt;
 

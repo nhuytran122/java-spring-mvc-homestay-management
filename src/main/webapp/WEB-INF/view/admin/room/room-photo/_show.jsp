@@ -25,13 +25,13 @@
                         </thead>
                         <tbody>
                             <c:choose>
-                                <c:when test="${empty room.roomPhotos}">
+                                <c:when test="${empty listPhotos}">
                                     <tr>
                                         <td colspan="7" class="text-center text-danger">Hiện không có ảnh nào</td>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="photo" items="${room.roomPhotos}">
+                                    <c:forEach var="photo" items="${listPhotos}">
                                         <tr>
                                             <td>
                                                 <img src="/images/room/${photo.photo}" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">

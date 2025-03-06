@@ -24,13 +24,13 @@
                         </thead>
                         <tbody>
                             <c:choose>
-                                <c:when test="${empty room.roomAmenities}">
+                                <c:when test="${empty listAmenities}">
                                     <tr>
                                         <td colspan="7" class="text-center text-danger">Hiện phòng ${room.roomNumber} không có tiện nghi nào</td>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="roomAmenity" items="${room.roomAmenities}">
+                                    <c:forEach var="roomAmenity" items="${listAmenities}">
                                         <tr>
                                             <td>
                                                 ${roomAmenity.amenity.amenityName}

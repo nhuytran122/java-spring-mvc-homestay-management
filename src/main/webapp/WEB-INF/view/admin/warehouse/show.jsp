@@ -87,12 +87,19 @@
                                                             <td>${item.inventoryItem.minQuantity}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
+                                                                    <form action="/admin/warehouse/import" method="get" class="d-inline">
+                                                                        <input type="hidden" name="itemID" value="${item.inventoryItem.itemID}">
+                                                                        <input type="hidden" name="branchID" value="${item.branch.branchID}">
+                                                                        <button type="submit" class="btn btn-primary btn-sm" title="Nhập kho">
+                                                                            <i class="bi bi-plus-circle"></i>
+                                                                        </button>
+                                                                    </form>
+
                                                                     <form action="/admin/warehouse/export" method="get" class="d-inline">
                                                                         <input type="hidden" name="itemID" value="${item.inventoryItem.itemID}">
                                                                         <input type="hidden" name="branchID" value="${item.branch.branchID}">
                                                                         <button type="submit" class="btn btn-warning btn-sm" title="Xuất kho">
                                                                             <i class="bi bi-dash-circle"></i>
-                                                                            Xuất kho
                                                                         </button>
                                                                     </form>
                                                                 </div>

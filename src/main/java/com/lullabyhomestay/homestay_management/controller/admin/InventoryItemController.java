@@ -106,7 +106,7 @@ public class InventoryItemController {
 
         InventoryItem currentItem = this.itemService.getInventoryItemByID(item.getItemID()).get();
 
-        if (item.getInventoryCategory().getCategoryID() == 0) {
+        if (item.getInventoryCategory().getCategoryID() == null) {
             newInventoryItemBindingResult.rejectValue("itemCategory",
                     "error.itemCategory", "Vui lòng chọn phân loại");
         }

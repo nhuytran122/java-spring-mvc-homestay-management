@@ -15,9 +15,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class RoomAmenityID implements Serializable{
+public class RoomAmenityID implements Serializable {
 
-    private long roomID;
-    private long amenityID;
-    
+    private Long roomID;
+    private Long amenityID;
+
 }

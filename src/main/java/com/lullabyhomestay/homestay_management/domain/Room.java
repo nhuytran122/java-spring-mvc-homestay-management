@@ -29,7 +29,7 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoomID")
-    private long roomID;
+    private Long roomID;
 
     @Min(value = 1, message = "Vui lòng nhập số phòng")
     @Column(name = "RoomNumber")

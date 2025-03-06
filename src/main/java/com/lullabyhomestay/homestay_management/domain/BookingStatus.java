@@ -19,17 +19,16 @@ import lombok.Setter;
 @Setter
 @Entity
 public class BookingStatus {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BookingStatusID")
-    private long bookingStatusID;
+    private Long bookingStatusID;
 
     @Column(name = "Description")
     private String description;
 
     @OneToMany(mappedBy = "bookingStatus")
     List<Booking> bookings;
-    
-    
+
 }

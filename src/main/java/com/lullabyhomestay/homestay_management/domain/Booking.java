@@ -28,7 +28,7 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BookingID")
-    private long bookingID;
+    private Long bookingID;
 
     @NotBlank(message = "Vui lòng nhập ")
     @Column(name = "CheckIn")
@@ -43,7 +43,7 @@ public class Booking {
 
     @Column(name = "CreatedAt")
     private Date createdAt;
-    
+
     @Column(name = "TotalPrice")
     private double totalPrice;
 

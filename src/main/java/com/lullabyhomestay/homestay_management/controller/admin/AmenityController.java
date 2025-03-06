@@ -114,7 +114,7 @@ public class AmenityController {
 
         Amenity currentAmenity = this.amenityService.getAmenityByID(amenity.getAmenityID()).get();
 
-        if (amenity.getAmenityCategory().getCategoryID() == 0) {
+        if (amenity.getAmenityCategory().getCategoryID() == null) {
             newAmenityBindingResult.rejectValue("amenityCategory",
                     "error.amenityCategory", "Vui lòng chọn phân loại");
         }

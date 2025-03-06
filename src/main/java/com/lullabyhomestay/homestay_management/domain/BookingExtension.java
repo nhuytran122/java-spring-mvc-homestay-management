@@ -26,10 +26,10 @@ public class BookingExtension {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ExtensionID")
-    private long extensionID;
-    
+    private Long extensionID;
+
     @Column(name = "ExtraHours")
-    @NotBlank(message="Vui lòng nhập giờ muốn gia hạn")
+    @NotBlank(message = "Vui lòng nhập giờ muốn gia hạn")
     private int extraHours;
 
     @Column(name = "CreatedAt")

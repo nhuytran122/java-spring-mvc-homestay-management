@@ -20,7 +20,7 @@ public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ServiceID")
-    private long serviceID;
+    private Long serviceID;
 
     @NotBlank(message = "Vui lòng nhập tên dịch vụ")
     @Column(name = "ServiceName")

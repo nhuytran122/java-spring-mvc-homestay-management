@@ -1,6 +1,7 @@
 package com.lullabyhomestay.homestay_management.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.lullabyhomestay.homestay_management.utils.TransactionType;
 
@@ -29,13 +30,13 @@ public class InventoryTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TransactionID")
-    private long transactionID;
+    private Long transactionID;
 
     @Column(name = "Quantity")
     @Min(value = 1, message = "Số lượng phải lớn hơn 0")
     private int quantity;
 
-    @Column(name = "Date")
+    @Column(name = "Date", insertable = false)
     private LocalDateTime date;
 
     @Column(name = "TransactionType")
@@ -50,4 +51,12 @@ public class InventoryTransaction {
     @JoinColumn(name = "BranchID")
     @NotNull(message = "Vui lòng chọn chi nhánh")
     private Branch branch;
+
+    public String getFormattedDate() {
+        if (date != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            return date.format(formatter);
+        }
+        return "N/A";
+    }
 }

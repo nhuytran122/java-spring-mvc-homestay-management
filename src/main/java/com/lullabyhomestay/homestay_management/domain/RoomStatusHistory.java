@@ -20,11 +20,11 @@ import lombok.Setter;
 @Setter
 @Entity
 public class RoomStatusHistory {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoomStatusID")
-    private long roomStatusID;
+    private Long roomStatusID;
 
     @Column(name = "StartedAt")
     private Date startedAt;
