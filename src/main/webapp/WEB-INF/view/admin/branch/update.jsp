@@ -83,15 +83,10 @@
                                     </div>
                                     
                                     <div class="form-group row">
-                                        <div class="col-sm-10">
-                                            <c:choose>
-                                                <c:when test="${not empty branch.image}">
-                                                    <img src="/images/branch/${branch.image}" class="imagePreview" alt="Preview ảnh">
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <img src="/images/branch/default-img.jpg" class="imagePreview" alt="Preview ảnh">
-                                                </c:otherwise>
-                                            </c:choose>
+                                        <div class="col-sm-10 image-preview-container">
+                                            <c:if test="${not empty branch.image}">
+                                                <img src="/images/branch/${branch.image}" class="imagePreview" alt="Preview ảnh">
+                                            </c:if>
                                         </div>
                                     </div>
                                     
@@ -114,7 +109,7 @@
   <jsp:include page="../layout/import-js.jsp" />
   <jsp:include page="../layout/partial/_script-preview-image-update.jsp" />
   <script>
-        setupImagePreview("branch", "default-img.jpg");
+        setupImagePreview("branch");
   </script>
 </body>
 </html>

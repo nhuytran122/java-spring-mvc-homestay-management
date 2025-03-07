@@ -30,13 +30,12 @@
                                     <input type="hidden" name="roomID" value="${roomID}">
                                     <form:input type="hidden" path="photoID" />
                                     <form:input type="hidden" path="room" />
-                                    
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Hình ảnh</label>
                                         <form:hidden path="photo" id="oldImage" />
                                         <div class="col-sm-10">
-                                            <input type="file" class="form-control"  
-                                                accept="image/*" name="fileImg" id="fileInput">
+                                            <input type="file" class="form-control" accept="image/*" 
+                                                name="fileImg" id="fileInput">
                                         </div>
                                     </div>
 
@@ -48,10 +47,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
                                     <div class="form-group row">
-                                        <div class="col-sm-10">
-                                            <img src="/images/room/${roomPhoto.photo}" class="imagePreview" alt="Preview ảnh">
+                                        <div class="col-sm-10 image-preview-container">
+                                            <c:if test="${not empty roomPhoto.photo}">
+                                                <img src="/images/room/{roomPhoto.photo}" class="imagePreview" alt="Preview ảnh">
+                                            </c:if>
                                         </div>
                                     </div>
                                     
@@ -74,7 +74,7 @@
   <jsp:include page="../../layout/import-js.jsp" />
   <jsp:include page="../../layout/partial/_script-preview-image-update.jsp" />
   <script>
-    setupImagePreview("room", "default-img.jpg");
+    setupImagePreview("room");
 </script>
 </body>
 </html>

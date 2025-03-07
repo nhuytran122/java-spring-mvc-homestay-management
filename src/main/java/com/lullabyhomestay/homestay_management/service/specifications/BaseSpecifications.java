@@ -25,4 +25,9 @@ public class BaseSpecifications {
         String searchPattern = "%" + normalizedValue + "%";
         return (root, query, cb) -> cb.like(cb.lower(root.get(joinField).get(subField)), searchPattern);
     }
+
+    public static <T> Specification<T> equalJoinTwoLevels(String firstJoinField, String secondJoinField, String finalField, Long valueID) {
+        return (root, query, cb) -> valueID == null ? cb.conjunction()
+                : cb.equal(root.get(firstJoinField).get(secondJoinField).get(finalField), valueID);
+    }
 }

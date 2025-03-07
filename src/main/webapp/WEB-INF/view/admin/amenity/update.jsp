@@ -31,7 +31,7 @@
                             <c:set var="errorName">
                                 <form:errors path="amenityName" cssClass="invalid-feedback" />
                             </c:set>
-                            <c:set var="errorCategoryID">
+                            <c:set var="errorCategory">
                                 <form:errors path="amenityCategory" cssClass="invalid-feedback" />
                             </c:set>
 
@@ -47,21 +47,18 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-2">Phân loại <span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
-                                    <form:select class="form-select form-control ${not empty errorCategoryID ? 'is-invalid' : ''}" 
-                                                path="amenityCategory.categoryID">
+                                    <form:select class="form-select form-control ${not empty errorCategory ? 'is-invalid' : ''}" path="amenityCategory">
                                         <form:option value="">Chọn phân loại</form:option>
-                                        <c:forEach var="category" items="${listCategories}">
-                                            <form:option value="${category.categoryID}">${category.categoryName}</form:option>
-                                        </c:forEach>
+                                        <form:options items="${listCategories}" itemValue="categoryID" itemLabel="categoryName"/>
                                     </form:select>
-                                    ${errorCategoryID}
+                                    ${errorCategory}
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-offset-2 col-sm-10 text-center">
-                                <a href="/admin/amenity" class="btn btn-secondary">Hủy</a>
-                                <button type="submit" class="btn btn-warning">Sửa</button>
+                            <div class="form-group row">
+                                <div class="col-sm-offset-2 col-sm-10 text-center">
+                                    <a href="/admin/amenity" class="btn btn-secondary">Hủy</a>
+                                    <button type="submit" class="btn btn-warning">Sửa</button>
+                                </div>
                             </div>
                         </div>
                     </form:form>

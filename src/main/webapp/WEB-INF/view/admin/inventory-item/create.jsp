@@ -30,7 +30,7 @@
                             <c:set var="errorName">
                                 <form:errors path="itemName" cssClass="invalid-feedback" />
                             </c:set>
-                            <c:set var="errorCategoryID">
+                            <c:set var="errorCategory">
                                 <form:errors path="inventoryCategory" cssClass="invalid-feedback" />
                             </c:set>
                             <c:set var="errorPrice">
@@ -54,13 +54,11 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-2">Phân loại <span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
-                                    <form:select class="form-select form-control ${not empty errorCategoryID ? 'is-invalid' : ''}" path="inventoryCategory.categoryID">
+                                    <form:select class="form-select form-control ${not empty errorCategory ? 'is-invalid' : ''}" path="inventoryCategory">
                                         <form:option value="">Chọn phân loại</form:option>
-                                        <c:forEach var="category" items="${listCategories}">
-                                            <form:option value="${category.categoryID}">${category.categoryName}</form:option>
-                                        </c:forEach>
+                                        <form:options items="${listCategories}" itemValue="categoryID" itemLabel="categoryName"/>
                                     </form:select>
-                                    ${errorCategoryID}
+                                    ${errorCategory}
                                 </div>
                             </div>
 

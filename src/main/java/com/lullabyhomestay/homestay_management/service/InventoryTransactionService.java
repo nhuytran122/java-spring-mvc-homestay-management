@@ -16,6 +16,7 @@ import com.lullabyhomestay.homestay_management.domain.InventoryItem;
 import com.lullabyhomestay.homestay_management.domain.InventoryStock;
 import com.lullabyhomestay.homestay_management.domain.InventoryTransaction;
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
+import com.lullabyhomestay.homestay_management.domain.dto.SearchTransactionCriterialDTO;
 import com.lullabyhomestay.homestay_management.exception.InventoryException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
@@ -43,18 +44,28 @@ public class InventoryTransactionService {
         return transactionOpt.get();
     }
 
-    public Page<InventoryTransaction> searchTransactions(String keyword, Long branchID,
-            int page, String sortOrder) {
+    public Page<InventoryTransaction> searchTransactions(SearchTransactionCriterialDTO criteria,
+            int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
-                "asc".equals(sortOrder) ? Sort.by("Date").ascending()
-                        : "desc".equals(sortOrder) ? Sort.by("Date").descending() : Sort.unsorted());
+                "asc".equals(criteria.getSort()) ? Sort.by("Date").ascending()
+                        : "desc".equals(criteria.getSort()) ? Sort.by("Date").descending() : Sort.unsorted());
 
-        if ((keyword == null || keyword.isEmpty()) && branchID == null)
+        if ((criteria.getKeyword() == null || criteria.getKeyword().isEmpty()) && criteria.getBranchID() == null
+                && (criteria.getTransactionType() == null || criteria.getTransactionType().isEmpty()))
             return transactionRepository
                     .findAll(pageable);
+        TransactionType typeEnum = null;
+        if (criteria.getTransactionType() != null && !criteria.getTransactionType().isEmpty()) {
+            try {
+                typeEnum = TransactionType.valueOf(criteria.getTransactionType().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                typeEnum = null;
+            }
+        }
         Specification<InventoryTransaction> spec = Specification
-                .where(InventoryTransactionSpecifications.hasBranch(branchID))
-                .and(InventoryTransactionSpecifications.nameItemLike(keyword));
+                .where(InventoryTransactionSpecifications.hasBranch(criteria.getBranchID()))
+                .and(InventoryTransactionSpecifications.nameItemLike(criteria.getKeyword()))
+                .and(InventoryTransactionSpecifications.transactionTypeEqual(typeEnum));
         return transactionRepository.findAll(spec, pageable);
     }
 
@@ -106,7 +117,7 @@ public class InventoryTransactionService {
     public boolean canUpdateTransaction(Long transactionID) {
         Optional<InventoryTransaction> transactionOpt = transactionRepository.findById(transactionID);
         if (!transactionOpt.isPresent()) {
-            throw new InventoryException("Không tìm thấy giao dịch", null);
+            throw new NotFoundException("Giao dịch");
         }
 
         InventoryTransaction transaction = transactionOpt.get();

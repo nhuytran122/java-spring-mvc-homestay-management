@@ -99,14 +99,7 @@ public class InventoryItemController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-
         InventoryItem currentItem = this.itemService.getInventoryItemByID(item.getItemID());
-
-        if (item.getInventoryCategory().getCategoryID() == null) {
-            newInventoryItemBindingResult.rejectValue("itemCategory",
-                    "error.itemCategory", "Vui lòng chọn phân loại");
-        }
-
         if (newInventoryItemBindingResult.hasErrors()) {
             model.addAttribute("listCategories", this.categoryService.getAllInventoryCategories());
             return "admin/inventory-item/update";

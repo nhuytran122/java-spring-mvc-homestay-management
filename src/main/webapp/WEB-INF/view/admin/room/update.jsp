@@ -32,10 +32,10 @@
                                     <c:set var="errorRoomNumber">
                                         <form:errors path="roomNumber" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorRoomTypeID">
+                                    <c:set var="errorRoomType">
                                         <form:errors path="roomType" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorBranchID">
+                                    <c:set var="errorBranch">
                                         <form:errors path="branch" cssClass="invalid-feedback" />
                                     </c:set>
 
@@ -51,26 +51,22 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Chi nhánh <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select form-control ${not empty errorBranchID ? 'is-invalid' : ''}" path="branch.branchID">
+                                            <form:select class="form-select form-control ${not empty errorBranch ? 'is-invalid' : ''}" path="branch">
                                                 <form:option value="">Chọn chi nhánh</form:option>
-                                                <c:forEach var="branch" items="${listBranches}">
-                                                    <form:option value="${branch.branchID}">${branch.branchName}</form:option>
-                                                </c:forEach>
+                                                <form:options items="${listBranches}" itemValue="branchID" itemLabel="branchName"/>
                                             </form:select>
-                                            ${errorBranchID}
+                                            ${errorBranch}
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Loại phòng <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select form-control ${not empty errorRoomTypeID ? 'is-invalid' : ''}" path="roomType.roomTypeID">
+                                            <form:select class="form-select form-control ${not empty errorRoomType ? 'is-invalid' : ''}" path="roomType">
                                                 <form:option value="">Chọn loại phòng</form:option>
-                                                <c:forEach var="roomType" items="${listRoomTypes}">
-                                                    <form:option value="${roomType.roomTypeID}">${roomType.name}</form:option>
-                                                </c:forEach>
+                                                <form:options items="${listRoomTypes}" itemValue="roomTypeID" itemLabel="name"/>
                                             </form:select>
-                                            ${errorRoomTypeID}
+                                            ${errorRoomType}
                                         </div>
                                     </div>
 
@@ -89,7 +85,6 @@
                                             path="description" />
                                         </div>
                                     </div>
-                                    
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Thumbnail</label>
                                         <form:hidden path="thumbnail" id="oldImage" />
@@ -98,17 +93,11 @@
                                                 name="fileImg" id="fileInput">
                                         </div>
                                     </div>
-                                    
                                     <div class="form-group row">
-                                        <div class="col-sm-10">
-                                            <c:choose>
-                                                <c:when test="${not empty room.thumbnail}">
-                                                    <img src="/images/room/${room.thumbnail}" class="imagePreview" alt="Preview ảnh">
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <img src="/images/room/default-img.jpg" class="imagePreview" alt="Preview ảnh">
-                                                </c:otherwise>
-                                            </c:choose>
+                                        <div class="col-sm-10 image-preview-container">
+                                            <c:if test="${not empty room.thumbnail}">
+                                                <img src="/images/room/${room.thumbnail}" class="imagePreview" alt="Preview ảnh">
+                                            </c:if>
                                         </div>
                                     </div>
 
@@ -142,7 +131,7 @@
   <jsp:include page="room-amenity/_modal-delete.jsp" />
   <jsp:include page="room-amenity/_modal-empty-amenities.jsp" />
   <script>
-        setupImagePreview("room", "default-img.jpg");
+        setupImagePreview("room");
   </script>
 </body>
 </html>

@@ -74,9 +74,6 @@
                                                             </td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <button class="btn btn-success btn-sm" data-amenity-id="${amenity.amenityID}" onclick="showDetail(this)">
-                                                                        <i class="bi bi-eye"></i>
-                                                                    </button>
                                                                     <a href="/admin/amenity/update/${amenity.amenityID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
@@ -115,9 +112,7 @@
     </div>
   </div>
 
-    
-    <jsp:include page="_modal-view-detail.jsp" />
     <jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
-<jsp:include page="../layout/import-js.jsp" />
+    <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>

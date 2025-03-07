@@ -34,7 +34,7 @@
                 <li class="page-item ${currentPage < totalPages ? '' : 'disabled'}">
                     <c:choose>
                         <c:when test="${currentPage < totalPages}">
-                            <a class="page-link" href="${url}?page=${currentPage + 1}$${extraParams}" aria-label="Tiếp theo">
+                            <a class="page-link" href="${url}?page=${currentPage + 1}${extraParams}" aria-label="Tiếp theo">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </c:when>

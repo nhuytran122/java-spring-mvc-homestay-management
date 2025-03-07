@@ -42,7 +42,7 @@
                                     <c:set var="errorSalary">
                                         <form:errors path="salary" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorRoleID">
+                                    <c:set var="errorRole">
                                         <form:errors path="role" cssClass="invalid-feedback" />
                                     </c:set>
 
@@ -84,13 +84,11 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Vai trò <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select form-control ${not empty errorRoleID ? 'is-invalid' : ''}" path="role.roleID">
+                                            <form:select class="form-select form-control ${not empty errorRole ? 'is-invalid' : ''}" path="role">
                                                 <form:option value="">Chọn vai trò</form:option>
-                                                <c:forEach var="role" items="${listRoles}">
-                                                    <form:option value="${role.roleID}">${role.roleName}</form:option>
-                                                </c:forEach>
+                                                <form:options items="${listRoles}" itemValue="roleID" itemLabel="roleName"/>
                                             </form:select>
-                                            ${errorRoleID}
+                                            ${errorRole}
                                         </div>
                                     </div>
 
@@ -111,7 +109,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Hình ảnh</label>
                                         <form:hidden path="avatar" id="oldImage" />
@@ -122,15 +120,10 @@
                                     </div>
                                     
                                     <div class="form-group row">
-                                        <div class="col-sm-10">
-                                            <c:choose>
-                                                <c:when test="${not empty branch.image}">
-                                                    <img src="/images/employee/${employee.avatar}" class="imagePreview" alt="Preview ảnh">
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <img src="/images/employee/default-img.jpg" class="imagePreview" alt="Preview ảnh">
-                                                </c:otherwise>
-                                            </c:choose>
+                                        <div class="col-sm-10 image-preview-container">
+                                            <c:if test="${not empty employee.avatar}">
+                                                <img src="/images/employee/${employee.avatar}" class="imagePreview" alt="Preview ảnh">
+                                            </c:if>
                                         </div>
                                     </div>
 
@@ -153,7 +146,7 @@
   <jsp:include page="../layout/import-js.jsp" />
   <jsp:include page="../layout/partial/_script-preview-image-update.jsp" />
   <script>
-        setupImagePreview("employee", "default-img.jpg");
+        setupImagePreview("employee");
   </script>
   <jsp:include page="../layout/partial/_script-number-separator.jsp" />
 </body>

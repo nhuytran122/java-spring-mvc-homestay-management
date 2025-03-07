@@ -53,4 +53,7 @@ public class Branch {
 
     @OneToMany(mappedBy = "branch")
     List<Room> rooms;
+
+    @OneToMany(mappedBy = "branch")
+    List<MaintenanceRequest> maintenanceRequests;
 }

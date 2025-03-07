@@ -1,7 +1,10 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.domain.dto.RoomDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
@@ -31,19 +36,21 @@ public class RoomService {
     private final RoomAmenityRepository roomAmenityRepository;
     private final RoomStatusHistoryRepository roomStatusRepository;
     private final RoomPhotoRepository roomPhotoRepository;
+    private final ModelMapper mapper;
 
     public Page<Room> getAllRooms(Pageable pageable) {
         return this.roomRepository.findAll(pageable);
     }
 
-    public Page<Room> searchRooms(String keyword, Long roomTypeID, Long branchID, int page) {
+    public Page<Room> searchRooms(SearchRoomCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
-        if ((keyword == null || keyword.trim().isEmpty()) && roomTypeID == null && branchID == null) {
+        if ((criteria.getKeyword() == null || criteria.getKeyword().trim().isEmpty())
+                && criteria.getRoomTypeID() == null && criteria.getBranchID() == null) {
             return roomRepository.findAll(pageable);
         }
-        Specification<Room> spec = Specification.where(RoomSpecifications.hasBranch(branchID))
-                .and(RoomSpecifications.hasRoomType(roomTypeID))
-                .and(RoomSpecifications.descriptionLike(keyword));
+        Specification<Room> spec = Specification.where(RoomSpecifications.hasBranch(criteria.getBranchID()))
+                .and(RoomSpecifications.hasRoomType(criteria.getRoomTypeID()))
+                .and(RoomSpecifications.descriptionLike(criteria.getKeyword()));
         return roomRepository.findAll(spec, pageable);
     }
 
@@ -57,6 +64,20 @@ public class RoomService {
             throw new NotFoundException("Phòng");
         }
         return roomOpt.get();
+    }
+
+    public List<Room> getRoomsByBranchID(long branchID) {
+        return roomRepository.findByBranch_BranchID(branchID);
+    }
+
+    public List<RoomDTO> getRoomDTOsByBranchID(Long branchID) {
+        List<Room> rooms = roomRepository.findByBranch_BranchID(branchID);
+        List<RoomDTO> roomDTOs = new ArrayList<>();
+        for (Room room : rooms) {
+            RoomDTO roomDTO = new RoomDTO(room.getRoomID(), room.getRoomNumber());
+            roomDTOs.add(roomDTO);
+        }
+        return roomDTOs;
     }
 
     public boolean canDeleteRoom(long roomID) {

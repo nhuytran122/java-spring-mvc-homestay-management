@@ -41,8 +41,7 @@ public class RoomController {
             @ModelAttribute SearchRoomCriteriaDTO criteria) {
         int validPage = Math.max(1, page);
 
-        Page<Room> rooms = roomService.searchRooms(criteria.getKeyword(), criteria.getRoomTypeID(),
-                criteria.getBranchID(), validPage);
+        Page<Room> rooms = roomService.searchRooms(criteria, validPage);
         List<Room> listRooms = rooms.getContent();
 
         model.addAttribute("criteria", criteria);
@@ -75,14 +74,18 @@ public class RoomController {
     public String postCreateRoom(Model model,
             @ModelAttribute("newRoom") @Valid Room room,
             BindingResult newRoomBindingResult,
+            @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-
         if (newRoomBindingResult.hasErrors()) {
             model.addAttribute("listBranches", this.branchService.getAllBranches());
             model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
             return "admin/room/create";
+        }
+        if (!file.isEmpty()) {
+            String img = this.uploadService.handleSaveUploadFile(file, "room");
+            room.setThumbnail(img);
         }
         Room newRoom = this.roomService.handleSaveRoom(room);
         return "redirect:/admin/room/update/" + newRoom.getRoomID();
@@ -111,14 +114,6 @@ public class RoomController {
         // HttpSession session = request.getSession(false);
         Long roomID = room.getRoomID();
         Room currentRoom = this.roomService.getRoomByID(roomID);
-        if (room.getBranch().getBranchID() == null) {
-            newRoomBindingResult.rejectValue("branch",
-                    "error.branch", "Vui lòng chọn chi nhánh");
-        }
-        if (room.getRoomType().getRoomTypeID() == null) {
-            newRoomBindingResult.rejectValue("roomType",
-                    "error.roomType", "Vui lòng chọn loại phòng");
-        }
         if (newRoomBindingResult.hasErrors()) {
             model.addAttribute("listBranches", this.branchService.getAllBranches());
             model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());

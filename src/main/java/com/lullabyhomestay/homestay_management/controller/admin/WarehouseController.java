@@ -107,9 +107,7 @@ public class WarehouseController {
         int validPage = Math.max(1, page);
         String sort = (criteria.getSort() != null && !criteria.getSort().isEmpty()) ? criteria.getSort() : "desc";
         criteria.setSort(sort);
-        Page<InventoryTransaction> transactions = transactionService.searchTransactions(criteria.getKeyword(),
-                criteria.getBranchID(), validPage,
-                criteria.getSort());
+        Page<InventoryTransaction> transactions = transactionService.searchTransactions(criteria, validPage);
         List<InventoryTransaction> listTransactions = transactions.getContent();
 
         model.addAttribute("criteria", criteria);
@@ -117,7 +115,7 @@ public class WarehouseController {
         model.addAttribute("listTransactions", listTransactions);
         model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", transactions.getTotalPages());
-
+        model.addAttribute("transactionTypes", TransactionType.values());
         model.addAttribute("listBranches", this.branchService.getAllBranches());
         return "admin/warehouse/transaction/show";
     }
@@ -172,13 +170,6 @@ public class WarehouseController {
 
     private String handleTransaction(Model model, @Valid InventoryTransaction transaction, BindingResult bindingResult,
             TransactionType transactionType, String modelAttributeName, String viewName) {
-        if (transaction.getBranch() == null || transaction.getBranch().getBranchID() == null) {
-            bindingResult.rejectValue("branch", "error.branch", "Vui lòng chọn chi nhánh");
-        }
-        if (transaction.getInventoryItem() == null || transaction.getInventoryItem().getItemID() == null) {
-            bindingResult.rejectValue("inventoryItem", "error.inventoryItem", "Vui lòng chọn đồ dùng");
-        }
-
         if (bindingResult.hasErrors()) {
             prepareTransactionModel(model, transaction, modelAttributeName);
             return viewName;

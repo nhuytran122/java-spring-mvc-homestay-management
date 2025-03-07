@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="f" uri="http://lullabyhomestay.com/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,8 +21,9 @@
         <div class="main-panel">
             <div class="search-form-container my-4">
                 <form action="/admin/warehouse/transaction" method="get" class="search-form">
-                    <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm giao dịch (tên đồ dùng)..." 
-                           value="${criteria.keyword}">
+                    <input type="text" class="form-control form-control-sm" name="keyword" placeholder="Tìm kiếm giao dịch (tên đồ dùng)..." 
+                            value="${criteria.keyword}">
+                    
                     <select name="branchID" class="form-select form-control form-select-sm">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">
@@ -29,34 +31,36 @@
                                 ${branch.branchName}
                             </option>
                         </c:forEach>
-                     </select>
-                     <select name="filter" class="form-select form-control form-select-sm" style="width: 200px; font-size: 14px; height: 41px;">
-                           <option value="" ${criteria.transactionType == '' ? 'selected' : ''}>
-                             Tất cả loại
+                    </select>
+                    <select name="transactionType" class="form-select form-control form-select-sm">
+                        <option value="" ${criteria.transactionType == null || criteria.transactionType == '' ? 'selected' : ''}>
+                            Tất cả loại
                         </option>
-                         <option value="IMPORT" ${criteria.transactionType == 'IMPORT' ? 'selected' : ''}>
-                            Nhập kho
-                         </option>
-                         <option value="EXPORT" ${criteria.transactionType == 'EXPORT' ? 'selected' : ''}>
-                             Xuất kho
-                         </option>
-                     </select>
-                     <select name="sort" class="form-select form-control form-select-sm" style="width: 200px; font-size: 14px; height: 41px;">
+                        <c:forEach var="type" items="${transactionTypes}">
+                            <option value="${type}" ${criteria.transactionType == type ? 'selected' : ''}>
+                                ${type.displayName} 
+                            </option>
+                        </c:forEach>
+                    </select>
+
+                    <select name="sort" class="form-select form-control form-select-sm">
                         <option value="" ${criteria.sort == '' ? 'selected' : ''}>
                             Không sắp xếp
                         </option>
                         <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
-                           Cũ nhất
+                            Cũ nhất
                         </option>
                         <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
                             Mới nhất
                         </option>
                     </select>
+                    
                     <button type="submit" class="btn btn-primary btn-sm p-2">
                         <i class="bi bi-search"></i>
                     </button>
                 </form>                    
             </div>
+
             <div class="content-wrapper">
                 <div class="row">
                     <div class="col-md-12 grid-margin stretch-card">
@@ -106,10 +110,10 @@
                                                             <td>${item.inventoryItem.inventoryCategory.categoryName}</td>
                                                             <td>${item.branch.branchName}</td>
                                                             <td><fmt:formatNumber type="number" value="${item.quantity}" /></td>
-                                                            <td>${item.getFormattedDate()}</td>
+                                                            <td>${f:formatLocalDateTime(item.date)}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <button class="btn btn-warning btn-sm" title="Xóa"
+                                                                    <button class="btn btn-warning btn-sm" title="Sửa"
                                                                         onclick="checkBeforeUpdate(this)" 
                                                                             data-transaction-id="${item.transactionID}"
                                                                             data-entity-type="Giao dịch" 

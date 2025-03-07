@@ -51,10 +51,10 @@
                                 <h4 class="card-title mb-4 text-center">Nhập kho</h4>
                                 <form:form class="form-horizontal" action="/admin/warehouse/import" method="post"
                                     modelAttribute="newImport">
-                                    <c:set var="errorItemID">
+                                    <c:set var="errorItem">
                                         <form:errors path="inventoryItem" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorBranchID">
+                                    <c:set var="errorBranch">
                                         <form:errors path="branch" cssClass="invalid-feedback" />
                                     </c:set>
                                     <c:set var="errorQuantity">
@@ -64,26 +64,22 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Đồ dùng <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select select2 form-control ${not empty errorItemID ? 'is-invalid' : ''}" path="inventoryItem.itemID">
+                                            <form:select class="form-select form-control ${not empty errorItem ? 'is-invalid' : ''}" path="inventoryItem">
                                                 <form:option value="">Chọn đồ dùng</form:option>
-                                                <c:forEach var="item" items="${listItems}">
-                                                    <form:option value="${item.itemID}">${item.itemName}</form:option>
-                                                </c:forEach>
+                                                <form:options items="${listItems}" itemValue="itemID" itemLabel="itemName"/>
                                             </form:select>
-                                            ${errorItemID}
+                                            ${errorItem}
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Chi nhánh <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select form-control ${not empty errorBranchID ? 'is-invalid' : ''}" path="branch.branchID">
+                                            <form:select class="form-select form-control ${not empty errorBranch ? 'is-invalid' : ''}" path="branch">
                                                 <form:option value="">Chọn chi nhánh</form:option>
-                                                <c:forEach var="branch" items="${listBranches}">
-                                                    <form:option value="${branch.branchID}">${branch.branchName}</form:option>
-                                                </c:forEach>
+                                                <form:options items="${listBranches}" itemValue="branchID" itemLabel="branchName"/>
                                             </form:select>
-                                            ${errorBranchID}
+                                            ${errorBranch}
                                         </div>
                                     </div>
 

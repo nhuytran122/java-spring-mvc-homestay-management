@@ -125,7 +125,7 @@
 
 <script>
     function showDetail(button) {
-        let inforID = button.getAttribute("data-infor-id");
+        let inforID = $(button).data("infor-id");
         $.ajax({
             url: '/admin/homestay-infor/' + inforID,
             type: 'GET',

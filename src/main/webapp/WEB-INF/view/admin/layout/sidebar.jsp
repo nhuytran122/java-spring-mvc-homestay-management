@@ -92,7 +92,7 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="/admin/maintainance" aria-expanded="false" aria-controls="maintainance">
+        <a class="nav-link" href="/admin/maintenance" aria-expanded="false" aria-controls="maintainance">
           <i class="bi bi-house-gear menu-icon"></i>
           <span class="menu-title">Yêu cầu bảo trì</span>
         </a>

@@ -1,12 +1,13 @@
 package com.lullabyhomestay.homestay_management.domain;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.lullabyhomestay.homestay_management.utils.TransactionType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,6 +41,7 @@ public class InventoryTransaction {
     private LocalDateTime date;
 
     @Column(name = "TransactionType")
+    @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
     @ManyToOne
@@ -51,12 +53,4 @@ public class InventoryTransaction {
     @JoinColumn(name = "BranchID")
     @NotNull(message = "Vui lòng chọn chi nhánh")
     private Branch branch;
-
-    public String getFormattedDate() {
-        if (date != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-            return date.format(formatter);
-        }
-        return "N/A";
-    }
 }

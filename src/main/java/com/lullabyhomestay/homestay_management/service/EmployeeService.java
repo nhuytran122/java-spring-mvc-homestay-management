@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Employee;
 import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.SearchEmployeeCriterialDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.EmployeeRepository;
 import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
@@ -30,7 +31,6 @@ public class EmployeeService {
     private final ModelMapper mapper;
 
     public EmployeeDTO handleSaveEmployee(EmployeeDTO requestDTO) {
-        // Employee employee = employeeDTOToEmployee(requestDTO);
         Employee employee = mapper.map(requestDTO, Employee.class);
         employee.setPassword(this.passwordEncoder.encode("lullabyhomestay"));
         Employee savedEmployee = employeeRepository.save(employee);
@@ -42,23 +42,22 @@ public class EmployeeService {
         return employeePage.map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
-    public Page<EmployeeDTO> searchEmployees(String keyword, Boolean isWorking, Long roleID, int page) {
+    public Page<EmployeeDTO> searchEmployees(SearchEmployeeCriterialDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
         Specification<Employee> spec = Specification.where(null);
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            spec = spec.and(Specification.where(EmployeeSpecifications.nameLike(keyword))
-                    .or(EmployeeSpecifications.addressLike(keyword))
-                    .or(EmployeeSpecifications.emailEqual(keyword))
-                    .or(EmployeeSpecifications.phoneEqual(keyword)));
+        if (criteria.getKeyword() != null && !criteria.getKeyword().trim().isEmpty()) {
+            spec = spec.and(Specification.where(EmployeeSpecifications.nameLike(criteria.getKeyword()))
+                    .or(EmployeeSpecifications.addressLike(criteria.getKeyword()))
+                    .or(EmployeeSpecifications.emailEqual(criteria.getKeyword()))
+                    .or(EmployeeSpecifications.phoneEqual(criteria.getKeyword())));
         }
-        if (isWorking != null) {
-            spec = spec.and(EmployeeSpecifications.isWorking(isWorking));
+        if (criteria.getIsWorking() != null) {
+            spec = spec.and(EmployeeSpecifications.isWorking(criteria.getIsWorking()));
         }
-        if (roleID != null) {
-            spec = spec.and(EmployeeSpecifications.hasRole(roleID));
+        if (criteria.getRoleID() != null) {
+            spec = spec.and(EmployeeSpecifications.hasRole(criteria.getRoleID()));
         }
-
         return employeeRepository.findAll(spec, pageable).map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
@@ -68,7 +67,6 @@ public class EmployeeService {
             throw new NotFoundException("Nhân viên");
         }
         return mapper.map(employeeOpt.get(), EmployeeDTO.class);
-
     }
 
     public boolean canDeleteEmployee(long employeeID) {

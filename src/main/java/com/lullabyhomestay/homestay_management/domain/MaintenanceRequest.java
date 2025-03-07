@@ -1,15 +1,21 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import com.lullabyhomestay.homestay_management.utils.MaintenanceStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,16 +35,21 @@ public class MaintenanceRequest {
     private Long requestID;
 
     @Column(name = "Description")
+    @NotBlank(message = "Vui lòng nhập mô tả")
     private String description;
 
     @Column(name = "Status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MaintenanceStatus status;
 
-    @Column(name = "CreatedAt")
-    private Date createdAt;
+    @Column(name = "Image")
+    private String image;
+
+    @Column(name = "CreatedAt", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "UpdatedAt")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "RoomID")
@@ -47,4 +58,9 @@ public class MaintenanceRequest {
     @ManyToOne
     @JoinColumn(name = "EmployeeID")
     private Employee employee;
+
+    @ManyToOne
+    @JoinColumn(name = "BranchID")
+    @NotNull(message = "Vui lòng chọn chi nhánh")
+    private Branch branch;
 }

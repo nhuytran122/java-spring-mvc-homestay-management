@@ -1,15 +1,32 @@
 <script>
-    function setupImagePreview(imageFolder, defaultImage) {
+    function setupImagePreview(imageFolder) {
         const fileInput = $("#fileInput");
-        const previewImage = $(".imagePreview");
+        const previewContainer = $(".image-preview-container");
         const oldImage = $("#oldImage").val();
 
-        fileInput.change(function (e) {
+        function updatePreview(src) {
+            previewContainer.empty();
+
+            if (src) {
+                const previewImage = $("<img>", {
+                    src: src,
+                    class: "imagePreview",
+                    alt: "Preview ảnh"
+                });
+                previewContainer.append(previewImage);
+            }
+        }
+
+        fileInput.on("change", function (e) {
             if (e.target.files.length > 0) {
                 const imgURL = URL.createObjectURL(e.target.files[0]);
-                previewImage.attr("src", imgURL);
+                updatePreview(imgURL);
             } else {
-                previewImage.attr("src", oldImage ? `/images/${imageFolder}/${oldImage}` : `/images/${imageFolder}/${defaultImage}`);
+                if (oldImage) {
+                    updatePreview(`/images/${imageFolder}/${oldImage}`);
+                } else {
+                    updatePreview(null);
+                }
             }
         });
     }

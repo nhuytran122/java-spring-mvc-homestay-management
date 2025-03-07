@@ -56,18 +56,6 @@ public class AmenityController {
         return "admin/amenity/show";
     }
 
-    // todo: xem chi tiết phòng nào có tiện nghi này
-    // @GetMapping("/admin/amenity/{id}")
-    // @ResponseBody
-    // public ResponseEntity<?> getDetailAmenity(@PathVariable("id") long id) {
-    // Optional<Amenity> infor = amenityService.getAmenityHomestayByAmenityID(id);
-    // if (!infor.isPresent()) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thông
-    // tin!");
-    // }
-    // return ResponseEntity.ok(infor.get());
-    // }
-
     @GetMapping("/admin/amenity/create")
     public String getCreateAmenityPage(Model model) {
         model.addAttribute("newAmenity", new Amenity());
@@ -107,19 +95,11 @@ public class AmenityController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-
         Amenity currentAmenity = this.amenityService.getAmenityByID(amenity.getAmenityID());
-
-        if (amenity.getAmenityCategory().getCategoryID() == null) {
-            newAmenityBindingResult.rejectValue("amenityCategory",
-                    "error.amenityCategory", "Vui lòng chọn phân loại");
-        }
-
         if (newAmenityBindingResult.hasErrors()) {
             model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
             return "admin/amenity/update";
         }
-
         currentAmenity.setAmenityName(amenity.getAmenityName());
         currentAmenity.setAmenityCategory(amenity.getAmenityCategory());
         this.amenityService.handleSaveAmenity(currentAmenity);
