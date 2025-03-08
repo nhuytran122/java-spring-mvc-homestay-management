@@ -1,6 +1,6 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,8 +62,8 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Mô tả <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:textarea  class="form-control ${not empty errorDescription ? 'is-invalid' : ''}" 
-                                            path="description" /> 
+                                            <form:textarea class="form-control ${not empty errorDescription ? 'is-invalid' : ''}" 
+                                                path="description" /> 
                                             ${errorDescription}
                                         </div>
                                     </div>
@@ -86,10 +86,13 @@
                                     </div>
 
                                     <div class="form-group row">
-                                    <div class="col-sm-offset-2 col-sm-10 text-center">
-                                        <a href="/admin/maintenance" class="btn btn-secondary">Hủy</a>
-                                        <button type="submit" class="btn btn-warning">Sửa</button>
+                                        <div class="col-sm-offset-2 col-sm-10 text-center">
+                                            <a href="/admin/maintenance" class="btn btn-secondary">Hủy</a>
+                                            <button type="submit" class="btn btn-warning">Sửa</button>
+                                        </div>
                                     </div>
+                                    <div class="data-check" style="display: none;">
+                                        <input type="hidden" data-can-update="${canUpdate}">
                                     </div>
                                 </form:form>
                             </div>
@@ -102,48 +105,47 @@
   </div>
 
   <jsp:include page="../layout/import-js.jsp" />
-<script>
+  <jsp:include page="_script-maintenance-room-select.jsp" />
+  <jsp:include page="../layout/partial/_script-preview-image-update.jsp" />
+  <script>
+      setupImagePreview("maintenance");
+  </script>
+  <jsp:include page="_script-modal-warning-update.jsp" />
+  <script>
     $(document).ready(function() {
-        $('#branchSelect').change(function() {
-            var branchID = $(this).val();
-            var roomSelect = $('#roomSelect');
-            if (!branchID) {
-                roomSelect.empty().append('<option value="">Chọn phòng</option>');
-                return;
+        let $dataCheck = $('.data-check');
+        let $input = $dataCheck.find('input[type="hidden"]');
+        let canUpdate = $input.data('can-update');
+        let requestId = $('input[name="requestID"]').val(); 
+        let currentStatus = $('input[name="status"]').val();
+    
+        if (canUpdate === false) {
+            let message = '';
+            if (currentStatus === 'COMPLETED') {
+                message = 'Việc bảo trì này đã hoàn thành';
+            } else if (currentStatus === 'CANCELLED') {
+                message = 'Việc bảo trì này đã bị hủy';
+            } else if (currentStatus === 'IN_PROGRESS') {
+                message = 'Việc bảo trì này đang được xử lý';
+            } else if (currentStatus === 'ON_HOLD') {
+                message = 'Việc bảo trì này đang tạm hoãn';
+            } else if (currentStatus === 'PENDING') {
+                message = 'Việc bảo trì này đang chờ xử lý';
+            } else {
+                message = 'Việc bảo trì này có trạng thái không cho phép sửa đổi';
             }
-            roomSelect.html('<option value="">Đang tải...</option>');
-
-            $.ajax({
-                url: '/admin/maintenance/rooms-by-branch',
-                type: 'GET',
-                data: { branchID: branchID },
-                dataType: 'json', 
-                success: function(rooms) {
-                    if (Array.isArray(rooms) && rooms.length > 0) {
-                        roomSelect.empty();
-                        roomSelect.append('<option value="">Chọn phòng</option>');
-                        $.each(rooms, function(index, room) {
-                            if (room && room.roomID && room.roomNumber) {
-                                roomSelect.append('<option value="' + room.roomID + '">' + room.roomNumber + '</option>');
-                            }
-                        });
-                    } else {
-                        roomSelect.empty().append('<option value="">Không có phòng</option>');
-                    }
-                    // console.log("Rooms JSON:", rooms); 
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error, xhr.responseText);
-                    roomSelect.empty().append('<option value="">Lỗi tải phòng</option>');
-                    alert('Lỗi server: ' + error + '. Vui lòng kiểm tra log hoặc liên hệ admin!');
-                },
+            let $textSub = $('.text-sub');
+                $textSub.text(message);
+                $("#updateWarningModal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                }).modal('show');
+    
+            $('#updateWarningModal').on('hidden.bs.modal', function () {
+                window.location.href = '/admin/maintenance';
             });
-        });
+        }
     });
-</script>
-<jsp:include page="../layout/partial/_script-preview-image-update.jsp" />
-<script>
-    setupImagePreview("maintenance");
-</script>
+    </script>
 </body>
 </html>

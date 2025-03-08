@@ -98,44 +98,6 @@
 
   <jsp:include page="../layout/import-js.jsp" />
   <jsp:include page="../layout/partial/_script-preview-image.jsp" />
-<script>
-    $(document).ready(function() {
-        $('#branchSelect').change(function() {
-            var branchID = $(this).val();
-            var roomSelect = $('#roomSelect');
-            if (!branchID) {
-                roomSelect.empty().append('<option value="">Chọn phòng</option>');
-                return;
-            }
-            roomSelect.html('<option value="">Đang tải...</option>');
-
-            $.ajax({
-                url: '/admin/maintenance/rooms-by-branch',
-                type: 'GET',
-                data: { branchID: branchID },
-                dataType: 'json', 
-                success: function(rooms) {
-                    if (Array.isArray(rooms) && rooms.length > 0) {
-                        roomSelect.empty();
-                        roomSelect.append('<option value="">Chọn phòng</option>');
-                        $.each(rooms, function(index, room) {
-                            if (room && room.roomID && room.roomNumber) {
-                                roomSelect.append('<option value="' + room.roomID + '">' + room.roomNumber + '</option>');
-                            }
-                        });
-                    } else {
-                        roomSelect.empty().append('<option value="">Không có phòng</option>');
-                    }
-                    // console.log("Rooms JSON:", rooms); // Bật log để debug
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error, xhr.responseText);
-                    roomSelect.empty().append('<option value="">Lỗi tải phòng</option>');
-                    alert('Lỗi server: ' + error + '. Vui lòng kiểm tra log hoặc liên hệ admin!');
-                },
-            });
-        });
-    });
-</script>
+  <jsp:include page="_script-maintenance-room-select.jsp" />
 </body>
 </html>

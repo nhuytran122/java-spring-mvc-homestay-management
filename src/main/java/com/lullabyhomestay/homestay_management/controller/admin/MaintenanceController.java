@@ -57,6 +57,13 @@ public class MaintenanceController {
         return "admin/maintenance/show";
     }
 
+    @GetMapping("/admin/maintenance/{id}")
+    public String getDetailRequest(Model model, @PathVariable("id") Long id) {
+        MaintenanceRequest request = maintenanceService.getMaintenanceRequestByID(id);
+        model.addAttribute("request", request);
+        return "admin/maintenance/detail";
+    }
+
     @GetMapping("/admin/maintenance/create")
     public String getCreateMaintenancePage(Model model) {
         model.addAttribute("newRequest", new MaintenanceRequest());
@@ -105,8 +112,13 @@ public class MaintenanceController {
     @GetMapping("/admin/maintenance/update/{id}")
     public String getUpdateMaintenancePage(Model model, @PathVariable Long id) {
         MaintenanceRequest request = maintenanceService.getMaintenanceRequestByID(id);
-        model.addAttribute("listBranches", this.branchService.getAllBranches());
+        boolean canUpdate = maintenanceService.canUpdateRequest(id);
         model.addAttribute("request", request);
+        if (!canUpdate) {
+            model.addAttribute("canUpdate", false);
+            return "admin/maintenance/update";
+        }
+        model.addAttribute("listBranches", this.branchService.getAllBranches());
         List<RoomDTO> listRooms = roomService.getRoomDTOsByBranchID(request.getBranch().getBranchID());
         model.addAttribute("listRooms", listRooms);
         return "admin/maintenance/update";
