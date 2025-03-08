@@ -1,6 +1,6 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,10 +30,13 @@ public class BookingExtension {
 
     @Column(name = "ExtraHours")
     @NotBlank(message = "Vui lòng nhập giờ muốn gia hạn")
-    private int extraHours;
+    private Integer extraHours;
 
     @Column(name = "CreatedAt")
-    private Date createdAt;
+    private LocalDateTime createdAt;
+
+    @Column(name = "TotalAmount")
+    private Double totalAmount;
 
     @ManyToOne
     @JoinColumn(name = "BookingID")

@@ -40,12 +40,14 @@ public class InventoryItem {
     private String unit;
 
     @Min(value = 1, message = "Giá cả phải lớn hơn 0")
+    @NotNull(message = "Vui lòng nhập giá cả")
     @Column(name = "Price")
-    private double price;
+    private Double price;
 
     @Min(value = 1, message = "Số lượng tối thiểu phải lớn hơn 0")
+    @NotNull(message = "Vui lòng nhập số lượng tối thiểu")
     @Column(name = "MinQuantity")
-    private int minQuantity;
+    private Integer minQuantity;
 
     @OneToMany(mappedBy = "inventoryItem")
     private List<InventoryStock> inventoryStocks;

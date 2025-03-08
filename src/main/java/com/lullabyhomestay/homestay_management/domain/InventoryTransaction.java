@@ -35,7 +35,8 @@ public class InventoryTransaction {
 
     @Column(name = "Quantity")
     @Min(value = 1, message = "Số lượng phải lớn hơn 0")
-    private int quantity;
+    @NotNull(message = "Vui lòng số lượng")
+    private Integer quantity;
 
     @Column(name = "Date", insertable = false)
     private LocalDateTime date;

@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +36,13 @@ public class CustomerType {
     @Column(name = "Description")  
     private String description;
 
-    @NotBlank(message = "Vui lòng nhập phần trăm giảm giá")
+    @NotNull(message = "Vui lòng nhập phần trăm giảm giá")
     @Column(name = "DiscountRate")  
-    private float discountRate;
+    private Float discountRate;
+
+    @NotNull(message = "Vui lòng nhập số điểm tối thiểu")
+    @Column(name = "MinPoint")
+    private Float minPoint;
     
     @OneToMany(mappedBy = "customerType")
     List<Customer> customers;

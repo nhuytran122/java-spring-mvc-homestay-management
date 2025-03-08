@@ -73,7 +73,7 @@ public class AmenityCategoryController {
     }
 
     @PostMapping("/admin/amenity-category/update")
-    public String postUpdateBranch(Model model,
+    public String postUpdateCategory(Model model,
             @ModelAttribute("category") @Valid AmenityCategory category,
             BindingResult newCategoryBindingResult,
             HttpServletRequest request) {

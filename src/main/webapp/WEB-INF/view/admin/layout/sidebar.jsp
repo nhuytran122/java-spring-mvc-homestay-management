@@ -121,6 +121,7 @@
         <div class="collapse" id="customers">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="/admin/customer"> Khách hàng </a></li>
+            <li class="nav-item"> <a class="nav-link" href="/admin/customer/customer-type"> Phân loại </a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/review"> Đánh giá </a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/report"> Khiếu nại </a></li>
           </ul>

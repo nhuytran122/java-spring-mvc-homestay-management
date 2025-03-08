@@ -1,10 +1,15 @@
 package com.lullabyhomestay.homestay_management.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.lullabyhomestay.homestay_management.utils.BookingStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,22 +35,23 @@ public class Booking {
     @Column(name = "BookingID")
     private Long bookingID;
 
-    @NotBlank(message = "Vui lòng nhập ")
+    @NotBlank(message = "Vui lòng nhập giờ checkin")
     @Column(name = "CheckIn")
-    private Date checkIn;
+    private LocalDateTime checkIn;
 
-    @NotBlank(message = "Vui lòng nhập ")
+    @NotBlank(message = "Vui lòng nhập giờ checkout")
     @Column(name = "CheckOut")
-    private Date checkOut;
+    private LocalDateTime checkOut;
 
     @Column(name = "Status")
-    private int status;
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
 
     @Column(name = "CreatedAt")
     private Date createdAt;
 
-    @Column(name = "TotalPrice")
-    private double totalPrice;
+    @Column(name = "TotalAmount")
+    private Double totalAmount;
 
     @OneToMany(mappedBy = "booking")
     List<BookingExtension> bookingExtensions;
@@ -66,10 +72,6 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "RoomID")
     private Room room;
-
-    @ManyToOne
-    @JoinColumn(name = "BookingStatusID")
-    private BookingStatus bookingStatus;
 
     @OneToMany(mappedBy = "booking")
     List<RoomStatusHistory> roomStatusHistories;

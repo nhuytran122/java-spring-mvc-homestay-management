@@ -40,6 +40,7 @@ public class Customer {
     @Column(name = "Email")
     private String email;
 
+    @NotBlank(message = "Vui lòng nhập địa chỉ")
     @Column(name = "Address")
     private String address;
 

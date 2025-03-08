@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
 
-public interface BookingRepository extends JpaRepository<Booking, Long>{
+public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAll(Pageable page);
 
     Optional<Booking> findByBookingID(long bookingID);
@@ -18,4 +18,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long>{
     void deleteByBookingID(long id);
 
     boolean existsByRoom_RoomID(long roomID);
+
+    boolean existsByCustomer_CustomerID(Long customerID);
 }

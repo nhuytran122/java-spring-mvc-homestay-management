@@ -26,7 +26,10 @@ public class BookingService {
     private Long bookingServiceID;
 
     @Column(name = "Quantity")
-    private int quantity;
+    private Integer quantity;
+
+    @Column(name = "TotalPrice")
+    private Double totalPrice;
 
     @Column(name = "CreatedAt")
     private Date createdAt;
