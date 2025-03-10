@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.domain;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
@@ -48,7 +47,7 @@ public class Booking {
     private BookingStatus status;
 
     @Column(name = "CreatedAt")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "TotalAmount")
     private Double totalAmount;

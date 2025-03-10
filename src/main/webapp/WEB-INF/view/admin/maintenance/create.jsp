@@ -52,7 +52,7 @@
                                             <form:select class="form-select form-control" 
                                                 path="room" id="roomSelect">
                                                 <form:option value="">Chọn phòng</form:option>
-                                                <form:options items="${listRooms}" itemValue="roomID" itemLabel="roomNumber"/>
+                                                <form:options itemValue="roomID" itemLabel="roomNumber"/>
                                             </form:select>
                                         </div>
                                     </div>

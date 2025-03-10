@@ -26,8 +26,29 @@ public class BaseSpecifications {
         return (root, query, cb) -> cb.like(cb.lower(root.get(joinField).get(subField)), searchPattern);
     }
 
-    public static <T> Specification<T> equalJoinTwoLevels(String firstJoinField, String secondJoinField, String finalField, Long valueID) {
+    public static <T> Specification<T> equalJoinTwoLevels(String firstJoinField, String secondJoinField,
+            String finalField, Long valueID) {
         return (root, query, cb) -> valueID == null ? cb.conjunction()
                 : cb.equal(root.get(firstJoinField).get(secondJoinField).get(finalField), valueID);
     }
+
+    public static <T> Specification<T> likeJoinTwoLevels(String firstJoinField, String secondJoinField,
+            String finalField, String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return (root, query, cb) -> cb.conjunction();
+        }
+        String normalizedValue = value.trim().toLowerCase();
+        String searchPattern = "%" + normalizedValue + "%";
+        return (root, query, cb) -> cb.like(root.get(firstJoinField).get(secondJoinField).get(finalField),
+                searchPattern);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <T> Specification<T> between(String field, Object firstValue, Object secondObject) {
+        if (firstValue == null || secondObject == null) {
+            return (root, query, cb) -> cb.conjunction();
+        }
+        return (root, query, cb) -> cb.between(root.get(field), (Comparable) firstValue, (Comparable) secondObject);
+    }
+
 }

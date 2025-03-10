@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +35,6 @@ public class RoomService {
     private final RoomAmenityRepository roomAmenityRepository;
     private final RoomStatusHistoryRepository roomStatusRepository;
     private final RoomPhotoRepository roomPhotoRepository;
-    private final ModelMapper mapper;
 
     public Page<Room> getAllRooms(Pageable pageable) {
         return this.roomRepository.findAll(pageable);

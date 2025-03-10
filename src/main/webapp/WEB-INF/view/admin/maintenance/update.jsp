@@ -116,7 +116,6 @@
         let $dataCheck = $('.data-check');
         let $input = $dataCheck.find('input[type="hidden"]');
         let canUpdate = $input.data('can-update');
-        let requestId = $('input[name="requestID"]').val(); 
         let currentStatus = $('input[name="status"]').val();
     
         if (canUpdate === false) {

@@ -54,7 +54,7 @@
                                             <label class="control-label col-sm-2">Icon <span class="text-danger">*</span></label>
                                             <div class="col-sm-10">
                                                 <form:hidden path="icon" id="selectedIcon" class="${not empty errorIcon ? 'is-invalid' : ''}" />
-                                                <button type="button" class="btn btn-outline-primary" id="openIconModal" data-bs-toggle="modal" data-bs-target="#iconModal" style="display: flex; align-items: center;">
+                                                <button type="button" class="btn btn-outline-primary" id="openIconModal" data-bs-toggle="modal" data-bs-target="#iconModal">
                                                     <span class="iconify" data-icon="${not empty newCategory.icon ? newCategory.icon : 'mdi:help-circle'}" data-width="20" data-height="20"></span>
                                                     Chọn icon
                                                 </button>

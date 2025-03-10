@@ -57,7 +57,7 @@ public class CustomerTypeController {
         if (result.hasErrors()) {
             return "admin/customer-type/create";
         }
-        customerTypeService.handleSavaCustomerType(customerType);
+        customerTypeService.handleSaveCustomerType(customerType);
         return "redirect:/admin/customer/customer-type";
     }
 
@@ -85,7 +85,7 @@ public class CustomerTypeController {
         currentType.setDiscountRate(type.getDiscountRate());
         currentType.setDescription(type.getDescription());
 
-        customerTypeService.handleSavaCustomerType(currentType);
+        customerTypeService.handleSaveCustomerType(currentType);
         return "redirect:/admin/customer/customer-type";
     }
 

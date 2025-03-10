@@ -5,11 +5,6 @@
             $(".error-message").remove(); 
             $(".amenity-quantity").removeClass("is-invalid");
         });
-
-        $(".amenity-quantity").on("input", function () {
-            $(this).removeClass("is-invalid"); 
-            $(this).next(".error-message").remove();
-        });
     });
 
     function saveSelectedAmenities() {

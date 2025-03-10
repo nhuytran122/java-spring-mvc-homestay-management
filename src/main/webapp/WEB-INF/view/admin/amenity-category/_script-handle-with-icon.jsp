@@ -15,12 +15,7 @@
             
             $('#openIconModal').html('');
             $('#openIconModal').append(buttonIcon); 
-
-            if (window.Iconify) {
-                window.Iconify.scan(buttonIcon[0]); 
-            } else {
-                console.error('Iconify incomplete');
-            }
+            
             $('#iconModal').modal('hide'); 
             $('.icon-option').removeClass('selected');
             $(this).addClass('selected');
