@@ -33,6 +33,9 @@
                                     <c:set var="errorPhone">
                                         <form:errors path="phone" cssClass="invalid-feedback" />
                                     </c:set>
+                                    <c:set var="errorEmail">
+                                        <form:errors path="email" cssClass="invalid-feedback" />
+                                    </c:set>
                                     <c:set var="errorAddress">
                                         <form:errors path="address" cssClass="invalid-feedback" />
                                     </c:set>
@@ -52,6 +55,15 @@
                                             <form:input type="text" class="form-control ${not empty errorPhone ? 'is-invalid' : ''}"
                                             path="phone" />
                                             ${errorPhone}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Email <span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:input type="email" class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
+                                            path="email" />
+                                            ${errorEmail}
                                         </div>
                                     </div>
 

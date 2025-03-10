@@ -33,6 +33,9 @@
                                     <c:set var="errorPhone">
                                         <form:errors path="phone" cssClass="invalid-feedback" />
                                     </c:set>
+                                    <c:set var="errorEmail">
+                                        <form:errors path="email" cssClass="invalid-feedback" />
+                                    </c:set>
                                     <c:set var="errorAddress">
                                         <form:errors path="address" cssClass="invalid-feedback" />
                                     </c:set>
@@ -62,10 +65,11 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label class="control-label col-sm-2">Email</label>
+                                        <label class="control-label col-sm-2">Email <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:input type="email" class="form-control"
+                                            <form:input type="email" class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
                                             path="email" />
+                                            ${errorEmail}
                                         </div>
                                     </div>
 
@@ -97,22 +101,13 @@
                                             ${errorSalary}
                                         </div>
                                     </div>
-
-                                    <div class="form-group row align-items-center">
-                                        <label class="col-sm-2 col-form-label">Đang làm việc</label>
-                                        <div class="col-sm-10">
-                                            <div class="form-check form-switch">
-                                                <form:checkbox path="working" class="form-check-input" style="transform: scale(1.3);"/>
-                                            </div>
-                                        </div>
-                                    </div>
                                     
                                     <div class="form-group row">
-                                    <label class="control-label col-sm-2">Hình ảnh</label>
-                                    <div class="col-sm-10">
-                                        <input type="file" class="form-control"  accept="image/*" 
-                                            name="fileImg" id="fileInput">
-                                    </div>
+                                        <label class="control-label col-sm-2">Hình ảnh</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" class="form-control"  accept="image/*" 
+                                                name="fileImg" id="fileInput">
+                                        </div>
                                     </div>
                                     
                                     <div class="form-group row">

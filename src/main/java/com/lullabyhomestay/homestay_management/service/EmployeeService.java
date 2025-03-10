@@ -74,6 +74,15 @@ public class EmployeeService {
         return !(hasMaintenanceRequest);
     }
 
+    public boolean checkEmailExistForOther(String email, Long id) {
+        Optional<Employee> employeeOpt = employeeRepository.findByEmail(email);
+        if (employeeOpt.isEmpty()) {
+            return false;
+        }
+        Employee employee = employeeOpt.get();
+        return id == null || !employee.getEmployeeID().equals(id);
+    }
+
     @Transactional
     public void deleteByEmployeeID(long employeeID) {
         if (canDeleteEmployee(employeeID)) {

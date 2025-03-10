@@ -29,18 +29,15 @@ public class Customer {
     @Column(name = "CustomerID")
     private Long customerID;
 
-    @NotBlank(message = "Vui lòng nhập họ tên")
     @Column(name = "FullName")
     private String fullName;
 
-    @NotBlank(message = "Vui lòng nhập số điện thoại")
     @Column(name = "Phone")
     private String phone;
 
     @Column(name = "Email")
     private String email;
 
-    @NotBlank(message = "Vui lòng nhập địa chỉ")
     @Column(name = "Address")
     private String address;
 

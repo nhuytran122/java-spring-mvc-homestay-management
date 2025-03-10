@@ -88,6 +88,7 @@ public class EmployeeController {
             img = this.uploadService.handleSaveUploadFile(file, "employee");
             employee.setAvatar(img);
         }
+        employee.setIsWorking(true);
         this.employeeService.handleSaveEmployee(employee);
         return "redirect:/admin/employee";
     }
@@ -126,7 +127,7 @@ public class EmployeeController {
         currentEmployee.setPhone(employee.getPhone());
         currentEmployee.setRole(employee.getRole());
         currentEmployee.setSalary(employee.getSalary());
-        currentEmployee.setWorking(employee.isWorking());
+        currentEmployee.setIsWorking(employee.getIsWorking());
 
         this.employeeService.handleSaveEmployee(currentEmployee);
         return "redirect:/admin/employee";

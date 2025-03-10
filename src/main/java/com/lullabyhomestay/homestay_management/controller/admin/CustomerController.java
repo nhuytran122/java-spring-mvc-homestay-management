@@ -66,7 +66,7 @@ public class CustomerController {
         if (result.hasErrors()) {
             return "admin/customer/create";
         }
-        customer.setLocked(false);
+        customer.setIsLocked(false);
         customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
         this.customerService.handleSaveCustomer(customer);
         return "redirect:/admin/customer";
@@ -93,7 +93,7 @@ public class CustomerController {
         currentCustomer.setFullName(customer.getFullName());
         currentCustomer.setAddress(customer.getAddress());
         currentCustomer.setPhone(customer.getPhone());
-        currentCustomer.setLocked(customer.isLocked());
+        currentCustomer.setIsLocked(customer.getIsLocked());
 
         this.customerService.handleSaveCustomer(currentCustomer);
         return "redirect:/admin/customer";

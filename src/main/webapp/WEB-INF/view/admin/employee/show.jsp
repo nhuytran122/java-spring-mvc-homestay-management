@@ -65,6 +65,7 @@
                                                 <th style="width: 150px;">Hình ảnh</th>
                                                 <th>Tên nhân viên</th>
                                                 <th>Số điện thoại</th>
+                                                <th>Email</th>
                                                 <th>Vai trò</th>
                                                 <th>Mức lương</th>
                                                 <th>Thao tác</th>
@@ -92,6 +93,7 @@
                                                             </td>
                                                             <td>${employee.fullName}</td>
                                                             <td>${employee.phone}</td>
+                                                            <td>${employee.email}</td>
                                                             <td>${employee.role.roleName}</td>
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${employee.salary}" /> đ</td>

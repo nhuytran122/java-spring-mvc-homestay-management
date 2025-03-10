@@ -78,6 +78,17 @@ public class CustomerService {
         return !(hasBooking || hasReport);
     }
 
+    public boolean checkEmailExistForOther(String email, Long id) {
+        Optional<Customer> customerOpt = customerRepository.findByEmail(email);
+        if (customerOpt.isEmpty()) {
+            return false;
+        }
+        Customer customer = customerOpt.get();
+        return id == null || !customer.getCustomerID().equals(id);
+    }
+
+
+
     @Transactional
     public void deleteByCustomerID(Long customerID) {
         if (canDeleteCustomer(customerID)) {

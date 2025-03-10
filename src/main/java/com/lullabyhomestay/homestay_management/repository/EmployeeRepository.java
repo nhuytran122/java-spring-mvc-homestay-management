@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lullabyhomestay.homestay_management.domain.Employee;
@@ -31,18 +29,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 
         boolean existsByRole_RoleID(long roleID);
 
-        @Query("SELECT e FROM Employee e " +
-                        "WHERE (:keyword IS NULL OR " +
-                        "       e.fullName LIKE %:keyword% OR " +
-                        "       e.phone LIKE %:keyword% OR " +
-                        "       e.address LIKE %:keyword% OR " +
-                        "       e.email LIKE %:keyword%) " +
-                        "AND (:isWorking IS NULL OR e.isWorking = :isWorking) " +
-                        "AND (:roleId IS NULL OR e.role.id = :roleId)")
-        Page<Employee> searchEmployees(
-                        @Param("keyword") String keyword,
-                        @Param("isWorking") Boolean isWorking,
-                        @Param("roleId") Long roleId,
-                        Pageable pageable);
-
+        Optional<Employee> findByEmail(String email);
 }

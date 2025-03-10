@@ -76,6 +76,7 @@
                                             <tr>
                                                 <th>Tên khách hàng</th>
                                                 <th>Số điện thoại</th>
+                                                <th>Email</th>
                                                 <th>Địa chỉ</th>
                                                 <th>Điểm tích lũy</th>
                                                 <th>Phân loại</th>
@@ -95,14 +96,15 @@
                                                         <tr style="height: 70px;">
                                                             <td>${customer.fullName}</td>
                                                             <td>${customer.phone}</td>
+                                                            <td>${customer.email}</td>
                                                             <td>${customer.address}</td>
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${customer.rewardPoints}" />
                                                             </td>
                                                             <td>${customer.customerType.name}</td>
                                                             <td>
-                                                                <span class="badge ${customer.locked == true ? 'bg-danger' : 'bg-success'}">
-                                                                    ${customer.locked == true ? 'Đã khóa' : 'Đang hoạt động'}
+                                                                <span class="badge ${customer.isLocked == true ? 'bg-danger' : 'bg-success'}">
+                                                                    ${customer.isLocked == true ? 'Đã khóa' : 'Đang hoạt động'}
                                                                 </span>
                                                             </td>
                                                             <td>

@@ -68,7 +68,7 @@
                                         <label class="control-label col-sm-2">Email</label>
                                         <div class="col-sm-10">
                                             <form:input type="email" class="form-control"
-                                            path="email" />
+                                            path="email" disabled="true"/>
                                         </div>
                                     </div>
 
@@ -105,7 +105,7 @@
                                         <label class="col-sm-2 col-form-label">Đang làm việc</label>
                                         <div class="col-sm-10">
                                             <div class="form-check form-switch">
-                                                <form:checkbox path="working" class="form-check-input" style="transform: scale(1.3);"/>
+                                                <form:checkbox path="isWorking" class="form-check-input" style="transform: scale(1.3);"/>
                                             </div>
                                         </div>
                                     </div>

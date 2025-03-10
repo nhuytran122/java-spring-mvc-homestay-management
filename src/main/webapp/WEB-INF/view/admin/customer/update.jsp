@@ -28,8 +28,6 @@
                                 <form:form class="form-horizontal" action="/admin/customer/update" method="post"
                                     modelAttribute="customer">
                                     <form:input type="hidden" path="customerID" />
-                                    <form:input type="hidden" path="customerType" />
-                                    <form:input type="hidden" path="rewardPoints" />
 
                                     <c:set var="errorName">
                                         <form:errors path="fullName" cssClass="invalid-feedback" />
@@ -60,6 +58,15 @@
                                     </div>
 
                                     <div class="form-group row">
+                                        <label class="control-label col-sm-2">Email</label>
+                                        <div class="col-sm-10">
+                                            <form:input type="email" class="form-control"
+                                            path="email" disabled="true"/>
+                                            <form:hidden path="email" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
                                         <label class="control-label col-sm-2">Địa chỉ <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
                                             <form:input type="text" class="form-control ${not empty errorAddress ? 'is-invalid' : ''}" 
@@ -72,7 +79,7 @@
                                         <label class="col-sm-2 col-form-label">Bị khóa</label>
                                         <div class="col-sm-10">
                                             <div class="form-check form-switch">
-                                                <form:checkbox path="locked" class="form-check-input" style="transform: scale(1.3);"/>
+                                                <form:checkbox path="isLocked" class="form-check-input" style="transform: scale(1.3);"/>
                                             </div>
                                         </div>
                                     </div>
