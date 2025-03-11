@@ -132,7 +132,6 @@ public class RoomController {
         currentRoom.setRoomType(room.getRoomType());
         currentRoom.setBranch(room.getBranch());
         currentRoom.setArea(room.getArea());
-        currentRoom.setDescription(room.getDescription());
         this.roomService.handleSaveRoom(currentRoom);
         return "redirect:/admin/room";
     }

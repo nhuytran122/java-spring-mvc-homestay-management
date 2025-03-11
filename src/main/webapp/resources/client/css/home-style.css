@@ -101,3 +101,7 @@ body {
     border-color: #d45252;
     color: var(--primary-foreground);
 }
+.navbar .guest-avatar {
+    object-fit: cover;
+    border-radius: 50%;
+}

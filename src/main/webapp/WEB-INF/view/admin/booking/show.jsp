@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Quản lý booking</title>
     <jsp:include page="../layout/import-css.jsp" />
-    <!-- Chỉ load một file CSS của daterangepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" />
 </head>
 <body>

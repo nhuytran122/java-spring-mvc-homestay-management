@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,14 +43,24 @@ public class RoomService {
 
     public Page<Room> searchRooms(SearchRoomCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
-        if ((criteria.getKeyword() == null || criteria.getKeyword().trim().isEmpty())
-                && criteria.getRoomTypeID() == null && criteria.getBranchID() == null) {
+        if (criteria.getRoomTypeID() == null && criteria.getBranchID() == null) {
             return roomRepository.findAll(pageable);
         }
         Specification<Room> spec = Specification.where(RoomSpecifications.hasBranch(criteria.getBranchID()))
-                .and(RoomSpecifications.hasRoomType(criteria.getRoomTypeID()))
-                .and(RoomSpecifications.descriptionLike(criteria.getKeyword()));
+                .and(RoomSpecifications.hasRoomType(criteria.getRoomTypeID()));
         return roomRepository.findAll(spec, pageable);
+    }
+
+    public Page<Room> searchRoomsForClient(SearchRoomCriteriaDTO criteria, int page) {
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
+        LocalDateTime startTime = criteria.getFromTime();
+        LocalDateTime endTime = criteria.getToTime();
+
+        if (startTime == null || endTime == null)
+            throw new IllegalArgumentException("Thời gian checkin phải bé hơn thời gian checkout");
+
+        return roomRepository.findAvailableRooms(criteria.getBranchID(), criteria.getRoomTypeID(), startTime, endTime,
+                pageable);
     }
 
     public Room handleSaveRoom(Room room) {

@@ -1,0 +1,122 @@
+.booking-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    top: 2rem;
+}
+
+.booking-card .price {
+    font-size: 1.8rem;
+    color: var(--primary);
+}
+
+.booking-card small {
+    font-size: 1rem;
+}
+
+.amenities li {
+    font-size: 1.1rem;
+    color: var(--foreground);
+}
+
+.price-details {
+    font-size: 0.95rem;
+}
+
+@media (max-width: 992px) {
+    .booking-card {
+        position: static !important;
+        margin-top: 2rem;
+    }
+    
+    .main-image {
+        height: 300px;
+    }
+    
+    .thumbnail {
+        height: 80px;
+    }
+}
+
+.reviewer-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+}
+
+.review-card {
+    background-color: var(--card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.rating-input i {
+    cursor: pointer;
+    color: var(--secondary);
+}
+
+.rating-input i:hover,
+.rating-input i.active {
+    color: #ffc107;
+}
+
+.review-stars i {
+    color: #ffc107;
+    margin-right: 2px;
+}
+
+@media (max-width: 768px) {
+    .main-image {
+        height: 250px;
+    }
+    
+    .thumbnail {
+        height: 60px;
+    }
+    
+    .booking-card {
+        margin-top: 1rem;
+    }
+    
+    .host-info img {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+.img-loading {
+    background: #f0f0f0;
+    position: relative;
+}
+
+.img-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--primary);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn-custom {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-foreground);
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-custom:hover {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--secondary-foreground);
+}

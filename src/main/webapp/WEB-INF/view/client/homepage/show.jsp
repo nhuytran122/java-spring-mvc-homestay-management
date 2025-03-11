@@ -7,16 +7,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lullaby Homestay</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Didact+Gothic&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <jsp:include page="../layout/import-css.jsp" />
     <link rel="stylesheet" href="/client/css/home-style.css">
 </head>
 <body>
-    <jsp:include page="../layout/header.jsp" />
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-house-heart-fill me-2 text-primary"></i>Lullaby Homestay
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Thông tin homestay</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/room">Phòng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#room-types">Loại phòng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#amenities">Tiện nghi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Dịch vụ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#location">Vị trí</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Liên hệ</a>
+                    </li>
+                </ul>
+
+                <div class="guest-profile d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d" alt="Guest" class="guest-avatar me-2 rounded-circle" width="40" height="40">
+                            John
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#"><i class="bi bi-calendar-check me-2"></i>Lịch sử đặt phòng</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Tài khoản của tôi</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
 
     <div class="hero-section">
         <div class="container h-100">
@@ -39,7 +92,7 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-md-6 mb-4 mb-md-0">
-                    <img src="https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1080&q=80" class="img-fluid rounded" alt="About Serenity Homestay">
+                    <img src="/images/branch/1740023066983-536477305.jpg" class="img-fluid rounded" alt="About Serenity Homestay">
                 </div>
                 <div class="col-md-6">
                     <c:forEach var="infor" items="${listInfors}">

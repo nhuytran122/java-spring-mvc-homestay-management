@@ -75,21 +75,13 @@
                                             path="area" />
                                         </div>
                                     </div>
-
-                                    <div class="form-group row">
-                                        <label class="control-label col-sm-2">Mô tả</label>
-                                        <div class="col-sm-10">
-                                            <form:textarea type="text" class="form-control" 
-                                            path="description" />
-                                        </div>
-                                    </div>
                                     
                                     <div class="form-group row">
-                                    <label class="control-label col-sm-2">Thumbnail</label>
-                                    <div class="col-sm-10">
-                                        <input type="file" class="form-control" accept="image/*" 
-                                            name="fileImg" id="fileInput">
-                                    </div>
+                                        <label class="control-label col-sm-2">Thumbnail</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" class="form-control" accept="image/*" 
+                                                name="fileImg" id="fileInput">
+                                        </div>
                                     </div>
                                     
                                     <div class="form-group row">

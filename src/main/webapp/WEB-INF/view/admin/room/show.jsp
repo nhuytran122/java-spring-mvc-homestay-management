@@ -20,8 +20,6 @@
         <div class="main-panel">
             <div class="search-form-container my-4">
                 <form action="/admin/room" method="get" class="search-form">
-                    <input type="text" class="form-control form-control-sm me-2" name="keyword" placeholder="Tìm kiếm phòng..." 
-                            value="${criteria.keyword}">
                     <select name="branchID" class="form-select form-control form-select-sm">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">

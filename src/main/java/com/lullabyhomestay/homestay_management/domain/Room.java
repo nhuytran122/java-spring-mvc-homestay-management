@@ -38,9 +38,6 @@ public class Room {
     @Column(name = "Area")
     private float area;
 
-    @Column(name = "Description")
-    private String description;
-
     @Column(name = "Thumbnail")
     private String thumbnail;
 
