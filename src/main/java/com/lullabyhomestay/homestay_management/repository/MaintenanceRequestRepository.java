@@ -27,4 +27,6 @@ public interface MaintenanceRequestRepository
     boolean existsByRoom_RoomID(long roomID);
 
     boolean existsByEmployee_EmployeeID(long employeeID);
+
+    boolean existsByBranch_BranchID(long branchID);
 }

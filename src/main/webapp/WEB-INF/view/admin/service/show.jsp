@@ -72,7 +72,8 @@
                                                 <c:otherwise>
                                                     <c:forEach var="service" items="${listServices}">
                                                         <tr>
-                                                            <td>${service.serviceName}</td>
+                                                            <td><span class="iconify" data-icon="${service.icon}" data-width="24" data-height="24"></span>
+                                                                ${service.serviceName}</td>
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${service.price}" /> đ</td>
                                                             <td>${service.unit}</td>
@@ -120,5 +121,6 @@
 
   <jsp:include page="../layout/partial/_modals-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>

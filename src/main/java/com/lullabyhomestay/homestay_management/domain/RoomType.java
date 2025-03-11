@@ -44,6 +44,9 @@ public class RoomType {
     @Column(name = "PricePerHour")
     private Double pricePerHour;
 
+    @Column(name = "Photo")
+    private String photo;
+
     @Column(name = "Description")
     private String description;
 

@@ -32,7 +32,7 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Hình ảnh <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <input type="file" class="form-control ${not empty errorFile ? 'is-invalid' : ''}"  
+                                            <input type="file" class="form-control"  
                                                    accept="image/*" name="fileImg" id="fileInput">
                                             <form:errors path="photo" cssClass="text-danger mt-2" />
                                         </div>

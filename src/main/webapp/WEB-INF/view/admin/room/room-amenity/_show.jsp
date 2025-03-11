@@ -8,6 +8,7 @@
                     <button type="button" class="btn btn-primary btn-sm" 
                             data-bs-toggle="modal" 
                             data-bs-target="${empty listAmenitiesNotInRoom ? '#noAmenitiesModal' : '#addRoomAmenityModal'}">
+                            <i class="bi bi-plus-circle"></i>
                         Thêm tiện nghi
                     </button>
                 </div>

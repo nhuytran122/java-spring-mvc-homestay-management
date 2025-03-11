@@ -14,6 +14,7 @@ import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BranchRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryTransactionRepository;
+import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomRepository;
 import com.lullabyhomestay.homestay_management.utils.Constants;
 
@@ -26,6 +27,7 @@ public class BranchService {
     private final RoomRepository roomRepository;
     private final InventoryTransactionRepository inventoryTransactionRepository;
     private final InventoryStockRepository inventoryStockRepository;
+    private final MaintenanceRequestRepository maintenanceRequestRepository;
 
     public List<Branch> getAllBranches() {
         return this.branchRepository.findAll();
@@ -56,7 +58,8 @@ public class BranchService {
         boolean hasRooms = roomRepository.existsByBranch_BranchID(branchID);
         boolean hasTransactions = inventoryTransactionRepository.existsByBranch_BranchID(branchID);
         boolean hasInventoryStock = inventoryStockRepository.existsByBranch_BranchID(branchID);
-        return !(hasRooms || hasTransactions || hasInventoryStock);
+        boolean hasMaintenance = maintenanceRequestRepository.existsByBranch_BranchID(branchID);
+        return !(hasRooms || hasTransactions || hasInventoryStock || hasMaintenance);
     }
 
     @Transactional

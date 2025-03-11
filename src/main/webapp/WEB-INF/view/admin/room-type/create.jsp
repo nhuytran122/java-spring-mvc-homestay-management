@@ -26,7 +26,7 @@
                             <div class="card-body">
                                 <h4 class="card-title mb-4 text-center">Thêm mới loại phòng</h4>
                                 <form:form class="form-horizontal" action="/admin/room-type/create" method="post"
-                                    modelAttribute="newRoomType">
+                                    modelAttribute="newRoomType" enctype="multipart/form-data">
                                     <c:set var="errorName">
                                         <form:errors path="name" cssClass="invalid-feedback" />
                                     </c:set>
@@ -85,6 +85,20 @@
                                             path="description" />
                                         </div>
                                     </div>
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Hình ảnh</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" class="form-control"  accept="image/*" 
+                                                name="fileImg" id="fileInput">
+                                            <form:errors path="photo" cssClass="text-danger mt-2" />
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group row">
+                                        <div class="col-sm-10">
+                                            <img class="imagePreview" alt="Preview ảnh" />
+                                        </div>
+                                    </div>
 
                                     <div class="form-group row">
                                         <div class="col-sm-offset-2 col-sm-10 text-center">
@@ -103,6 +117,7 @@
     </div>
     
     <jsp:include page="../layout/import-js.jsp" />
+    <jsp:include page="../layout/partial/_script-preview-image.jsp" />
     <jsp:include page="../layout/partial/_script-number-separator.jsp" />
 </body>
 </html>

@@ -64,7 +64,7 @@
                                             </div>
                                         </div>
                                         
-                                        <%@ include file="_modal-show-list-icons.jsp" %>
+                                        <%@ include file="../layout/partial/_modal-show-list-icons.jsp" %>
 
                                         <div class="form-group row">
                                             <label class="control-label col-sm-2">Mô tả</label>
@@ -91,6 +91,6 @@
 
     <jsp:include page="../layout/import-js.jsp" />
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-    <jsp:include page="_script-handle-with-icon.jsp" />
+    <jsp:include page="../layout/partial/_script-handle-with-icon.jsp" />
 </body>
 </html>

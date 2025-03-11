@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -19,6 +20,10 @@ import lombok.AllArgsConstructor;
 @Service
 public class HomestayService {
     private final HomestayDetailRepository homestayDetailRepository;
+
+    public List<HomestayDetail> getAllInforHomestay() {
+        return this.homestayDetailRepository.findAll();
+    }
 
     public Page<HomestayDetail> getAllInforHomestay(Pageable pageable) {
         return this.homestayDetailRepository.findAll(pageable);

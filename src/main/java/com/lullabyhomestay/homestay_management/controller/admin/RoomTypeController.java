@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 
 import com.lullabyhomestay.homestay_management.domain.RoomType;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
+import com.lullabyhomestay.homestay_management.service.UploadService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -21,11 +22,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @Controller
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
+    private final UploadService uploadService;
 
     @GetMapping("/admin/room-type")
     public String getRoomTypePage(Model model,
@@ -71,11 +74,21 @@ public class RoomTypeController {
     public String postCreateRoomType(Model model,
             @ModelAttribute("newRoomType") @Valid RoomType roomType,
             BindingResult newRoomTypeBindingResult,
+            @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
+        if (file.isEmpty()) {
+            newRoomTypeBindingResult.rejectValue("photo", "error.photo", "Vui lòng upload ảnh");
+        }
+
         if (newRoomTypeBindingResult.hasErrors()) {
             return "admin/room-type/create";
+        }
+        String img;
+        if (!file.isEmpty()) {
+            img = this.uploadService.handleSaveUploadFile(file, "room");
+            roomType.setPhoto(img);
         }
         roomTypeService.handleSaveRoomType(roomType);
         return "redirect:/admin/room-type";
@@ -92,12 +105,17 @@ public class RoomTypeController {
     public String postUpdateRoomType(Model model,
             @ModelAttribute("roomType") @Valid RoomType roomType,
             BindingResult roomTypeBindingResult,
+            @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
         RoomType currentRoomType = roomTypeService.getRoomTypeById(roomType.getRoomTypeID());
         if (roomTypeBindingResult.hasErrors()) {
             return "admin/room-type/update";
+        }
+        if (!file.isEmpty()) {
+            String img = this.uploadService.handleSaveUploadFile(file, "room");
+            currentRoomType.setPhoto(img);
         }
         currentRoomType.setName(roomType.getName());
         currentRoomType.setDescription(roomType.getDescription());

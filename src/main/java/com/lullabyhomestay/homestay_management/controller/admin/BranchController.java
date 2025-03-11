@@ -113,6 +113,8 @@ public class BranchController {
         currentBranch.setAddress(branch.getAddress());
         currentBranch.setPhone(branch.getPhone());
         currentBranch.setBranchPassword(branch.getBranchPassword());
+        currentBranch.setMapEmbedURL(branch.getMapEmbedURL());
+        currentBranch.setMapURL(branch.getMapURL());
 
         this.branchService.handleSaveBranch(currentBranch);
 

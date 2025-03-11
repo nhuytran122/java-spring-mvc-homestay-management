@@ -26,7 +26,7 @@
                             <div class="card-body">
                                 <h4 class="card-title mb-4 text-center">Sửa loại phòng</h4>
                                 <form:form class="form-horizontal" action="/admin/room-type/update" method="post"
-                                    modelAttribute="roomType">
+                                    modelAttribute="roomType" enctype="multipart/form-data">
                                     <form:input type="hidden" path="roomTypeID" />
                                     <c:set var="errorName">
                                         <form:errors path="name" cssClass="invalid-feedback" />
@@ -88,6 +88,23 @@
                                     </div>
 
                                     <div class="form-group row">
+                                        <label class="control-label col-sm-2">Hình ảnh</label>
+                                        <form:hidden path="photo" id="oldImage" />
+                                        <div class="col-sm-10">
+                                            <input type="file" class="form-control" accept="image/*" 
+                                                name="fileImg" id="fileInput">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-10 image-preview-container">
+                                            <c:if test="${not empty roomType.photo}">
+                                                <img src="/images/room/${roomType.photo}" class="imagePreview" alt="Preview ảnh">
+                                            </c:if>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
                                         <div class="col-sm-offset-2 col-sm-10 text-center">
                                             <a href="/admin/room-type" class="btn btn-secondary">Hủy</a>
                                             <button type="submit" class="btn btn-warning">Sửa</button>
@@ -105,5 +122,9 @@
     
     <jsp:include page="../layout/import-js.jsp" />
     <jsp:include page="../layout/partial/_script-number-separator.jsp" />
+    <jsp:include page="../layout/partial/_script-preview-image-update.jsp" />
+    <script>
+      setupImagePreview("room");
+  </script>
 </body>
 </html>

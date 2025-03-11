@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Service;
 import com.lullabyhomestay.homestay_management.service.HomestayServiceService;
+import com.lullabyhomestay.homestay_management.service.IconService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ import lombok.AllArgsConstructor;
 @Controller
 public class ServiceController {
     private final HomestayServiceService service;
+    private final IconService iconService;
 
     @GetMapping("/admin/service")
     public String getServicePage(Model model,
@@ -57,6 +59,7 @@ public class ServiceController {
     @GetMapping("/admin/service/create")
     public String getCreateServicePage(Model model) {
         model.addAttribute("newService", new Service());
+        model.addAttribute("iconList", iconService.getCachedIconList());
         return "admin/service/create";
     }
 
@@ -69,6 +72,7 @@ public class ServiceController {
         // HttpSession session = request.getSession(false);
 
         if (newServiceBindingResult.hasErrors()) {
+            model.addAttribute("iconList", iconService.getCachedIconList());
             return "admin/service/create";
         }
         this.service.handleSaveService(service);
@@ -78,6 +82,7 @@ public class ServiceController {
     @GetMapping("/admin/service/update/{id}")
     public String getUpdateServicePage(Model model, @PathVariable long id) {
         Service currentService = service.getServiceByID(id);
+        model.addAttribute("iconList", iconService.getCachedIconList());
         model.addAttribute("service", currentService);
         return "admin/service/update";
     }
@@ -91,12 +96,14 @@ public class ServiceController {
         // HttpSession session = request.getSession(false);
         Service currentService = this.service.getServiceByID(service.getServiceID());
         if (newServiceBindingResult.hasErrors()) {
+            model.addAttribute("iconList", iconService.getCachedIconList());
             return "admin/service/update";
         }
         currentService.setServiceName(service.getServiceName());
         currentService.setUnit(service.getUnit());
         currentService.setPrice(service.getPrice());
         currentService.setDescription(service.getDescription());
+        currentService.setIcon(service.getIcon());
 
         this.service.handleSaveService(currentService);
         return "redirect:/admin/service";

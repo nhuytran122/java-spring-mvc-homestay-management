@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -22,6 +23,10 @@ public class FAQService {
 
     public Page<FAQ> getAllFAQs(Pageable pageable) {
         return this.faqRepository.findAll(pageable);
+    }
+
+    public List<FAQ> getAllFAQs() {
+        return this.faqRepository.findAll();
     }
 
     public Page<FAQ> searchFAQs(String keyword, int page) {

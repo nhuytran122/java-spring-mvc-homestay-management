@@ -55,6 +55,7 @@
                                     <table class="table table-hover">
                                         <thead class="table-light">
                                             <tr>
+                                                <th style="width: 150px;">Hình ảnh</th>
                                                 <th>Tên loại phòng</th>
                                                 <th>Giá mỗi giờ</th>
                                                 <th>Số lượng khách tối đa</th>
@@ -72,6 +73,16 @@
                                                 <c:otherwise>
                                                     <c:forEach var="roomType" items="${roomTypes}">
                                                         <tr>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${not empty roomType.photo}">
+                                                                        <img src="/images/room/${roomType.photo}" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <img src="/images/room/default-img.jpg" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
                                                             <td>${roomType.name}</td>
                                                             <td>
                                                                 <fmt:formatNumber type="number"

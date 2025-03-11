@@ -1,0 +1,103 @@
+:root {
+    --primary: #e66767;
+    --primary-foreground: #ffffff;
+    --secondary: #6c757d;
+    --secondary-foreground: #ffffff;
+    --background: #f8f9fa;
+    --foreground: #212529;
+    --card: #ffffff;
+    --card-foreground: #212529;
+    --border: #dee2e6;
+    --input: #ced4da;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+.navbar {
+    background-color: var(--card) !important;
+    border-bottom: 1px solid var(--border);
+}
+.navbar-brand {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.5rem;
+    color: var(--primary) !important;
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945') center/cover;
+    height: 80vh;
+    color: white;
+    margin-top: 56px;
+}
+
+.search-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+}
+
+.card {
+    border: 1px solid var(--border);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.price {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        height: 100vh;
+    }
+    
+    .search-box {
+        margin-top: 2rem;
+    }
+}
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    z-index: 1000;
+}
+.btn-outline-primary:hover {
+    background-color: var(--primary); 
+    color: var(--primary-foreground); 
+    border-color: var(--primary);
+}
+.btn-primary:hover {
+    background-color: #d45252; 
+    border-color: #d45252;
+    color: var(--primary-foreground);
+}

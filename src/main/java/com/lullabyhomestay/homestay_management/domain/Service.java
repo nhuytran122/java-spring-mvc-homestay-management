@@ -37,6 +37,10 @@ public class Service {
     @Column(name = "Description")
     private String description;
 
+    @NotBlank(message = "Vui lòng chọn icon")
+    @Column(name = "Icon")
+    private String icon;
+
     @OneToMany(mappedBy = "service")
     private List<BookingService> bookingServices;
 }
