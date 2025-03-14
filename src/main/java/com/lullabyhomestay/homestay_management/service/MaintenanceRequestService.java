@@ -9,8 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.lullabyhomestay.homestay_management.domain.MaintenanceRequest;
+import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchMaintenanceCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
@@ -24,14 +24,11 @@ import lombok.AllArgsConstructor;
 @Service
 public class MaintenanceRequestService {
     private final MaintenanceRequestRepository maintenanceRepository;
+    private final RoomService roomService;
 
     public Page<MaintenanceRequest> getAllAmenities(Pageable pageable) {
         return this.maintenanceRepository.findAll(pageable);
     }
-
-    // todo: searchBy Description, Status, orderBy CreatedAt
-    // Page<MaintainanceRequest> findBy..(
-    // String name, String address, Pageable pageable);
 
     public Page<MaintenanceRequest> searchMaintenances(SearchMaintenanceCriteriaDTO criteria,
             int page) {
@@ -70,6 +67,14 @@ public class MaintenanceRequestService {
     }
 
     public void handleSaveMaintenanceRequest(MaintenanceRequest request) {
+        if (request.getStatus() == MaintenanceStatus.IN_PROGRESS) {
+            Long roomID = request.getRoom().getRoomID();
+            if (roomID != null) {
+                Room room = roomService.getRoomByID(roomID);
+                room.setIsActive(false);
+                roomService.handleSaveRoom(room);
+            }
+        }
         this.maintenanceRepository.save(request);
     }
 

@@ -38,8 +38,11 @@ public class InventoryTransaction {
     @NotNull(message = "Vui lòng số lượng")
     private Integer quantity;
 
-    @Column(name = "Date", insertable = false)
-    private LocalDateTime date;
+    @Column(name = "CreatedAt", insertable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "UpdatedAt", insertable = false)
+    private LocalDateTime updatedAt;
 
     @Column(name = "TransactionType")
     @Enumerated(EnumType.STRING)
@@ -54,4 +57,8 @@ public class InventoryTransaction {
     @JoinColumn(name = "BranchID")
     @NotNull(message = "Vui lòng chọn chi nhánh")
     private Branch branch;
+
+    @ManyToOne
+    @JoinColumn(name = "EmployeeID")
+    private Employee employee;
 }

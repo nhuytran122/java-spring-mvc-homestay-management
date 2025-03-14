@@ -3,6 +3,10 @@ package com.lullabyhomestay.homestay_management.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.lullabyhomestay.homestay_management.service.validator.AdminValidation;
+import com.lullabyhomestay.homestay_management.service.validator.ValidBooking;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
 import jakarta.persistence.Column;
@@ -16,7 +20,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@ValidBooking
 @Table(name = "Bookings")
 public class Booking {
     @Id
@@ -34,19 +41,27 @@ public class Booking {
     @Column(name = "BookingID")
     private Long bookingID;
 
-    @NotBlank(message = "Vui lòng nhập giờ checkin")
+    @NotNull(message = "Vui lòng nhập giờ checkin")
+    @FutureOrPresent(message = "Giờ check-in phải từ thời điểm hiện tại trở đi")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(name = "CheckIn")
     private LocalDateTime checkIn;
 
-    @NotBlank(message = "Vui lòng nhập giờ checkout")
+    @NotNull(message = "Vui lòng nhập giờ checkout")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(name = "CheckOut")
     private LocalDateTime checkOut;
+
+    @NotNull(message = "Vui lòng nhập số lượng khách")
+    @Min(value = 1, message = "Số lượng khách phải lớn hơn hoặc bằng 1")
+    @Column(name = "GuestCount")
+    private Integer guestCount;
 
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    @Column(name = "CreatedAt")
+    @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "TotalAmount")
@@ -66,10 +81,12 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "CustomerID")
+    @NotNull(message = "Vui lòng chọn khách hàng đặt phòng", groups = AdminValidation.class)
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "RoomID")
+    @NotNull(message = "Vui lòng chọn phòng")
     private Room room;
 
     @OneToMany(mappedBy = "booking")

@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,45 +74,63 @@
                 </div>
                 
                 <div class="col-lg-4">
-                    <div class="booking-card card sticky-top">
+                    <div class="booking-card card sticky-top p-3">
                         <div class="card-body">
-                            <h3 class="price mb-4"><fmt:formatNumber type="number"
-                                value="${room.roomType.pricePerHour}" />đ <small class="text-muted">/giờ</small></h3>
-                            <form>
+                            <h3 class="price mb-4"><fmt:formatNumber type="number" value="${room.roomType.pricePerHour}" />đ <small class="text-muted">/giờ</small></h3>
+                            <form:form action="/booking" method="post" modelAttribute="newBooking">
+                                <c:set var="errorCheckIn">
+                                    <form:errors path="checkIn" cssClass="invalid-feedback" />
+                                </c:set>
+                                <c:set var="errorCheckOut">
+                                    <form:errors path="checkOut" cssClass="invalid-feedback" />
+                                </c:set>
+                                <c:set var="errorGuestCount">
+                                    <form:errors path="guestCount" cssClass="invalid-feedback" />
+                                </c:set>
+                                <form:input type="hidden" path="room.roomID" value="${room.roomID}" />
+                                <form:input type="hidden" path="room.roomType.maxGuest" value="${room.roomType.maxGuest}" />
                                 <div class="row g-3 mb-4">
                                     <div class="col-6">
                                         <label class="form-label">Check-in</label>
-                                        <input type="text" id="checkin" class="form-control datetime-picker" placeholder="Chọn thời gian checkin">
+                                        <form:input type="text" id="checkin" class="form-control datetime-picker 
+                                            ${not empty errorCheckIn ? 'is-invalid' : ''}" path="checkIn"  placeholder="Chọn thời gian checkin"/>
+                                            ${errorCheckIn}
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label">Check-out</label>
-                                        <input type="text" id="checkout" class="form-control datetime-picker" placeholder="Chọn thời gian checkout">
+                                        <form:input type="text" id="checkout" class="form-control datetime-picker 
+                                            ${not empty errorCheckOut ? 'is-invalid' : ''}" path="checkOut"  placeholder="Chọn thời gian checkout"/>
+                                            ${errorCheckOut}
+                                    </div>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Số lượng khách</label>
-                                        <select class="form-select">
+                                        <form:select path="guestCount" class="form-select ${not empty errorGuestCount ? 'is-invalid' : ''}" id="guestCount">
                                             <c:forEach var="i" begin="1" end="${room.roomType.maxGuest}">
-                                                <option>${i} người</option>
+                                                <option value="${i}" ${i == newBooking.guestCount ? 'selected' : ''}>${i} người</option>
                                             </c:forEach>
-                                        </select>                                        
+                                        </form:select>
+                                        ${errorGuestCount}                                    
                                     </div>
-                                </div>
-                                <button class="btn btn-primary btn-custom w-100 mb-3">Đặt phòng</button>
                                 
-                                <div class="price-details mt-4">
+                                <button type="submit" class="btn btn-primary btn-custom w-100 mt-4">Đặt phòng</button>
+                            </div>
+                                <div class="price-details my-4">
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span><fmt:formatNumber type="number"
-                                            value="${room.roomType.pricePerHour}" /> x 5 giờ</span>
-                                        <span>0đ</span>
+                                        <span id="hours-text"><fmt:formatNumber type="number" value="${room.roomType.pricePerHour}" />đ x 0 giờ</span>
+                                        <span id="subtotal">0đ</span>
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between fw-bold">
                                         <span>Tổng cộng</span>
-                                        <span>0đ</span>
+                                        <span id="total">0đ</span>
                                     </div>
                                 </div>
-                                <div class="alert alert-danger d-none" id="booking-error"></div>
-                            </form>
+                                <c:if test="${not empty errorMessage}">
+                                    <div class="alert alert-danger" id="booking-error">${errorMessage}</div>
+                                </c:if>
+                                <div class="alert alert-danger" id="booking-error-client" style="display: none;"></div>
+                            </form:form>
                         </div>
                     </div>
                 </div>
@@ -193,16 +212,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('.datetime-picker').daterangepicker({
-                singleDatePicker: true, 
-                timePicker: true,  
-                timePicker24Hour: true,  
-                timePickerIncrement: 10,
-                locale: {
-                    format: 'DD/MM/YYYY HH:mm'
+            let now = moment();
+            let pricePerHour = parseFloat("${room.roomType.pricePerHour}") || 0;
+            let roomTypeName = "${room.roomType.name}".toLowerCase(); 
+            let isDorm = roomTypeName.includes("dorm"); 
+
+            $('#checkin').daterangepicker({
+                singleDatePicker: true,
+                timePicker: true,
+                timePicker24Hour: true,
+                timePickerIncrement: 15,
+                startDate: now,
+                locale: { format: 'DD/MM/YYYY HH:mm' }
+            }).on('apply.daterangepicker', updatePrice);
+
+            $('#checkout').daterangepicker({
+                singleDatePicker: true,
+                timePicker: true,
+                timePicker24Hour: true,
+                timePickerIncrement: 15,
+                startDate: now,
+                locale: { format: 'DD/MM/YYYY HH:mm' }
+            }).on('apply.daterangepicker', updatePrice);
+
+            $('#guestCount').on('change', updatePrice); 
+
+            function updatePrice() {
+                let checkIn = moment($('#checkin').val(), 'DD/MM/YYYY HH:mm');
+                let checkOut = moment($('#checkout').val(), 'DD/MM/YYYY HH:mm');
+                let guestCount = parseInt($('#guestCount').val()) || 1; 
+
+                if (checkIn.isValid() && checkOut.isValid() && checkOut.isAfter(checkIn)) {
+                    let hours = Math.ceil(checkOut.diff(checkIn, 'hours', true));
+                    let total = isDorm ? pricePerHour * hours * guestCount : pricePerHour * hours;
+
+                    $('#hours-text').text(pricePerHour.toLocaleString('vi-VN') + "đ x " + hours + " giờ" + (isDorm ? " x " + guestCount + " người" : ""));
+                    $('#subtotal').text(total.toLocaleString('vi-VN') + "đ");
+                    $('#total').text(total.toLocaleString('vi-VN') + "đ");
+                } else {
+                    $('#hours-text').text(pricePerHour.toLocaleString('vi-VN') + "đ x 0 giờ");
+                    $('#subtotal').text("0đ");
+                    $('#total').text("0đ");
                 }
-            });
+            }
+            updatePrice();
         });
-    </script>    
+    </script>
 </body>
 </html>

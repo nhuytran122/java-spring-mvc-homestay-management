@@ -87,7 +87,9 @@
                                                 <th>Phân loại</th>
                                                 <th>Chi nhánh</th>
                                                 <th>Số lượng</th>
+                                                <th>Người tạo</th>
                                                 <th>Ngày giao dịch</th>
+                                                <th>Ngày cập nhật</th>
                                                 <th>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -110,7 +112,9 @@
                                                             <td>${item.inventoryItem.inventoryCategory.categoryName}</td>
                                                             <td>${item.branch.branchName}</td>
                                                             <td><fmt:formatNumber type="number" value="${item.quantity}" /></td>
-                                                            <td>${f:formatLocalDateTime(item.date)}</td>
+                                                            <td>${item.employee.fullName}</td>
+                                                            <td>${f:formatLocalDateTime(item.createdAt)}</td>
+                                                            <td>${f:formatLocalDateTime(item.updatedAt)}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
                                                                     <button class="btn btn-warning btn-sm" title="Sửa"

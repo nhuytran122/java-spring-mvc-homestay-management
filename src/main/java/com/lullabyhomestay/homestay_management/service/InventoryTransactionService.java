@@ -45,8 +45,8 @@ public class InventoryTransactionService {
     public Page<InventoryTransaction> searchTransactions(SearchTransactionCriterialDTO criteria,
             int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
-                "asc".equals(criteria.getSort()) ? Sort.by("Date").ascending()
-                        : "desc".equals(criteria.getSort()) ? Sort.by("Date").descending() : Sort.unsorted());
+                "asc".equals(criteria.getSort()) ? Sort.by("CreatedAt").ascending()
+                        : "desc".equals(criteria.getSort()) ? Sort.by("CreatedAt").descending() : Sort.unsorted());
 
         if ((criteria.getKeyword() == null || criteria.getKeyword().isEmpty()) && criteria.getBranchID() == null
                 && (criteria.getTransactionType() == null || criteria.getTransactionType().isEmpty()))
@@ -69,6 +69,7 @@ public class InventoryTransactionService {
 
     @Transactional
     public void handleSaveTransaction(InventoryTransaction transaction) {
+        // TODO: Set Employee đang login
         this.transactionRepository.save(transaction);
         this.handleChangeStock(transaction);
     }
@@ -113,13 +114,8 @@ public class InventoryTransactionService {
     }
 
     public boolean canUpdateTransaction(Long transactionID) {
-        Optional<InventoryTransaction> transactionOpt = transactionRepository.findById(transactionID);
-        if (!transactionOpt.isPresent()) {
-            throw new NotFoundException("Giao dịch");
-        }
-
-        InventoryTransaction transaction = transactionOpt.get();
-        LocalDateTime transactionDate = transaction.getDate();
+        InventoryTransaction transaction = this.getTransactionByID(transactionID);
+        LocalDateTime transactionDate = transaction.getCreatedAt();
         LocalDateTime now = LocalDateTime.now();
 
         long minutesDifference = ChronoUnit.MINUTES.between(transactionDate, now);
@@ -128,14 +124,17 @@ public class InventoryTransactionService {
 
     @Transactional
     public void updateTransaction(InventoryTransaction updatedTransaction, int oldQuantity) {
-        InventoryTransaction existingTransaction = transactionRepository.findById(updatedTransaction.getTransactionID())
-                .get();
-        int newQuantity = updatedTransaction.getQuantity();
+        if (this.canUpdateTransaction(updatedTransaction.getTransactionID())) {
+            InventoryTransaction existingTransaction = transactionRepository
+                    .findById(updatedTransaction.getTransactionID())
+                    .get();
+            int newQuantity = updatedTransaction.getQuantity();
 
-        existingTransaction.setQuantity(newQuantity);
+            existingTransaction.setQuantity(newQuantity);
 
-        transactionRepository.save(existingTransaction);
-        updateStockWithDifference(existingTransaction, newQuantity - oldQuantity);
+            transactionRepository.save(existingTransaction);
+            updateStockWithDifference(existingTransaction, newQuantity - oldQuantity);
+        }
     }
 
     private void updateStockWithDifference(InventoryTransaction transaction, int quantityDifference) {
@@ -155,7 +154,6 @@ public class InventoryTransactionService {
                 throw new InventoryException("Số lượng xuất vượt quá tồn kho.", transaction);
             }
         }
-
         currentStock.setQuantity(newStockQuantity);
         stockRepository.save(currentStock);
     }

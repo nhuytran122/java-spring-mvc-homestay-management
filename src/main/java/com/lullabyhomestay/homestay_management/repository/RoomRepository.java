@@ -34,31 +34,37 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
         boolean existsByRoomType_RoomTypeID(long roomType);
 
         @Query(value = "SELECT r.* FROM Rooms r " +
-                        "WHERE r.RoomID NOT IN (" +
-                        "    SELECT b.RoomID FROM Bookings b " +
+                        "WHERE NOT EXISTS (" +
+                        "    SELECT 1 FROM Bookings b " +
                         "    LEFT JOIN (" +
-                        "        SELECT BookingID, ISNULL(SUM(ExtraHours), 0) as TotalExtraHours " +
-                        "        FROM BookingExtensions " +
-                        "        GROUP BY BookingID" +
-                        "    ) be ON b.BookingID = be.BookingID " +
-                        "    WHERE b.CheckIn < :endTime " +
-                        "    AND DATEADD(hour, be.TotalExtraHours, b.CheckOut) > :startTime" +
+                        "        SELECT be.BookingID, COALESCE(SUM(be.ExtraHours), 0) AS TotalExtraHours " +
+                        "        FROM BookingExtensions be " +
+                        "        GROUP BY be.BookingID" +
+                        "    ) AS ext ON b.BookingID = ext.BookingID " +
+                        "    WHERE b.RoomID = r.RoomID " +
+                        "    AND b.CheckIn < :endTime " +
+                        "    AND DATEADD(hour, ext.TotalExtraHours, b.CheckOut) > :startTime" +
                         ") " +
                         "AND (:branchId IS NULL OR r.BranchID = :branchId) " +
-                        "AND (:roomTypeId IS NULL OR r.RoomTypeID = :roomTypeId) ", countQuery = "SELECT COUNT(r.RoomID) FROM Rooms r "
-                                        +
-                                        "WHERE r.RoomID NOT IN (" +
-                                        "    SELECT b.RoomID FROM Bookings b " +
+                        "AND (:roomTypeId IS NULL OR r.RoomTypeID = :roomTypeId) " +
+                        "AND (r.IsActive = 1)",
+
+                        countQuery = "SELECT COUNT(r.RoomID) FROM Rooms r " +
+                                        "WHERE NOT EXISTS (" +
+                                        "    SELECT 1 FROM Bookings b " +
                                         "    LEFT JOIN (" +
-                                        "        SELECT BookingID, ISNULL(SUM(ExtraHours), 0) as TotalExtraHours " +
-                                        "        FROM BookingExtensions " +
-                                        "        GROUP BY BookingID" +
-                                        "    ) be ON b.BookingID = be.BookingID " +
-                                        "    WHERE b.CheckIn < :endTime " +
-                                        "    AND DATEADD(hour, be.TotalExtraHours, b.CheckOut) > :startTime" +
+                                        "        SELECT be.BookingID, COALESCE(SUM(be.ExtraHours), 0) AS TotalExtraHours "
+                                        +
+                                        "        FROM BookingExtensions be " +
+                                        "        GROUP BY be.BookingID" +
+                                        "    ) AS ext ON b.BookingID = ext.BookingID " +
+                                        "    WHERE b.RoomID = r.RoomID " +
+                                        "    AND b.CheckIn < :endTime " +
+                                        "    AND DATEADD(hour, ext.TotalExtraHours, b.CheckOut) > :startTime" +
                                         ") " +
                                         "AND (:branchId IS NULL OR r.BranchID = :branchId) " +
-                                        "AND (:roomTypeId IS NULL OR r.RoomTypeID = :roomTypeId) ", nativeQuery = true)
+                                        "AND (:roomTypeId IS NULL OR r.RoomTypeID = :roomTypeId) " +
+                                        "AND (r.IsActive = 1)", nativeQuery = true)
         Page<Room> findAvailableRooms(
                         @Param("branchId") Long branchId,
                         @Param("roomTypeId") Long roomTypeId,

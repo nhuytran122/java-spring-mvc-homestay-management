@@ -62,6 +62,7 @@
                                                 <th>Giá mỗi giờ</th>
                                                 <th>Loại phòng</th>
                                                 <th>Chi nhánh</th>
+                                                <th>Tình trạng</th>
                                                 <th>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -91,6 +92,11 @@
                                                                 value="${room.roomType.pricePerHour}" /> đ</td>
                                                             <td>${room.roomType.name}</td>
                                                             <td>${room.branch.branchName}</td>
+                                                            <td>
+                                                                <span class="badge ${room.isActive ? 'bg-success' : 'bg-danger'}">
+                                                                    ${room.isActive ? 'Hoạt động' : 'Ngừng hoạt động'}
+                                                                </span>
+                                                            </td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
                                                                     <a href="/admin/room/${room.roomID}" class="btn btn-success btn-sm" title="Xem chi tiết">

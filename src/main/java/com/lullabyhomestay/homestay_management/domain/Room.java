@@ -41,6 +41,9 @@ public class Room {
     @Column(name = "Thumbnail")
     private String thumbnail;
 
+    @Column(name = "IsActive")
+    private Boolean isActive;
+
     @OneToMany(mappedBy = "room")
     private List<MaintenanceRequest> maintenanceRequests;
 

@@ -65,4 +65,7 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<MaintenanceRequest> maintenanceRequests;
+
+    @OneToMany(mappedBy = "employee")
+    private List<InventoryTransaction> inventoryTransactions;
 }

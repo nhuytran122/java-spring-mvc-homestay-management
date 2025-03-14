@@ -64,12 +64,20 @@ public class CustomerService {
         return customerRepository.findAll(spec, pageable).map(customer -> mapper.map(customer, CustomerDTO.class));
     }
 
-    public CustomerDTO getCustomerByID(Long customerID) {
+    public CustomerDTO getCustomerDTOByID(Long customerID) {
         Optional<Customer> customerOpt = customerRepository.findByCustomerID(customerID);
         if (!customerOpt.isPresent()) {
             throw new NotFoundException("Khách hàng");
         }
         return mapper.map(customerOpt.get(), CustomerDTO.class);
+    }
+
+    public Customer getCustomerByID(Long customerID) {
+        Optional<Customer> customerOpt = customerRepository.findByCustomerID(customerID);
+        if (!customerOpt.isPresent()) {
+            throw new NotFoundException("Khách hàng");
+        }
+        return customerOpt.get();
     }
 
     public boolean canDeleteCustomer(Long customerID) {
@@ -86,8 +94,6 @@ public class CustomerService {
         Customer customer = customerOpt.get();
         return id == null || !customer.getCustomerID().equals(id);
     }
-
-
 
     @Transactional
     public void deleteByCustomerID(Long customerID) {

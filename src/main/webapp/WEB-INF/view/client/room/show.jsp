@@ -54,6 +54,9 @@
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                            <c:if test="${not empty errorMessage}">
+                                <div class="text-danger mt-2 text-center">${errorMessage}</div>
+                            </c:if>
                         </div>
                     </form>
                 </div>

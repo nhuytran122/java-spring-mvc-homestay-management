@@ -77,6 +77,15 @@
                                             path="area" />
                                         </div>
                                     </div>
+
+                                    <div class="form-group row align-items-center">
+                                        <label class="col-sm-2 col-form-label">Đang hoạt động</label>
+                                        <div class="col-sm-10">
+                                            <div class="form-check form-switch">
+                                                <form:checkbox path="isActive" class="form-check-input" style="transform: scale(1.3);"/>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Thumbnail</label>
                                         <form:hidden path="thumbnail" id="oldImage" />

@@ -9,6 +9,6 @@ public class ConvertDateToString {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
             return date.format(formatter);
         }
-        return "N/A";
+        return "";
     }
 }

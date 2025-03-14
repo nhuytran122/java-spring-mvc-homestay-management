@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.BranchService;
@@ -52,8 +53,8 @@ public class ClientRoomController {
 
     @GetMapping("/room/{id}")
     public String getDetailRoomPage(Model model, @PathVariable long id) {
-        Room room = roomService.getRoomByID(id);
-        model.addAttribute("room", room);
+        model.addAttribute("newBooking", new Booking());
+        model.addAttribute("room", roomService.getRoomByID(id));
         return "client/room/detail";
     }
 

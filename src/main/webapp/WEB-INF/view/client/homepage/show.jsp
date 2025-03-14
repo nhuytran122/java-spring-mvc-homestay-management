@@ -123,9 +123,9 @@
                                     <span class="price fw-bold text-danger">
                                         <fmt:formatNumber type="number" value="${roomType.pricePerHour}" />đ/giờ
                                     </span>
-                                    <button class="btn btn-primary px-4 py-2 rounded-3">
+                                    <a href="/room?roomTypeID=${roomType.roomTypeID}" class="btn btn-primary px-4 py-2 rounded-3">
                                         Xem các phòng
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>

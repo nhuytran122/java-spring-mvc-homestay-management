@@ -147,7 +147,7 @@ public class WarehouseController {
         }
         int oldQuantity = currentTransaction.getQuantity();
         currentTransaction.setQuantity(transaction.getQuantity());
-        currentTransaction.setDate(LocalDateTime.now());
+        currentTransaction.setUpdatedAt(LocalDateTime.now());
         this.transactionService.updateTransaction(currentTransaction, oldQuantity);
         return "redirect:/admin/warehouse/transaction";
     }

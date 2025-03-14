@@ -1,9 +1,13 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import com.lullabyhomestay.homestay_management.utils.RoomStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,18 +31,18 @@ public class RoomStatusHistory {
     private Long roomStatusID;
 
     @Column(name = "StartedAt")
-    private Date startedAt;
+    private LocalDateTime startedAt;
 
     @Column(name = "EndedAt")
-    private Date endedAt;
+    private LocalDateTime endedAt;
 
     @ManyToOne
     @JoinColumn(name = "roomID")
     private Room room;
 
-    @ManyToOne
-    @JoinColumn(name = "roomStatusID")
-    private RoomStatus roomStatus;
+    @Column(name = "Status")
+    @Enumerated(EnumType.STRING)
+    private RoomStatus status;
 
     @ManyToOne
     @JoinColumn(name = "bookingID")

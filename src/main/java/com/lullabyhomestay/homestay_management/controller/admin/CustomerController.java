@@ -74,7 +74,7 @@ public class CustomerController {
 
     @GetMapping("/admin/customer/update/{id}")
     public String getUpdateCustomerPage(Model model, @PathVariable long id) {
-        CustomerDTO customer = customerService.getCustomerByID(id);
+        CustomerDTO customer = customerService.getCustomerDTOByID(id);
         model.addAttribute("customer", customer);
         return "admin/customer/update";
     }
@@ -86,7 +86,7 @@ public class CustomerController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        CustomerDTO currentCustomer = (customerService.getCustomerByID(customer.getCustomerID()));
+        CustomerDTO currentCustomer = (customerService.getCustomerDTOByID(customer.getCustomerID()));
         if (result.hasErrors()) {
             return "admin/customer/update";
         }

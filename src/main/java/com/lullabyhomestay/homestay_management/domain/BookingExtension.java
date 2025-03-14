@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,10 +29,10 @@ public class BookingExtension {
     private Long extensionID;
 
     @Column(name = "ExtraHours")
-    @NotBlank(message = "Vui lòng nhập giờ muốn gia hạn")
+    @NotNull(message = "Vui lòng nhập giờ muốn gia hạn")
     private Integer extraHours;
 
-    @Column(name = "CreatedAt")
+    @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "TotalAmount")
