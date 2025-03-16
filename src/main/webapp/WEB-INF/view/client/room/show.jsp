@@ -94,7 +94,7 @@
                                                     value="${room.roomType.pricePerHour}" />đ</span>
                                                 <small class="text-muted">/ giờ</small>
                                             </div>
-                                            <a href="#" class="btn btn-primary">Đặt phòng</a>
+                                            <a href="/room/${room.roomID}" class="btn btn-primary">Đặt phòng</a>
                                         </div>
                                     </div>
                                     

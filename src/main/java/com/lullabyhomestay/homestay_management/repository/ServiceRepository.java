@@ -14,6 +14,8 @@ import com.lullabyhomestay.homestay_management.domain.Service;
 public interface ServiceRepository extends JpaRepository<Service, Long> {
     List<Service> findAll();
 
+    List<Service> findByIsPrepaid(Boolean isPrepaid);
+
     Page<Service> findAll(Pageable page);
 
     Page<Service> findByServiceNameContainingIgnoreCase(

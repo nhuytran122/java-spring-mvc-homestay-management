@@ -217,13 +217,20 @@
             let roomTypeName = "${room.roomType.name}".toLowerCase(); 
             let isDorm = roomTypeName.includes("dorm"); 
 
+            let checkInVal = $('#checkin').val();
+            let checkOutVal = $('#checkout').val();
+            let startDate = checkInVal && moment(checkInVal, 'DD/MM/YYYY HH:mm').isValid() ? moment(checkInVal, 'DD/MM/YYYY HH:mm') : now;
+            let endDate = checkOutVal && moment(checkOutVal, 'DD/MM/YYYY HH:mm').isValid() ? moment(checkOutVal, 'DD/MM/YYYY HH:mm') : now;
+
             $('#checkin').daterangepicker({
                 singleDatePicker: true,
                 timePicker: true,
                 timePicker24Hour: true,
                 timePickerIncrement: 15,
-                startDate: now,
-                locale: { format: 'DD/MM/YYYY HH:mm' }
+                startDate: startDate, 
+                locale: { 
+                    format: 'DD/MM/YYYY HH:mm' 
+                }
             }).on('apply.daterangepicker', updatePrice);
 
             $('#checkout').daterangepicker({
@@ -231,8 +238,10 @@
                 timePicker: true,
                 timePicker24Hour: true,
                 timePickerIncrement: 15,
-                startDate: now,
-                locale: { format: 'DD/MM/YYYY HH:mm' }
+                startDate: endDate, 
+                locale: { 
+                    format: 'DD/MM/YYYY HH:mm' 
+                }
             }).on('apply.daterangepicker', updatePrice);
 
             $('#guestCount').on('change', updatePrice); 

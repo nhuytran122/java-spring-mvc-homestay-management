@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lullabyhomestay.homestay_management.service.AmenityCategoryService;
 import com.lullabyhomestay.homestay_management.service.BranchService;
 import com.lullabyhomestay.homestay_management.service.FAQService;
-import com.lullabyhomestay.homestay_management.service.HomestayService;
+import com.lullabyhomestay.homestay_management.service.HomestayInforService;
 import com.lullabyhomestay.homestay_management.service.HomestayServiceService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
@@ -26,7 +26,7 @@ public class HomePageController {
     private final AmenityCategoryService amenityCategoryService;
     private final RuleService ruleService;
     private final HomestayServiceService service;
-    private final HomestayService inforService;
+    private final HomestayInforService inforService;
 
     @GetMapping("/")
     public String getHomePage(Model model,

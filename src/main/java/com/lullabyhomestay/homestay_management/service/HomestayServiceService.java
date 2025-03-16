@@ -26,6 +26,10 @@ public class HomestayServiceService {
         return this.serviceRepository.findAll();
     }
 
+    public List<Service> getServiceByIsPrepaid(boolean isPrepaid) {
+        return this.serviceRepository.findByIsPrepaid(isPrepaid);
+    }
+
     public Page<Service> getAllServices(Pageable pageable) {
         return this.serviceRepository.findAll(pageable);
     }

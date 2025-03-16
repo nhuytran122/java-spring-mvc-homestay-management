@@ -102,6 +102,7 @@ public class ServiceController {
         currentService.setServiceName(service.getServiceName());
         currentService.setUnit(service.getUnit());
         currentService.setPrice(service.getPrice());
+        currentService.setIsPrepaid(service.getIsPrepaid());
         currentService.setDescription(service.getDescription());
         currentService.setIcon(service.getIcon());
 

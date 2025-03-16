@@ -32,6 +32,15 @@
                                 </option>
                             </c:forEach>
                         </select>
+
+                        <select name="roomTypeID" class="form-select form-control form-select-sm">
+                            <option value="">Chọn loại phòng</option>
+                            <c:forEach var="roomType" items="${listRoomTypes}">
+                                <option value="${roomType.roomTypeID}" ${roomType.roomTypeID == criteria.roomTypeID ? 'selected' : ''}>
+                                    ${roomType.name}
+                                </option>
+                            </c:forEach>
+                        </select>
                         <select name="status" class="form-select form-control form-select-sm">
                             <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
                                 Tất cả tình trạng
@@ -45,14 +54,11 @@
                         <input type="text" id="timeRange" name="timeRange" class="form-control daterange-picker" 
                                value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian...">
                         <select name="sort" class="form-select form-control form-select-sm">
-                            <option value="" ${criteria.sort == '' ? 'selected' : ''}>
-                                Không sắp xếp
-                            </option>
                             <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
-                                Cũ nhất
+                                Check-in sớm nhất
                             </option>
                             <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
-                                Mới nhất
+                                Check-in muộn nhất
                             </option>
                         </select>
                         <button type="submit" class="btn btn-primary btn-sm p-2">
@@ -84,7 +90,8 @@
                                                     <th>Checkin</th>
                                                     <th>Checkout</th>
                                                     <th>Trạng thái</th>
-                                                    <th>Tổng thanh toán</th>
+                                                    <th>Tổng tiền</th>
+                                                    <th>Đã thanh toán</th>
                                                     <th>Ngày đặt</th>
                                                     <th>Thao tác</th>
                                                 </tr>
@@ -101,7 +108,7 @@
                                                             <tr style="height: 70px;">
                                                                 <td>${booking.customer.fullName}</td>
                                                                 <td>${booking.customer.phone}</td>
-                                                                <td>${booking.branch.branchName}</td>
+                                                                <td>${booking.room.branch.branchName}</td>
                                                                 <td>${booking.room.roomNumber}</td>
                                                                 <td>${f:formatLocalDateTime(booking.checkIn)}</td>
                                                                 <td>${f:formatLocalDateTime(booking.checkOut)}</td>
@@ -112,7 +119,8 @@
                                                                         ${booking.status.displayName}
                                                                     </span>
                                                                 </td>
-                                                                <td><fmt:formatNumber type="number" value="${booking.totalAmount}" /></td>
+                                                                <td><fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</td>
+                                                                <td><fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ</td>
                                                                 <td>${f:formatLocalDateTime(booking.createdAt)}</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
@@ -163,7 +171,7 @@
             
             $('.daterange-picker').daterangepicker({
                 locale: {
-                    format: 'DD/MM/YYYY HH:mm'
+                    format: 'DD/MM/YYYY'
                 },
             })
         });

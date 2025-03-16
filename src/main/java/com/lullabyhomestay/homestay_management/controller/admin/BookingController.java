@@ -15,6 +15,7 @@ import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.BookingService;
 import com.lullabyhomestay.homestay_management.service.BranchService;
+import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.AllArgsConstructor;
 public class BookingController {
     private final BookingService bookingService;
     private final BranchService branchService;
+    private final RoomTypeService roomTypeService;
 
     @GetMapping("/admin/booking")
     public String getBookingPage(Model model,
@@ -54,10 +56,10 @@ public class BookingController {
     private String prepareModelWithoutSearch(Model model, SearchBookingCriteriaDTO criteria, int validPage) {
         model.addAttribute("criteria", criteria);
         model.addAttribute("extraParams", criteria.convertToExtraParams());
-        model.addAttribute("listBookings", List.of());
         model.addAttribute("currentPage", validPage);
         model.addAttribute("bookingStatuses", BookingStatus.values());
         model.addAttribute("listBranches", this.branchService.getAllBranches());
+        model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
         return "admin/booking/show";
     }
 }

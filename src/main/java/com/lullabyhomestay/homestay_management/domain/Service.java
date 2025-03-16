@@ -34,6 +34,9 @@ public class Service {
     @Column(name = "Price")
     private double price;
 
+    @Column(name = "IsPrepaid")
+    private Boolean isPrepaid;
+
     @Column(name = "Description")
     private String description;
 
@@ -42,5 +45,9 @@ public class Service {
     private String icon;
 
     @OneToMany(mappedBy = "service")
-    private List<BookingService> bookingServices;
+    private List<BookingServices> bookingServices;
+
+    @OneToMany(mappedBy = "service")
+    List<AdditionalService> additionalServices;
+
 }

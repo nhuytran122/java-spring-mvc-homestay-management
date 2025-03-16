@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lullabyhomestay.homestay_management.domain.HomestayDetail;
-import com.lullabyhomestay.homestay_management.service.HomestayService;
+import com.lullabyhomestay.homestay_management.service.HomestayInforService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Controller
 public class HomestayInforController {
-    private final HomestayService homestayService;
+    private final HomestayInforService homestayService;
 
     @GetMapping("/admin/homestay-infor")
     public String getInforHomestayPage(Model model,

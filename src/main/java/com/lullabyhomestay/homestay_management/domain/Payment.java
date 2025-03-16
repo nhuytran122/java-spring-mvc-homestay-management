@@ -1,10 +1,14 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,14 +34,12 @@ public class Payment {
     @Column(name = "PaymentID")
     private Long paymentID;
 
-    @Column(name = "PaymentMethod")
-    private String paymentMethod;
-
     @Column(name = "Status")
-    private boolean status;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
 
     @Column(name = "PaymentDate")
-    private Date paymentDate;
+    private LocalDateTime paymentDate;
 
     @Column(name = "TotalAmount")
     private double totalAmount;
@@ -48,4 +50,8 @@ public class Payment {
 
     @OneToMany(mappedBy = "payment")
     List<PaymentDetail> paymentDetails;
+
+    @ManyToOne
+    @JoinColumn(name = "PaymentTypeID")
+    private PaymentType paymentType;
 }

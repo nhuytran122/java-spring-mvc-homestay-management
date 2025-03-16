@@ -18,6 +18,7 @@ import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.BookingSpecifications;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -29,16 +30,18 @@ public class BookingService {
     private final CustomerService customerService;
 
     public Page<Booking> searchBookings(SearchBookingCriteriaDTO criteria, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 1,
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
                 "asc".equals(criteria.getSort()) ? Sort.by("CheckIn").ascending()
                         : "desc".equals(criteria.getSort()) ? Sort.by("CheckIn").descending() : Sort.unsorted());
-        if ((criteria.getKeyword() == null || criteria.getKeyword().isEmpty()) && criteria.getBranchID() == null
-                && criteria.getStatus() == null
-                || criteria.getStatus().isEmpty()
-                        && criteria.getTimeRange() == null
-                || criteria.getTimeRange().isEmpty())
-            return bookingRepository
-                    .findAll(pageable);
+        boolean isAllCriteriaEmpty = (criteria.getKeyword() == null || criteria.getKeyword().isEmpty())
+                && criteria.getBranchID() == null
+                && criteria.getRoomTypeID() == null
+                && (criteria.getStatus() == null || criteria.getStatus().isEmpty())
+                && (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty());
+
+        if (isAllCriteriaEmpty) {
+            return bookingRepository.findAll(pageable);
+        }
         BookingStatus statusNum = null;
         if (criteria.getStatus() != null && !criteria.getStatus().isEmpty()) {
             try {
@@ -48,9 +51,10 @@ public class BookingService {
             }
         }
         Specification<Booking> spec = Specification.where(BookingSpecifications.hasBranch(criteria.getBranchID()))
+                .and(BookingSpecifications.hasRoomType(criteria.getRoomTypeID()))
                 .and(BookingSpecifications.customerNameLike(criteria.getKeyword())
                         .and(BookingSpecifications.statusEqual(statusNum))
-                        .and(BookingSpecifications.checkinBetween(criteria.getFromTime(), criteria.getToTime())));
+                        .and(BookingSpecifications.checkInBetween(criteria.getFromTime(), criteria.getToTime())));
         return bookingRepository.findAll(spec, pageable);
     }
 
@@ -74,5 +78,9 @@ public class BookingService {
             throw new NotFoundException("Lịch đặt phòng");
         }
         return bookingOpt.get();
+    }
+
+    public Booking handleSaveBooking(Booking booking) {
+        return bookingRepository.save(booking);
     }
 }

@@ -80,6 +80,15 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group row align-items-center">
+                                        <label class="col-sm-2 col-form-label">Thanh toán trước</label>
+                                        <div class="col-sm-10">
+                                            <div class="form-check form-switch">
+                                                <form:checkbox path="isPrepaid" class="form-check-input" style="transform: scale(1.3);"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Icon <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">

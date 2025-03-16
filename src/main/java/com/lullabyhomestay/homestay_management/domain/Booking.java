@@ -67,17 +67,23 @@ public class Booking {
     @Column(name = "TotalAmount")
     private Double totalAmount;
 
+    @Column(name = "PaidAmount")
+    private Double paidAmount;
+
     @OneToMany(mappedBy = "booking")
     List<BookingExtension> bookingExtensions;
 
     @OneToMany(mappedBy = "booking")
-    List<BookingService> bookingServices;
+    List<BookingServices> bookingServices;
 
     @OneToMany(mappedBy = "booking")
     List<Review> reviews;
 
     @OneToMany(mappedBy = "booking")
     List<Payment> payments;
+
+    @OneToMany(mappedBy = "booking")
+    List<AdditionalService> additionalServices;
 
     @ManyToOne
     @JoinColumn(name = "CustomerID")

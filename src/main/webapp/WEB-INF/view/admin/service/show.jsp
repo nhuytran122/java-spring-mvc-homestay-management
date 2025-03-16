@@ -58,6 +58,7 @@
                                                 <th>Tên dịch vụ</th>
                                                 <th>Giá</th>
                                                 <th>Đơn vị tính</th>
+                                                <th>Loại dịch vụ</th>
                                                 <th>Mô tả</th>
                                                 <th>Thao tác</th>
                                             </tr>
@@ -77,6 +78,11 @@
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${service.price}" /> đ</td>
                                                             <td>${service.unit}</td>
+                                                            <td>
+                                                                <span class="badge ${service.isPrepaid == true ? 'bg-danger' : 'bg-success'}">
+                                                                    ${service.isPrepaid == true ? 'Trả trước' : 'Trả sau'}
+                                                                </span>
+                                                            </td>
                                                             <td>${service.description}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">

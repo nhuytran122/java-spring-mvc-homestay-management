@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Service
-public class HomestayService {
+public class HomestayInforService {
     private final HomestayDetailRepository homestayDetailRepository;
 
     public List<HomestayDetail> getAllInforHomestay() {

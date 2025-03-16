@@ -27,9 +27,9 @@ public class PaymentType {
     @Column(name = "PaymentTypeID")
     private Long paymentTypeID;
 
-    @Column(name = "Description")
-    private String description;
+    @Column(name = "TypeName")
+    private String typeName;
 
     @OneToMany(mappedBy = "paymentType")
-    List<PaymentDetail> paymentDetails;
+    List<Payment> payments;
 }

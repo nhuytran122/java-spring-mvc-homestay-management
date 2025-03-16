@@ -19,6 +19,7 @@ public class SearchBookingCriteriaDTO {
     private String keyword;
     private String timeRange = "";
     private Long branchID;
+    private Long roomTypeID;
     private String status;
     private String sort;
 
@@ -27,11 +28,14 @@ public class SearchBookingCriteriaDTO {
         if (branchID != null) {
             extraParams.append("&branchID=").append(branchID);
         }
+        if (roomTypeID != null) {
+            extraParams.append("&roomTypeID=").append(roomTypeID);
+        }
         if (status != null) {
             extraParams.append("&status=").append(status);
         }
         if (timeRange != null) {
-            extraParams.append("&timeRange=").append(timeRange);
+            extraParams.append("&timeRange=").append(URLEncoder.encode(timeRange, StandardCharsets.UTF_8));
         }
         if (keyword != null && !keyword.isEmpty()) {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
