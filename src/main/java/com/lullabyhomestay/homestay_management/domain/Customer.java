@@ -47,7 +47,7 @@ public class Customer {
     private String password;
 
     @Column(name = "RewardPoints")
-    private float rewardPoints;
+    private Double rewardPoints;
 
     @Column(name = "IsLocked")
     private boolean isLocked;

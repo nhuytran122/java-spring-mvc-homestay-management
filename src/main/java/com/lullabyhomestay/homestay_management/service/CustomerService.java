@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Customer;
+import com.lullabyhomestay.homestay_management.domain.CustomerType;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchCustomerCriterialDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
@@ -31,10 +33,18 @@ public class CustomerService {
     private final ModelMapper mapper;
     private final BookingRepository bookingRepository;
     private final ReportRepository reportRepository;
+    private final CustomerTypeService customerTypeService;
 
     public CustomerDTO handleSaveCustomer(CustomerDTO requestDTO) {
         Customer customer = mapper.map(requestDTO, Customer.class);
         customer.setPassword(this.passwordEncoder.encode("lullabyhomestay"));
+
+        List<CustomerType> customerTypes = customerTypeService.getAllCustomerTypes();
+        for (CustomerType type : customerTypes) {
+            if (customer.getRewardPoints() >= type.getMinPoint()) {
+                customer.setCustomerType(type);
+            }
+        }
         Customer savedCustomer = customerRepository.save(customer);
         return mapper.map(savedCustomer, CustomerDTO.class);
     }

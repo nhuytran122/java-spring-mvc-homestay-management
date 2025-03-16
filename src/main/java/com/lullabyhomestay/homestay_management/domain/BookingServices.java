@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,14 +29,12 @@ public class BookingServices {
     @Column(name = "BookingServiceID")
     private Long bookingServiceID;
 
+    @NotNull(message = "Vui lòng nhập số lượng")
     @Column(name = "Quantity")
     private Float quantity;
 
     @Column(name = "TotalPrice")
     private Double totalPrice;
-
-    @Column(name = "IsAdditional")
-    private Boolean isAdditional;
 
     @Column(name = "Description")
     private String description;
@@ -45,9 +44,11 @@ public class BookingServices {
 
     @ManyToOne
     @JoinColumn(name = "ServiceID")
+    @NotNull(message = "Vui lòng chọn dịch vụ")
     private Service service;
 
     @ManyToOne
     @JoinColumn(name = "BookingID")
+    @NotNull(message = "Vui lòng chọn booking")
     private Booking booking;
 }

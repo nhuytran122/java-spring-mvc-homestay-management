@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.Room;
-import com.lullabyhomestay.homestay_management.domain.Service;
 import com.lullabyhomestay.homestay_management.domain.dto.ApiResponseDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingServiceRequestDTO;
 import com.lullabyhomestay.homestay_management.service.*;
@@ -98,25 +97,20 @@ public class ClientBookingController {
                 BookingServices newBookingService = new BookingServices();
 
                 Long serviceID = bService.getService().getServiceID();
-                Service service = this.service.getServiceByID(serviceID);
+
                 Float quantity = bService.getQuantity();
                 String description = bService.getDescription();
-                Double totalPrice = service.getPrice() * quantity;
 
                 newBookingService.setService(this.service.getServiceByID(serviceID));
                 newBookingService.setQuantity(quantity);
-                newBookingService.setTotalPrice(totalPrice);
-                newBookingService.setIsAdditional(false);
+
                 newBookingService.setDescription(description);
                 newBookingService.setBooking(booking);
 
                 this.bookingExtraService.handleSaveBookingServiceExtra(newBookingService);
             }
         }
-        redirectAttributes.addFlashAttribute("bookingID", bookingID);
         return ResponseEntity.ok(new ApiResponseDTO<>(bookingID, "Xác nhận dịch vụ thành công"));
-        // return ResponseEntity.ok().build();
-        // return "client/booking/booking-confirmation";
     }
 
     @GetMapping("/booking/booking-confirmation")

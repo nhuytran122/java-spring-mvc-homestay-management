@@ -19,7 +19,7 @@
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="/admin/booking">Danh sách Booking</a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/booking/schedule">Lịch đặt phòng</a></li>
-            <li class="nav-item"> <a class="nav-link" href="/admin/booked-requests">Dịch vụ đã đặt</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/admin/booking-service">Dịch vụ đã đặt</a></li>
             <li class="nav-item"> <a class="nav-link" href="/admin/payment">Thanh toán</a></li>
           </ul>
         </div>

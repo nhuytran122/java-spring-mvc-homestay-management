@@ -12,9 +12,9 @@ public class BaseSpecifications {
         return (root, query, cb) -> value == null ? cb.conjunction() : cb.equal(root.get(field), value);
     }
 
-    public static <T> Specification<T> equalJoin(String joinField, String subField, Long valueID) {
-        return (root, query, cb) -> valueID == null ? cb.conjunction()
-                : cb.equal(root.get(joinField).get(subField), valueID);
+    public static <T> Specification<T> equalJoin(String joinField, String subField, Object value) {
+        return (root, query, cb) -> value == null ? cb.conjunction()
+                : cb.equal(root.get(joinField).get(subField), value);
     }
 
     public static <T> Specification<T> likeJoin(String joinField, String subField, String value) {

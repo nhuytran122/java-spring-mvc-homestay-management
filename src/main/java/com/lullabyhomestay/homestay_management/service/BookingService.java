@@ -3,6 +3,7 @@ package com.lullabyhomestay.homestay_management.service;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
-import com.lullabyhomestay.homestay_management.domain.Branch;
+import com.lullabyhomestay.homestay_management.domain.Customer;
+import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
@@ -28,6 +30,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final RoomStatusHistoryService roomStatusHistoryService;
     private final CustomerService customerService;
+    private final ModelMapper mapper;
 
     public Page<Booking> searchBookings(SearchBookingCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
@@ -61,14 +64,22 @@ public class BookingService {
     @Transactional
     public Booking handleBooking(Booking booking) {
         // TODO: Set customer đang login or được chọn bởi admin
-        booking.setCustomer(customerService.getCustomerByID(4L));
+        Customer customer = customerService.getCustomerByID(4L);
+        booking.setCustomer(customer);
 
         long hours = ChronoUnit.HOURS.between(booking.getCheckIn(), booking.getCheckOut());
-        double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
+        Double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
         double totalAmount = pricePerHour * hours;
         booking.setTotalAmount(totalAmount);
         Booking savedBooking = bookingRepository.save(booking);
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
+
+        Double rewardPoints = customer.getRewardPoints();
+        Double addPoints = (totalAmount / 100000) * 10;
+        rewardPoints += addPoints;
+        customer.setRewardPoints(rewardPoints);
+        CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
+        customerService.handleSaveCustomer(customerDTO);
         return savedBooking;
     }
 
