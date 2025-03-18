@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.domain;
 
+import java.text.Normalizer;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -37,4 +38,18 @@ public class Role {
 
     @OneToMany(mappedBy = "role")
     private List<Employee> employees;
+
+    public String convertToSystemRoleName() {
+        if (this.roleName == null) {
+            return null;
+        }
+        String normalizedRoleName = Normalizer.normalize(this.roleName, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .replaceAll("đ", "d")
+                .replaceAll("Đ", "D")
+                .replaceAll("\\s+", "_")
+                .replaceAll("[^A-Za-z0-9_]", "");
+        return normalizedRoleName.toUpperCase();
+    }
+
 }

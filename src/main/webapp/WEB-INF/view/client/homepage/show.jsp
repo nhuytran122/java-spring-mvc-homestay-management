@@ -42,6 +42,10 @@
                         <a class="nav-link" href="#location">Vị trí</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="#member-discount">Ưu đãi</a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="#contact">Liên hệ</a>
                     </li>
                 </ul>
@@ -210,7 +214,7 @@
         </div>
     </div>
     
-    <div id="location" class="py-5 bg-light">
+    <div id="location" class="py-5 bg-light" data-aos="fade-up">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center mb-4">
@@ -426,7 +430,7 @@
         </div>
     </div>
 
-    <div class="member-discount py-5 bg-light" data-aos="fade-up">
+    <div id="member-discount" class="py-5 bg-light" data-aos="fade-up">
         <h2 class="text-center mb-5">
             Chính Sách Ưu Đãi Cho Thành Viên
         </h2>
@@ -502,7 +506,6 @@
     </div>
 
     <jsp:include page="../layout/footer.jsp" />
-
     <jsp:include page="../layout/import-js.jsp" />
 <script src="/client/js/scroll.js"></script>
 </body>

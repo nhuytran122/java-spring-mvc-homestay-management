@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lullabyhomestay.homestay_management.domain.Customer;
 import com.lullabyhomestay.homestay_management.domain.CustomerType;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.RegisterDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchCustomerCriterialDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
@@ -37,14 +38,24 @@ public class CustomerService {
 
     public CustomerDTO handleSaveCustomer(CustomerDTO requestDTO) {
         Customer customer = mapper.map(requestDTO, Customer.class);
-        customer.setPassword(this.passwordEncoder.encode("lullabyhomestay"));
-
+        if (requestDTO.getCustomerID() == null) {
+            customer.setPassword(this.passwordEncoder.encode("lullabyhomestay"));
+            customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
+        }
         List<CustomerType> customerTypes = customerTypeService.getAllCustomerTypes();
         for (CustomerType type : customerTypes) {
             if (customer.getRewardPoints() >= type.getMinPoint()) {
                 customer.setCustomerType(type);
             }
         }
+        Customer savedCustomer = customerRepository.save(customer);
+        return mapper.map(savedCustomer, CustomerDTO.class);
+    }
+
+    public CustomerDTO handleRegisterCustomer(RegisterDTO registerDTO) {
+        Customer customer = mapper.map(registerDTO, Customer.class);
+        customer.setPassword(this.passwordEncoder.encode(registerDTO.getPassword()));
+        customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
         Customer savedCustomer = customerRepository.save(customer);
         return mapper.map(savedCustomer, CustomerDTO.class);
     }
@@ -103,6 +114,15 @@ public class CustomerService {
         }
         Customer customer = customerOpt.get();
         return id == null || !customer.getCustomerID().equals(id);
+    }
+
+    public boolean checkEmailExistWhenRegister(String email) {
+        return this.customerRepository.existsByEmail(email);
+    }
+
+    public Customer getCustomerByEmail(String email) {
+        Optional<Customer> customerOptional = customerRepository.findByEmail(email);
+        return customerOptional.orElse(null);
     }
 
     @Transactional

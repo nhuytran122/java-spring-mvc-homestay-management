@@ -1,0 +1,100 @@
+:root {
+    --color-background-light: #F2F2F2;
+    --color-background-form: #ecf0f3;
+    --color-primary: #70a1ff;
+    --color-shadow-dark: #cbced1;
+    --color-shadow-light: #fff;
+    --color-text: #333;
+    --color-placeholder: #808080;
+}
+
+.demo {
+    background: var(--color-background-light);
+}
+
+.form-container {
+    background: var(--color-background-form);
+    font-family: 'Nunito', sans-serif;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 14px 14px 20px var(--color-shadow-dark), -14px -14px 20px var(--color-shadow-light);
+}
+
+.form-container .form-icon {
+    color: var(--color-primary);
+    font-size: 55px;
+    text-align: center;
+    line-height: 100px;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 15px;
+    border-radius: 50px;
+    box-shadow: 7px 7px 10px var(--color-shadow-dark), -7px -7px 10px var(--color-shadow-light);
+}
+
+.form-container .title {
+    color: var(--color-primary);
+    font-size: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+.form-container .form-horizontal .form-group {
+    margin: 0 0 25px 0;
+}
+
+.form-container .form-horizontal .form-group label, 
+.col-md-6 label {
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.form-container .form-horizontal .form-control {
+    color: var(--color-text);
+    background: var(--color-background-form);
+    font-size: 15px;
+    height: 50px;
+    padding: 20px;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 50px;
+    box-shadow: inset 6px 6px 6px var(--color-shadow-dark), inset -6px -6px 6px var(--color-shadow-light);
+    display: inline-block;
+    transition: all 0.3s ease 0s;
+}
+
+.form-container .form-horizontal .form-control:focus {
+    box-shadow: inset 6px 6px 6px var(--color-shadow-dark), inset -6px -6px 6px var(--color-shadow-light);
+    outline: none;
+}
+
+.form-container .form-horizontal .form-control::placeholder {
+    color: var(--color-placeholder);
+    font-size: 14px;
+}
+
+.form-container .form-horizontal .btn {
+    color: var(--color-text);
+    background-color: var(--color-primary);
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 100%;
+    padding: 12px 15px 11px;
+    border-radius: 20px;
+    box-shadow: 6px 6px 6px var(--color-shadow-dark), -6px -6px 6px var(--color-shadow-light);
+    border: none;
+    transition: all 0.5s ease 0s;
+}
+
+.form-container .form-horizontal .btn:hover, 
+.form-container .form-horizontal .btn:focus {
+    color: #fff;
+    letter-spacing: 3px;
+    box-shadow: none;
+    outline: none;
+}

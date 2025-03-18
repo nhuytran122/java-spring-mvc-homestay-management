@@ -67,7 +67,6 @@ public class CustomerController {
             return "admin/customer/create";
         }
         customer.setIsLocked(false);
-        customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
         this.customerService.handleSaveCustomer(customer);
         return "redirect:/admin/customer";
     }

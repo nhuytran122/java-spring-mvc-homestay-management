@@ -28,4 +28,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
 
     Optional<Customer> findByEmail(String email);
 
+    boolean existsByEmail(String email);
+
 }

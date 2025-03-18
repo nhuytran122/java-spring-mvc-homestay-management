@@ -69,6 +69,10 @@ public class EmployeeService {
         return mapper.map(employeeOpt.get(), EmployeeDTO.class);
     }
 
+    public Employee getEmployeeByEmail(String email) {
+        return employeeRepository.findByEmail(email).get();
+    }
+
     public boolean canDeleteEmployee(long employeeID) {
         boolean hasMaintenanceRequest = maintenanceRequestRepository.existsByEmployee_EmployeeID(employeeID);
         return !(hasMaintenanceRequest);

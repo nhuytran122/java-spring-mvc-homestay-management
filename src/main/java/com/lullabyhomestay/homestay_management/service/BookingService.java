@@ -75,22 +75,12 @@ public class BookingService {
         Customer customer = customerService.getCustomerByID(4L);
         booking.setCustomer(customer);
 
-        long hours = ChronoUnit.HOURS.between(booking.getCheckIn(), booking.getCheckOut());
-        Double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
-        double totalAmount = pricePerHour * hours;
-        if (customer.getCustomerType().getDiscountRate() > 0) {
-            totalAmount = totalAmount * (100 - customer.getCustomerType().getDiscountRate()) / 100;
-        }
+        Double totalAmount = calculateTotalAmount(booking, customer);
         booking.setTotalAmount(totalAmount);
         Booking savedBooking = bookingRepository.save(booking);
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
 
-        Double rewardPoints = customer.getRewardPoints();
-        Double addPoints = (totalAmount / 100000) * 10;
-        rewardPoints += addPoints;
-        customer.setRewardPoints(rewardPoints);
-        CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
-        customerService.handleSaveCustomer(customerDTO);
+        updateRewardPoints(customer, savedBooking.getTotalAmount(), true);
         return savedBooking;
     }
 
@@ -133,6 +123,28 @@ public class BookingService {
             bookingServiceRepo.deleteByBooking_BookingID(bookingID);
             Booking currentBooking = getBookingByID(bookingID);
             currentBooking.setStatus(BookingStatus.CANCELLED);
+
+            // TODO: Set customer đang login or được chọn bởi admin
+            Customer customer = customerService.getCustomerByID(4L);
+            updateRewardPoints(customer, currentBooking.getTotalAmount(), false);
         }
+    }
+
+    private double calculateTotalAmount(Booking booking, Customer customer) {
+        long hours = ChronoUnit.HOURS.between(booking.getCheckIn(), booking.getCheckOut());
+        Double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
+        double totalAmount = pricePerHour * hours;
+        if (customer.getCustomerType().getDiscountRate() > 0) {
+            totalAmount = totalAmount * (100 - customer.getCustomerType().getDiscountRate()) / 100;
+        }
+        return totalAmount;
+    }
+
+    private void updateRewardPoints(Customer customer, double amount, boolean isAdd) {
+        Double rewardPoints = customer.getRewardPoints();
+        Double points = (amount / 100000) * 10;
+        customer.setRewardPoints(isAdd ? rewardPoints + points : rewardPoints - points);
+        CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
+        customerService.handleSaveCustomer(customerDTO);
     }
 }
