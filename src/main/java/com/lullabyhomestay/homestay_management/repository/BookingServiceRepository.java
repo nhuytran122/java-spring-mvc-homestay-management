@@ -22,4 +22,6 @@ public interface BookingServiceRepository extends JpaRepository<BookingServices,
 
     BookingServices save(BookingServices bookingService);
 
+    void deleteByBooking_BookingID(Long bookingID);
+
 }

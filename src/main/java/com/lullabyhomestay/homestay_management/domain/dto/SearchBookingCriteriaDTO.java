@@ -22,6 +22,7 @@ public class SearchBookingCriteriaDTO {
     private Long roomTypeID;
     private String status;
     private String sort;
+    private Long customerID;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
@@ -30,6 +31,9 @@ public class SearchBookingCriteriaDTO {
         }
         if (roomTypeID != null) {
             extraParams.append("&roomTypeID=").append(roomTypeID);
+        }
+        if (customerID != null) {
+            extraParams.append("&customerID=").append(customerID);
         }
         if (status != null) {
             extraParams.append("&status=").append(status);

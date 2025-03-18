@@ -36,6 +36,7 @@ public class BookingExtraService {
     public BookingServices handleSaveBookingServiceExtra(BookingServices bookingService) {
 
         Booking currentBooking = this.bookingService.getBookingByID(bookingService.getBooking().getBookingID());
+        Customer customer = currentBooking.getCustomer();
 
         Double oldTotalPrice = (double) 0;
         // Với trường hợp sửa số lượng
@@ -49,6 +50,9 @@ public class BookingExtraService {
 
         Service service = this.service.getServiceByID(bookingService.getService().getServiceID());
         Double totalPrice = service.getPrice() * bookingService.getQuantity();
+        if (customer.getCustomerType().getDiscountRate() > 0) {
+            totalPrice = totalPrice * (100 - customer.getCustomerType().getDiscountRate()) / 100;
+        }
         bookingService.setTotalPrice(totalPrice);
 
         Double totalAmount = currentBooking.getTotalAmount() + bookingService.getTotalPrice() - oldTotalPrice;
@@ -56,7 +60,6 @@ public class BookingExtraService {
         currentBooking = this.bookingService.handleSaveBooking(currentBooking);
 
         // Cập nhật RewardPoints
-        Customer customer = currentBooking.getCustomer();
         Double rewardPoints = customer.getRewardPoints();
         Double addPoints = (bookingService.getTotalPrice() / 100000) * 10 - (oldTotalPrice / 100000) * 10;
         customer.setRewardPoints(rewardPoints + addPoints);

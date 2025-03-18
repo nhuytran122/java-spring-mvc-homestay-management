@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.service.AmenityCategoryService;
 import com.lullabyhomestay.homestay_management.service.BranchService;
+import com.lullabyhomestay.homestay_management.service.CustomerTypeService;
 import com.lullabyhomestay.homestay_management.service.FAQService;
 import com.lullabyhomestay.homestay_management.service.HomestayInforService;
 import com.lullabyhomestay.homestay_management.service.HomestayServiceService;
@@ -20,13 +21,13 @@ import lombok.AllArgsConstructor;
 @Controller
 public class HomePageController {
     private final BranchService branchService;
-    private final RoomService roomService;
     private final FAQService faqService;
     private final RoomTypeService roomTypeService;
     private final AmenityCategoryService amenityCategoryService;
     private final RuleService ruleService;
     private final HomestayServiceService service;
     private final HomestayInforService inforService;
+    private final CustomerTypeService customerTypeService;
 
     @GetMapping("/")
     public String getHomePage(Model model,
@@ -38,6 +39,7 @@ public class HomePageController {
         model.addAttribute("listRules", ruleService.getRulesByIsHidden(false));
         model.addAttribute("listServices", service.getAllServices());
         model.addAttribute("listInfors", inforService.getAllInforHomestay());
+        model.addAttribute("listCustomerTypes", customerTypeService.getAllCustomerTypes());
         // Pageable pageable = PageRequest.of(0, 10);
         // Page<Product> prs = this.productService.fetchProducts(pageable);
         // List<Product> products = prs.getContent();

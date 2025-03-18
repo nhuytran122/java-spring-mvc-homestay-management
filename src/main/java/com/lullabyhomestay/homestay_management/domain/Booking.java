@@ -1,6 +1,7 @@
 package com.lullabyhomestay.homestay_management.domain;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -82,9 +83,6 @@ public class Booking {
     @OneToMany(mappedBy = "booking")
     List<Payment> payments;
 
-    @OneToMany(mappedBy = "booking")
-    List<AdditionalService> additionalServices;
-
     @ManyToOne
     @JoinColumn(name = "CustomerID")
     @NotNull(message = "Vui lòng chọn khách hàng đặt phòng", groups = AdminValidation.class)
@@ -97,4 +95,12 @@ public class Booking {
 
     @OneToMany(mappedBy = "booking")
     List<RoomStatusHistory> roomStatusHistories;
+
+    public long getNumberOfHours() {
+        if (checkIn != null && checkOut != null) {
+            return ChronoUnit.HOURS.between(checkIn, checkOut);
+        }
+        return 0;
+    }
+
 }

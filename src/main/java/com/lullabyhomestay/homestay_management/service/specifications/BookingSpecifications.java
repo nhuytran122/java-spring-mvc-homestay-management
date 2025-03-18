@@ -38,6 +38,10 @@ public class BookingSpecifications {
         return BaseSpecifications.equal(Booking_.STATUS, status);
     }
 
+    public static Specification<Booking> hasCustomer(Long customerID) {
+        return BaseSpecifications.equalJoin(Booking_.CUSTOMER, Customer_.CUSTOMER_ID, customerID);
+    }
+
     public static Specification<Booking> checkInBetween(LocalDateTime fromTime, LocalDateTime toTime) {
         return BaseSpecifications.between(Booking_.CHECK_IN, fromTime, toTime);
     }

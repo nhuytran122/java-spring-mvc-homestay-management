@@ -87,11 +87,25 @@
                         </div>
                     </div>
 
-                    <!-- Tổng tiền cần thanh toán -->
                     <div class="total-amount-section mt-4 p-3 bg-light border rounded">
                         <h5 class="mb-2">Tổng tiền (bao gồm phòng và dịch vụ):</h5>
-                        <h3 class="text-primary"><fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</h3>
+                        <h3 class="text-primary">
+                            <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ
+                        </h3>
+                    
+                        <c:if test="${booking.customer.customerType.discountRate > 0}">
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    Đã áp dụng giảm giá dành cho thành viên ${booking.customer.customerType.name}
+                                    (<fmt:formatNumber value="${booking.customer.customerType.discountRate}" pattern="#'%'"/>): 
+                                    <span class="text-success fw-bold">
+                                        - <fmt:formatNumber value="${booking.totalAmount / (1 - booking.customer.customerType.discountRate / 100) * booking.customer.customerType.discountRate / 100}" pattern="#,##0" />đ
+                                    </span>
+                                </small>
+                            </div>
+                        </c:if>
                     </div>
+                    
 
                     <div class="action-buttons my-4">
                         <div class="btn-group" role="group">

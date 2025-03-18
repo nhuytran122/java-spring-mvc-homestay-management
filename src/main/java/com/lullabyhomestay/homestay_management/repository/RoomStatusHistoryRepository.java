@@ -29,4 +29,6 @@ public interface RoomStatusHistoryRepository extends JpaRepository<RoomStatusHis
                      @Param("roomId") Long roomId,
                      @Param("checkIn") LocalDateTime checkIn,
                      @Param("checkOut") LocalDateTime checkOut);
+
+       void deleteByBooking_BookingID(Long bookingID);
 }

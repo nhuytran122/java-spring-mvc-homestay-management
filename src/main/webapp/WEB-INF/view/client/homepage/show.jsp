@@ -99,6 +99,8 @@
                     <p>${infor.description}</p>
                     </c:forEach>
                 </div>
+
+                
             </div>
         </div>
     </div>
@@ -421,6 +423,50 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="member-discount py-5 bg-light" data-aos="fade-up">
+        <h2 class="text-center mb-5">
+            Chính Sách Ưu Đãi Cho Thành Viên
+        </h2>
+    
+        <div class="text-center text-muted mb-4">
+            <p class="mb-0">Yêu cầu điểm tối thiểu: tùy theo từng loại thành viên</p>
+            <p class="mb-0"><span class="fw-bold">100.000</span> = 
+                <span class="fw-bold text-success">+10 điểm</span>
+            </p>
+        </div>
+    
+        <div class="row g-4 justify-content-center">
+            <c:forEach var="customerType" items="${listCustomerTypes}">
+                <c:if test="${customerType.discountRate > 0}">
+                    <div class="col-md-3">
+                        <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden position-relative 
+                                    transition-transform hover-translate-y-n3">
+                            <div class="card-body text-center d-flex flex-column justify-content-between">
+                                <h5 class="fw-bold mb-2">
+                                    ${customerType.name}
+                                </h5>
+    
+                                <div class="text-white p-4 rounded-3 mb-3" style="background-color: #ea8685;">
+                                    <h3 class="mb-1 fw-bold">
+                                        <fmt:formatNumber value="${customerType.discountRate}" pattern="#'%'"/>
+                                    </h3>
+                                    <small>Giảm giá trực tiếp</small>
+                                </div>
+    
+                                <p class="text-muted mb-1">
+                                    Yêu cầu điểm tối thiểu: 
+                                    <span class="fw-bold">
+                                        <fmt:formatNumber value="${customerType.minPoint}" pattern="#"/>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+            </c:forEach>
         </div>
     </div>
 

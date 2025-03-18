@@ -47,7 +47,4 @@ public class Service {
     @OneToMany(mappedBy = "service")
     private List<BookingServices> bookingServices;
 
-    @OneToMany(mappedBy = "service")
-    List<AdditionalService> additionalServices;
-
 }
