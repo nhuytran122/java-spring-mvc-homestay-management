@@ -3,6 +3,7 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,16 +17,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lullabyhomestay.homestay_management.domain.Employee;
 import com.lullabyhomestay.homestay_management.domain.MaintenanceRequest;
+import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.RoomDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchMaintenanceCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.BranchService;
+import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.MaintenanceRequestService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
 import com.lullabyhomestay.homestay_management.utils.MaintenanceStatus;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -36,6 +41,8 @@ public class MaintenanceController {
     private final BranchService branchService;
     private final UploadService uploadService;
     private final RoomService roomService;
+    private final EmployeeService employeeService;
+    private final ModelMapper mapper;
 
     @GetMapping("/admin/maintenance")
     public String getMaintenancePage(Model model,
@@ -97,7 +104,10 @@ public class MaintenanceController {
         if (maintenance.getRoom() != null && maintenance.getRoom().getRoomID() == null) {
             maintenance.setRoom(null);
         }
-        // TODO: Set employee vs User đang login
+        HttpSession session = request.getSession(false);
+        Long employeeID = (Long) session.getAttribute("id");
+        EmployeeDTO employee = employeeService.getEmployeeDTOByID(employeeID);
+        maintenance.setEmployee(mapper.map(employee, Employee.class));
         maintenance.setStatus(MaintenanceStatus.PENDING);
         this.maintenanceService.handleSaveMaintenanceRequest(maintenance);
         return "redirect:/admin/maintenance";
@@ -144,7 +154,6 @@ public class MaintenanceController {
         if (maintenanceRequest.getRoom() != null && maintenanceRequest.getRoom().getRoomID() == null) {
             currentRequest.setRoom(null);
         }
-        // TODO: Set employee vs User đang login
         currentRequest.setBranch(maintenanceRequest.getBranch());
         currentRequest.setStatus(maintenanceRequest.getStatus());
         currentRequest.setDescription(maintenanceRequest.getDescription());
@@ -162,7 +171,6 @@ public class MaintenanceController {
         MaintenanceStatus currentStatus = maintenance.getStatus();
         MaintenanceStatus newStatus = MaintenanceStatus.valueOf(status.toUpperCase());
 
-        // Kiểm tra logic trạng thái
         if (currentStatus == MaintenanceStatus.COMPLETED) {
             return ResponseEntity.badRequest().body("Bảo trì đã hoàn thành, không thể cập nhật!");
         }

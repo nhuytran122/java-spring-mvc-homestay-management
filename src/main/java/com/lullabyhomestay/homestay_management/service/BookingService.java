@@ -71,16 +71,12 @@ public class BookingService {
 
     @Transactional
     public Booking handleBooking(Booking booking) {
-        // TODO: Set customer đang login or được chọn bởi admin
-        Customer customer = customerService.getCustomerByID(4L);
-        booking.setCustomer(customer);
-
-        Double totalAmount = calculateTotalAmount(booking, customer);
+        Double totalAmount = calculateTotalAmount(booking, booking.getCustomer());
         booking.setTotalAmount(totalAmount);
         Booking savedBooking = bookingRepository.save(booking);
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
 
-        updateRewardPoints(customer, savedBooking.getTotalAmount(), true);
+        updateRewardPoints(booking.getCustomer(), savedBooking.getTotalAmount(), true);
         return savedBooking;
     }
 
@@ -123,9 +119,7 @@ public class BookingService {
             bookingServiceRepo.deleteByBooking_BookingID(bookingID);
             Booking currentBooking = getBookingByID(bookingID);
             currentBooking.setStatus(BookingStatus.CANCELLED);
-
-            // TODO: Set customer đang login or được chọn bởi admin
-            Customer customer = customerService.getCustomerByID(4L);
+            Customer customer = customerService.getCustomerByID(currentBooking.getCustomer().getCustomerID());
             updateRewardPoints(customer, currentBooking.getTotalAmount(), false);
         }
     }

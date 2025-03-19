@@ -69,7 +69,6 @@ public class InventoryTransactionService {
 
     @Transactional
     public void handleSaveTransaction(InventoryTransaction transaction) {
-        // TODO: Set Employee đang login
         this.transactionRepository.save(transaction);
         this.handleChangeStock(transaction);
     }

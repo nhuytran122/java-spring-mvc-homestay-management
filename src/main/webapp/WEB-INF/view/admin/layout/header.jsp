@@ -10,7 +10,7 @@
         <span class="icon-menu"></span>
       </button>
       <ul class="navbar-nav navbar-nav-right">
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
             <i class="icon-bell mx-0"></i>
             <span class="count"></span>
@@ -57,22 +57,31 @@
               </div>
             </a>
           </div>
-        </li>
-        <li class="nav-item nav-profile dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-            <img src="/admin/images/faces/face28.jpg" alt="profile"/>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-            <a class="dropdown-item">
-              <i class="ti-settings text-primary"></i>
-              Settings
-            </a>
-            <a class="dropdown-item">
-              <i class="ti-power-off text-primary"></i>
-              Logout
-            </a>
-          </div>
-        </li>
+        </li> -->
+        <c:if test="${not empty pageContext.request.userPrincipal}">
+          <li class="nav-item nav-profile dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown" id="profileDropdown">
+                  <img src="/images/avatar/${not empty sessionScope.avatar ? sessionScope.avatar : 'default-img.jpg'}" 
+                      alt="profile" class="rounded-circle me-2" width="40" height="40">
+                  <span class="fw-semibold text-dark me-1">${sessionScope.fullName}</span>
+                  <i class="bi bi-caret-down-fill text-muted"></i> <!-- Mũi tên dropdown -->
+              </a>
+              <div class="dropdown-menu dropdown-menu-right navbar-dropdown shadow" aria-labelledby="profileDropdown">
+                  <a class="dropdown-item d-flex align-items-center" href="/profile">
+                      <i class="ti-settings text-primary me-2"></i> Tài khoản của tôi
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <form method="post" action="/logout" class="w-100">
+                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                      <button class="dropdown-item d-flex align-items-center w-100">
+                          <i class="ti-power-off text-primary me-2"></i> Đăng xuất
+                      </button>
+                  </form>
+              </div>
+          </li>
+      </c:if>
+
+
       </ul>
       <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
         <span class="icon-menu"></span>

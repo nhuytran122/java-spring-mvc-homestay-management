@@ -125,6 +125,14 @@ public class CustomerService {
         return customerOptional.orElse(null);
     }
 
+    public CustomerDTO getCustomerDTOByEmail(String email) {
+        Optional<Customer> customerOpt = customerRepository.findByEmail(email);
+        if (!customerOpt.isPresent()) {
+            throw new NotFoundException("Khách hàng");
+        }
+        return mapper.map(customerOpt.get(), CustomerDTO.class);
+    }
+
     @Transactional
     public void deleteByCustomerID(Long customerID) {
         if (canDeleteCustomer(customerID)) {

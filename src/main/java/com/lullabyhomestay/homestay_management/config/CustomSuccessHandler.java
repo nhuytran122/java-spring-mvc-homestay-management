@@ -63,6 +63,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             session.setAttribute("avatar", customer.getAvatar());
             session.setAttribute("id", customer.getCustomerID());
             session.setAttribute("email", customer.getEmail());
+            session.setAttribute("role", "ROLE_CUSTOMER");
             return;
         }
 
@@ -72,6 +73,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             session.setAttribute("avatar", employee.getAvatar());
             session.setAttribute("id", employee.getEmployeeID());
             session.setAttribute("email", employee.getEmail());
+            session.setAttribute("role", "ROLE_" + employee.getRole().convertToSystemRoleName());
         }
     }
 

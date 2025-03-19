@@ -122,7 +122,7 @@
                                     <div class="form-group row">
                                         <div class="col-sm-10 image-preview-container">
                                             <c:if test="${not empty employee.avatar}">
-                                                <img src="/images/employee/${employee.avatar}" class="imagePreview" alt="Preview ảnh">
+                                                <img src="/images/avatar/${employee.avatar}" class="imagePreview" alt="Preview ảnh">
                                             </c:if>
                                         </div>
                                     </div>

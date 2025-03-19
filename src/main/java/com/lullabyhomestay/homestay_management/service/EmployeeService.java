@@ -61,7 +61,7 @@ public class EmployeeService {
         return employeeRepository.findAll(spec, pageable).map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
-    public EmployeeDTO getEmployeeByID(long employeeID) {
+    public EmployeeDTO getEmployeeDTOByID(long employeeID) {
         Optional<Employee> employeeOpt = employeeRepository.findByEmployeeID(employeeID);
         if (!employeeOpt.isPresent()) {
             throw new NotFoundException("Nhân viên");

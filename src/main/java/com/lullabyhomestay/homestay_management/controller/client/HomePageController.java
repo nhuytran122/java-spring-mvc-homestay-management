@@ -19,6 +19,8 @@ import com.lullabyhomestay.homestay_management.service.HomestayServiceService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 import com.lullabyhomestay.homestay_management.service.RuleService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -70,7 +72,11 @@ public class HomePageController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage(Model model) {
+    public String getLoginPage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session.getAttribute("id") != null) {
+            return "redirect:/";
+        }
         return "client/auth/login";
     }
 

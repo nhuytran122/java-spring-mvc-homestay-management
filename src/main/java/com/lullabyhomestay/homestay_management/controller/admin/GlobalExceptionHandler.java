@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,5 +38,17 @@ public class GlobalExceptionHandler {
         String errorMessage = "Không tìm thấy " + ex.getEntityName();
         model.addAttribute("errorMessage", errorMessage);
         return "/admin/not-found";
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleIllegalArgumentException(IllegalArgumentException e, Model model) {
+        model.addAttribute("errorMessage", e.getMessage());
+        return "redirect:/error";
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(AccessDeniedException e, Model model) {
+        model.addAttribute("errorMessage", e.getMessage());
+        return "client/auth/deny";
     }
 }

@@ -57,7 +57,7 @@ public class EmployeeController {
 
     @GetMapping("/admin/employee/{id}")
     public String getDetailEmployeePage(Model model, @PathVariable long id) {
-        EmployeeDTO employee = employeeService.getEmployeeByID(id);
+        EmployeeDTO employee = employeeService.getEmployeeDTOByID(id);
         model.addAttribute("employee", employee);
         return "admin/employee/detail";
     }
@@ -85,7 +85,7 @@ public class EmployeeController {
         }
         String img;
         if (!file.isEmpty()) {
-            img = this.uploadService.handleSaveUploadFile(file, "employee");
+            img = this.uploadService.handleSaveUploadFile(file, "avatar");
             employee.setAvatar(img);
         }
         employee.setIsWorking(true);
@@ -95,7 +95,7 @@ public class EmployeeController {
 
     @GetMapping("/admin/employee/update/{id}")
     public String getUpdateEmployeePage(Model model, @PathVariable long id) {
-        EmployeeDTO employee = employeeService.getEmployeeByID(id);
+        EmployeeDTO employee = employeeService.getEmployeeDTOByID(id);
         List<Role> roleOptions = roleService.getAllRoles();
         model.addAttribute("listRoles", roleOptions);
 
@@ -111,14 +111,14 @@ public class EmployeeController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        EmployeeDTO currentEmployee = (employeeService.getEmployeeByID(employee.getEmployeeID()));
+        EmployeeDTO currentEmployee = (employeeService.getEmployeeDTOByID(employee.getEmployeeID()));
         if (newEmployeeBindingResult.hasErrors()) {
             List<Role> roleOptions = roleService.getAllRoles();
             model.addAttribute("listRoles", roleOptions);
             return "admin/employee/update";
         }
         if (!file.isEmpty()) {
-            String img = this.uploadService.handleSaveUploadFile(file, "employee");
+            String img = this.uploadService.handleSaveUploadFile(file, "avatar");
             currentEmployee.setAvatar(img);
         }
         currentEmployee.setFullName(employee.getFullName());

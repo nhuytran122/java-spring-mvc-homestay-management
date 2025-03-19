@@ -22,53 +22,45 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">Thông tin homestay</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/room">Phòng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#room-types">Loại phòng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#amenities">Tiện nghi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services">Dịch vụ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#location">Vị trí</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#member-discount">Ưu đãi</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Liên hệ</a>
-                    </li>
-                </ul>
-
-                <div class="guest-profile d-flex align-items-center">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d" alt="Guest" class="guest-avatar me-2 rounded-circle" width="40" height="40">
-                            John
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="#"><i class="bi bi-calendar-check me-2"></i>Lịch sử đặt phòng</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Tài khoản của tôi</a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
-                            </li>
-                        </ul>
-                    </div>
+                <ul class="navbar-nav me-auto"></ul>
+                <div class="d-flex align-items-center ms-auto">
+                    <c:choose>
+                        <c:when test="${not empty pageContext.request.userPrincipal}">
+                            <div class="guest-profile d-flex align-items-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                                        <img src="/images/avatar/${not empty sessionScope.avatar ? sessionScope.avatar : 'default-img.jpg'}" 
+                                            class="guest-avatar me-2 rounded-circle border" width="40" height="40">
+                                        <span class="fw-semibold">${sessionScope.fullName}</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                                        <li>
+                                            <a class="dropdown-item d-flex align-items-center" href="/booking/booking-history">
+                                                <i class="bi bi-calendar-check me-2"></i> Lịch sử đặt phòng
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex align-items-center" href="/profile">
+                                                <i class="bi bi-person me-2"></i> Tài khoản của tôi
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="post" action="/logout" class="w-100">
+                                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                                <button class="dropdown-item d-flex align-items-center w-100">
+                                                    <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="/login" class="btn btn-primary px-4">Đăng nhập</a>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>

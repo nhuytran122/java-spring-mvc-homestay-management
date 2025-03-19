@@ -64,8 +64,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/", "/login", "/room/**", "/register",
                                 "/client/**", "/css/**",
                                 "/js/**",
-                                "/images/**",
-                                "/booking/**")
+                                "/images/**")
                         .permitAll()
 
                         .requestMatchers("/admin/**").hasRole("QUAN_LY")

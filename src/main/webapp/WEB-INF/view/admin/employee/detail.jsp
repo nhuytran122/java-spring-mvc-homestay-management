@@ -52,10 +52,10 @@
                                         <div class="col-md-3">
                                             <c:choose>
                                                 <c:when test="${not empty employee.avatar}">
-                                                    <img src="/images/employee/${employee.avatar}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
+                                                    <img src="/images/avatar/${employee.avatar}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <img src="/images/employee/default-img.jpg" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
+                                                    <img src="/images/avatar/default-img.jpg" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>

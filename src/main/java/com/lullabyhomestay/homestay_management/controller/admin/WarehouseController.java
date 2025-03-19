@@ -4,6 +4,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,16 +17,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.lullabyhomestay.homestay_management.domain.Employee;
 import com.lullabyhomestay.homestay_management.domain.InventoryStock;
 import com.lullabyhomestay.homestay_management.domain.InventoryTransaction;
+import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchTransactionCriterialDTO;
 import com.lullabyhomestay.homestay_management.service.BranchService;
+import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.InventoryItemService;
 import com.lullabyhomestay.homestay_management.service.InventoryStockService;
 import com.lullabyhomestay.homestay_management.service.InventoryTransactionService;
 import com.lullabyhomestay.homestay_management.utils.TransactionType;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -33,8 +39,10 @@ import lombok.AllArgsConstructor;
 public class WarehouseController {
     private final InventoryStockService stockService;
     private final BranchService branchService;
-    private InventoryTransactionService transactionService;
-    private InventoryItemService itemService;
+    private final InventoryTransactionService transactionService;
+    private final InventoryItemService itemService;
+    private final EmployeeService employeeService;
+    private final ModelMapper mapper;
 
     @GetMapping("/admin/warehouse")
     public String getInventoryStockPage(Model model,
@@ -79,7 +87,7 @@ public class WarehouseController {
             BindingResult bindingResult,
             HttpServletRequest request) {
         return handleTransaction(model, transaction, bindingResult, TransactionType.IMPORT, "newImport",
-                "admin/warehouse/import");
+                "admin/warehouse/import", request);
     }
 
     @GetMapping("/admin/warehouse/export")
@@ -97,7 +105,7 @@ public class WarehouseController {
             BindingResult bindingResult,
             HttpServletRequest request) {
         return handleTransaction(model, transaction, bindingResult, TransactionType.EXPORT, "newExport",
-                "admin/warehouse/export");
+                "admin/warehouse/export", request);
     }
 
     @GetMapping("/admin/warehouse/transaction")
@@ -169,13 +177,28 @@ public class WarehouseController {
     }
 
     private String handleTransaction(Model model, @Valid InventoryTransaction transaction, BindingResult bindingResult,
-            TransactionType transactionType, String modelAttributeName, String viewName) {
+            TransactionType transactionType, String modelAttributeName, String viewName, HttpServletRequest request) {
+        EmployeeDTO employeeDTO = getLoggedInEmployeeDTO(request);
         if (bindingResult.hasErrors()) {
             prepareTransactionModel(model, transaction, modelAttributeName);
             return viewName;
         }
+        mapAndSetEmployeeToTransaction(transaction, employeeDTO);
         transaction.setTransactionType(transactionType);
         transactionService.handleSaveTransaction(transaction);
         return "redirect:/admin/warehouse";
+    }
+
+    private EmployeeDTO getLoggedInEmployeeDTO(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("id");
+        EmployeeDTO employeeDTO = employeeService.getEmployeeDTOByID(userId);
+        return employeeDTO;
+    }
+
+    private void mapAndSetEmployeeToTransaction(InventoryTransaction transaction, EmployeeDTO employeeDTO) {
+        if (employeeDTO != null) {
+            transaction.setEmployee(mapper.map(employeeDTO, Employee.class));
+        }
     }
 }
