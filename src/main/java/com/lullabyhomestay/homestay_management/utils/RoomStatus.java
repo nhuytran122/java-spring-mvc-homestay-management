@@ -6,10 +6,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum RoomStatus {
-    BUSY("Đã được đặt"),
-    MAINTENANCE("Đang bảo trì"),
-    CLEANING("Đang dọn dẹp"),
-    EXTENDED("Đã gia hạn");
+    BUSY("Đã đặt", "busy", true),
+    CLEANING("Dọn dẹp", "cleaning", false),
+    EXTENDED("Gia hạn", "extended", true);
 
-    private String description;
+    private final String description;
+    private final String cssClass;
+    private final boolean hasLink;
 }

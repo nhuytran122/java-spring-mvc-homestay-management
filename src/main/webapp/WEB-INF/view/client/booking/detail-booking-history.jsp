@@ -9,7 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi tiết đặt phòng - Lullaby Homestay</title>
     <jsp:include page="../layout/import-css.jsp" />
-    <link rel="stylesheet" href="/client/css/booking-history-style.css"></head>
+    <link rel="stylesheet" href="/client/css/booking-history-style.css">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+</head>
 <body>
     <jsp:include page="../layout/header.jsp" />
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mt-4">
@@ -157,21 +160,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-danger" title="Hủy đặt phòng"
-                                onclick="checkBeforeCancel(this)" 
-                                    data-entity-id="${booking.bookingID}"
-                                    data-id-name="bookingID"
-                                    data-check-url="/booking/booking-history/can-cancel/" 
-                                    data-cancel-url="/booking/booking-history/cancel">
-                                <i class="bi bi-x-circle"></i>
-                                Hủy đặt phòng
-                            </button>
+                <c:if test="${booking.status.toString() != 'CANCELLED'}">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-danger" title="Hủy đặt phòng"
+                                    onclick="checkBeforeCancel(this)" 
+                                        data-entity-id="${booking.bookingID}"
+                                        data-id-name="bookingID"
+                                        data-check-url="/booking/booking-history/can-cancel/" 
+                                        data-cancel-url="/booking/booking-history/cancel">
+                                    <i class="bi bi-x-circle"></i>
+                                    Hủy đặt phòng
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </c:if>
             </div>
         </div>
     </div>

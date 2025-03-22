@@ -46,7 +46,7 @@ public class Customer {
     @Column(name = "Password")
     private String password;
 
-    @Column(name = "RewardPoints")
+    @Column(name = "RewardPoints", insertable = false)
     private Double rewardPoints;
 
     @Column(name = "IsLocked")

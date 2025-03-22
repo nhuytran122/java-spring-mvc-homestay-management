@@ -32,7 +32,7 @@ public class CustomerDTO {
 
     @NotBlank(message = "Vui lòng nhập địa chỉ")
     private String address;
-    private Float rewardPoints;
+    private Double rewardPoints;
     private Boolean isLocked;
     private CustomerType customerType;
 }

@@ -104,8 +104,7 @@ public class ClientBookingController {
     @ResponseBody
     public ResponseEntity<ApiResponseDTO<Long>> postConfirmBookingService(
             @RequestBody BookingServiceRequestDTO requestDTO,
-            Model model,
-            RedirectAttributes redirectAttributes, HttpServletRequest request) {
+            Model model, HttpServletRequest request) {
         Long bookingID = requestDTO.getBookingID();
         List<BookingServices> listBookingServices = requestDTO.getServices();
         Booking booking = bookingService.getBookingByID(bookingID);

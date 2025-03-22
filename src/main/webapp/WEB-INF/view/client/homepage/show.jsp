@@ -22,6 +22,33 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Thông tin homestay</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/room">Phòng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#room-types">Loại phòng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#amenities">Tiện nghi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Dịch vụ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#location">Vị trí</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#member-discount">Ưu đãi</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Liên hệ</a>
+                    </li>
+                </ul>
                 <ul class="navbar-nav me-auto"></ul>
                 <div class="d-flex align-items-center ms-auto">
                     <c:choose>

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Customer;
-import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
@@ -76,7 +75,10 @@ public class BookingService {
         Booking savedBooking = bookingRepository.save(booking);
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
 
-        updateRewardPoints(booking.getCustomer(), savedBooking.getTotalAmount(), true);
+        customerService.updateRewardPointsAndCustomerType(
+                booking.getCustomer().getCustomerID(),
+                savedBooking.getTotalAmount(),
+                true);
         return savedBooking;
     }
 
@@ -119,26 +121,23 @@ public class BookingService {
             bookingServiceRepo.deleteByBooking_BookingID(bookingID);
             Booking currentBooking = getBookingByID(bookingID);
             currentBooking.setStatus(BookingStatus.CANCELLED);
-            Customer customer = customerService.getCustomerByID(currentBooking.getCustomer().getCustomerID());
-            updateRewardPoints(customer, currentBooking.getTotalAmount(), false);
+            customerService.updateRewardPointsAndCustomerType(
+                    currentBooking.getCustomer().getCustomerID(),
+                    currentBooking.getTotalAmount(),
+                    false);
         }
     }
 
     private double calculateTotalAmount(Booking booking, Customer customer) {
-        long hours = ChronoUnit.HOURS.between(booking.getCheckIn(), booking.getCheckOut());
+        long hours = booking.getNumberOfHours();
         Double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
         double totalAmount = pricePerHour * hours;
+        if (booking.getRoom().getRoomType().getName().toUpperCase().contains("DORM")) { 
+            totalAmount *= booking.getGuestCount();
+        }        
         if (customer.getCustomerType().getDiscountRate() > 0) {
             totalAmount = totalAmount * (100 - customer.getCustomerType().getDiscountRate()) / 100;
         }
         return totalAmount;
-    }
-
-    private void updateRewardPoints(Customer customer, double amount, boolean isAdd) {
-        Double rewardPoints = customer.getRewardPoints();
-        Double points = (amount / 100000) * 10;
-        customer.setRewardPoints(isAdd ? rewardPoints + points : rewardPoints - points);
-        CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
-        customerService.handleSaveCustomer(customerDTO);
     }
 }

@@ -16,6 +16,7 @@
                     <input type="hidden" name="id" id="confirmIdInput">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-danger">Chắc chắn</button>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </div>
         </div>
@@ -42,6 +43,14 @@
 </div>
 
 <script>
+    $(document).ready(function() {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function(e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+    })
+
     function checkBeforeCancel(button) {
         let entityId = button.getAttribute("data-entity-id");
         let cancelUrl = button.getAttribute("data-cancel-url");
@@ -62,7 +71,7 @@
                 }
             },
             error: function(xhr, status, error) {
-                console.error("Lỗi kiểm tra xóa:", error);
+                console.error("Lỗi kiểm tra hủy:", error);
             }
         });
     }

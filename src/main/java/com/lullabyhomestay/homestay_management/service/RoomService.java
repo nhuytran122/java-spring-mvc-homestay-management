@@ -37,8 +37,8 @@ public class RoomService {
     private final RoomStatusHistoryRepository roomStatusRepository;
     private final RoomPhotoRepository roomPhotoRepository;
 
-    public Page<Room> getAllRooms(Pageable pageable) {
-        return this.roomRepository.findAll(pageable);
+    public List<Room> getAllRooms() {
+        return this.roomRepository.findAll();
     }
 
     public Page<Room> searchRooms(SearchRoomCriteriaDTO criteria, int page) {

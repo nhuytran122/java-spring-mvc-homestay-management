@@ -31,4 +31,7 @@ public interface RoomStatusHistoryRepository extends JpaRepository<RoomStatusHis
                      @Param("checkOut") LocalDateTime checkOut);
 
        void deleteByBooking_BookingID(Long bookingID);
+
+       List<RoomStatusHistory> findByRoom_RoomIDAndStartedAtBetween(Long roomID, LocalDateTime startOfDate,
+                     LocalDateTime endOfDate);
 }

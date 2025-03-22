@@ -37,19 +37,49 @@ public class CustomerService {
     private final CustomerTypeService customerTypeService;
 
     public CustomerDTO handleSaveCustomer(CustomerDTO requestDTO) {
-        Customer customer = mapper.map(requestDTO, Customer.class);
+        Customer customer;
         if (requestDTO.getCustomerID() == null) {
+            customer = mapper.map(requestDTO, Customer.class);
             customer.setPassword(this.passwordEncoder.encode("lullabyhomestay"));
             customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
+        } else {
+            customer = getCustomerByID(requestDTO.getCustomerID());
+            customer = updateCustomerInfo(customer, requestDTO);
         }
-        List<CustomerType> customerTypes = customerTypeService.getAllCustomerTypes();
-        for (CustomerType type : customerTypes) {
-            if (customer.getRewardPoints() >= type.getMinPoint()) {
-                customer.setCustomerType(type);
-            }
-        }
+
         Customer savedCustomer = customerRepository.save(customer);
         return mapper.map(savedCustomer, CustomerDTO.class);
+    }
+
+    private Customer updateCustomerInfo(Customer customer, CustomerDTO requestDTO) {
+        customer.setFullName(requestDTO.getFullName());
+        customer.setAddress(requestDTO.getAddress());
+        customer.setPhone(requestDTO.getPhone());
+        customer.setEmail(requestDTO.getEmail());
+        customer.setRewardPoints(requestDTO.getRewardPoints());
+        return customer;
+    }
+
+    @Transactional
+    public void updateRewardPointsAndCustomerType(Long customerID, double amount, boolean isAdd) {
+        Customer customer = getCustomerByID(customerID);
+
+        double points = (amount / 100000) * 10;
+        double updatedPoints = isAdd ? customer.getRewardPoints() + points : customer.getRewardPoints() - points;
+        customer.setRewardPoints(updatedPoints);
+
+        List<CustomerType> customerTypes = customerTypeService.getAllCustomerTypes();
+        customerTypes.sort((a, b) -> Float.compare(b.getMinPoint(), a.getMinPoint()));
+
+        CustomerType bestCustomerType = customerTypeService.getCustomerTypeWithLowestMinPoint();
+        for (CustomerType type : customerTypes) {
+            if (customer.getRewardPoints() >= type.getMinPoint()) {
+                bestCustomerType = type;
+                break;
+            }
+        }
+        customer.setCustomerType(bestCustomerType);
+        customerRepository.save(customer);
     }
 
     public CustomerDTO handleRegisterCustomer(RegisterDTO registerDTO) {

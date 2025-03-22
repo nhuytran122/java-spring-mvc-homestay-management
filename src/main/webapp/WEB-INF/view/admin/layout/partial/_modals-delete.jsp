@@ -14,6 +14,7 @@
             </div>
             <div class="modal-footer">
                 <form id="deleteForm" method="post">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input type="hidden" name="id" id="confirmIdInput">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-danger">Xóa</button>

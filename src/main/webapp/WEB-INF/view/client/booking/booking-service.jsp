@@ -8,7 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đặt dịch vụ - Lullaby Homestay</title>
     <jsp:include page="../layout/import-css.jsp" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" />
+    
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <style>
         .service-item {
             transition: all 0.3s ease;
@@ -86,7 +88,7 @@
                         <strong>${service.serviceName}:</strong> <fmt:formatNumber type="number" value="${service.price}" /> VNĐ / ${service.unit}
                     </div>
                 </c:forEach>
-                <p>Vui lòng liên hệ lễ tân hoặc nhân viên của chúng tôi để được hỗ trợ thêm. Ngoài ra, khi bạn ở homestay, bạn có thể truy cập chức năng <strong>Dịch vụ</strong> để đặt thêm các dịch vụ khác.</p>
+                <p>Vui lòng liên hệ nhân viên của chúng tôi để được hỗ trợ thêm. Ngoài ra, khi bạn ở homestay, bạn có thể truy cập chức năng <strong>Dịch vụ</strong> để đặt thêm các dịch vụ khác.</p>
             </div>
 
             <div class="total-section fs-4 fw-bold mt-4">
@@ -103,11 +105,15 @@
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
     <script>
         $(document).ready(function() {
             let servicePrices = {};
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            $(document).ajaxSend(function(e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
 
             $('.service-checkbox, .quantity-input').on('change input', function() {
                 let total = 0;
@@ -143,7 +149,7 @@
                     let serviceId = $(this).data('service-id');
                     let quantityInput = $('#quantity-' + serviceId);
                     let noteInput = $('#note-' + serviceId);
-                    let quantity = parseInt(quantityInput.val()) || 1;
+                    let quantity = parseFloat(quantityInput.val()) || 1.0; 
                     let description = noteInput.val().trim();
 
                     if (quantity < 1) {
@@ -172,7 +178,7 @@
                 };
 
                 $.ajax({
-                    url: "/booking/confirm-services",
+                    url: "/booking/confirm-services", 
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
@@ -194,7 +200,7 @@
                 };
 
                 $.ajax({
-                    url: "/booking/confirm-services",
+                    url: "/booking/confirm-services", 
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),

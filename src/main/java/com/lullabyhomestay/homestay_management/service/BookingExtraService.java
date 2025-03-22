@@ -2,7 +2,6 @@ package com.lullabyhomestay.homestay_management.service;
 
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,6 @@ import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.Customer;
 import com.lullabyhomestay.homestay_management.domain.Service;
-import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingServiceCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
@@ -28,7 +26,6 @@ public class BookingExtraService {
 
     private final BookingServiceRepository bookingServiceRepo;
     private final BookingService bookingService;
-    private final ModelMapper mapper;
     private final CustomerService customerService;
     private final HomestayServiceService service;
 
@@ -60,13 +57,9 @@ public class BookingExtraService {
         currentBooking = this.bookingService.handleSaveBooking(currentBooking);
 
         // Cập nhật RewardPoints
-        Double rewardPoints = customer.getRewardPoints();
-        Double addPoints = (bookingService.getTotalPrice() / 100000) * 10 - (oldTotalPrice / 100000) * 10;
-        customer.setRewardPoints(rewardPoints + addPoints);
-
-        // Cập nhật lại CustomerType
-        CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
-        customerService.handleSaveCustomer(customerDTO);
+        Double amountChange = bookingService.getTotalPrice() - oldTotalPrice;
+        boolean isAdd = amountChange > 0;
+        customerService.updateRewardPointsAndCustomerType(customer.getCustomerID(), amountChange, isAdd);
 
         return bookingServiceRepo.save(bookingService);
     }
