@@ -5,7 +5,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +32,6 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final RoomStatusHistoryService roomStatusHistoryService;
     private final CustomerService customerService;
-    private final ModelMapper mapper;
     private final BookingServiceRepository bookingServiceRepo;
     private final RoomStatusHistoryRepository roomStatusHistoryRepo;
 
@@ -106,6 +104,11 @@ public class BookingService {
         return bookingRepository.findByCustomer_CustomerID(customerID);
     }
 
+    public Double getTotalAmountByCustomerID(Long customerID) {
+        Double totalAmount = bookingRepository.getTotalAmountByCustomerId(customerID);
+        return totalAmount != null ? totalAmount : 0.0;
+    }
+
     public boolean canCancelBooking(Long bookingID) {
         Booking booking = getBookingByID(bookingID);
         LocalDateTime checkInTime = booking.getCheckIn();
@@ -132,9 +135,9 @@ public class BookingService {
         long hours = booking.getNumberOfHours();
         Double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
         double totalAmount = pricePerHour * hours;
-        if (booking.getRoom().getRoomType().getName().toUpperCase().contains("DORM")) { 
+        if (booking.getRoom().getRoomType().getName().toUpperCase().contains("DORM")) {
             totalAmount *= booking.getGuestCount();
-        }        
+        }
         if (customer.getCustomerType().getDiscountRate() > 0) {
             totalAmount = totalAmount * (100 - customer.getCustomerType().getDiscountRate()) / 100;
         }

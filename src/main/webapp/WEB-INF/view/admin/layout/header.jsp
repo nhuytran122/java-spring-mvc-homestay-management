@@ -64,10 +64,10 @@
                   <img src="/images/avatar/${not empty sessionScope.avatar ? sessionScope.avatar : 'default-img.jpg'}" 
                       alt="profile" class="rounded-circle me-2" width="40" height="40">
                   <span class="fw-semibold text-dark me-1">${sessionScope.fullName}</span>
-                  <i class="bi bi-caret-down-fill text-muted"></i> <!-- Mũi tên dropdown -->
+                  <i class="bi bi-caret-down-fill text-muted"></i> 
               </a>
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown shadow" aria-labelledby="profileDropdown">
-                  <a class="dropdown-item d-flex align-items-center" href="/profile">
+                  <a class="dropdown-item d-flex align-items-center" href="/admin/profile">
                       <i class="ti-settings text-primary me-2"></i> Tài khoản của tôi
                   </a>
                   <div class="dropdown-divider"></div>

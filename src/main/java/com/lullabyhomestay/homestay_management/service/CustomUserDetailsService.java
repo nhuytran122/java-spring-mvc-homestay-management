@@ -32,14 +32,19 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         Employee employee = employeeService.getEmployeeByEmail(username);
-        if (employee != null) {
-            return new User(
-                    employee.getEmail(),
-                    employee.getPassword(),
-                    Collections.singletonList(
-                            new SimpleGrantedAuthority("ROLE_" + employee.getRole().convertToSystemRoleName())));
+        if (employee == null) {
+            throw new UsernameNotFoundException("Không tìm thấy người dùng: " + username);
         }
 
-        throw new UsernameNotFoundException("Không tìm thấy người dùng");
+        if (!employee.getIsWorking()) {
+            throw new UsernameNotFoundException(
+                    "Tài khoản của bạn hiện không đủ quyền truy cập trang này! Vui lòng liên hệ quản trị viên để được hỗ trợ.");
+        }
+
+        return new User(
+                employee.getEmail(),
+                employee.getPassword(),
+                Collections.singletonList(
+                        new SimpleGrantedAuthority("ROLE_" + employee.getRole().convertToSystemRoleName())));
     }
 }

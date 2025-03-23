@@ -1,9 +1,6 @@
 package com.lullabyhomestay.homestay_management.service.validator;
 
-// import com.lullabyhomestay.homestay_management.config.ContextProvider;
 import com.lullabyhomestay.homestay_management.domain.Booking;
-import com.lullabyhomestay.homestay_management.domain.Room;
-import com.lullabyhomestay.homestay_management.service.RoomService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.AllArgsConstructor;

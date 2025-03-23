@@ -17,7 +17,6 @@
                 <i class="fas fa-ban fa-5x"></i>
             </div>
             <h1 class="text-danger mb-3 fw-bold">Truy cập bị từ chối</h1>
-            <p class="text-muted mb-4 fs-5">Bạn không có quyền truy cập vào trang này. Vui lòng liên hệ với quản trị viên để được hỗ trợ.</p>
             <c:if test="${not empty errorMessage}">
                <p class="text-muted mb-4 fs-5">${errorMessage}</p>
             </c:if>

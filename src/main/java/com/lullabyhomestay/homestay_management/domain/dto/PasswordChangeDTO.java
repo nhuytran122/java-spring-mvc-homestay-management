@@ -1,8 +1,7 @@
 package com.lullabyhomestay.homestay_management.domain.dto;
 
-import com.lullabyhomestay.homestay_management.service.validator.RegisterChecked;
+import com.lullabyhomestay.homestay_management.service.validator.PasswordChangeChecked;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -14,17 +13,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@RegisterChecked
-public class RegisterDTO {
-    @NotBlank(message = "Vui lòng nhập họ tên")
-    private String fullName;
-
-    @Email(message = "Email không hợp lệ", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
-    private String email;
-
-    private String phone;
+@PasswordChangeChecked
+public class PasswordChangeDTO {
+    @NotBlank(message = "Vui lòng nhập mật khẩu cũ")
+    private String oldPassword;
 
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^A-Za-z0-9]).{8,}$", message = "Mật khẩu mới phải có tối thiểu 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt")
-    private String password;
+    private String newPassword;
+
+    @NotBlank(message = "Vui lòng xác nhận mật khẩu mới")
     private String confirmPassword;
 }

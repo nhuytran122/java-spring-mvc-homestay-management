@@ -37,6 +37,27 @@ public class EmployeeService {
         return mapper.map(savedEmployee, EmployeeDTO.class);
     }
 
+    public EmployeeDTO updateProfile(long employeeID, EmployeeDTO requestDTO) {
+        Employee employee = employeeRepository.findByEmployeeID(employeeID)
+                .orElseThrow(() -> new NotFoundException("Nhân viên"));
+
+        employee.setFullName(requestDTO.getFullName());
+        employee.setPhone(requestDTO.getPhone());
+        employee.setAvatar(requestDTO.getAvatar());
+        employee.setAddress(requestDTO.getAddress());
+
+        Employee updatedEmployee = employeeRepository.save(employee);
+        return mapper.map(updatedEmployee, EmployeeDTO.class);
+    }
+
+    public void changePassword(Long employeeID, String newPassword) {
+        Employee employee = employeeRepository.findByEmployeeID(employeeID)
+                .orElseThrow(() -> new NotFoundException("Nhân viên"));
+
+        employee.setPassword(this.passwordEncoder.encode(newPassword));
+        employeeRepository.save(employee);
+    }
+
     public Page<EmployeeDTO> getAllEmployees(Pageable pageable) {
         Page<Employee> employeePage = employeeRepository.findAll(pageable);
         return employeePage.map(employee -> mapper.map(employee, EmployeeDTO.class));
@@ -71,6 +92,14 @@ public class EmployeeService {
 
     public Employee getEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email).get();
+    }
+
+    public EmployeeDTO getEmployeeDTOByEmail(String email) {
+        Optional<Employee> employeeOpt = employeeRepository.findByEmail(email);
+        if (!employeeOpt.isPresent()) {
+            throw new NotFoundException("Nhân viên");
+        }
+        return mapper.map(employeeOpt.get(), EmployeeDTO.class);
     }
 
     public boolean canDeleteEmployee(long employeeID) {

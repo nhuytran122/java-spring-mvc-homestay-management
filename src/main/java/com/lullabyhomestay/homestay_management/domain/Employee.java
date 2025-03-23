@@ -56,7 +56,7 @@ public class Employee {
     private Double salary;
 
     @Column(name = "IsWorking")
-    private boolean isWorking;
+    private Boolean isWorking;
 
     @ManyToOne
     @NotNull(message = "Vui lòng chọn vai trò")

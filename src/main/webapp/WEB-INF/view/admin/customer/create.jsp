@@ -36,9 +36,6 @@
                                     <c:set var="errorEmail">
                                         <form:errors path="email" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorAddress">
-                                        <form:errors path="address" cssClass="invalid-feedback" />
-                                    </c:set>
 
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Tên khách hàng <span class="text-danger">*</span></label>
@@ -70,9 +67,8 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Địa chỉ <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:input type="text" class="form-control ${not empty errorAddress ? 'is-invalid' : ''}" 
+                                            <form:input type="text" class="form-control" 
                                             path="address" />
-                                            ${errorAddress}
                                         </div>
                                     </div>
                                     <div class="form-group row">

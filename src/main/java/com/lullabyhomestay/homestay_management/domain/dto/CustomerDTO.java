@@ -30,8 +30,8 @@ public class CustomerDTO {
     @NotBlank(message = "Vui lòng nhập email")
     private String email;
 
-    @NotBlank(message = "Vui lòng nhập địa chỉ")
     private String address;
+    private String avatar;
     private Double rewardPoints;
     private Boolean isLocked;
     private CustomerType customerType;

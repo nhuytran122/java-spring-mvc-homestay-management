@@ -56,8 +56,15 @@ public class CustomerService {
         customer.setAddress(requestDTO.getAddress());
         customer.setPhone(requestDTO.getPhone());
         customer.setEmail(requestDTO.getEmail());
+        customer.setAvatar(requestDTO.getAvatar());
         customer.setRewardPoints(requestDTO.getRewardPoints());
         return customer;
+    }
+
+    public void changePassword(Long customerID, String newPassword) {
+        Customer customer = getCustomerByID(customerID);
+        customer.setPassword(this.passwordEncoder.encode(newPassword));
+        customerRepository.save(customer);
     }
 
     @Transactional

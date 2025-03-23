@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
@@ -32,4 +34,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
     Long countByStatusAndCustomer_CustomerID(BookingStatus bookingStatus, Long customerID);
 
     Long countByCustomer_CustomerID(Long customerID);
+
+    // Double findSumTotalAmountByCustomer_CustomerID(Long customerID);
+    @Query("SELECT SUM(b.totalAmount) FROM Booking b " +
+            "WHERE b.customer.id = :customerId " +
+            "AND b.status = 'COMPLETED' ")
+
+    Double getTotalAmountByCustomerId(@Param("customerId") Long customerId);
 }

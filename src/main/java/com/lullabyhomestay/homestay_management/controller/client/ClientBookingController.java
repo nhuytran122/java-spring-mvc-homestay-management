@@ -29,12 +29,10 @@ import com.lullabyhomestay.homestay_management.domain.dto.ApiResponseDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingServiceRequestDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
-import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.service.*;
+import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -56,8 +54,7 @@ public class ClientBookingController {
     @PostMapping("/booking")
     public String postCreateBooking(@ModelAttribute("newBooking") @Valid Booking booking,
             BindingResult result,
-            Model model, RedirectAttributes redirectAttributes,
-            HttpServletRequest request) {
+            Model model, RedirectAttributes redirectAttributes) {
         Long roomID = booking.getRoom().getRoomID();
         Room room = roomService.getRoomByID(booking.getRoom().getRoomID());
 
@@ -75,7 +72,7 @@ public class ClientBookingController {
         }
         booking.setStatus(BookingStatus.BOOKED);
         booking.setRoom(room);
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         mapAndSetCustomerToBooking(booking, customerDTO);
         booking = bookingService.handleBooking(booking);
 
@@ -84,13 +81,12 @@ public class ClientBookingController {
     }
 
     @GetMapping("/booking/booking-service")
-    public String selectService(Model model, @ModelAttribute("bookingID") Long bookingID,
-            HttpServletRequest request) {
+    public String selectService(Model model, @ModelAttribute("bookingID") Long bookingID) {
         if (bookingID == null) {
             return "redirect:/";
         }
         Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         mapAndSetCustomerToBooking(booking, customerDTO);
 
         validateBooking(booking, customerDTO);
@@ -104,12 +100,12 @@ public class ClientBookingController {
     @ResponseBody
     public ResponseEntity<ApiResponseDTO<Long>> postConfirmBookingService(
             @RequestBody BookingServiceRequestDTO requestDTO,
-            Model model, HttpServletRequest request) {
+            Model model) {
         Long bookingID = requestDTO.getBookingID();
         List<BookingServices> listBookingServices = requestDTO.getServices();
         Booking booking = bookingService.getBookingByID(bookingID);
 
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         mapAndSetCustomerToBooking(booking, customerDTO);
 
         if (booking == null || !booking.getCustomer().getEmail().equals(customerDTO.getEmail())) {
@@ -137,10 +133,9 @@ public class ClientBookingController {
     }
 
     @GetMapping("/booking/booking-confirmation")
-    public String getBookingSuccessPage(@RequestParam("bookingID") Long bookingID, Model model,
-            HttpServletRequest request) {
+    public String getBookingSuccessPage(@RequestParam("bookingID") Long bookingID, Model model) {
         Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         validateBooking(booking, customerDTO);
         model.addAttribute("booking", booking);
         return "client/booking/booking-confirmation";
@@ -149,8 +144,7 @@ public class ClientBookingController {
     @GetMapping("/booking/booking-history")
     public String getBookingHistory(Model model,
             @RequestParam(defaultValue = "1") int page,
-            @ModelAttribute SearchBookingCriteriaDTO criteria,
-            HttpServletRequest request) {
+            @ModelAttribute SearchBookingCriteriaDTO criteria) {
         int validPage = Math.max(1, page);
         String sort = (criteria.getSort() != null && !criteria.getSort().isEmpty()) ? criteria.getSort() : "desc";
         criteria.setSort(sort);
@@ -163,10 +157,10 @@ public class ClientBookingController {
         }
         if (criteria.getFromTime().isAfter(criteria.getToTime())) {
             model.addAttribute("errorMessage", "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
-            return prepareModelWithoutSearch(model, criteria, validPage, request);
+            return prepareModelWithoutSearch(model, criteria, validPage);
         }
 
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         if (customerDTO == null) {
             throw new AccessDeniedException("Vui lòng đăng nhập để sử dụng chức năng này");
         }
@@ -175,14 +169,13 @@ public class ClientBookingController {
         List<Booking> listBookings = bookings.getContent();
         model.addAttribute("totalPages", bookings.getTotalPages());
         model.addAttribute("listBookings", listBookings);
-        return prepareModelWithoutSearch(model, criteria, validPage, request);
+        return prepareModelWithoutSearch(model, criteria, validPage);
     }
 
     @GetMapping("/booking/booking-history/{id}")
-    public String getDetailBooking(Model model, @PathVariable long id,
-            HttpServletRequest request) {
+    public String getDetailBooking(Model model, @PathVariable long id) {
         Booking booking = bookingService.getBookingByID(id);
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         validateBooking(booking, customerDTO);
         mapAndSetCustomerToBooking(booking, customerDTO);
 
@@ -192,62 +185,30 @@ public class ClientBookingController {
     }
 
     @GetMapping("/booking/booking-history/can-cancel/{id}")
-    public ResponseEntity<Boolean> canCancelBooking(@PathVariable Long id,
-            HttpServletRequest request) {
+    public ResponseEntity<Boolean> canCancelBooking(@PathVariable Long id) {
 
         Booking booking = bookingService.getBookingByID(id);
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         validateBooking(booking, customerDTO);
         boolean canCancel = bookingService.canCancelBooking(id);
         return ResponseEntity.ok(canCancel);
     }
 
     @PostMapping("/booking/booking-history/cancel")
-    public String postCancelBooking(@RequestParam("bookingID") long bookingID,
-            HttpServletRequest request) {
+    public String postCancelBooking(@RequestParam("bookingID") long bookingID) {
         Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         validateBooking(booking, customerDTO);
         this.bookingService.cancelBooking(bookingID);
         return "redirect:/booking/booking-history";
     }
 
-    private String prepareModelWithoutSearch(Model model, SearchBookingCriteriaDTO criteria, int validPage,
-            HttpServletRequest request) {
-        CustomerDTO customerDTO = getLoggedInCustomer(request);
+    private String prepareModelWithoutSearch(Model model, SearchBookingCriteriaDTO criteria, int validPage) {
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         model.addAttribute("customer", customerDTO);
         addCriteriaAttributes(model, criteria, validPage);
         addBookingStatistics(model, customerDTO.getCustomerID());
         return "client/booking/booking-history";
-    }
-
-    private CustomerDTO getLoggedInCustomer(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new AccessDeniedException("Vui lòng đăng nhập để tiếp tục");
-        }
-        Long userId = (Long) session.getAttribute("id");
-        String role = (String) session.getAttribute("role");
-        String email = (String) session.getAttribute("email");
-        if (userId == null || role == null || email == null) {
-            throw new AccessDeniedException("Phiên đăng nhập không hợp lệ");
-        }
-        try {
-            CustomerDTO customerDTO = customerService.getCustomerDTOByEmail(email);
-            if (!userId.equals(customerDTO.getCustomerID())) {
-                throw new AccessDeniedException("Thông tin đăng nhập không khớp với tài khoản khách hàng");
-            }
-            if (!"ROLE_CUSTOMER".equals(role)) {
-                throw new AccessDeniedException("Nhân viên cần tài khoản khách hàng để đặt phòng");
-            }
-            return customerDTO;
-        } catch (NotFoundException e) {
-            if ("ROLE_CUSTOMER".equals(role)) {
-                throw new AccessDeniedException("Không tìm thấy tài khoản khách hàng với email: " + email);
-            } else {
-                throw new AccessDeniedException("Nhân viên cần tài khoản khách hàng để đặt phòng");
-            }
-        }
     }
 
     private void mapAndSetCustomerToBooking(Booking booking, CustomerDTO customerDTO) {
