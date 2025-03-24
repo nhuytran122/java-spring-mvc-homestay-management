@@ -16,6 +16,7 @@ import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.BranchService;
+import com.lullabyhomestay.homestay_management.service.ReviewService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 
@@ -27,6 +28,7 @@ public class ClientRoomController {
     private final RoomService roomService;
     private final RoomTypeService roomTypeService;
     private final BranchService branchService;
+    private final ReviewService reviewService;
 
     @GetMapping("/room")
     public String getRoomsPage(Model model,
@@ -55,6 +57,7 @@ public class ClientRoomController {
     public String getDetailRoomPage(Model model, @PathVariable long id) {
         model.addAttribute("newBooking", new Booking());
         model.addAttribute("room", roomService.getRoomByID(id));
+        model.addAttribute("listReviews", reviewService.getReviewsByRoomID(id));
         return "client/room/detail";
     }
 

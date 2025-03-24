@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="f" uri="http://lullabyhomestay.com/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,20 +23,13 @@
                     <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner rounded-4">
                             <div class="carousel-item active">
-                              <c:choose>
-                                  <c:when test="${not empty room.thumbnail}">
-                                      <img src="/images/room/${room.thumbnail}" class="d-block w-100" alt="Thumbnail" style="height: 400px; object-fit: cover">
-                                  </c:when>
-                                  <c:otherwise>
-                                      <img src="/images/room/default-img.jpg" class="d-block w-100" alt="Default Img" style="height: 400px; object-fit: cover">
-                                  </c:otherwise>
-                              </c:choose>
+                                <img src="/images/room/${not empty room.thumbnail ? room.thumbnail : 'default-img.jpg'}" class="d-block w-100" alt="Ảnh phòng" style="height: 400px; object-fit: cover">
                             </div>
                             <c:forEach var="photo" items="${room.roomPhotos}">
                               <div class="carousel-item">
-                                  <img src="/images/room/${photo.photo}" class="d-block w-100" alt="Meeting Room" style="height: 400px; object-fit: cover">
+                                  <img src="/images/room/${photo.photo}" class="d-block w-100" alt="Ảnh phòng" style="height: 400px; object-fit: cover">
                               </div>
-                          </c:forEach>
+                            </c:forEach>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -142,64 +136,46 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
-                    <h4 class="mb-4">Đánh giá của khách hàng <span class="badge bg-success">4.9</span></h4>
+                    <h4 class="mb-4">Đánh giá của khách hàng</h4>
                     <div class="reviews-list">
-                        <div class="review-card mb-4">
-                            <div class="d-flex mb-3">
-                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" class="rounded-circle reviewer-img" alt="Reviewer">
-                                <div class="ms-3">
-                                    <h6 class="mb-1">Như Ý</h6>
-                                    <div class="text-muted">11/03/2025</div>
-                                </div>
-                            </div>
-                            <div class="review-stars mb-2">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                            </div>
-                            <p>Mọi thứ rất tốt, nhân viên nhiệt tình, dễ thương và thân thiện.</p>
-                        </div>
-
-                        <div class="review-card mb-4">
-                            <div class="d-flex mb-3">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" class="rounded-circle reviewer-img" alt="Reviewer">
-                                <div class="ms-3">
-                                    <h6 class="mb-1">Như Ý</h6>
-                                    <div class="text-muted">12/03/2025</div>
-                                </div>
-                            </div>
-                            <div class="review-stars mb-2">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-half text-warning"></i>
-                            </div>
-                            <p>Homestay sạch sẽ, thoáng. Anh chị chủ siêu nhiệt tình và thân thiện chuẩn bị đầy đủ đồ dùng trong phòng ko có mình có thể xuống mượn!</p>
-                        </div>
-
-                        <div class="write-review-section">
-                            <h5 class="mb-3">Viết đánh giá</h5>
-                            <form class="review-form">
-                                <div class="mb-3">
-                                    <label class="form-label">Rating</label>
-                                    <div class="rating-input mb-2">
-                                        <i class="bi bi-star fs-4 me-1"></i>
-                                        <i class="bi bi-star fs-4 me-1"></i>
-                                        <i class="bi bi-star fs-4 me-1"></i>
-                                        <i class="bi bi-star fs-4 me-1"></i>
-                                        <i class="bi bi-star fs-4"></i>
+                        <c:if test="${empty listReviews}">
+                            <p class="text-center">
+                                Hiện không có đánh giá dành cho phòng này.
+                            </p>
+                        </c:if>
+                        <c:forEach var="review" items="${listReviews}">
+                            <div class="review-card mb-4">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="d-inline-block rounded-circle p-1">
+                                            <img src="/images/avatar/${not empty review.booking.customer.avatar ? review.booking.customer.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">${review.booking.customer.fullName}</h6>
+                                            <div class="d-flex align-items-center">
+                                                <small class="text-muted me-3">Đăng vào: ${f:formatLocalDateTime(review.createdAt)}</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-2">
+                                            <c:forEach begin="1" end="${review.rating}">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            </c:forEach>
+                                            <c:forEach begin="${review.rating + 1}" end="5">
+                                                <i class="bi bi-star text-warning"></i>
+                                            </c:forEach>
+                                        </div>
+                                        
+                                        <p class="mb-3 review-text">${review.comment}</p>
+                                        <c:if test="${not empty review.image}">
+                                            <img src="/images/review/${review.image}" alt="Review Image" style="max-width: 200px;">
+                                        </c:if>
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Đánh giá của bạn</label>
-                                    <textarea class="form-control" rows="4" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Gửi</button>
-                            </form>
-                        </div>
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>

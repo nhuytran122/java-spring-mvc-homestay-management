@@ -20,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
@@ -77,8 +78,8 @@ public class Booking {
     @OneToMany(mappedBy = "booking")
     List<BookingServices> bookingServices;
 
-    @OneToMany(mappedBy = "booking")
-    List<Review> reviews;
+    @OneToOne(mappedBy = "booking")
+    private Review review;
 
     @OneToMany(mappedBy = "booking")
     List<Payment> payments;

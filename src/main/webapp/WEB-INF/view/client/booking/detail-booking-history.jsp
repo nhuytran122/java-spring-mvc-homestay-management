@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="f" uri="http://lullabyhomestay.com/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,28 @@
     <link rel="stylesheet" href="/client/css/booking-history-style.css">
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <style>
+        .star-rating {
+            display: flex;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        .star {
+            margin-right: 5px;
+            color: #ccc; 
+        }
+        .star.filled i {
+            color: #f5c518; 
+        }
+        .star:hover i,
+        .star:hover ~ .star i {
+            color: #ccc; 
+        }
+        .star.filled:hover i,
+        .star.filled:hover ~ .star.filled i {
+            color: #f5c518;
+        }
+    </style>
 </head>
 <body>
     <jsp:include page="../layout/header.jsp" />
@@ -41,7 +64,6 @@
                             <i class="bi bi-geo-alt me-1"></i> ${booking.room.branch.branchName} - ${booking.room.branch.address}
                         </p>
                         <hr>
-                        
                         <h5 class="mb-3">Tiện nghi trong phòng</h5>
                         <div class="row mb-3">
                             <c:forEach var="item" items="${booking.room.roomAmenities}">
@@ -55,33 +77,174 @@
                     </div>
                 </div>
 
-                <!-- TODO -->
                 <div class="card">
                     <div class="card-header bg-white">
                         <h5 class="mb-0"><i class="bi bi-star me-2"></i>Đánh giá của bạn về phòng</h5>
                     </div>
-                    
                     <div class="card-body">
-                        <div class="d-flex mb-3">
-                            <div class="me-3">
-                                <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d" alt="Avatar" width="60">
+                        <c:if test="${not empty message}">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                ${message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            <div>
-                                <h6 class="mb-1">John</h6>
-                                <div class="mb-2">
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <span class="ms-2 text-muted">5.0</span>
+                        </c:if>
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                ${error}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </c:if>
+                
+                        <c:choose>
+                            <c:when test="${not empty booking.review}">
+                                <div class="mb-3 review-container" id="review-${booking.review.reviewID}">
+                                    <div class="review-content">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <div class="d-inline-block rounded-circle p-1">
+                                                    <img src="/images/avatar/${not empty sessionScope.avatar ? sessionScope.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <h6 class="mb-0">${sessionScope.fullName}</h6>
+                                                    <div class="d-flex align-items-center">
+                                                        <small class="text-muted me-3">Đăng vào: ${f:formatLocalDateTime(booking.review.createdAt)}</small>
+                                                        <button class="btn btn-warning btn-sm edit-review-btn me-1" data-review-id="${booking.review.reviewID}">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <button class="btn btn-danger btn-sm delete-review-btn"
+                                                            data-review-id="${booking.review.reviewID}"
+                                                            onclick="checkBeforeDelete(this)" 
+                                                                data-entity-id="${booking.review.reviewID}" 
+                                                                data-entity-name="${booking.review.comment}" 
+                                                                data-entity-type="đánh giá" 
+                                                                data-delete-url="/review/delete" 
+                                                                data-id-name="reviewID">
+                                                            <i class="bi bi-trash"></i> 
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-2">
+                                                    <c:forEach begin="1" end="${booking.review.rating}">
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    </c:forEach>
+                                                    <c:forEach begin="${booking.review.rating + 1}" end="5">
+                                                        <i class="bi bi-star text-warning"></i>
+                                                    </c:forEach>
+                                                </div>
+                                                
+                                                <p class="mb-1 review-text">${booking.review.comment}</p>
+                                                <c:if test="${not empty booking.review.image}">
+                                                    <img src="/images/review/${booking.review.image}" alt="Review Image" style="max-width: 200px;">
+                                                </c:if>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="edit-review-form mt-3" style="display: none;">
+                                        <form:form modelAttribute="editReview" action="/review/update" method="post" enctype="multipart/form-data">
+                                            <form:hidden path="reviewID" value="${booking.review.reviewID}"/>
+                                            <form:hidden path="booking.bookingID" value="${booking.bookingID}"/>
+                                            
+                                            <div class="d-flex">
+                                                <div class="me-3">
+                                                    <div class="d-inline-block rounded-circle p-1">
+                                                        <img src="/images/avatar/${not empty sessionScope.avatar ? sessionScope.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6 class="mb-0">${sessionScope.fullName}</h6>
+                                                        <small class="text-muted">Đăng vào: ${f:formatLocalDateTime(booking.review.createdAt)}</small>
+                                                    </div>
+
+                                                    <div class="form-group mb-2">
+                                                        <label>Đánh giá của bạn:</label>
+                                                        <div class="star-rating">
+                                                            <input type="hidden" name="rating" class="rating-input" value="${booking.review.rating}">
+                                                            <span class="star" data-value="1"><i class="bi bi-star"></i></span>
+                                                            <span class="star" data-value="2"><i class="bi bi-star"></i></span>
+                                                            <span class="star" data-value="3"><i class="bi bi-star"></i></span>
+                                                            <span class="star" data-value="4"><i class="bi bi-star"></i></span>
+                                                            <span class="star" data-value="5"><i class="bi bi-star"></i></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group mb-2">
+                                                        <label>Nhận xét:</label>
+                                                        <textarea name="comment" class="form-control">${booking.review.comment}</textarea>
+                                                    </div>
+
+                                                    <div class="form-group mb-2">
+                                                        <label>Hình ảnh cũ:</label>
+                                                        <c:if test="${not empty booking.review.image}">
+                                                            <div class="mb-2">
+                                                                <img src="/images/review/${booking.review.image}" alt="Review Image" style="max-width: 200px;">
+                                                            </div>
+                                                        </c:if>
+                                                        <input type="file" name="fileImg" class="form-control">
+                                                    </div>
+
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <button type="submit" class="btn btn-warning btn-sm">
+                                                            <i class="bi bi-check"></i> Sửa
+                                                        </button>
+                                                        <button type="button" class="btn btn-secondary btn-sm cancel-edit-btn">
+                                                            <i class="bi bi-x"></i> Hủy
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form:form>
+                                    </div>
                                 </div>
-                                <p class="mb-1">
-                                    Trải nghiệm tuyệt vời
-                                </p>
-                                <small class="text-muted">18/03/2025</small>
-                            </div>
-                        </div>
+                            </c:when>
+                            <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${booking.status.toString() == 'COMPLETED'}">
+                                        <p>Bạn đã trải nghiệm đặt phòng tại homestay, để lại cảm nhận của bạn ngay!</p>
+                                        <form:form id="reviewForm" modelAttribute="newReview" action="/review/create" method="post" enctype="multipart/form-data">
+                                            <form:hidden path="booking" value="${booking.bookingID}"/>
+                                            <c:set var="errorRating">
+                                                <form:errors path="rating" cssClass="invalid-feedback" />
+                                            </c:set>
+                                            <c:set var="errorComment">
+                                                <form:errors path="comment" cssClass="invalid-feedback" />
+                                            </c:set>
+                                            <div class="form-group mb-3">
+                                                <label for="rating">Đánh giá của bạn:</label>
+                                                <div class="star-rating">
+                                                    <form:hidden path="rating" id="rating" value="0"/> 
+                                                    <span class="star" data-value="1"><i class="bi bi-star"></i></span>
+                                                    <span class="star" data-value="2"><i class="bi bi-star"></i></span>
+                                                    <span class="star" data-value="3"><i class="bi bi-star"></i></span>
+                                                    <span class="star" data-value="4"><i class="bi bi-star"></i></span>
+                                                    <span class="star" data-value="5"><i class="bi bi-star"></i></span>
+                                                </div>
+                                                ${errorRating}
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="comment">Nhận xét:</label>
+                                                <form:textarea path="comment" id="comment" class="form-control ${not empty errorComment ? 'is-invalid' : ''}" rows="3" placeholder="Nhập nhận xét của bạn..." />
+                                                ${errorComment}
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="image">Hình ảnh:</label>
+                                                <input type="file" name="fileImg" id="image" class="form-control">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-star-fill"></i> Gửi đánh giá
+                                            </button>
+                                        </form:form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>Vui lòng hoàn tất đặt phòng để gửi đánh giá.</p>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </div>
@@ -160,7 +323,7 @@
                         </div>
                     </div>
                 </div>
-                <c:if test="${booking.status.toString() != 'CANCELLED'}">
+                <c:if test="${booking.status.toString() != 'CANCELLED' and booking.status.toString() != 'COMPLETED'}">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-grid gap-2">
@@ -184,5 +347,83 @@
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
     <jsp:include page="_modal-cancel.jsp" />
+    <jsp:include page="../../admin/layout/partial/_modal-delete-not-check-can-delete.jsp" />
+    <jsp:include page="../../admin/layout/partial/_script-preview-image-update.jsp" />
+    <script>
+            setupImagePreview("review");
+    </script>
+    <script>
+        $(document).ready(function () {
+            function fillStars($stars, rating) {
+                $stars.each(function () {
+                    let starValue = parseInt($(this).data('value'));
+                    if (starValue <= rating) {
+                        $(this).addClass('filled');
+                    } else {
+                        $(this).removeClass('filled');
+                    }
+                });
+            }
+    
+            let $newStars = $('#reviewForm .star');
+            let $newRatingInput = $('#rating');
+    
+            let initialNewRating = parseInt($newRatingInput.val()) || 0;
+            fillStars($newStars, initialNewRating);
+    
+            $newStars.on('click', function () {
+                let value = parseInt($(this).data('value'));
+                $newRatingInput.val(value);
+                fillStars($newStars, value);
+            });
+    
+            $newStars.on('mouseover', function () {
+                let value = parseInt($(this).data('value'));
+                fillStars($newStars, value);
+            });
+    
+            $newStars.on('mouseout', function () {
+                let selectedValue = parseInt($newRatingInput.val()) || 0;
+                fillStars($newStars, selectedValue);
+            });
+    
+            $(".edit-review-btn").on("click", function () {
+                let reviewId = $(this).data("review-id");
+                let $container = $("#review-" + reviewId);
+    
+                $container.find(".review-content").hide();
+                $container.find(".edit-review-form").show();
+    
+                let rating = parseInt($container.find(".rating-input").val()) || 0; 
+                let $editStars = $container.find(".star");
+    
+                fillStars($editStars, rating);
+    
+                $editStars.off('click');
+                $editStars.on("click", function () {
+                    let value = parseInt($(this).data('value'));
+                    $container.find(".rating-input").val(value);
+                    fillStars($editStars, value);
+                });
+    
+                $editStars.off('mouseover mouseout');
+                $editStars.on('mouseover', function () {
+                    let value = parseInt($(this).data('value'));
+                    fillStars($editStars, value);
+                });
+                $editStars.on('mouseout', function () {
+                    let selectedValue = parseInt($container.find(".rating-input").val()) || 0;
+                    fillStars($editStars, selectedValue);
+                });
+            });
+    
+            $(".cancel-edit-btn").on("click", function () {
+                let $container = $(this).closest(".review-container");
+    
+                $container.find(".review-content").show();
+                $container.find(".edit-review-form").hide();
+            });
+        });
+    </script>
 </body>
 </html>

@@ -96,14 +96,10 @@ public class BranchController {
             BindingResult newBranchBindingResult,
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
-
-        // HttpSession session = request.getSession(false);
-
-        Branch currentBranch = this.branchService.getBranchByID(branch.getBranchID());
-
         if (newBranchBindingResult.hasErrors()) {
             return "admin/branch/update";
         }
+        Branch currentBranch = this.branchService.getBranchByID(branch.getBranchID());
 
         if (!file.isEmpty()) {
             String img = this.uploadService.handleSaveUploadFile(file, "branch");

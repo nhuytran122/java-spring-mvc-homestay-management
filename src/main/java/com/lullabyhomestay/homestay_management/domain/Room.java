@@ -53,6 +53,9 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<RoomAmenity> roomAmenities;
 
+    @OneToMany(mappedBy = "room")
+    private List<Booking> bookings;
+
     @ManyToOne
     @JoinColumn(name = "BranchID")
     @NotNull(message = "Vui lòng chọn chi nhánh")
