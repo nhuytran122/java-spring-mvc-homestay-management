@@ -33,6 +33,7 @@ import com.lullabyhomestay.homestay_management.service.*;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.BookingUtils;
+import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -141,6 +142,13 @@ public class ClientBookingController {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         BookingUtils.validateBooking(booking, customerDTO);
         model.addAttribute("booking", booking);
+        model.addAttribute("paymentPurpose", PaymentPurpose.ROOM_BOOKING);
+
+        double originalAmount = booking.getTotalAmount()
+                / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
+        double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
+        model.addAttribute("discountAmount", discountAmount);
+
         return "client/booking/booking-confirmation";
     }
 
@@ -186,6 +194,10 @@ public class ClientBookingController {
         model.addAttribute("numberOfHours", booking.getNumberOfHours());
         model.addAttribute("newReview", new Review());
         model.addAttribute("editReview", new Review());
+        double originalAmount = booking.getTotalAmount()
+                / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
+        double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
+        model.addAttribute("discountAmount", discountAmount);
         return "client/booking/detail-booking-history";
     }
 

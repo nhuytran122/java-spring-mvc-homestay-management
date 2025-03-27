@@ -1,8 +1,6 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import com.lullabyhomestay.homestay_management.utils.PaymentCategory;
-import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
-import com.lullabyhomestay.homestay_management.utils.TransactionType;
+import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,23 +30,26 @@ public class PaymentDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PaymentDetailID")
     private Long paymentDetailID;
-    
-    @Column(name = "PaymentCategory")
+
+    @Column(name = "PaymentPurpose")
     @Enumerated(EnumType.STRING)
-    private PaymentCategory paymentCategory;
+    private PaymentPurpose paymentPurpose;
 
+    @Column(name = "BaseAmount")
+    private Double baseAmount;
 
-    @Column(name = "ReferenceID")
-    private Long referenceId;
-
-    @Column(name = "Status")
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
-
-    @Column(name = "Amount")
-    private Double amount;
+    @Column(name = "FinalAmount")
+    private Double finalAmount;
 
     @ManyToOne
     @JoinColumn(name = "PaymentID")
     private Payment payment;
+
+    @OneToOne
+    @JoinColumn(name = "ExtensionID")
+    private BookingExtension bookingExtension;
+
+    @OneToOne
+    @JoinColumn(name = "BookingServiceID")
+    private BookingServices bookingService;
 }

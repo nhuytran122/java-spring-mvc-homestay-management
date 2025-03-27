@@ -180,6 +180,26 @@
                                         <span><i class="bi bi-credit-card"></i> Tổng tiền: <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</span>
                                         <span><i class="bi bi-credit-card"></i> Số tiền đã trả: <fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ</span>
                                     </div>
+
+                                    <c:if test="${not empty booking.bookingServices}">
+                                        <div class="booking-services mt-3">
+                                            <h5 class="mb-2">Dịch vụ đi kèm:</h5>
+                                            <ul class="list-group">
+                                                <c:forEach var="serviceItem" items="${booking.bookingServices}">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong>${serviceItem.service.serviceName}</strong> 
+                                                            (x<fmt:formatNumber type="number" value="${serviceItem.quantity}" pattern="#"/> / ${serviceItem.service.unit})
+                                                        </div>
+                                                        <span class="badge bg-secondary">
+                                                            <fmt:formatNumber value="${serviceItem.totalAmount}" type="number"/>đ
+                                                        </span>
+                                                    </li>
+                                                </c:forEach>
+                                            </ul>
+                                        </div>
+                                    </c:if>
+
                                     <div class="amenities mt-3">
                                         <c:forEach var="amenity" items="${booking.room.roomAmenities}">
                                             <span class="badge bg-light text-dark me-2"><i class="bi bi-check2"></i> ${amenity.amenity.amenityName}</span>

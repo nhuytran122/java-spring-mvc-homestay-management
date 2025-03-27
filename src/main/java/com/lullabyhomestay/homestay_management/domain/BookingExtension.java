@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -35,10 +36,14 @@ public class BookingExtension {
     @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "TotalAmount")
-    private Double totalAmount;
-
     @ManyToOne
     @JoinColumn(name = "BookingID")
     private Booking booking;
+
+    @OneToOne(mappedBy = "bookingExtension")
+    private PaymentDetail paymentDetail;
+
+    public Double getTotalAmount() {
+        return booking.getRoom().getRoomType().getExtraPricePerHour() * extraHours;
+    }
 }

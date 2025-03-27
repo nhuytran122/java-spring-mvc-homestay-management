@@ -30,14 +30,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public String handleNotFoundException(NoHandlerFoundException ex, Model model) {
-        return "/admin/404";
+        return "admin/404";
     }
 
     @ExceptionHandler(NotFoundException.class)
     public String handleNotFoundException(NotFoundException ex, Model model) {
         String errorMessage = "Không tìm thấy " + ex.getEntityName();
         model.addAttribute("errorMessage", errorMessage);
-        return "/admin/not-found";
+        return "admin/not-found";
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

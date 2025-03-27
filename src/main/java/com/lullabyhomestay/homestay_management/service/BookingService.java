@@ -22,6 +22,7 @@ import com.lullabyhomestay.homestay_management.repository.RoomStatusHistoryRepos
 import com.lullabyhomestay.homestay_management.service.specifications.BookingSpecifications;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.Constants;
+import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 
 import lombok.AllArgsConstructor;
 
@@ -68,8 +69,7 @@ public class BookingService {
 
     @Transactional
     public Booking handleBooking(Booking booking) {
-        Double totalAmount = calculateTotalAmount(booking, booking.getCustomer());
-        booking.setTotalAmount(totalAmount);
+        booking.setTotalAmount(calculateTotalAmountBookingRoom(booking, booking.getCustomer()));
         Booking savedBooking = bookingRepository.save(booking);
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
 
@@ -131,16 +131,21 @@ public class BookingService {
         }
     }
 
-    private double calculateTotalAmount(Booking booking, Customer customer) {
+    public double calculateRawTotalAmountBookingRoom(Booking booking) {
         long hours = booking.getNumberOfHours();
-        Double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
+        double pricePerHour = booking.getRoom().getRoomType().getPricePerHour();
         double totalAmount = pricePerHour * hours;
+
         if (booking.getRoom().getRoomType().getName().toUpperCase().contains("DORM")) {
             totalAmount *= booking.getGuestCount();
         }
-        if (customer.getCustomerType().getDiscountRate() > 0) {
-            totalAmount = totalAmount * (100 - customer.getCustomerType().getDiscountRate()) / 100;
-        }
         return totalAmount;
     }
+
+    public double calculateTotalAmountBookingRoom(Booking booking, Customer customer) {
+        double rawTotal = calculateRawTotalAmountBookingRoom(booking);
+        double discountAmount = DiscountUtil.calculateDiscountAmount(rawTotal, customer);
+        return rawTotal - discountAmount;
+    }
+
 }

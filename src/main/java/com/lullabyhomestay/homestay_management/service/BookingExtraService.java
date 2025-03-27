@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -10,12 +11,12 @@ import org.springframework.data.jpa.domain.Specification;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.Customer;
-import com.lullabyhomestay.homestay_management.domain.Service;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingServiceCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.BookingServiceSpecification;
 import com.lullabyhomestay.homestay_management.utils.Constants;
+import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,6 @@ public class BookingExtraService {
     private final BookingServiceRepository bookingServiceRepo;
     private final BookingService bookingService;
     private final CustomerService customerService;
-    private final HomestayServiceService service;
 
     @Transactional
     public BookingServices handleSaveBookingServiceExtra(BookingServices bookingService) {
@@ -41,23 +41,22 @@ public class BookingExtraService {
             Optional<BookingServices> currentBookingServiceOpt = this.bookingServiceRepo
                     .findByBookingServiceID(bookingService.getBookingServiceID());
             if (currentBookingServiceOpt.isPresent()) {
-                oldTotalPrice = currentBookingServiceOpt.get().getTotalPrice();
+                oldTotalPrice = currentBookingServiceOpt.get().getRawTotalAmount() - DiscountUtil
+                        .calculateDiscountAmount(currentBookingServiceOpt.get().getRawTotalAmount(), customer);
             }
         }
 
-        Service service = this.service.getServiceByID(bookingService.getService().getServiceID());
-        Double totalPrice = service.getPrice() * bookingService.getQuantity();
-        if (customer.getCustomerType().getDiscountRate() > 0) {
-            totalPrice = totalPrice * (100 - customer.getCustomerType().getDiscountRate()) / 100;
-        }
-        bookingService.setTotalPrice(totalPrice);
+        Double rawServiceTotalAmount = bookingService.getRawTotalAmount();
+        Double discountAmount = DiscountUtil.calculateDiscountAmount(rawServiceTotalAmount, customer);
 
-        Double totalAmount = currentBooking.getTotalAmount() + bookingService.getTotalPrice() - oldTotalPrice;
+        Double totalAmount = currentBooking.getTotalAmount() + (rawServiceTotalAmount - discountAmount)
+                - oldTotalPrice;
         currentBooking.setTotalAmount(totalAmount);
         currentBooking = this.bookingService.handleSaveBooking(currentBooking);
 
         // Cập nhật RewardPoints
-        Double amountChange = bookingService.getTotalPrice() - oldTotalPrice;
+        Double amountChange = (rawServiceTotalAmount
+                - DiscountUtil.calculateDiscountAmount(rawServiceTotalAmount, customer)) - oldTotalPrice;
         boolean isAdd = amountChange > 0;
         customerService.updateRewardPointsAndCustomerType(customer.getCustomerID(), amountChange, isAdd);
 
@@ -86,5 +85,9 @@ public class BookingExtraService {
             throw new NotFoundException("Việc đặt dịch vụ");
         }
         return bookingServiceOpt.get();
+    }
+
+    public List<BookingServices> getListBookingServiceByBookingID(Long bookingID) {
+        return bookingServiceRepo.findByBooking_BookingID(bookingID);
     }
 }

@@ -13,28 +13,6 @@
     <link rel="stylesheet" href="/client/css/booking-history-style.css">
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
-    <style>
-        .star-rating {
-            display: flex;
-            font-size: 2rem;
-            cursor: pointer;
-        }
-        .star {
-            margin-right: 5px;
-            color: #ccc; 
-        }
-        .star.filled i {
-            color: #f5c518; 
-        }
-        .star:hover i,
-        .star:hover ~ .star i {
-            color: #ccc; 
-        }
-        .star.filled:hover i,
-        .star.filled:hover ~ .star.filled i {
-            color: #f5c518;
-        }
-    </style>
 </head>
 <body>
     <jsp:include page="../layout/header.jsp" />
@@ -73,6 +51,54 @@
                                     </div>
                                 </div>
                             </c:forEach>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Các mốc thời gian</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-item completed">
+                                <h6 class="fw-bold">Đặt phòng</h6>
+                                <p class="text-muted mb-0">${f:formatLocalDateTime(booking.createdAt)}</p>
+                                <p>${sessionScope.fullName} đã đặt phòng</p>
+                            </div>
+            
+                            <c:forEach var="payment" items="${booking.payments}">
+                                <c:forEach var="paymentDetail" items="${payment.paymentDetails}">
+                                    <div class="timeline-item completed">
+                                        <h6 class="fw-bold">
+                                            <c:choose>
+                                                <c:when test="${paymentDetail.paymentPurpose == 'ROOM_BOOKING'}">
+                                                    Thanh toán đặt phòng
+                                                </c:when>
+                                                <c:when test="${paymentDetail.paymentPurpose == 'PREPAID_SERVICE'}">
+                                                    Thanh toán dịch vụ đặt trước
+                                                </c:when>
+                                                <c:when test="${paymentDetail.paymentPurpose == 'ADDITIONAL_SERVICE'}">
+                                                    Thanh toán dịch vụ phát sinh
+                                                </c:when>
+                                                <c:when test="${paymentDetail.paymentPurpose == 'EXTENDED_HOURS'}">
+                                                    Thanh toán giờ thuê thêm
+                                                </c:when>
+                                            </c:choose>
+                                        </h6>
+                                        <p class="text-muted mb-0">${f:formatLocalDateTime(payment.paymentDate)}</p>
+                                        <p>Thanh toán <fmt:formatNumber value="${paymentDetail.finalAmount}" type="number"/>đ qua ${payment.paymentType == 'TRANSFER' ? 'Chuyển khoản' : 'Tiền mặt'}</p>
+                                    </div>
+                                </c:forEach>
+                            </c:forEach>
+            
+                            <c:if test="${not empty booking.review}">
+                                <div class="timeline-item completed">
+                                    <h6 class="fw-bold">Review Received</h6>
+                                    <p class="text-muted mb-0">${f:formatLocalDateTime(booking.review.createdAt)}</p>
+                                    <p>Khách đã để lại đánh giá ${booking.review.rating} sao</p>
+                                </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
@@ -282,47 +308,55 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="card mb-4">
+                
+                <div class="card mb-4 shadow-sm">
                     <div class="card-header bg-white">
                         <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Chi tiết thanh toán</h5>
                     </div>
                     <div class="card-body">
-                        <div class="payment-card p-3 mb-3 bg-light rounded">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-credit-card-2-front me-2 fs-4"></i>
-                                <div>
-                                    <div class="small">Phương thức thanh toán</div>
-                                    <div class="fw-bold"></div>
-                                </div>
-                            </div>
-                            <div class="small text-muted">(Ngày)</div>
-                        </div>
-
-                        <h6 class="mb-3">Thanh toán</h6>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Tiền phòng</span>
-                            <span><fmt:formatNumber type="number" value="${booking.room.roomType.pricePerHour}" /> x <fmt:formatNumber type="number" value="${numberOfHours}" pattern="#"/> giờ</span>
+                            <span class="fw-bold">
+                                <fmt:formatNumber type="number" value="${booking.room.roomType.pricePerHour}" />
+                                x <fmt:formatNumber type="number" value="${numberOfHours}" pattern="#"/> giờ
+                            </span>
                         </div>                        
                         <c:if test="${not empty booking.bookingServices}">
                             <c:forEach var="bookingService" items="${booking.bookingServices}">            
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>${bookingService.service.serviceName}</span>
-                                    <span><fmt:formatNumber type="number" value="${bookingService.service.price}" /> x  <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/></span>
+                                    <span class="fw-bold">
+                                        <fmt:formatNumber type="number" value="${bookingService.service.price}" /> x  
+                                        <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
+                                    </span>
                                 </div>
                             </c:forEach>
                         </c:if>
                         <hr>
-                        <div class="d-flex justify-content-between fw-bold">
-                            <span>Tổng tiền</span>
-                            <span><fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</span>
-                        </div>
-                        <div class="d-flex justify-content-between fw-bold">
-                            <span>Đã thanh toán</span>
-                            <span><fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ</span>
+                
+                        <div class="py rounded">
+                            <div class="d-flex justify-content-between border-bottom pb-2">
+                                <span class="fw-bold">Tổng tiền</span>
+                                <span class="fw-bold text-dark">
+                                    <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span class="fw-bold">Giảm giá</span>
+                                <span class="fw-bold text-danger">
+                                    -<fmt:formatNumber value="${discountAmount}" pattern="#,##0" />đ
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <span class="fw-bold">Đã thanh toán</span>
+                                <span class="fw-bold text-success">
+                                    <fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <c:if test="${booking.status.toString() != 'CANCELLED' and booking.status.toString() != 'COMPLETED'}">
                     <div class="card">
                         <div class="card-body">
@@ -350,7 +384,7 @@
     <jsp:include page="../../admin/layout/partial/_modal-delete-not-check-can-delete.jsp" />
     <jsp:include page="../../admin/layout/partial/_script-preview-image-update.jsp" />
     <script>
-            setupImagePreview("review");
+        setupImagePreview("review");
     </script>
     <script>
         $(document).ready(function () {

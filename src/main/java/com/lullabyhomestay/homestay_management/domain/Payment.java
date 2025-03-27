@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
+import com.lullabyhomestay.homestay_management.utils.PaymentType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,20 +39,23 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    @Column(name = "PaymentDate")
+    @Column(name = "ExternalTransactionID")
+    private String externalTransactionID;
+
+    @Column(name = "PaymentDate", insertable = false)
     private LocalDateTime paymentDate;
 
     @Column(name = "TotalAmount")
-    private double totalAmount;
+    private Double totalAmount;
 
     @ManyToOne
     @JoinColumn(name = "BookingID")
     private Booking booking;
 
+    @Column(name = "PaymentType")
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
+
     @OneToMany(mappedBy = "payment")
     List<PaymentDetail> paymentDetails;
-
-    @ManyToOne
-    @JoinColumn(name = "PaymentTypeID")
-    private PaymentType paymentType;
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -33,9 +34,6 @@ public class BookingServices {
     @Column(name = "Quantity")
     private Float quantity;
 
-    @Column(name = "TotalPrice")
-    private Double totalPrice;
-
     @Column(name = "Description")
     private String description;
 
@@ -51,4 +49,11 @@ public class BookingServices {
     @JoinColumn(name = "BookingID")
     @NotNull(message = "Vui lòng chọn booking")
     private Booking booking;
+
+    @OneToOne(mappedBy = "bookingService")
+    private PaymentDetail paymentDetail;
+
+    public Double getRawTotalAmount() {
+        return service.getPrice() * quantity;
+    }
 }

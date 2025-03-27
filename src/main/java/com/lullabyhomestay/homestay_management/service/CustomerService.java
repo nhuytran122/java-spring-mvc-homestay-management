@@ -21,7 +21,6 @@ import com.lullabyhomestay.homestay_management.domain.dto.SearchCustomerCriteria
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.CustomerRepository;
-import com.lullabyhomestay.homestay_management.repository.ReportRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.CustomerSpecifications;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +32,6 @@ public class CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
     private final BookingRepository bookingRepository;
-    private final ReportRepository reportRepository;
     private final CustomerTypeService customerTypeService;
 
     public CustomerDTO handleSaveCustomer(CustomerDTO requestDTO) {
@@ -139,9 +137,7 @@ public class CustomerService {
     }
 
     public boolean canDeleteCustomer(Long customerID) {
-        boolean hasBooking = bookingRepository.existsByCustomer_CustomerID(customerID);
-        boolean hasReport = reportRepository.existsByCustomer_CustomerID(customerID);
-        return !(hasBooking || hasReport);
+        return !bookingRepository.existsByCustomer_CustomerID(customerID);
     }
 
     public boolean checkEmailExistForOther(String email, Long id) {

@@ -48,6 +48,7 @@
                     </c:when>
                     <c:otherwise>
                         <a href="/login" class="btn btn-primary px-4">Đăng nhập</a>
+                        <a href="/register" class="btn btn-primary px-4 mx-2">Đăng ký</a>
                     </c:otherwise>
                 </c:choose>
             </div>
