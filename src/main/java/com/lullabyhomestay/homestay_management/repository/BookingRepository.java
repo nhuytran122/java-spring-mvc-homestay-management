@@ -41,4 +41,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
             "AND b.status = 'COMPLETED' ")
 
     Double getTotalAmountByCustomerId(@Param("customerId") Long customerId);
+
+    List<Booking> findByStatus(BookingStatus status);
 }

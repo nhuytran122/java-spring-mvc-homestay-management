@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Quản lý booking</title>
+    <title>Quản lý thanh toán</title>
     <jsp:include page="../layout/import-css.jsp" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" />
 </head>
@@ -19,33 +19,26 @@
             <jsp:include page="../layout/sidebar.jsp" />
             <div class="main-panel">
                 <div class="search-form-container my-4">
-                    <form action="/admin/booking" method="get" class="search-form">
+                    <form action="/admin/payment" method="get" class="search-form">
                         <input type="text" class="form-control form-control-sm"
                                name="keyword" 
-                               placeholder="Tìm kiếm booking (tên khách hàng)..." 
+                               placeholder="Tìm kiếm lịch sử thanh toán..." 
                                value="${criteria.keyword}"/>
-                        <select name="branchID" class="form-select form-control form-select-sm">
-                            <option value="">Chọn chi nhánh</option>
-                            <c:forEach var="branch" items="${listBranches}">
-                                <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
-                                    ${branch.branchName}
-                                </option>
-                            </c:forEach>
-                        </select>
-
-                        <select name="roomTypeID" class="form-select form-control form-select-sm">
-                            <option value="">Chọn loại phòng</option>
-                            <c:forEach var="roomType" items="${listRoomTypes}">
-                                <option value="${roomType.roomTypeID}" ${roomType.roomTypeID == criteria.roomTypeID ? 'selected' : ''}>
-                                    ${roomType.name}
-                                </option>
-                            </c:forEach>
-                        </select>
                         <select name="status" class="form-select form-control form-select-sm">
                             <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
                                 Tất cả tình trạng
                             </option>
-                            <c:forEach var="type" items="${bookingStatuses}">
+                            <c:forEach var="type" items="${paymentStatuses}">
+                                <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
+                                    ${type.displayName} 
+                                </option>
+                            </c:forEach>
+                        </select>
+                        <select name="type" class="form-select form-control form-select-sm">
+                            <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
+                                Tất cả hình thức
+                            </option>
+                            <c:forEach var="type" items="${paymentTypes}">
                                 <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
                                     ${type.displayName} 
                                 </option>
@@ -53,14 +46,6 @@
                         </select>
                         <input type="text" id="timeRange" name="timeRange" class="form-control daterange-picker" 
                                value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian...">
-                        <select name="sort" class="form-select form-control form-select-sm">
-                            <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
-                                Check-in sớm nhất
-                            </option>
-                            <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
-                                Check-in muộn nhất
-                            </option>
-                        </select>
                         <button type="submit" class="btn btn-primary btn-sm p-2">
                             <i class="bi bi-search"></i>
                         </button>
@@ -73,8 +58,8 @@
                             <div class="card position-relative">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="card-title">Danh sách booking</h4>
-                                        <a href="/admin/booking/create" class="btn btn-primary btn-sm">
+                                        <h4 class="card-title">Danh sách thanh toán</h4>
+                                        <a href="/admin/payment/create" class="btn btn-primary btn-sm">
                                             <i class="bi bi-plus-circle"></i> Thêm mới
                                         </a>
                                     </div>
@@ -83,63 +68,53 @@
                                         <table class="table table-hover">
                                             <thead class="table-light">
                                                 <tr>
+                                                    <th>Mã đặt phòng</th>
                                                     <th>Tên khách hàng</th>
-                                                    <th>Số điện thoại</th>
-                                                    <th>Chi nhánh</th>
-                                                    <th>Phòng</th>
-                                                    <th>Checkin</th>
-                                                    <th>Checkout</th>
-                                                    <th>Trạng thái</th>
+                                                    <th>Hình thức thanh toán</th>
+                                                    <th>Tình trạng</th>
+                                                    <th>Ngày thanh toán</th>
+                                                    <th>Mã giao dịch</th>
                                                     <th>Tổng tiền</th>
-                                                    <th>Đã thanh toán</th>
-                                                    <th>Ngày đặt</th>
                                                     <th>Thao tác</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <c:choose>
-                                                    <c:when test="${empty listBookings}">
+                                                    <c:when test="${empty listPayments}">
                                                         <tr>
-                                                            <td colspan="12" class="text-center text-danger">Không tìm thấy lịch đặt phòng nào.</td>
+                                                            <td colspan="12" class="text-center text-danger">Không tìm thấy lịch sử thanh toán nào.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:forEach var="booking" items="${listBookings}">
+                                                        <c:forEach var="payment" items="${listPayments}">
                                                             <tr style="height: 70px;">
-                                                                <td>${booking.customer.fullName}</td>
-                                                                <td>${booking.customer.phone}</td>
-                                                                <td>${booking.room.branch.branchName}</td>
-                                                                <td>${booking.room.roomNumber}</td>
-                                                                <td>${f:formatLocalDateTime(booking.checkIn)}</td>
-                                                                <td>${f:formatLocalDateTime(booking.checkOut)}</td>
+                                                                <td>${payment.booking.bookingID}</td>
+                                                                <td>${payment.booking.customer.fullName}</td>
                                                                 <td>
-                                                                    <span class="badge ${booking.status == 'COMPLETED' ? 'bg-success' : 
-                                                                                        booking.status == 'CANCELLED' ? 'bg-danger' : 
-                                                                                        booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
-                                                                        ${booking.status.displayName}
+                                                                    <span class="badge ${payment.paymentType == 'TRANSFER' ? 'bg-success' : 
+                                                                                        payment.paymentType == 'CASH'}">
+                                                                        ${payment.paymentType.displayName}
                                                                     </span>
                                                                 </td>
-                                                                <td><fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</td>
-                                                                <td><fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ</td>
-                                                                <td>${f:formatLocalDateTime(booking.createdAt)}</td>
+                                                                <td>
+                                                                    <span class="badge ${payment.status == 'COMPLETED' ? 'bg-success' : 
+                                                                                        payment.status == 'FAILED' ? 'bg-danger' : 
+                                                                                        payment.status == 'PENDING' ? 'bg-primary' : 'bg-info'}">
+                                                                        ${payment.status.displayName}
+                                                                    </span>
+                                                                </td>
+                                                                <td>${f:formatLocalDateTime(payment.paymentDate)}</td>
+                                                                <td>${payment.externalTransactionID}</td>
+                                                                
+                                                                <td><fmt:formatNumber type="number" value="${payment.totalAmount != null ? payment.totalAmount : 0}" />đ</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
-                                                                        <a href="/admin/booking/${booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <a href="/admin/payment/${payment.paymentID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
-                                                                        <a href="/admin/booking/update/${booking.bookingID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                        <a href="/admin/payment/update/${payment.paymentID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                             <i class="bi bi-pencil"></i>
                                                                         </a>
-                                                                        <button class="btn btn-danger btn-sm" title="Xóa"
-                                                                                onclick="checkBeforeDelete(this)" 
-                                                                                data-entity-id="${booking.bookingID}" 
-                                                                                data-entity-name="${booking.customer.fullName}" 
-                                                                                data-entity-type="Lịch đặt phòng của khách hàng" 
-                                                                                data-delete-url="/admin/booking/delete" 
-                                                                                data-check-url="/admin/booking/can-delete/" 
-                                                                                data-id-name="bookingID">
-                                                                            <i class="bi bi-trash"></i>
-                                                                        </button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -155,7 +130,7 @@
                     </div>
 
                     <jsp:include page="../layout/partial/_pagination-with-param.jsp">
-                        <jsp:param name="url" value="/admin/booking" />
+                        <jsp:param name="url" value="/admin/payment" />
                         <jsp:param name="currentPage" value="${currentPage}" />
                         <jsp:param name="totalPages" value="${totalPages}" />
                         <jsp:param name="extraParams" value="${extraParams}" />
@@ -165,7 +140,6 @@
         </div>
     </div>
 
-    <jsp:include page="../layout/partial/_modals-delete.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>

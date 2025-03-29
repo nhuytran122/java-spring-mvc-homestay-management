@@ -6,7 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum BookingStatus {
-    BOOKED("Đã đặt phòng"),
+    PENDING("Chờ thanh toán"),
+    CONFIRMED("Đã xác nhận"),
     CANCELLED("Đã hủy"),
     COMPLETED("Đã hoàn tất");
 

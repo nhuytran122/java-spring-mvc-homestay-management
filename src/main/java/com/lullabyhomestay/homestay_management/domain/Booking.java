@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.lullabyhomestay.homestay_management.service.validator.AdminValidation;
@@ -22,7 +23,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -36,6 +36,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @ValidBooking
+@DynamicUpdate
 @Table(name = "Bookings")
 public class Booking {
     @Id
@@ -44,7 +45,6 @@ public class Booking {
     private Long bookingID;
 
     @NotNull(message = "Vui lòng nhập giờ checkin")
-    @FutureOrPresent(message = "Giờ check-in phải từ thời điểm hiện tại trở đi")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(name = "CheckIn")
     private LocalDateTime checkIn;

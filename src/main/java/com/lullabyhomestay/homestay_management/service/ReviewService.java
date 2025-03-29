@@ -33,7 +33,7 @@ public class ReviewService {
         return reviewOpt.get();
     }
 
-    public List<Review> getReviewsByRoomID(Long roomID){
+    public List<Review> getReviewsByRoomID(Long roomID) {
         return reviewRepository.findByRoomID(roomID);
     }
 
@@ -46,5 +46,9 @@ public class ReviewService {
             bookingRepository.save(booking);
         }
         reviewRepository.deleteByReviewID(reviewID);
+    }
+
+    public List<Review> getAllFiveStarReviews() {
+        return reviewRepository.findTop10ByRatingOrderByCreatedAtDesc(5);
     }
 }

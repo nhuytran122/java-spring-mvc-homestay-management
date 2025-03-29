@@ -123,7 +123,7 @@
             $('.daterange-picker').daterangepicker({
                 timePicker: true, 
                 timePicker24Hour: true, 
-                timePickerIncrement: 10,
+                timePickerIncrement: 30,
                 locale: {
                     format: 'DD/MM/YYYY HH:mm'
                 }

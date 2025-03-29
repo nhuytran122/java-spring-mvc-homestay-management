@@ -35,8 +35,8 @@ public class UserProfileController {
                 Long customerID = customerDTO.getCustomerID();
                 model.addAttribute("customer", customerDTO);
 
-                model.addAttribute("countBooked",
-                                bookingService.countByBookingStatusAndCustomerID(BookingStatus.BOOKED, customerID));
+                model.addAttribute("countTotalBooked",
+                                bookingService.countTotalBookingByCustomerID(customerID));
                 model.addAttribute("countCancelled",
                                 bookingService.countByBookingStatusAndCustomerID(BookingStatus.CANCELLED, customerID));
                 model.addAttribute("countCompleted",

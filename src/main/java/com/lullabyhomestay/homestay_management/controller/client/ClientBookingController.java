@@ -33,7 +33,6 @@ import com.lullabyhomestay.homestay_management.service.*;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.BookingUtils;
-import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -60,6 +59,9 @@ public class ClientBookingController {
             Model model, RedirectAttributes redirectAttributes) {
         Long roomID = booking.getRoom().getRoomID();
         Room room = roomService.getRoomByID(booking.getRoom().getRoomID());
+        if (booking.getCheckIn() != null && !booking.getCheckIn().isAfter(LocalDateTime.now())) {
+            result.rejectValue("checkIn", "error.newBooking", "Giờ check-in phải từ thời điểm hiện tại trở đi");
+        }
 
         if (result.hasErrors()) {
             model.addAttribute("room", room);
@@ -74,7 +76,7 @@ public class ClientBookingController {
             model.addAttribute("room", room);
             return "client/room/detail";
         }
-        booking.setStatus(BookingStatus.BOOKED);
+        booking.setStatus(BookingStatus.PENDING);
         booking.setRoom(room);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
@@ -142,7 +144,6 @@ public class ClientBookingController {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         BookingUtils.validateBooking(booking, customerDTO);
         model.addAttribute("booking", booking);
-        model.addAttribute("paymentPurpose", PaymentPurpose.ROOM_BOOKING);
 
         double originalAmount = booking.getTotalAmount()
                 / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
@@ -229,8 +230,10 @@ public class ClientBookingController {
     }
 
     private void addBookingStatistics(Model model, Long customerID) {
-        model.addAttribute("countBooked",
-                bookingService.countByBookingStatusAndCustomerID(BookingStatus.BOOKED, customerID));
+        model.addAttribute("countPending",
+                bookingService.countByBookingStatusAndCustomerID(BookingStatus.PENDING, customerID));
+        model.addAttribute("countConfirmed",
+                bookingService.countByBookingStatusAndCustomerID(BookingStatus.CONFIRMED, customerID));
         model.addAttribute("countCancelled",
                 bookingService.countByBookingStatusAndCustomerID(BookingStatus.CANCELLED, customerID));
         model.addAttribute("countCompleted",

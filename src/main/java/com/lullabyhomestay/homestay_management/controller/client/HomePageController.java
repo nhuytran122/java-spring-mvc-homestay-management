@@ -16,6 +16,7 @@ import com.lullabyhomestay.homestay_management.service.CustomerTypeService;
 import com.lullabyhomestay.homestay_management.service.FAQService;
 import com.lullabyhomestay.homestay_management.service.HomestayInforService;
 import com.lullabyhomestay.homestay_management.service.HomestayServiceService;
+import com.lullabyhomestay.homestay_management.service.ReviewService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 import com.lullabyhomestay.homestay_management.service.RuleService;
 
@@ -36,6 +37,7 @@ public class HomePageController {
     private final HomestayInforService inforService;
     private final CustomerTypeService customerTypeService;
     private final CustomerService customerService;
+    private final ReviewService reviewService;
 
     @GetMapping("/")
     public String getHomePage(Model model,
@@ -48,10 +50,7 @@ public class HomePageController {
         model.addAttribute("listServices", service.getAllServices());
         model.addAttribute("listInfors", inforService.getAllInforHomestay());
         model.addAttribute("listCustomerTypes", customerTypeService.getAllCustomerTypes());
-        // Pageable pageable = PageRequest.of(0, 10);
-        // Page<Product> prs = this.productService.fetchProducts(pageable);
-        // List<Product> products = prs.getContent();
-        // model.addAttribute("products", products);
+        model.addAttribute("listReviews", reviewService.getAllFiveStarReviews());
         return "client/homepage/show";
     }
 

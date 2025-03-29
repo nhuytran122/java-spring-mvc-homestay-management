@@ -155,7 +155,7 @@ uri="http://lullabyhomestay.com/functions" %>
             <div class="action-buttons my-4">
               <div class="btn-group" role="group">
                 <a
-                  onclick="handlePayment('${booking.bookingID}', '${paymentPurpose}')"
+                  onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')"
                   class="btn btn-primary btn-lg"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán
@@ -166,6 +166,8 @@ uri="http://lullabyhomestay.com/functions" %>
                 </a>
               </div>
             </div>
+
+            <div id="payment-error" class="mt-3"></div>
           </div>
         </div>
       </div>
@@ -174,32 +176,6 @@ uri="http://lullabyhomestay.com/functions" %>
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
 
-    <script>
-      function handlePayment(bookingID, paymentPurpose) {
-        $.ajax({
-          url:
-            "/checkout?bookingID=" +
-            bookingID +
-            "&paymentPurpose=" +
-            paymentPurpose,
-          type: "GET",
-          dataType: "json",
-          success: function (data) {
-            if (data.data) {
-              window.location.href = data.data;
-            } else {
-              alert(data.message || "Lỗi xảy ra khi tạo URL thanh toán");
-            }
-          },
-          error: function (xhr, status, error) {
-            console.error("Lỗi: ", error);
-            alert(
-              "Có lỗi xảy ra: " +
-                (xhr.responseJSON ? xhr.responseJSON.message : error)
-            );
-          },
-        });
-      }
-    </script>
+    <jsp:include page="../layout/partial/_payment-handler.jsp" />
   </body>
 </html>

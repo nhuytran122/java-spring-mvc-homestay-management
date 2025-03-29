@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Payment;
@@ -21,7 +22,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
-public class PaymentController {
+public class ClientPaymentController {
 
     private final PaymentService paymentService;
     private final BookingService bookingService;
@@ -30,12 +31,12 @@ public class PaymentController {
     @ResponseBody
     public ResponseEntity<ApiResponseDTO<String>> handlePay(@RequestParam Long bookingID,
             @RequestParam PaymentPurpose paymentPurpose, HttpServletRequest request, Model model) {
-        String paymentUrl = paymentService.createVnPayPayment(request, bookingID, paymentPurpose);
+        String paymentUrl = paymentService.createVnPayPaymentURL(request, bookingID, paymentPurpose);
         return ResponseEntity.ok(new ApiResponseDTO<>(paymentUrl, "Thực hiện thanh toán"));
     }
 
     @GetMapping("/checkout/vn-pay-callback")
-    public String payCallbackHandler(HttpServletRequest request) {
+    public String payCallbackHandler(HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         String status = request.getParameter("vnp_ResponseCode");
         if (status.equals("00")) {
             Payment payment = new Payment();
@@ -60,8 +61,16 @@ public class PaymentController {
             paymentService.handleSavePayment(payment, paymentPurpose);
 
             return "redirect:/booking/booking-history/" + bookingID;
+        } else if (status.equals("24")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Giao dịch của bạn đã bị hủy");
         }
-        return "error";
+        return "redirect:/checkout/payment-failed";
 
     }
+
+    @GetMapping("/checkout/payment-failed")
+    public String getPaymentFailedPage() {
+        return "client/checkout/payment-failed";
+    }
+
 }

@@ -11,5 +11,5 @@ public enum PaymentStatus {
     FAILED("Thất bại"),
     REFUNDED("Đã hoàn tiền");
 
-    private String dipslayName;
+    private String displayName;
 }

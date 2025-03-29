@@ -17,16 +17,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     void deleteByReviewID(Long reviewID);
 
     // @Query(value = "SELECT r.* FROM Reviews r " +
-    //            "JOIN Bookings b ON r.BookingID = b.BookingID " +
-    //            "JOIN Rooms rm ON b.RoomID = rm.RoomID " +
-    //            "WHERE rm.RoomID = :roomId", 
-    //    nativeQuery = true)
+    // "JOIN Bookings b ON r.BookingID = b.BookingID " +
+    // "JOIN Rooms rm ON b.RoomID = rm.RoomID " +
+    // "WHERE rm.RoomID = :roomId",
+    // nativeQuery = true)
     // List<Review> findByRoomId(@Param("roomId") Long roomId);
 
-
     @Query("SELECT rv FROM Review rv " +
-           "JOIN rv.booking b " +
-           "JOIN b.room r " +
-           "WHERE r.roomID = :roomId")
+            "JOIN rv.booking b " +
+            "JOIN b.room r " +
+            "WHERE r.roomID = :roomId")
     List<Review> findByRoomID(@Param("roomId") Long roomId);
+
+    List<Review> findTop10ByRatingOrderByCreatedAtDesc(int rating);
 }

@@ -27,7 +27,7 @@ public class BaseSpecifications {
     }
 
     public static <T> Specification<T> equalJoinTwoLevels(String firstJoinField, String secondJoinField,
-            String finalField, Long valueID) {
+            String finalField, Object valueID) {
         return (root, query, cb) -> valueID == null ? cb.conjunction()
                 : cb.equal(root.get(firstJoinField).get(secondJoinField).get(finalField), valueID);
     }

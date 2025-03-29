@@ -202,7 +202,8 @@
                 singleDatePicker: true,
                 timePicker: true,
                 timePicker24Hour: true,
-                timePickerIncrement: 15,
+                timePickerIncrement: 30,
+                minDate: now,
                 startDate: startDate, 
                 locale: { 
                     format: 'DD/MM/YYYY HH:mm' 
@@ -213,7 +214,8 @@
                 singleDatePicker: true,
                 timePicker: true,
                 timePicker24Hour: true,
-                timePickerIncrement: 15,
+                timePickerIncrement: 30,
+                minDate: now,
                 startDate: endDate, 
                 locale: { 
                     format: 'DD/MM/YYYY HH:mm' 

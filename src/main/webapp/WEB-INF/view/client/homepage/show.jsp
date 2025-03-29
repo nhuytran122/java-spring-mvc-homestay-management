@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="f" uri="http://lullabyhomestay.com/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -381,73 +382,57 @@
     <div class="testimonials py-5 bg-light" data-aos="fade-up">
         <div class="container">
             <h2 class="text-center mb-5">Khách hàng nói về chúng tôi</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" class="rounded-circle me-3" alt="Guest" style="width: 50px; height: 50px;">
-                                <div>
-                                    <h6 class="mb-0">John Doe</h6>
-                                    <small class="text-muted">October 2023</small>
+    
+            <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <c:forEach var="review" items="${listReviews}" varStatus="status">
+                        <c:if test="${status.index % 3 == 0}">
+                            <div class="carousel-item ${status.index == 0 ? 'active' : ''}">
+                                <div class="row justify-content-center">
+                        </c:if>
+    
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="/images/avatar/${review.booking.customer.avatar}" class="rounded-circle me-3" 
+                                             alt="Avatar" style="width: 50px; height: 50px;">
+                                        <div>
+                                            <h6 class="mb-0">${review.booking.customer.fullName}</h6>
+                                            <small class="text-muted">${f:formatLocalDateTime(review.createdAt)}</small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text">${review.comment}</p>
+                                    <div class="text-warning">
+                                        <c:forEach begin="1" end="${review.rating}">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </c:forEach>
+                                        <c:forEach begin="${review.rating + 1}" end="5">
+                                            <i class="bi bi-star text-warning"></i>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </div>
-                            <p class="card-text">"Amazing experience! The villa was exactly as described, and the host was very accommodating."</p>
-                            <div class="text-warning">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" class="rounded-circle me-3" alt="Guest" style="width: 50px; height: 50px;">
-                                <div>
-                                    <h6 class="mb-0">Jane Smith</h6>
-                                    <small class="text-muted">September 2023</small>
+    
+                        <c:if test="${status.index % 3 == 2 or status.last}">
                                 </div>
                             </div>
-                            <p class="card-text">"The mountain retreat was perfect for a relaxing getaway. Highly recommend!"</p>
-                            <div class="text-warning">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-half"></i>
-                            </div>
-                        </div>
-                    </div>
+                        </c:if>
+                    </c:forEach>
                 </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" class="rounded-circle me-3" alt="Guest" style="width: 50px; height: 50px;">
-                                <div>
-                                    <h6 class="mb-0">Alex Johnson</h6>
-                                    <small class="text-muted">August 2023</small>
-                                </div>
-                            </div>
-                            <p class="card-text">"The urban loft was stylish and comfortable. Great location and amenities!"</p>
-                            <div class="text-warning">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    
+                <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Trước</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Sau</span>
+                </button>
             </div>
         </div>
-    </div>
+    </div>    
 
     <div id="member-discount" class="py-5 bg-light" data-aos="fade-up">
         <h2 class="text-center mb-5">
@@ -516,13 +501,15 @@
         </div>
     </div>
     
-    <div class="cta-section py-5 text-white text-center" style="background-color: #74b9ff;">
-        <div class="container">
-            <h2 class="mb-4">Bạn đang tìm một nơi dừng chân cho kỳ nghỉ của bạn?</h2>
-            <p class="lead mb-4">Đồng hành cùng home để có một kỳ nghỉ đáng nhớ ngay nào!</p>
-            <a href="#" class="btn btn-primary btn-lg">Đăng ký ngay</a>
+    <c:if test="${empty pageContext.request.userPrincipal}">
+        <div class="cta-section py-5 text-white text-center" style="background-color: #74b9ff;">
+            <div class="container">
+                <h2 class="mb-4">Bạn đang tìm một nơi dừng chân cho kỳ nghỉ của bạn?</h2>
+                <p class="lead mb-4">Đồng hành cùng home để có một kỳ nghỉ đáng nhớ ngay nào!</p>
+                <a href="#" class="btn btn-primary btn-lg">Đăng ký ngay</a>
+            </div>
         </div>
-    </div>
+    </c:if>
 
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />

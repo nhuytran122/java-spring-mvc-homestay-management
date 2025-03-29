@@ -88,4 +88,8 @@ public class RoomStatusHistoryService {
 
         return new BookingScheduleData(rooms, roomSchedules, date.toLocalDate(), dateFormatted);
     }
+
+    public void deleteByBookingID(Long bookingID) {
+        roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
+    }
 }

@@ -81,7 +81,7 @@
 
     <div class="container main-content">
         <div class="row mb-4 g-3">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card stat-card border-0">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -96,13 +96,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card stat-card border-0">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-muted mb-1">Đã đặt</p>
-                                <h3 class="mb-0">${countBooked}</h3>
+                                <p class="text-muted mb-1">Đang chờ</p>
+                                <h3 class="mb-0">${countPending}</h3>
                             </div>
                             <div class="stat-icon bg-success-subtle">
                                 <i class="bi bi-check-circle text-success"></i>
@@ -111,7 +111,22 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <div class="card stat-card border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p class="text-muted mb-1">Đã xác nhận</p>
+                                <h3 class="mb-0">${countConfirmed}</h3>
+                            </div>
+                            <div class="stat-icon bg-success-subtle">
+                                <i class="bi bi-check-circle text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
                 <div class="card stat-card border-0">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -126,7 +141,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card stat-card border-0">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -169,7 +184,7 @@
                                     <div class="d-flex justify-content-between align-items-start">
                                         <span class="badge ${booking.status == 'COMPLETED' ? 'bg-success' : 
                                         booking.status == 'CANCELLED' ? 'bg-danger' : 
-                                        booking.status == 'BOOKED' ? 'bg-primary' : 'bg-info'}">
+                                        booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
                                         ${booking.status.displayName}</span>                    
                                         <h3>Phòng ${booking.room.roomNumber} - ${booking.room.roomType.name}</h3>
                                     </div>
@@ -191,9 +206,6 @@
                                                             <strong>${serviceItem.service.serviceName}</strong> 
                                                             (x<fmt:formatNumber type="number" value="${serviceItem.quantity}" pattern="#"/> / ${serviceItem.service.unit})
                                                         </div>
-                                                        <span class="badge bg-secondary">
-                                                            <fmt:formatNumber value="${serviceItem.totalAmount}" type="number"/>đ
-                                                        </span>
                                                     </li>
                                                 </c:forEach>
                                             </ul>
@@ -207,6 +219,11 @@
                                     </div>
                                     <div class="booking-actions mt-3">
                                         <a href="/booking/booking-history/${booking.bookingID}" class="btn btn-outline-primary"><i class="bi bi-arrow-up-right-square"></i> Xem chi tiết</a>
+                                        <c:if test="${booking.status == 'PENDING'}">
+                                        <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')" class="btn btn-primary ms-2">
+                                            <i class="bi bi-credit-card"></i> Thanh toán
+                                        </a>
+                                </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -242,5 +259,6 @@
             })
         });
     </script>
+    <jsp:include page="../layout/partial/_payment-handler.jsp" />
 </body>
 </html>

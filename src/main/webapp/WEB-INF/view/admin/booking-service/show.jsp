@@ -68,7 +68,6 @@
                                                     <th>Dịch vụ</th>
                                                     <th>Số lượng</th>
                                                     <th>Mô tả</th>
-                                                    <th>Tổng tiền</th>
                                                     <th>Ngày đặt</th>
                                                     <th>Thao tác</th>
                                                 </tr>
@@ -87,12 +86,16 @@
                                                                 <td>${bookingService.booking.room.branch.branchName}</td>
                                                                 <td>${bookingService.booking.room.roomNumber}</td>
                                                                 <td>${bookingService.service.serviceName}</td>
-                                                                <td>${bookingService.quantity}</td>
+                                                                <td>
+                                                                    <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
+                                                                </td>
                                                                 <td>${bookingService.description}</td>
-                                                                <td><fmt:formatNumber type="number" value="${bookingService.totalPrice}" />đ</td>
                                                                 <td>${f:formatLocalDateTime(bookingService.createdAt)}</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
+                                                                        <a href="/admin/booking/${bookingService.booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">
+                                                                            <i class="bi bi-eye"></i>
+                                                                        </a>
                                                                         <a href="/admin/booking-service/update/${bookingService.bookingServiceID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                             <i class="bi bi-pencil"></i>
                                                                         </a>

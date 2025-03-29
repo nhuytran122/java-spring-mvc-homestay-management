@@ -71,6 +71,8 @@ public class BookingService {
     public Booking handleBooking(Booking booking) {
         booking.setTotalAmount(calculateTotalAmountBookingRoom(booking, booking.getCustomer()));
         Booking savedBooking = bookingRepository.save(booking);
+
+        // Cập nhật lịch trình phòng để giữ phòng cho khách
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
 
         customerService.updateRewardPointsAndCustomerType(
@@ -146,6 +148,11 @@ public class BookingService {
         double rawTotal = calculateRawTotalAmountBookingRoom(booking);
         double discountAmount = DiscountUtil.calculateDiscountAmount(rawTotal, customer);
         return rawTotal - discountAmount;
+    }
+
+    @Transactional
+    public List<Booking> getListBookingByStatus(BookingStatus bookingStatus) {
+        return bookingRepository.findByStatus(bookingStatus);
     }
 
 }

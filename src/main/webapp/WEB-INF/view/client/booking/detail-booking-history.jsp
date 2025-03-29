@@ -286,7 +286,7 @@
                             <div>
                                 <span class="badge ms-2 ${booking.status == 'COMPLETED' ? 'bg-success' : 
                                     booking.status == 'CANCELLED' ? 'bg-danger' : 
-                                    booking.status == 'BOOKED' ? 'bg-primary' : 'bg-info'}">
+                                    booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
                                     ${booking.status.displayName}</span>     
                             </div>
                         </div>
