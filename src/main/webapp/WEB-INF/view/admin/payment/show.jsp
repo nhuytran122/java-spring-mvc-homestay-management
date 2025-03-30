@@ -73,8 +73,9 @@
                                                     <th>Hình thức thanh toán</th>
                                                     <th>Tình trạng</th>
                                                     <th>Ngày thanh toán</th>
-                                                    <th>Mã giao dịch</th>
                                                     <th>Tổng tiền</th>
+                                                    <th>Mã giao dịch</th>
+                                                    <th>Số hóa đơn</th>
                                                     <th>Thao tác</th>
                                                 </tr>
                                             </thead>
@@ -104,9 +105,10 @@
                                                                     </span>
                                                                 </td>
                                                                 <td>${f:formatLocalDateTime(payment.paymentDate)}</td>
-                                                                <td>${payment.externalTransactionID}</td>
                                                                 
                                                                 <td><fmt:formatNumber type="number" value="${payment.totalAmount != null ? payment.totalAmount : 0}" />đ</td>
+                                                                <td>${payment.vnpTransactionNo}</td>
+                                                                <td>${payment.vnpTxnRef}</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
                                                                         <a href="/admin/payment/${payment.paymentID}" class="btn btn-success btn-sm" title="Xem chi tiết">

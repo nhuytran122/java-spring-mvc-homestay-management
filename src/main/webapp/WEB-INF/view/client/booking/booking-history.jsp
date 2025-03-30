@@ -182,12 +182,23 @@
                                 </c:choose>                                
                                 <div class="booking-details">
                                     <div class="d-flex justify-content-between align-items-start">
-                                        <span class="badge ${booking.status == 'COMPLETED' ? 'bg-success' : 
-                                        booking.status == 'CANCELLED' ? 'bg-danger' : 
-                                        booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
-                                        ${booking.status.displayName}</span>                    
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge ${booking.status == 'COMPLETED' ? 'bg-success' : 
+                                                                booking.status == 'CANCELLED' ? 'bg-danger' : 
+                                                                booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
+                                                ${booking.status.displayName}
+                                            </span>   
+                                    
+                                            <c:if test="${booking.status == 'CANCELLED'}">
+                                                <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
+                                                    ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                                </span>                 
+                                            </c:if>
+                                        </div>
+                                    
                                         <h3>Phòng ${booking.room.roomNumber} - ${booking.room.roomType.name}</h3>
                                     </div>
+                                    
                                     <p class="location"><i class="bi bi-geo-alt"></i> ${booking.room.branch.branchName} - ${booking.room.branch.address}</p>
                                     <div class="booking-info">
                                         <span><i class="bi bi-calendar3"></i> Check-in: ${f:formatLocalDateTime(booking.checkIn)}</span>

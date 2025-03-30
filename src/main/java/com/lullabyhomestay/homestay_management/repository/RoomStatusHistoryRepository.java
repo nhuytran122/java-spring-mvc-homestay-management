@@ -32,6 +32,11 @@ public interface RoomStatusHistoryRepository extends JpaRepository<RoomStatusHis
 
        void deleteByBooking_BookingID(Long bookingID);
 
+       // @Modifying
+       // @Query("DELETE FROM RoomStatusHistory rs WHERE rs.booking.bookingID =
+       // :bookingID")
+       // void deleteByBooking_BookingID(@Param("bookingID") Long bookingID);
+
        List<RoomStatusHistory> findByRoom_RoomIDAndStartedAtBetween(Long roomID, LocalDateTime startOfDate,
                      LocalDateTime endOfDate);
 }

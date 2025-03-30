@@ -69,8 +69,14 @@ uri="http://lullabyhomestay.com/functions" %>
                             Mã giao dịch:
                           </div>
                           <div class="col-md-8">
-                            ${payment.externalTransactionID}
+                            ${payment.vnpTransactionNo}
                           </div>
+                        </div>
+                        <div class="row mb-3 d-flex align-items-center">
+                          <div class="col-md-4 fw-bold text-md-start">
+                            Số hóa đơn:
+                          </div>
+                          <div class="col-md-8">${payment.vnpTxnRef}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">

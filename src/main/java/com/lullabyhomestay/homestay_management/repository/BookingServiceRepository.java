@@ -27,8 +27,6 @@ public interface BookingServiceRepository extends JpaRepository<BookingServices,
 
     BookingServices save(BookingServices bookingService);
 
-    void deleteByBooking_BookingID(Long bookingID);
-
     boolean existsByBooking_BookingID(Long bookingID);
 
     @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingID = :bookingID " +

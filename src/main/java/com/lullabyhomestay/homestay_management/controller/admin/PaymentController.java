@@ -32,8 +32,8 @@ public class PaymentController {
         int validPage = Math.max(1, page);
 
         if (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty()) {
-            LocalDateTime startDefault = LocalDateTime.now();
-            LocalDateTime endDefault = LocalDateTime.now().plusMonths(2);
+            LocalDateTime startDefault = LocalDateTime.now().minusDays(7);
+            LocalDateTime endDefault = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             criteria.setTimeRange(startDefault.format(formatter) + " - " + endDefault.format(formatter));
         }

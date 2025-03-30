@@ -5,13 +5,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
@@ -23,7 +21,6 @@ import com.lullabyhomestay.homestay_management.service.RoomStatusHistoryService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -67,19 +64,12 @@ public class BookingController {
         return "admin/booking/detail";
     }
 
-    @GetMapping("/admin/booking/booking-history/can-cancel/{id}")
-    public ResponseEntity<Boolean> canCancelBooking(@PathVariable Long id,
-            HttpServletRequest request) {
-        boolean canCancel = bookingService.canCancelBooking(id);
-        return ResponseEntity.ok(canCancel);
-    }
-
-    @PostMapping("/admin/booking/booking-history/cancel")
-    public String postCancelBooking(@RequestParam("bookingID") long bookingID,
-            HttpServletRequest request) {
-        this.bookingService.cancelBooking(bookingID);
-        return "redirect:/booking/{bookingID}";
-    }
+    // @PostMapping("/admin/booking/booking-history/cancel")
+    // public String postCancelBooking(@RequestParam("bookingID") long bookingID,
+    // HttpServletRequest request) {
+    // this.bookingService.cancelBooking(bookingID);
+    // return "redirect:/booking/{bookingID}";
+    // }
 
     @GetMapping("/admin/booking/schedule")
     public String getBookingSchedulePage(

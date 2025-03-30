@@ -55,54 +55,6 @@
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Các mốc thời gian</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="timeline">
-                            <div class="timeline-item completed">
-                                <h6 class="fw-bold">Đặt phòng</h6>
-                                <p class="text-muted mb-0">${f:formatLocalDateTime(booking.createdAt)}</p>
-                                <p>${sessionScope.fullName} đã đặt phòng</p>
-                            </div>
-            
-                            <c:forEach var="payment" items="${booking.payments}">
-                                <c:forEach var="paymentDetail" items="${payment.paymentDetails}">
-                                    <div class="timeline-item completed">
-                                        <h6 class="fw-bold">
-                                            <c:choose>
-                                                <c:when test="${paymentDetail.paymentPurpose == 'ROOM_BOOKING'}">
-                                                    Thanh toán đặt phòng
-                                                </c:when>
-                                                <c:when test="${paymentDetail.paymentPurpose == 'PREPAID_SERVICE'}">
-                                                    Thanh toán dịch vụ đặt trước
-                                                </c:when>
-                                                <c:when test="${paymentDetail.paymentPurpose == 'ADDITIONAL_SERVICE'}">
-                                                    Thanh toán dịch vụ phát sinh
-                                                </c:when>
-                                                <c:when test="${paymentDetail.paymentPurpose == 'EXTENDED_HOURS'}">
-                                                    Thanh toán giờ thuê thêm
-                                                </c:when>
-                                            </c:choose>
-                                        </h6>
-                                        <p class="text-muted mb-0">${f:formatLocalDateTime(payment.paymentDate)}</p>
-                                        <p>Thanh toán <fmt:formatNumber value="${paymentDetail.finalAmount}" type="number"/>đ qua ${payment.paymentType == 'TRANSFER' ? 'Chuyển khoản' : 'Tiền mặt'}</p>
-                                    </div>
-                                </c:forEach>
-                            </c:forEach>
-            
-                            <c:if test="${not empty booking.review}">
-                                <div class="timeline-item completed">
-                                    <h6 class="fw-bold">Review Received</h6>
-                                    <p class="text-muted mb-0">${f:formatLocalDateTime(booking.review.createdAt)}</p>
-                                    <p>Khách đã để lại đánh giá ${booking.review.rating} sao</p>
-                                </div>
-                            </c:if>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="card">
                     <div class="card-header bg-white">
                         <h5 class="mb-0"><i class="bi bi-star me-2"></i>Đánh giá của bạn về phòng</h5>
@@ -287,7 +239,14 @@
                                 <span class="badge ms-2 ${booking.status == 'COMPLETED' ? 'bg-success' : 
                                     booking.status == 'CANCELLED' ? 'bg-danger' : 
                                     booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
-                                    ${booking.status.displayName}</span>     
+                                    ${booking.status.displayName}</span>    
+                                    
+                                    <c:if test="${booking.status == 'CANCELLED'}">
+                                        <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
+                                            ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                        </span>                 
+                                    </c:if>
+                                    
                             </div>
                         </div>
                         <div class="mb-3">
@@ -343,7 +302,7 @@
                             </div>
                             <div class="d-flex justify-content-between border-bottom py-2">
                                 <span class="fw-bold">Giảm giá</span>
-                                <span class="fw-bold text-danger">
+                                <span class="fw-bold">
                                     -<fmt:formatNumber value="${discountAmount}" pattern="#,##0" />đ
                                 </span>
                             </div>
@@ -353,36 +312,45 @@
                                     <fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ
                                 </span>
                             </div>
+                
+                            <c:if test="${booking.status == 'CANCELLED'}">
+                                <div class="d-flex justify-content-between border-top pt-2 mt-2">
+                                    <span class="fw-bold">Trạng thái hoàn tiền</span>
+                                    <span class="fw-bold ${booking.totalAmount == booking.paidAmount ? 'text-warning' : 'text-success'}">
+                                        ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                    </span>
+                                </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
-
+                
                 <c:if test="${booking.status.toString() != 'CANCELLED' and booking.status.toString() != 'COMPLETED'}">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-grid gap-2">
-                                <button class="btn btn-outline-danger" title="Hủy đặt phòng"
-                                    onclick="checkBeforeCancel(this)" 
-                                        data-entity-id="${booking.bookingID}"
-                                        data-id-name="bookingID"
-                                        data-check-url="/booking/booking-history/can-cancel/" 
-                                        data-cancel-url="/booking/booking-history/cancel">
-                                    <i class="bi bi-x-circle"></i>
+                                <button
+                                    class="btn btn-danger btn-sm"
+                                    title="Hủy đặt phòng"
+                                    onclick="checkBeforeCancel(this)"
+                                    data-entity-id="${booking.bookingID}">
                                     Hủy đặt phòng
                                 </button>
                             </div>
                         </div>
                     </div>
                 </c:if>
+                
             </div>
         </div>
     </div>
 
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
-    <jsp:include page="_modal-cancel.jsp" />
-    <jsp:include page="../../admin/layout/partial/_modal-delete-not-check-can-delete.jsp" />
+    <jsp:include page="../../shared/partial/_modal-refund.jsp" />
+    <jsp:include page="../../shared/partial/_script-handle-cancel-booking.jsp" />
     <jsp:include page="../../admin/layout/partial/_script-preview-image-update.jsp" />
+    <jsp:include page="../layout/partial/_payment-handler.jsp" />
     <script>
         setupImagePreview("review");
     </script>
@@ -459,5 +427,6 @@
             });
         });
     </script>
+
 </body>
 </html>

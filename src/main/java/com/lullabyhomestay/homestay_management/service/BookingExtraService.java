@@ -90,9 +90,4 @@ public class BookingExtraService {
     public List<BookingServices> getListBookingServiceByBookingID(Long bookingID) {
         return bookingServiceRepo.findByBooking_BookingID(bookingID);
     }
-
-    @Transactional
-    public void deleteByBookingID(Long bookingID) {
-        bookingServiceRepo.deleteByBooking_BookingID(bookingID);
-    }
 }

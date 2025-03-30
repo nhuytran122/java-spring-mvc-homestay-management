@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
+import com.lullabyhomestay.homestay_management.utils.RefundType;
 import com.lullabyhomestay.homestay_management.utils.VNPayUtil;
 
 import lombok.Getter;
@@ -54,4 +55,31 @@ public class VNPayConfig {
         vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
         return vnpParamsMap;
     }
+
+    // public Map<String, String> getVNPayRefundConfig(Long paymentID, RefundType
+    // refundType) {
+    // String orderInfo = "PAYMENTID_" + paymentID + "_REFUND_TYPE_" +
+    // refundType.name();
+    // Map<String, String> vnpParamsMap = new HashMap<>();
+    // vnpParamsMap.put("vnp_Version", this.vnp_Version);
+    // vnpParamsMap.put("vnp_Command", "refund");
+    // vnpParamsMap.put("vnp_TmnCode", this.vnp_TmnCode);
+    // vnpParamsMap.put("vnp_TransactionType", refundType == RefundType.FULL ? "02"
+    // : "03");
+    // vnpParamsMap.put("vnp_CurrCode", "VND");
+    // vnpParamsMap.put("vnp_TxnRef", VNPayUtil.getRandomNumber(8));
+    // vnpParamsMap.put("vnp_OrderInfo", orderInfo);
+    // vnpParamsMap.put("vnp_OrderType", this.orderType);
+    // vnpParamsMap.put("vnp_Locale", "vn");
+    // vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
+    // Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+    // SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+    // String vnpCreateDate = formatter.format(calendar.getTime());
+    // vnpParamsMap.put("vnp_CreateDate", vnpCreateDate);
+    // calendar.add(Calendar.MINUTE, 15);
+    // String vnp_ExpireDate = formatter.format(calendar.getTime());
+    // vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
+    // return vnpParamsMap;
+    // }
+
 }

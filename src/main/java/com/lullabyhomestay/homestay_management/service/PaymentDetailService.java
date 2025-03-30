@@ -100,6 +100,5 @@ public class PaymentDetailService {
             serviceDetail.setFinalAmount(rawTotalAmount);
             paymentDetailRepo.save(serviceDetail);
         }
-
     }
 }

@@ -1,5 +1,8 @@
 package com.lullabyhomestay.homestay_management.controller.client;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,8 +47,17 @@ public class ClientPaymentController {
             payment.setStatus(PaymentStatus.COMPLETED);
 
             String orderInfo = request.getParameter("vnp_OrderInfo");
-            String transactionID = request.getParameter("vnp_BankTranNo");
-            payment.setExternalTransactionID(transactionID);
+            String vnpTxnRef = request.getParameter("vnp_TxnRef");
+            String vnpPayDate = request.getParameter("vnp_PayDate");
+            String vnpTransactionNo = request.getParameter("vnp_TransactionNo");
+
+            payment.setVnpTxnRef(vnpTxnRef);
+            LocalDateTime paymentDate = null;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            paymentDate = LocalDateTime.parse(vnpPayDate, formatter);
+            payment.setPaymentDate(paymentDate);
+            payment.setVnpTransactionNo(vnpTransactionNo);
+
             String[] parts = orderInfo.split("_PURPOSE_");
             Long bookingID = Long.parseLong(parts[0].replace("BOOKING_", ""));
             PaymentPurpose paymentPurpose = PaymentPurpose.valueOf(parts[1]);

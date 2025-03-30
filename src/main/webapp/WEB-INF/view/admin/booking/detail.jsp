@@ -119,6 +119,15 @@ uri="http://lullabyhomestay.com/functions" %>
                             >
                               ${booking.status.displayName}
                             </span>
+
+                            <c:if test="${booking.status == 'CANCELLED'}">
+                              <span
+                                class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}"
+                              >
+                                ${booking.totalAmount == booking.paidAmount ?
+                                'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                              </span>
+                            </c:if>
                           </div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
@@ -264,6 +273,5 @@ uri="http://lullabyhomestay.com/functions" %>
     </div>
 
     <jsp:include page="../layout/import-js.jsp" />
-    <jsp:include page="../../client/booking/_modal-cancel.jsp" />
   </body>
 </html>

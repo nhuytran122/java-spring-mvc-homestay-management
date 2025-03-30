@@ -69,6 +69,7 @@
                                                     <th>Số lượng</th>
                                                     <th>Mô tả</th>
                                                     <th>Ngày đặt</th>
+                                                    <th>Tình trạng thanh toán</th>
                                                     <th>Thao tác</th>
                                                 </tr>
                                             </thead>
@@ -91,6 +92,24 @@
                                                                 </td>
                                                                 <td>${bookingService.description}</td>
                                                                 <td>${f:formatLocalDateTime(bookingService.createdAt)}</td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${not empty bookingService.paymentDetail and not empty bookingService.paymentDetail.payment}">
+                                                                            <c:set var="paymentStatus" value="${bookingService.paymentDetail.payment.status}" />
+                                                                            <span class="badge 
+                                                                                ${paymentStatus == 'COMPLETED' ? 'bg-success' : 
+                                                                                  paymentStatus == 'FAILED' ? 'bg-danger' : 
+                                                                                  paymentStatus == 'PENDING' ? 'bg-primary' : 'bg-info'}">
+                                                                                ${paymentStatus.displayName}
+                                                                            </span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-secondary">Chưa thanh toán</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                
+                                                                
                                                                 <td>
                                                                     <div class="btn-group" role="group">
                                                                         <a href="/admin/booking/${bookingService.booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">

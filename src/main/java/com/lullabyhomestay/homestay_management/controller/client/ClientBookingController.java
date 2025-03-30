@@ -2,7 +2,9 @@ package com.lullabyhomestay.homestay_management.controller.client;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ import com.lullabyhomestay.homestay_management.service.*;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.BookingUtils;
+import com.lullabyhomestay.homestay_management.utils.RefundType;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -62,7 +65,6 @@ public class ClientBookingController {
         if (booking.getCheckIn() != null && !booking.getCheckIn().isAfter(LocalDateTime.now())) {
             result.rejectValue("checkIn", "error.newBooking", "Giờ check-in phải từ thời điểm hiện tại trở đi");
         }
-
         if (result.hasErrors()) {
             model.addAttribute("room", room);
             model.addAttribute("listReviews", reviewService.getReviewsByRoomID(roomID));
@@ -202,17 +204,48 @@ public class ClientBookingController {
         return "client/booking/detail-booking-history";
     }
 
-    @GetMapping("/booking/booking-history/can-cancel/{id}")
-    public ResponseEntity<Boolean> canCancelBooking(@PathVariable Long id) {
-
-        Booking booking = bookingService.getBookingByID(id);
+    @GetMapping("/booking/check-refund/{bookingID}")
+    public ResponseEntity<?> checkRefundForBooking(@PathVariable Long bookingID) {
+        Booking booking = bookingService.getBookingByID(bookingID);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         BookingUtils.validateBooking(booking, customerDTO);
-        boolean canCancel = bookingService.canCancelBooking(id);
-        return ResponseEntity.ok(canCancel);
+
+        if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) {
+            throw new IllegalStateException("Chỉ được hủy khi booking chưa bắt đầu.");
+        }
+
+        Double refundAmount = bookingService.calculateRefundAmount(booking);
+        RefundType refundType = bookingService.getRefundType(booking);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("refundAmount", refundAmount);
+
+        if (refundType == RefundType.FULL) {
+            response.put("refundPercentage", 100);
+        } else if (refundType == RefundType.PARTIAL_70) {
+            response.put("refundPercentage", 70);
+        } else {
+            response.put("refundPercentage", 30);
+        }
+
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/booking/booking-history/cancel")
+    // @GetMapping("/booking/cancel")
+    // @ResponseBody
+    // public ResponseEntity<ApiResponseDTO<String>>
+    // cancelAndRefundForBooking(@RequestParam Long bookingID,
+    // HttpServletRequest request) {
+    // CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+    // BookingUtils.validateBooking(bookingService.getBookingByID(bookingID),
+    // customerDTO);
+    // String refundUrl = paymentService.createVnPayPaymentRefundURL(request,
+    // bookingID);
+    // return ResponseEntity.ok(new ApiResponseDTO<>(refundUrl, "Thực hiện hủy đặt
+    // phòng và hoàn tiền"));
+    // }
+
+    @PostMapping("/booking/cancel")
     public String postCancelBooking(@RequestParam("bookingID") long bookingID) {
         Booking booking = bookingService.getBookingByID(bookingID);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);

@@ -207,45 +207,6 @@
   object-fit: cover;
   border-radius: 10px;
 }
-.timeline {
-  border-left: 3px solid #dee2e6;
-  padding-left: 20px;
-  margin-left: 10px;
-}
-.timeline-item {
-  position: relative;
-  padding-bottom: 25px;
-}
-
-.timeline-item .text-muted {
-  padding-bottom: 10px;
-}
-.timeline-item:last-child {
-  padding-bottom: 0;
-}
-.timeline-item:before {
-  content: "";
-  position: absolute;
-  left: -29px;
-  top: 0;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background-color: #fff;
-  border: 3px solid #0d6efd;
-}
-.timeline-item.completed:before {
-  background-color: #198754;
-  border-color: #198754;
-}
-.timeline-item.cancelled:before {
-  background-color: #dc3545;
-  border-color: #dc3545;
-}
-.timeline-item.pending:before {
-  background-color: #ffc107;
-  border-color: #ffc107;
-}
 
 .star-rating {
   display: flex;

@@ -14,15 +14,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Customer;
+import com.lullabyhomestay.homestay_management.domain.Payment;
+import com.lullabyhomestay.homestay_management.domain.Refund;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
-import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
+import com.lullabyhomestay.homestay_management.repository.PaymentRepository;
+import com.lullabyhomestay.homestay_management.repository.RefundRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomStatusHistoryRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.BookingSpecifications;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
+import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
+import com.lullabyhomestay.homestay_management.utils.PaymentType;
+import com.lullabyhomestay.homestay_management.utils.RefundType;
 
 import lombok.AllArgsConstructor;
 
@@ -33,8 +39,9 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final RoomStatusHistoryService roomStatusHistoryService;
     private final CustomerService customerService;
-    private final BookingServiceRepository bookingServiceRepo;
     private final RoomStatusHistoryRepository roomStatusHistoryRepo;
+    private final PaymentRepository paymentRepository;
+    private final RefundRepository refundRepository;
 
     public Page<Booking> searchBookings(SearchBookingCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
@@ -111,26 +118,90 @@ public class BookingService {
         return totalAmount != null ? totalAmount : 0.0;
     }
 
-    public boolean canCancelBooking(Long bookingID) {
-        Booking booking = getBookingByID(bookingID);
-        LocalDateTime checkInTime = booking.getCheckIn();
-        LocalDateTime now = LocalDateTime.now();
-        long hoursDifference = ChronoUnit.MINUTES.between(now, checkInTime);
-        return hoursDifference >= 24 * 60;
-    }
-
     @Transactional
     public void cancelBooking(Long bookingID) {
-        if (canCancelBooking(bookingID)) {
-            roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
-            bookingServiceRepo.deleteByBooking_BookingID(bookingID);
-            Booking currentBooking = getBookingByID(bookingID);
-            currentBooking.setStatus(BookingStatus.CANCELLED);
-            customerService.updateRewardPointsAndCustomerType(
-                    currentBooking.getCustomer().getCustomerID(),
-                    currentBooking.getTotalAmount(),
-                    false);
+
+        // Lấy và validate booking
+        Booking currentBooking = validateAndGetBooking(bookingID);
+
+        // Xóa dữ liệu liên quan
+        // Không xóa bookingServices để truy vết paymentDetails
+        roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
+        // currentBooking.setBookingServices(new ArrayList<>());
+
+        // Xử lý payment và refund
+        Payment payment = validateAndGetPayment(currentBooking);
+        Refund refund = createPendingRefund(payment, currentBooking);
+
+        // Cập nhật booking
+        updateBookingAfterCancellation(currentBooking, refund);
+    }
+
+    private Booking validateAndGetBooking(Long bookingID) {
+        Booking booking = getBookingByID(bookingID);
+        if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) {
+            throw new IllegalStateException("Chỉ được hủy khi booking chưa bắt đầu.");
         }
+        return booking;
+    }
+
+    private Payment validateAndGetPayment(Booking booking) {
+        List<Payment> payments = booking.getPayments();
+        if (payments == null || payments.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Không tìm thấy lịch sử thanh toán của booking có ID: " + booking.getBookingID());
+        }
+        if (payments.size() != 1) {
+            throw new IllegalStateException("Booking ID " + booking.getBookingID()
+                    + " phải có đúng một Payment tại thời điểm hoàn tiền, nhưng tìm thấy: " + payments.size());
+        }
+
+        Payment payment = payments.get(0);
+        if (payment.getPaymentType() != PaymentType.TRANSFER) {
+            throw new IllegalArgumentException(
+                    "Payment ID " + payment.getPaymentID() + " không phải là thanh toán VNPay");
+        }
+        if (payment.getStatus() != PaymentStatus.COMPLETED) {
+            throw new IllegalStateException("Payment ID " + payment.getPaymentID()
+                    + " chưa được thanh toán (status: " + payment.getStatus() + ")");
+        }
+        if (payment.getStatus() == PaymentStatus.REFUNDED) {
+            throw new IllegalStateException("Payment ID " + payment.getPaymentID()
+                    + " đã được hoàn tiền trước đó (status: " + payment.getStatus() + ")");
+        }
+        return payment;
+    }
+
+    private Refund createPendingRefund(Payment payment, Booking booking) {
+        payment.setStatus(PaymentStatus.PENDING_REFUND);
+        paymentRepository.save(payment);
+
+        Refund refund = new Refund();
+        refund.setPayment(payment);
+        Double refundAmount = calculateRefundAmount(booking);
+        refund.setRefundAmount(refundAmount);
+        refund.setRefundType(getRefundType(booking));
+        refund.setStatus(PaymentStatus.PENDING_REFUND);
+        refundRepository.save(refund);
+        return refund;
+    }
+
+    private void updateBookingAfterCancellation(Booking booking, Refund refund) {
+        booking.setStatus(BookingStatus.CANCELLED);
+
+        // TODO: Set khi admin thao tác hoàn tiền
+        // Double oldPaidAmount = booking.getPaidAmount() != null ?
+        // booking.getPaidAmount() : 0;
+        // Double newPaidAmount = oldPaidAmount - refund.getRefundAmount();
+        // booking.setPaidAmount(newPaidAmount > 0 ? newPaidAmount : 0);
+
+        bookingRepository.save(booking);
+
+        // TODO Cập nhật điểm thưởng khách hàng
+        customerService.updateRewardPointsAndCustomerType(
+                booking.getCustomer().getCustomerID(),
+                booking.getTotalAmount(),
+                false);
     }
 
     public double calculateRawTotalAmountBookingRoom(Booking booking) {
@@ -150,9 +221,35 @@ public class BookingService {
         return rawTotal - discountAmount;
     }
 
-    @Transactional
     public List<Booking> getListBookingByStatus(BookingStatus bookingStatus) {
         return bookingRepository.findByStatus(bookingStatus);
+    }
+
+    public Double calculateRefundAmount(Booking booking) {
+        LocalDateTime checkInTime = booking.getCheckIn();
+        LocalDateTime now = LocalDateTime.now();
+        long daysDifference = ChronoUnit.DAYS.between(now, checkInTime);
+
+        if (daysDifference > 7) {
+            return booking.getPaidAmount();
+        } else if (daysDifference > 3) {
+            return booking.getPaidAmount() * 0.7;
+        } else {
+            return booking.getPaidAmount() * 0.3;
+        }
+    }
+
+    public RefundType getRefundType(Booking booking) {
+        Double refundAmount = calculateRefundAmount(booking);
+        Double paidAmount = booking.getPaidAmount();
+
+        if (refundAmount.equals(paidAmount)) {
+            return RefundType.FULL;
+        } else if (refundAmount.equals(paidAmount * 0.7)) {
+            return RefundType.PARTIAL_70;
+        } else {
+            return RefundType.PARTIAL_30;
+        }
     }
 
 }

@@ -21,7 +21,6 @@ public class BookingScheduler {
 
     private final BookingService bookingService;
     private final RoomStatusHistoryService roomStatusHistoryService;
-    private final BookingExtraService bookingExtraService;
 
     @Value("${booking.pending.timeout.minutes}")
     private int timeoutMinutes;
@@ -35,9 +34,8 @@ public class BookingScheduler {
                 booking.setStatus(BookingStatus.CANCELLED);
                 bookingService.handleSaveBooking(booking);
 
-                // Xóa các dữ liệu liên quan đến Booking: lịch trình, dịch vụ đi kèm
+                // Xóa các dữ liệu liên quan đến Booking: lịch trình
                 roomStatusHistoryService.deleteByBookingID(bookingID);
-                bookingExtraService.deleteByBookingID(bookingID);
             }
         }
     }
