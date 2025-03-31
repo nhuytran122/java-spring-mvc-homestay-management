@@ -55,6 +55,7 @@ public class ClientBookingController {
     private final RoomTypeService roomTypeService;
     private final ModelMapper mapper;
     private final ReviewService reviewService;
+    private final RefundService refundService;
 
     @PostMapping("/booking")
     public String postCreateBooking(@ModelAttribute("newBooking") @Valid Booking booking,
@@ -214,8 +215,8 @@ public class ClientBookingController {
             throw new IllegalStateException("Chỉ được hủy khi booking chưa bắt đầu.");
         }
 
-        Double refundAmount = bookingService.calculateRefundAmount(booking);
-        RefundType refundType = bookingService.getRefundType(booking);
+        Double refundAmount = refundService.calculateRefundAmount(booking);
+        RefundType refundType = refundService.getRefundType(booking);
 
         Map<String, Object> response = new HashMap<>();
         response.put("refundAmount", refundAmount);

@@ -2,9 +2,9 @@ package com.lullabyhomestay.homestay_management.domain.dto;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import com.lullabyhomestay.homestay_management.utils.SplitTimeRangeConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,36 +37,10 @@ public class SearchPaymentCriteriaDTO {
     }
 
     public LocalDateTime getFromTime() {
-        if (timeRange == null || timeRange.trim().isEmpty()) {
-            return null;
-        }
-        String[] times = timeRange.split(" - ");
-        if (times.length == 2) {
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate date = LocalDate.parse(times[0].trim(), formatter);
-                return date.atStartOfDay();
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Invalid start date: " + times[0], e);
-            }
-        }
-        return null;
+        return SplitTimeRangeConverter.parseStartDate(timeRange);
     }
 
     public LocalDateTime getToTime() {
-        if (timeRange == null || timeRange.trim().isEmpty()) {
-            return null;
-        }
-        String[] times = timeRange.split(" - ");
-        if (times.length == 2) {
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate date = LocalDate.parse(times[1].trim(), formatter);
-                return date.atTime(23, 59, 59, 999_000_000);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Invalid end date: " + times[1], e);
-            }
-        }
-        return null;
+        return SplitTimeRangeConverter.parseEndDate(timeRange);
     }
 }

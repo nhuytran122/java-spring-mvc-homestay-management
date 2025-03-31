@@ -1,7 +1,5 @@
 package com.lullabyhomestay.homestay_management.service;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +26,6 @@ import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
 import com.lullabyhomestay.homestay_management.utils.PaymentType;
-import com.lullabyhomestay.homestay_management.utils.RefundType;
 
 import lombok.AllArgsConstructor;
 
@@ -42,6 +39,7 @@ public class BookingService {
     private final RoomStatusHistoryRepository roomStatusHistoryRepo;
     private final PaymentRepository paymentRepository;
     private final RefundRepository refundRepository;
+    private final RefundService refundService;
 
     public Page<Booking> searchBookings(SearchBookingCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
@@ -178,9 +176,9 @@ public class BookingService {
 
         Refund refund = new Refund();
         refund.setPayment(payment);
-        Double refundAmount = calculateRefundAmount(booking);
+        Double refundAmount = refundService.calculateRefundAmount(booking);
         refund.setRefundAmount(refundAmount);
-        refund.setRefundType(getRefundType(booking));
+        refund.setRefundType(refundService.getRefundType(booking));
         refund.setStatus(PaymentStatus.PENDING_REFUND);
         refundRepository.save(refund);
         return refund;
@@ -223,33 +221,6 @@ public class BookingService {
 
     public List<Booking> getListBookingByStatus(BookingStatus bookingStatus) {
         return bookingRepository.findByStatus(bookingStatus);
-    }
-
-    public Double calculateRefundAmount(Booking booking) {
-        LocalDateTime checkInTime = booking.getCheckIn();
-        LocalDateTime now = LocalDateTime.now();
-        long daysDifference = ChronoUnit.DAYS.between(now, checkInTime);
-
-        if (daysDifference > 7) {
-            return booking.getPaidAmount();
-        } else if (daysDifference > 3) {
-            return booking.getPaidAmount() * 0.7;
-        } else {
-            return booking.getPaidAmount() * 0.3;
-        }
-    }
-
-    public RefundType getRefundType(Booking booking) {
-        Double refundAmount = calculateRefundAmount(booking);
-        Double paidAmount = booking.getPaidAmount();
-
-        if (refundAmount.equals(paidAmount)) {
-            return RefundType.FULL;
-        } else if (refundAmount.equals(paidAmount * 0.7)) {
-            return RefundType.PARTIAL_70;
-        } else {
-            return RefundType.PARTIAL_30;
-        }
     }
 
 }

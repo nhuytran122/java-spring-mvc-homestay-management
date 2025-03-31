@@ -39,6 +39,9 @@ public class Refund {
     @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "UpdatedAt")
+    private LocalDateTime updatedAt;
+
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
@@ -50,6 +53,6 @@ public class Refund {
     @Column(name = "RefundAmount")
     private Double refundAmount;
 
-    @Column(name = "ExternalTransactionID")
-    private String externalTransactionID;
+    @Column(name = "VnpTransactionNo")
+    private String vnpTransactionNo;
 }

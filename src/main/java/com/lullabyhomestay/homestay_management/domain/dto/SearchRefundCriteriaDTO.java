@@ -11,29 +11,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class SearchBookingCriteriaDTO {
+public class SearchRefundCriteriaDTO {
     private String keyword;
     private String timeRange = "";
-    private Long branchID;
-    private Long roomTypeID;
     private String status;
-    private String sort;
-    private Long customerID;
+    private String type;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
-        }
-        if (roomTypeID != null) {
-            extraParams.append("&roomTypeID=").append(roomTypeID);
-        }
-        if (customerID != null) {
-            extraParams.append("&customerID=").append(customerID);
+        if (type != null) {
+            extraParams.append("&type=").append(type);
         }
         if (status != null) {
             extraParams.append("&status=").append(status);
@@ -43,9 +34,6 @@ public class SearchBookingCriteriaDTO {
         }
         if (keyword != null && !keyword.isEmpty()) {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
-        }
-        if (sort != null) {
-            extraParams.append("&sort=").append(sort);
         }
         return extraParams.toString();
     }
