@@ -24,12 +24,12 @@
                         name="keyword" 
                         placeholder="Tìm kiếm khách hàng..." 
                         value="${keyword}"/>
-                    <select name="isLocked" class="form-select form-select-sm">
-                        <option value="" ${criteria.isLocked == null ? 'selected' : ''}>Chọn trạng thái</option>
-                        <option value="true" ${true == criteria.isLocked ? 'selected' : ''}>
+                    <select name="enabled" class="form-select form-select-sm">
+                        <option value="" ${criteria.enabled == null ? 'selected' : ''}>Chọn trạng thái</option>
+                        <option value="true" ${true == criteria.enabled ? 'selected' : ''}>
                             Đã khóa
                         </option>
-                        <option value="false" ${true == criteria.isLocked ? 'selected' : ''}>
+                        <option value="false" ${true == criteria.enabled ? 'selected' : ''}>
                             Hoạt động
                         </option>
                     </select>
@@ -103,8 +103,8 @@
                                                             </td>
                                                             <td>${customer.customerType.name}</td>
                                                             <td>
-                                                                <span class="badge ${customer.isLocked == true ? 'bg-danger' : 'bg-success'}">
-                                                                    ${customer.isLocked == true ? 'Đã khóa' : 'Đang hoạt động'}
+                                                                <span class="badge ${customer.enabled == true ? 'bg-danger' : 'bg-success'}">
+                                                                    ${customer.enabled == true ? 'Đã khóa' : 'Đang hoạt động'}
                                                                 </span>
                                                             </td>
                                                             <td>

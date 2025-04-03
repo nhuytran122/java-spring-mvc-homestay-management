@@ -11,7 +11,7 @@ import lombok.Getter;
 public class SearchCustomerCriterialDTO {
     private String keyword;
     private Long customerTypeID;
-    private Boolean isLocked;
+    private Boolean enabled;
     private String sort;
 
     public String convertToExtraParams() {
@@ -19,8 +19,8 @@ public class SearchCustomerCriterialDTO {
         if (customerTypeID != null) {
             extraParams.append("&customerTypeID=").append(customerTypeID);
         }
-        if (isLocked != null) {
-            extraParams.append("&isLocked=").append(isLocked);
+        if (enabled != null) {
+            extraParams.append("&enabled=").append(enabled);
         }
         if (sort != null) {
             extraParams.append("&sort=").append(sort);

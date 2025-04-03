@@ -19,6 +19,7 @@ import com.lullabyhomestay.homestay_management.service.HomestayServiceService;
 import com.lullabyhomestay.homestay_management.service.ReviewService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 import com.lullabyhomestay.homestay_management.service.RuleService;
+import com.lullabyhomestay.homestay_management.utils.RefundType;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -51,6 +52,7 @@ public class HomePageController {
         model.addAttribute("listInfors", inforService.getAllInforHomestay());
         model.addAttribute("listCustomerTypes", customerTypeService.getAllCustomerTypes());
         model.addAttribute("listReviews", reviewService.getAllFiveStarReviews());
+        model.addAttribute("refundTypes", RefundType.values());
         return "client/homepage/show";
     }
 

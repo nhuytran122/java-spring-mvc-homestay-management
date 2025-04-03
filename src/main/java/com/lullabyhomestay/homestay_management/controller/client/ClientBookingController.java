@@ -198,10 +198,6 @@ public class ClientBookingController {
         model.addAttribute("numberOfHours", booking.getNumberOfHours());
         model.addAttribute("newReview", new Review());
         model.addAttribute("editReview", new Review());
-        double originalAmount = booking.getTotalAmount()
-                / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
-        double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
-        model.addAttribute("discountAmount", discountAmount);
         return "client/booking/detail-booking-history";
     }
 

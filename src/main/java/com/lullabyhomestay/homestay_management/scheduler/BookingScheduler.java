@@ -8,8 +8,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
-import com.lullabyhomestay.homestay_management.service.BookingExtraService;
+import com.lullabyhomestay.homestay_management.domain.BookingExtension;
+import com.lullabyhomestay.homestay_management.service.BookingExtensionService;
 import com.lullabyhomestay.homestay_management.service.BookingService;
+import com.lullabyhomestay.homestay_management.service.CustomerService;
 import com.lullabyhomestay.homestay_management.service.RoomStatusHistoryService;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
@@ -21,9 +23,14 @@ public class BookingScheduler {
 
     private final BookingService bookingService;
     private final RoomStatusHistoryService roomStatusHistoryService;
+    private final BookingExtensionService bookingExtensionService;
+    private final CustomerService customerService;
 
     @Value("${booking.pending.timeout.minutes}")
     private int timeoutMinutes;
+
+    @Value("${booking.complete.buffer.hours}")
+    private int bufferHours;
 
     @Scheduled(fixedDelayString = "${booking.pending.timeout.milliseconds}")
     public void cancelPendingBookings() {
@@ -36,6 +43,40 @@ public class BookingScheduler {
 
                 // Xóa các dữ liệu liên quan đến Booking: lịch trình
                 roomStatusHistoryService.deleteByBookingID(bookingID);
+            }
+        }
+    }
+
+    @Scheduled(fixedDelay = 1800000) // 30'
+    public void completeBookingsAfterCheckOut() {
+        List<Booking> confirmedBookings = bookingService.getListBookingByStatus(BookingStatus.CONFIRMED);
+        for (Booking booking : confirmedBookings) {
+            LocalDateTime checkOutTime = booking.getCheckOut();
+
+            List<BookingExtension> extensions = bookingExtensionService
+                    .getListBookingExtensionByBookingID(booking.getBookingID());
+            if (!extensions.isEmpty()) {
+                int totalExtraHours = 0;
+                for (BookingExtension extension : extensions) {
+                    totalExtraHours += extension.getExtraHours();
+                }
+                checkOutTime = checkOutTime.plusHours(totalExtraHours);
+            }
+
+            // Thêm thời gian đệm để tránh COMPLETE quá sớm (cho trường hợp khách book thêm
+            // giờ)
+            LocalDateTime bufferCheckOutTime = checkOutTime.plusHours(bufferHours);
+
+            // Chỉ COMPLETE nếu NOW > checkOutTime + buffer
+            if (LocalDateTime.now().isAfter(bufferCheckOutTime)) {
+                booking.setStatus(BookingStatus.COMPLETED);
+                bookingService.handleSaveBooking(booking);
+
+                // UPDATE điểm khi booking COMPLETE
+                customerService.updateRewardPointsAndCustomerType(
+                        booking.getCustomer().getCustomerID(),
+                        booking.getTotalAmount());
+                bookingService.handleSaveBooking(booking);
             }
         }
     }

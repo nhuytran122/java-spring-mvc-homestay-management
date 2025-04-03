@@ -231,10 +231,10 @@
                                     <div class="booking-actions mt-3">
                                         <a href="/booking/booking-history/${booking.bookingID}" class="btn btn-outline-primary"><i class="bi bi-arrow-up-right-square"></i> Xem chi tiết</a>
                                         <c:if test="${booking.status == 'PENDING'}">
-                                        <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')" class="btn btn-primary ms-2">
-                                            <i class="bi bi-credit-card"></i> Thanh toán
-                                        </a>
-                                </c:if>
+                                            <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')" class="btn btn-primary ms-2">
+                                                <i class="bi bi-credit-card"></i> Thanh toán
+                                            </a>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>

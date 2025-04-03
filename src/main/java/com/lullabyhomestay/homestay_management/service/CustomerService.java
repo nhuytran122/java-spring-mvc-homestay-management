@@ -34,12 +34,22 @@ public class CustomerService {
     private final BookingRepository bookingRepository;
     private final CustomerTypeService customerTypeService;
 
+    public CustomerDTO handleRegisterCustomer(RegisterDTO registerDTO) {
+        Customer customer = mapper.map(registerDTO, Customer.class);
+        customer.setPassword(this.passwordEncoder.encode(registerDTO.getPassword()));
+        customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
+        customer.setEnabled(false);
+        Customer savedCustomer = customerRepository.save(customer);
+        return mapper.map(savedCustomer, CustomerDTO.class);
+    }
+
     public CustomerDTO handleSaveCustomer(CustomerDTO requestDTO) {
         Customer customer;
         if (requestDTO.getCustomerID() == null) {
             customer = mapper.map(requestDTO, Customer.class);
             customer.setPassword(this.passwordEncoder.encode("lullabyhomestay"));
             customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
+            customer.setEnabled(true);
         } else {
             customer = getCustomerByID(requestDTO.getCustomerID());
             customer = updateCustomerInfo(customer, requestDTO);
@@ -66,11 +76,11 @@ public class CustomerService {
     }
 
     @Transactional
-    public void updateRewardPointsAndCustomerType(Long customerID, double amount, boolean isAdd) {
+    public void updateRewardPointsAndCustomerType(Long customerID, double amount) {
         Customer customer = getCustomerByID(customerID);
 
         double points = (amount / 100000) * 10;
-        double updatedPoints = isAdd ? customer.getRewardPoints() + points : customer.getRewardPoints() - points;
+        double updatedPoints = customer.getRewardPoints() + points;
         customer.setRewardPoints(updatedPoints);
 
         List<CustomerType> customerTypes = customerTypeService.getAllCustomerTypes();
@@ -85,14 +95,6 @@ public class CustomerService {
         }
         customer.setCustomerType(bestCustomerType);
         customerRepository.save(customer);
-    }
-
-    public CustomerDTO handleRegisterCustomer(RegisterDTO registerDTO) {
-        Customer customer = mapper.map(registerDTO, Customer.class);
-        customer.setPassword(this.passwordEncoder.encode(registerDTO.getPassword()));
-        customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
-        Customer savedCustomer = customerRepository.save(customer);
-        return mapper.map(savedCustomer, CustomerDTO.class);
     }
 
     public Page<CustomerDTO> getAllCustomers(Pageable pageable) {
@@ -111,8 +113,8 @@ public class CustomerService {
                     .or(CustomerSpecifications.addressLike(criteria.getKeyword()))
                     .or(CustomerSpecifications.phoneEqual(criteria.getKeyword())));
         }
-        if (criteria.getIsLocked() != null) {
-            spec = spec.and(CustomerSpecifications.isLocked(criteria.getIsLocked()));
+        if (criteria.getEnabled() != null) {
+            spec = spec.and(CustomerSpecifications.enabled(criteria.getEnabled()));
         }
         if (criteria.getCustomerTypeID() != null) {
             spec = spec.and(CustomerSpecifications.hasType(criteria.getCustomerTypeID()));

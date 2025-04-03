@@ -33,6 +33,6 @@ public class CustomerDTO {
     private String address;
     private String avatar;
     private Double rewardPoints;
-    private Boolean isLocked;
+    private Boolean enabled;
     private CustomerType customerType;
 }

@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgumentException(IllegalArgumentException e, Model model) {
         model.addAttribute("errorMessage", e.getMessage());
-        return "redirect:/error";
+        return "shared/error";
     }
 
     @ExceptionHandler(AccessDeniedException.class)

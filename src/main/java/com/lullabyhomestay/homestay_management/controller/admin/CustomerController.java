@@ -66,7 +66,7 @@ public class CustomerController {
         if (result.hasErrors()) {
             return "admin/customer/create";
         }
-        customer.setIsLocked(false);
+        customer.setEnabled(true);
         this.customerService.handleSaveCustomer(customer);
         return "redirect:/admin/customer";
     }
@@ -92,7 +92,7 @@ public class CustomerController {
         currentCustomer.setFullName(customer.getFullName());
         currentCustomer.setAddress(customer.getAddress());
         currentCustomer.setPhone(customer.getPhone());
-        currentCustomer.setIsLocked(customer.getIsLocked());
+        currentCustomer.setEnabled(customer.getEnabled());
 
         this.customerService.handleSaveCustomer(currentCustomer);
         return "redirect:/admin/customer";

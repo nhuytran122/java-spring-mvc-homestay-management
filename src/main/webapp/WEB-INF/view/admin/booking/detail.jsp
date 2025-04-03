@@ -37,7 +37,7 @@ uri="http://lullabyhomestay.com/functions" %>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
                           <c:if
-                            test="${booking.status.toString() != 'CANCELLED'}"
+                            test="${booking.status != 'CANCELLED' and booking.status != 'COMPLETED'}"
                           >
                             <button
                               class="btn btn-danger btn-sm"

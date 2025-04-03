@@ -47,6 +47,10 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link" href="#refund-policy">Chính sách hoàn tiền</a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="#contact">Liên hệ</a>
                     </li>
                 </ul>
@@ -297,6 +301,172 @@
         </div>
     </div>
 
+    <c:if test="${not empty listReviews}">
+        <div class="testimonials py-5 bg-light" data-aos="fade-up">
+            <div class="container">
+                <h2 class="text-center mb-5">Khách hàng nói về chúng tôi</h2>
+        
+                <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <c:forEach var="review" items="${listReviews}" varStatus="status">
+                            <c:if test="${status.index % 3 == 0}">
+                                <div class="carousel-item ${status.index == 0 ? 'active' : ''}">
+                                    <div class="row justify-content-center">
+                            </c:if>
+        
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="/images/avatar/${review.booking.customer.avatar}" class="rounded-circle me-3" 
+                                                alt="Avatar" style="width: 50px; height: 50px;">
+                                            <div>
+                                                <h6 class="mb-0">${review.booking.customer.fullName}</h6>
+                                                <small class="text-muted">${f:formatLocalDateTime(review.createdAt)}</small>
+                                            </div>
+                                        </div>
+                                        <p class="card-text">${review.comment}</p>
+                                        <div class="text-warning">
+                                            <c:forEach begin="1" end="${review.rating}">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            </c:forEach>
+                                            <c:forEach begin="${review.rating + 1}" end="5">
+                                                <i class="bi bi-star text-warning"></i>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <c:if test="${status.index % 3 == 2 or status.last}">
+                                    </div>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+        
+                    <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Trước</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Sau</span>
+                    </button>
+                </div>
+            </div>
+        </div> 
+    </c:if>   
+
+    <div id="member-discount" class="py-5 bg-light" data-aos="fade-up">
+        <h2 class="text-center mb-5">
+            Chính Sách Ưu Đãi Cho Thành Viên
+        </h2>
+    
+        <div class="text-center text-muted mb-4">
+            <p class="mb-0">Yêu cầu điểm tối thiểu: tùy theo từng loại thành viên</p>
+            <p class="mb-0"><span class="fw-bold">100.000</span> = 
+                <span class="fw-bold text-success">+10 điểm</span>
+            </p>
+        </div>
+    
+        <div class="row g-4 justify-content-center">
+            <c:forEach var="customerType" items="${listCustomerTypes}">
+                <c:if test="${customerType.discountRate > 0}">
+                    <div class="col-md-3">
+                        <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden position-relative 
+                                    transition-transform hover-translate-y-n3">
+                            <div class="card-body text-center d-flex flex-column justify-content-between">
+                                <h5 class="fw-bold mb-2">
+                                    ${customerType.name}
+                                </h5>
+    
+                                <div class="text-white p-4 rounded-3 mb-3" style="background-color: #ea8685;">
+                                    <h3 class="mb-1 fw-bold">
+                                        <fmt:formatNumber value="${customerType.discountRate}" pattern="#'%'"/>
+                                    </h3>
+                                    <small>Giảm giá trực tiếp</small>
+                                </div>
+    
+                                <p class="text-muted mb-1">
+                                    Yêu cầu điểm tối thiểu: 
+                                    <span class="fw-bold">
+                                        <fmt:formatNumber value="${customerType.minPoint}" pattern="#"/>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </div>
+    </div>
+
+    <div id="refund-policy" class="py-5 bg-gradient" data-aos="fade-up">
+        <h2 class="text-center mb-5">
+            Chính Sách Hoàn Tiền Khi Hủy Đặt Phòng
+        </h2>
+    
+        <div class="text-center text-muted mb-4">
+            <p class="mb-0">Chính sách hoàn tiền áp dụng tùy theo thời gian hủy phòng trước ngày check-in:</p>
+        </div>
+    
+        <div class="row g-4 justify-content-center">
+            <c:forEach var="refundType" items="${refundTypes}">
+                <div class="col-md-3">
+                    <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden">
+                        <div class="card-body text-center d-flex flex-column justify-content-between">
+                            <div class="icon-container mb-3">
+                                <i class="bi bi-cash-stack fs-1 text-success"></i>
+                            </div>
+    
+                            <h5 class="fw-bold mb-2" style="font-size: 1.2rem; color: #333;">
+                                ${refundType.displayName}
+                            </h5>
+    
+                            <div class="p-4 rounded-3 mb-3" style="background-color: #6c757d; color: #fff;">
+                                <small>${refundType.descriptionPolicy}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+    </div>
+
+    <div class="why-choose-us py-5" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-5">Tại sao bạn nên chọn Lullaby Homestay?</h2>
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-house-door fs-1 text-primary mb-3"></i>
+                    <h5>Không gian như ở nhà</h5>
+                    <p>Tận hưởng sự thoải mái và ấm áp như chính ngôi nhà của bạn, dù ở bất cứ đâu.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-list-task fs-1 text-primary mb-3"></i>
+                    <h5>Đa dạng lựa chọn</h5>
+                    <p>Từ phòng riêng ấm cúng đến phòng dorm sôi động, phù hợp cho mọi nhu cầu.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-headset fs-1 text-primary mb-3"></i>
+                    <h5>Hỗ trợ 24/7</h5>
+                    <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7, bất kể khi nào bạn cần.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <c:if test="${empty pageContext.request.userPrincipal}">
+        <div class="cta-section py-5 text-white text-center" style="background-color: #74b9ff;">
+            <div class="container">
+                <h2 class="mb-4">Bạn đang tìm một nơi dừng chân cho kỳ nghỉ của bạn?</h2>
+                <p class="lead mb-4">Đồng hành cùng home để có một kỳ nghỉ đáng nhớ ngay nào!</p>
+                <a href="#" class="btn btn-primary btn-lg">Đăng ký ngay</a>
+            </div>
+        </div>
+    </c:if>
+
     <div id="contact" class="py-5 bg-light" data-aos="fade-up">
         <div class="container">
             <div class="row">
@@ -378,138 +548,6 @@
             </div>
         </div>
     </div>
-
-    <div class="testimonials py-5 bg-light" data-aos="fade-up">
-        <div class="container">
-            <h2 class="text-center mb-5">Khách hàng nói về chúng tôi</h2>
-    
-            <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <c:forEach var="review" items="${listReviews}" varStatus="status">
-                        <c:if test="${status.index % 3 == 0}">
-                            <div class="carousel-item ${status.index == 0 ? 'active' : ''}">
-                                <div class="row justify-content-center">
-                        </c:if>
-    
-                        <div class="col-md-4">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <img src="/images/avatar/${review.booking.customer.avatar}" class="rounded-circle me-3" 
-                                             alt="Avatar" style="width: 50px; height: 50px;">
-                                        <div>
-                                            <h6 class="mb-0">${review.booking.customer.fullName}</h6>
-                                            <small class="text-muted">${f:formatLocalDateTime(review.createdAt)}</small>
-                                        </div>
-                                    </div>
-                                    <p class="card-text">${review.comment}</p>
-                                    <div class="text-warning">
-                                        <c:forEach begin="1" end="${review.rating}">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </c:forEach>
-                                        <c:forEach begin="${review.rating + 1}" end="5">
-                                            <i class="bi bi-star text-warning"></i>
-                                        </c:forEach>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-    
-                        <c:if test="${status.index % 3 == 2 or status.last}">
-                                </div>
-                            </div>
-                        </c:if>
-                    </c:forEach>
-                </div>
-    
-                <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Trước</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Sau</span>
-                </button>
-            </div>
-        </div>
-    </div>    
-
-    <div id="member-discount" class="py-5 bg-light" data-aos="fade-up">
-        <h2 class="text-center mb-5">
-            Chính Sách Ưu Đãi Cho Thành Viên
-        </h2>
-    
-        <div class="text-center text-muted mb-4">
-            <p class="mb-0">Yêu cầu điểm tối thiểu: tùy theo từng loại thành viên</p>
-            <p class="mb-0"><span class="fw-bold">100.000</span> = 
-                <span class="fw-bold text-success">+10 điểm</span>
-            </p>
-        </div>
-    
-        <div class="row g-4 justify-content-center">
-            <c:forEach var="customerType" items="${listCustomerTypes}">
-                <c:if test="${customerType.discountRate > 0}">
-                    <div class="col-md-3">
-                        <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden position-relative 
-                                    transition-transform hover-translate-y-n3">
-                            <div class="card-body text-center d-flex flex-column justify-content-between">
-                                <h5 class="fw-bold mb-2">
-                                    ${customerType.name}
-                                </h5>
-    
-                                <div class="text-white p-4 rounded-3 mb-3" style="background-color: #ea8685;">
-                                    <h3 class="mb-1 fw-bold">
-                                        <fmt:formatNumber value="${customerType.discountRate}" pattern="#'%'"/>
-                                    </h3>
-                                    <small>Giảm giá trực tiếp</small>
-                                </div>
-    
-                                <p class="text-muted mb-1">
-                                    Yêu cầu điểm tối thiểu: 
-                                    <span class="fw-bold">
-                                        <fmt:formatNumber value="${customerType.minPoint}" pattern="#"/>
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </c:if>
-            </c:forEach>
-        </div>
-    </div>
-
-    <div class="why-choose-us py-5" data-aos="fade-up">
-        <div class="container">
-            <h2 class="text-center mb-5">Tại sao bạn nên chọn Lullaby Homestay?</h2>
-            <div class="row g-4">
-                <div class="col-md-4 text-center">
-                    <i class="bi bi-house-door fs-1 text-primary mb-3"></i>
-                    <h5>Không gian như ở nhà</h5>
-                    <p>Tận hưởng sự thoải mái và ấm áp như chính ngôi nhà của bạn, dù ở bất cứ đâu.</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <i class="bi bi-list-task fs-1 text-primary mb-3"></i>
-                    <h5>Đa dạng lựa chọn</h5>
-                    <p>Từ phòng riêng ấm cúng đến phòng dorm sôi động, phù hợp cho mọi nhu cầu.</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <i class="bi bi-headset fs-1 text-primary mb-3"></i>
-                    <h5>Hỗ trợ 24/7</h5>
-                    <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7, bất kể khi nào bạn cần.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <c:if test="${empty pageContext.request.userPrincipal}">
-        <div class="cta-section py-5 text-white text-center" style="background-color: #74b9ff;">
-            <div class="container">
-                <h2 class="mb-4">Bạn đang tìm một nơi dừng chân cho kỳ nghỉ của bạn?</h2>
-                <p class="lead mb-4">Đồng hành cùng home để có một kỳ nghỉ đáng nhớ ngay nào!</p>
-                <a href="#" class="btn btn-primary btn-lg">Đăng ký ngay</a>
-            </div>
-        </div>
-    </c:if>
 
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />

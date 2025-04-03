@@ -79,11 +79,6 @@ public class BookingService {
 
         // Cập nhật lịch trình phòng để giữ phòng cho khách
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
-
-        customerService.updateRewardPointsAndCustomerType(
-                booking.getCustomer().getCustomerID(),
-                savedBooking.getTotalAmount(),
-                true);
         return savedBooking;
     }
 
@@ -186,20 +181,6 @@ public class BookingService {
 
     private void updateBookingAfterCancellation(Booking booking, Refund refund) {
         booking.setStatus(BookingStatus.CANCELLED);
-
-        // TODO: Set khi admin thao tác hoàn tiền
-        // Double oldPaidAmount = booking.getPaidAmount() != null ?
-        // booking.getPaidAmount() : 0;
-        // Double newPaidAmount = oldPaidAmount - refund.getRefundAmount();
-        // booking.setPaidAmount(newPaidAmount > 0 ? newPaidAmount : 0);
-
-        bookingRepository.save(booking);
-
-        // TODO Cập nhật điểm thưởng khách hàng
-        customerService.updateRewardPointsAndCustomerType(
-                booking.getCustomer().getCustomerID(),
-                booking.getTotalAmount(),
-                false);
     }
 
     public double calculateRawTotalAmountBookingRoom(Booking booking) {

@@ -27,7 +27,6 @@ public class BookingExtraService {
 
     private final BookingServiceRepository bookingServiceRepo;
     private final BookingService bookingService;
-    private final CustomerService customerService;
 
     @Transactional
     public BookingServices handleSaveBookingServiceExtra(BookingServices bookingService) {
@@ -53,13 +52,6 @@ public class BookingExtraService {
                 - oldTotalPrice;
         currentBooking.setTotalAmount(totalAmount);
         currentBooking = this.bookingService.handleSaveBooking(currentBooking);
-
-        // Cập nhật RewardPoints
-        Double amountChange = (rawServiceTotalAmount
-                - DiscountUtil.calculateDiscountAmount(rawServiceTotalAmount, customer)) - oldTotalPrice;
-        boolean isAdd = amountChange > 0;
-        customerService.updateRewardPointsAndCustomerType(customer.getCustomerID(), amountChange, isAdd);
-
         return bookingServiceRepo.save(bookingService);
     }
 
