@@ -14,6 +14,7 @@ import com.lullabyhomestay.homestay_management.service.BookingService;
 import com.lullabyhomestay.homestay_management.service.CustomerService;
 import com.lullabyhomestay.homestay_management.service.RoomStatusHistoryService;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
+import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,17 +53,6 @@ public class BookingScheduler {
         List<Booking> confirmedBookings = bookingService.getListBookingByStatus(BookingStatus.CONFIRMED);
         for (Booking booking : confirmedBookings) {
             LocalDateTime checkOutTime = booking.getCheckOut();
-
-            List<BookingExtension> extensions = bookingExtensionService
-                    .getListBookingExtensionByBookingID(booking.getBookingID());
-            if (!extensions.isEmpty()) {
-                int totalExtraHours = 0;
-                for (BookingExtension extension : extensions) {
-                    totalExtraHours += extension.getExtraHours();
-                }
-                checkOutTime = checkOutTime.plusHours(totalExtraHours);
-            }
-
             // Thêm thời gian đệm để tránh COMPLETE quá sớm (cho trường hợp khách book thêm
             // giờ)
             LocalDateTime bufferCheckOutTime = checkOutTime.plusHours(bufferHours);
@@ -80,4 +70,26 @@ public class BookingScheduler {
             }
         }
     }
+
+    @Scheduled(fixedDelay = 72000000) // 2h
+    public void deleteBookingExtensionWithoutPayment() {
+        List<BookingExtension> extensionsToDelete = bookingExtensionService.findAllByPaymentDetailIsNull();
+
+        for (BookingExtension extension : extensionsToDelete) {
+            Booking currentBooking = extension.getBooking();
+
+            // Update lại giá
+            Double rawExtensionPrice = extension.getTotalAmount();
+            Double discountAmount = DiscountUtil.calculateDiscountAmount(rawExtensionPrice,
+                    currentBooking.getCustomer());
+            Double amountToSubtract = rawExtensionPrice - discountAmount;
+
+            currentBooking.setTotalAmount(currentBooking.getTotalAmount() - amountToSubtract);
+            bookingService.handleSaveBooking(currentBooking);
+
+            // Xóa BookingExtension
+            bookingExtensionService.deleteByExtensionID(extension.getExtensionID());
+        }
+    }
+
 }

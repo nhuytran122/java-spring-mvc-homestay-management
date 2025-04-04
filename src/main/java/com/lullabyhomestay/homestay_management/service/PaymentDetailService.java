@@ -8,7 +8,6 @@ import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.Payment;
 import com.lullabyhomestay.homestay_management.domain.PaymentDetail;
-import com.lullabyhomestay.homestay_management.repository.BookingExtensionRepository;
 import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
 import com.lullabyhomestay.homestay_management.repository.PaymentDetailRepository;
 import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
@@ -22,7 +21,7 @@ public class PaymentDetailService {
     private final PaymentDetailRepository paymentDetailRepo;
     private final BookingService bookingService;
     private final BookingServiceRepository bookingServiceRepo;
-    private final BookingExtensionRepository bookingExtensionRepo;
+    private final BookingExtensionService bookingExtensionService;
 
     public void handleSavePaymentDetail(Payment payment, PaymentPurpose paymentPurpose) {
         Long bookingID = payment.getBooking().getBookingID();
@@ -87,18 +86,16 @@ public class PaymentDetailService {
     }
 
     private void handleExtendedHoursPayment(Payment payment, Long bookingID) {
-        List<BookingExtension> listBookingExtensions = bookingExtensionRepo
-                .findBookingExtensionWithoutPaymentDetail(bookingID);
-        for (BookingExtension bExtension : listBookingExtensions) {
-            PaymentDetail serviceDetail = new PaymentDetail();
-            serviceDetail.setPayment(payment);
-            serviceDetail.setPaymentPurpose(PaymentPurpose.EXTENDED_HOURS);
-            serviceDetail.setBookingExtension(bExtension);
+        BookingExtension bookingExtension = bookingExtensionService.getLatestBookingExtensionByBookingID(bookingID);
+        PaymentDetail paymentDetail = new PaymentDetail();
+        paymentDetail.setPayment(payment);
+        paymentDetail.setPaymentPurpose(PaymentPurpose.EXTENDED_HOURS);
+        paymentDetail.setBookingExtension(bookingExtension);
 
-            Double rawTotalAmount = bExtension.getTotalAmount();
-            serviceDetail.setBaseAmount(rawTotalAmount);
-            serviceDetail.setFinalAmount(rawTotalAmount);
-            paymentDetailRepo.save(serviceDetail);
-        }
+        Double rawTotalAmount = bookingExtension.getTotalAmount();
+        paymentDetail.setBaseAmount(rawTotalAmount);
+        paymentDetail.setFinalAmount(rawTotalAmount
+                - DiscountUtil.calculateDiscountAmount(rawTotalAmount, bookingExtension.getBooking().getCustomer()));
+        paymentDetailRepo.save(paymentDetail);
     }
 }

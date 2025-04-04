@@ -45,13 +45,17 @@ public class BookingExtraService {
             }
         }
 
-        Double rawServiceTotalAmount = bookingService.getRawTotalAmount();
-        Double discountAmount = DiscountUtil.calculateDiscountAmount(rawServiceTotalAmount, customer);
+        // Nếu service trả trước thì mới update giá liền đc
+        if (bookingService.getService().getIsPrepaid()) {
+            Double rawServiceTotalAmount = bookingService.getRawTotalAmount();
+            Double discountAmount = DiscountUtil.calculateDiscountAmount(rawServiceTotalAmount, customer);
 
-        Double totalAmount = currentBooking.getTotalAmount() + (rawServiceTotalAmount - discountAmount)
-                - oldTotalPrice;
-        currentBooking.setTotalAmount(totalAmount);
-        currentBooking = this.bookingService.handleSaveBooking(currentBooking);
+            Double totalAmount = currentBooking.getTotalAmount() + (rawServiceTotalAmount - discountAmount)
+                    - oldTotalPrice;
+            currentBooking.setTotalAmount(totalAmount);
+            currentBooking = this.bookingService.handleSaveBooking(currentBooking);
+        }
+
         return bookingServiceRepo.save(bookingService);
     }
 

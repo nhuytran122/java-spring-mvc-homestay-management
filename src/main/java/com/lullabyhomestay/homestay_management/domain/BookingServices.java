@@ -2,6 +2,8 @@ package com.lullabyhomestay.homestay_management.domain;
 
 import java.time.LocalDateTime;
 
+import com.lullabyhomestay.homestay_management.service.validator.AdminValidation;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +32,7 @@ public class BookingServices {
     @Column(name = "BookingServiceID")
     private Long bookingServiceID;
 
-    @NotNull(message = "Vui lòng nhập số lượng")
+    @NotNull(message = "Vui lòng nhập số lượng", groups = AdminValidation.class)
     @Column(name = "Quantity")
     private Float quantity;
 

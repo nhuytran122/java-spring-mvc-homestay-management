@@ -29,9 +29,9 @@ public class BookingExtension {
     @Column(name = "ExtensionID")
     private Long extensionID;
 
-    @Column(name = "ExtraHours")
+    @Column(name = "ExtendedHours")
     @NotNull(message = "Vui lòng nhập giờ muốn gia hạn")
-    private Integer extraHours;
+    private Float extendedHours;
 
     @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
@@ -44,6 +44,6 @@ public class BookingExtension {
     private PaymentDetail paymentDetail;
 
     public Double getTotalAmount() {
-        return booking.getRoom().getRoomType().getExtraPricePerHour() * extraHours;
+        return booking.getRoom().getRoomType().getExtraPricePerHour() * extendedHours;
     }
 }

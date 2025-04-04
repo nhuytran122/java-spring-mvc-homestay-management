@@ -223,7 +223,7 @@ uri="http://lullabyhomestay.com/functions" %>
                                   <tr>
                                     <th>Số giờ gia hạn</th>
                                     <th>Đơn giá/giờ</th>
-                                    <th>Tổng tiền</th>
+                                    <th>Tổng tiền cuối</th>
                                     <th>Ngày tạo</th>
                                   </tr>
                                 </thead>
@@ -233,17 +233,27 @@ uri="http://lullabyhomestay.com/functions" %>
                                     items="${booking.bookingExtensions}"
                                   >
                                     <tr>
-                                      <td>${extension.extraHours}</td>
                                       <td>
                                         <fmt:formatNumber
                                           type="number"
-                                          value="${extension.booking.room.roomType.extraPricePerHour}"
-                                        />đ
+                                          value="${extension.extendedHours}"
+                                          pattern="#"
+                                        />
+                                      </td>
+                                      <td>
+                                        <c:if
+                                          test="${extension.paymentDetail != null}"
+                                        >
+                                          <fmt:formatNumber
+                                            type="number"
+                                            value="${extension.booking.room.roomType.extraPricePerHour}"
+                                          />đ
+                                        </c:if>
                                       </td>
                                       <td>
                                         <fmt:formatNumber
                                           type="number"
-                                          value="${extension.totalAmount}"
+                                          value="${extension.paymentDetail.finalAmount}"
                                         />đ
                                       </td>
                                       <td>

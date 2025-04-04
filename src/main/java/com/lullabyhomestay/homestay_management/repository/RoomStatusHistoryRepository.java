@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lullabyhomestay.homestay_management.domain.RoomStatusHistory;
+import com.lullabyhomestay.homestay_management.utils.RoomStatus;
 
 public interface RoomStatusHistoryRepository extends JpaRepository<RoomStatusHistory, Long> {
        Page<RoomStatusHistory> findAll(Pageable page);
@@ -39,4 +40,6 @@ public interface RoomStatusHistoryRepository extends JpaRepository<RoomStatusHis
 
        List<RoomStatusHistory> findByRoom_RoomIDAndStartedAtBetween(Long roomID, LocalDateTime startOfDate,
                      LocalDateTime endOfDate);
+
+       Optional<RoomStatusHistory> findByBooking_BookingIDAndStatus(Long bookingID, RoomStatus roomStatus);
 }

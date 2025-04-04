@@ -94,6 +94,11 @@
                                         <span><fmt:formatNumber type="number"
                                           value="${room.roomType.pricePerHour}" /> đ</span>
                                     </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      <span><i class="bi bi-currency-dollar me-2"></i>Giá gia hạn mỗi giờ</span>
+                                      <span><fmt:formatNumber type="number"
+                                        value="${room.roomType.extraPricePerHour}" /> đ</span>
+                                  </li>
                                 </ul>
                             </div>
                         </div>

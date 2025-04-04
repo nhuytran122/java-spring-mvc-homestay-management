@@ -37,13 +37,13 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
                         "WHERE NOT EXISTS (" +
                         "    SELECT 1 FROM Bookings b " +
                         "    LEFT JOIN (" +
-                        "        SELECT be.BookingID, COALESCE(SUM(be.ExtraHours), 0) AS TotalExtraHours " +
+                        "        SELECT be.BookingID, COALESCE(SUM(be.ExtendedHours), 0) AS TotalExtendedHours " +
                         "        FROM BookingExtensions be " +
                         "        GROUP BY be.BookingID" +
                         "    ) AS ext ON b.BookingID = ext.BookingID " +
                         "    WHERE b.RoomID = r.RoomID " +
                         "    AND b.CheckIn < :endTime " +
-                        "    AND DATEADD(hour, ext.TotalExtraHours, b.CheckOut) > :startTime" +
+                        "    AND DATEADD(hour, ext.TotalExtendedHours, b.CheckOut) > :startTime" +
                         ") " +
                         "AND (:branchId IS NULL OR r.BranchID = :branchId) " +
                         "AND (:roomTypeId IS NULL OR r.RoomTypeID = :roomTypeId) " +
@@ -53,14 +53,14 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
                                         "WHERE NOT EXISTS (" +
                                         "    SELECT 1 FROM Bookings b " +
                                         "    LEFT JOIN (" +
-                                        "        SELECT be.BookingID, COALESCE(SUM(be.ExtraHours), 0) AS TotalExtraHours "
+                                        "        SELECT be.BookingID, COALESCE(SUM(be.ExtendedHours), 0) AS TotalExtendedHours "
                                         +
                                         "        FROM BookingExtensions be " +
                                         "        GROUP BY be.BookingID" +
                                         "    ) AS ext ON b.BookingID = ext.BookingID " +
                                         "    WHERE b.RoomID = r.RoomID " +
                                         "    AND b.CheckIn < :endTime " +
-                                        "    AND DATEADD(hour, ext.TotalExtraHours, b.CheckOut) > :startTime" +
+                                        "    AND DATEADD(hour, ext.TotalExtendedHours, b.CheckOut) > :startTime" +
                                         ") " +
                                         "AND (:branchId IS NULL OR r.BranchID = :branchId) " +
                                         "AND (:roomTypeId IS NULL OR r.RoomTypeID = :roomTypeId) " +

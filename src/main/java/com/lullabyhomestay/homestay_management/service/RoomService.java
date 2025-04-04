@@ -57,7 +57,7 @@ public class RoomService {
         LocalDateTime endTime = criteria.getToTime();
 
         if (startTime == null || endTime == null)
-            throw new IllegalArgumentException("Thời gian checkin phải bé hơn thời gian checkout");
+            throw new IllegalArgumentException("Thời gian check-in phải bé hơn thời gian checkout");
 
         return roomRepository.findAvailableRooms(criteria.getBranchID(), criteria.getRoomTypeID(), startTime, endTime,
                 pageable);

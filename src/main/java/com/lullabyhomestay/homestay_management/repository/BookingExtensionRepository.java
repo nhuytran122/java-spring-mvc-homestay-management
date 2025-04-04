@@ -1,10 +1,10 @@
 package com.lullabyhomestay.homestay_management.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lullabyhomestay.homestay_management.domain.BookingExtension;
@@ -15,8 +15,19 @@ public interface BookingExtensionRepository extends JpaRepository<BookingExtensi
 
     List<BookingExtension> findByBooking_BookingID(Long bookingID);
 
-    @Query("SELECT be FROM BookingExtension be WHERE be.booking.bookingID = :bookingID " +
-            "AND NOT EXISTS (SELECT pd FROM PaymentDetail pd WHERE pd.bookingExtension.extensionID = be.extensionID)")
-    List<BookingExtension> findBookingExtensionWithoutPaymentDetail(@Param("bookingID") Long bookingID);
+    Optional<BookingExtension> findFirstByBooking_BookingIDOrderByCreatedAtDesc(Long bookingID);
+
+    @Query("""
+                SELECT be
+                FROM BookingExtension be
+                WHERE be.extensionID NOT IN (
+                    SELECT pd.bookingExtension.extensionID
+                    FROM PaymentDetail pd
+                    WHERE pd.bookingExtension IS NOT NULL
+                )
+            """)
+    List<BookingExtension> findAllByPaymentDetailIsNull();
+
+    void deleteByExtensionID(Long extensionID);
 
 }

@@ -35,7 +35,6 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final RoomStatusHistoryService roomStatusHistoryService;
-    private final CustomerService customerService;
     private final RoomStatusHistoryRepository roomStatusHistoryRepo;
     private final PaymentRepository paymentRepository;
     private final RefundRepository refundRepository;

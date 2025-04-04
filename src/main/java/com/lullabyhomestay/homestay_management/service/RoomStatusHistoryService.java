@@ -6,13 +6,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import com.lullabyhomestay.homestay_management.domain.Booking;
+import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.RoomStatusHistory;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingScheduleData;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RoomStatusHistoryRepository;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.RoomStatus;
 
 import lombok.AllArgsConstructor;
@@ -39,7 +43,7 @@ public class RoomStatusHistoryService {
 
         // Tự động thêm CLEANING (1H sau khi checkout)
         LocalDateTime cleaningStartLocal = booking.getCheckOut();
-        LocalDateTime cleaningEndLocal = cleaningStartLocal.plusHours(1);
+        LocalDateTime cleaningEndLocal = cleaningStartLocal.plusHours(Constants.CLEANING_HOURS);
         RoomStatusHistory cleaningStatus = new RoomStatusHistory();
         cleaningStatus.setRoom(booking.getRoom());
         cleaningStatus.setStatus(RoomStatus.CLEANING);
@@ -47,6 +51,24 @@ public class RoomStatusHistoryService {
         cleaningStatus.setEndedAt(cleaningEndLocal);
         cleaningStatus.setBooking(booking);
         roomStatusHistoryRepo.save(cleaningStatus);
+    }
+
+    public void handleBookingExtensions(BookingExtension bookingExtension) {
+        Booking booking = bookingExtension.getBooking();
+        LocalDateTime newCheckout = booking.getCheckOut();
+
+        // Tìm BUSY hiện tại
+        RoomStatusHistory busyStatus = getScheduleByBookingIDAndRoomStatusHistories(
+                booking.getBookingID(), RoomStatus.BUSY);
+        busyStatus.setEndedAt(newCheckout);
+        roomStatusHistoryRepo.save(busyStatus);
+
+        // Tìm + set lại CLEANING
+        RoomStatusHistory cleanStatus = getScheduleByBookingIDAndRoomStatusHistories(booking.getBookingID(),
+                RoomStatus.CLEANING);
+        cleanStatus.setStartedAt(newCheckout);
+        cleanStatus.setEndedAt(newCheckout.plusHours(Constants.CLEANING_HOURS));
+        roomStatusHistoryRepo.save(cleanStatus);
     }
 
     public List<RoomStatusHistory> getScheduleRoomByRoomIDAndDate(Long roomID,
@@ -91,5 +113,15 @@ public class RoomStatusHistoryService {
 
     public void deleteByBookingID(Long bookingID) {
         roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
+    }
+
+    public RoomStatusHistory getScheduleByBookingIDAndRoomStatusHistories(Long bookingID,
+            RoomStatus roomStatus) {
+        Optional<RoomStatusHistory> roomHistory = roomStatusHistoryRepo.findByBooking_BookingIDAndStatus(bookingID,
+                roomStatus);
+        if (!roomHistory.isPresent()) {
+            throw new NotFoundException("Lịch sử phòng");
+        }
+        return roomHistory.get();
     }
 }

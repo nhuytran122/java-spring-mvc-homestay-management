@@ -37,7 +37,7 @@
                         </c:otherwise>
                     </c:choose> 
                     <div class="card-body">
-                        <h3 class="card-title">Phòng ${booking.room.roomNumber} - ${booking.room.roomType.name}</h3>
+                        <a href="/room/${booking.room.roomID}" style="text-decoration: none;"><h3 class="card-title">Phòng ${booking.room.roomNumber} - ${booking.room.roomType.name}</h3></a>
                         <p class="text-muted">
                             <i class="bi bi-geo-alt me-1"></i> ${booking.room.branch.branchName} - ${booking.room.branch.address}
                         </p>
@@ -230,6 +230,21 @@
             </div>
 
             <div class="col-lg-4">
+                <c:if test="${booking.status == 'CONFIRMED'}">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between gap-2">
+                            <button class="btn btn-primary btn-sm flex-fill" data-bs-toggle="modal" 
+                            data-bs-target="#bookServicesModal">
+                                <i class="bi bi-plus-circle me-1"></i>Đặt dịch vụ
+                            </button>
+                            <button class="btn btn-success btn-sm" title="Gia hạn"
+                                onclick="checkBeforeBookingExtension(this)" 
+                                    data-booking-id="${booking.bookingID}" >
+                                    <i class="bi bi-clock me-1"></i>Gia hạn giờ thuê
+                            </button>
+                        </div>
+                    </div>
+                </c:if>
                 <div class="card mb-4">
                     <div class="card-header bg-white">
                         <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin đặt phòng</h5>
@@ -270,47 +285,141 @@
                     </div>
                 </div>
                 
+                <c:if test="${not empty booking.bookingExtensions}">
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Lịch sử gia hạn</h5>
+                        </div>
+                        <div class="card-body">
+                            <c:forEach var="extension" items="${booking.bookingExtensions}">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between py-2">
+                                        <span class="small text-muted">Thời điểm gia hạn</span>
+                                        <span class="fw-bold">${f:formatLocalDateTime(extension.createdAt)}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="small text-muted">Số giờ gia hạn</span>
+                                        <span class="fw-bold">
+                                            <fmt:formatNumber type="number" value="${extension.extendedHours}" pattern="#"/> giờ
+                                        </span>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </c:if>
+
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header bg-white">
                         <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Chi tiết thanh toán</h5>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
+                        <div class="d-flex justify-content-between mb-3">
                             <span>Tiền phòng</span>
                             <span class="fw-bold">
-                                <fmt:formatNumber type="number" value="${booking.room.roomType.pricePerHour}" />
-                                x <fmt:formatNumber type="number" value="${numberOfHours}" pattern="#"/> giờ
+                                <fmt:formatNumber type="number" value="${booking.room.roomType.pricePerHour}" />đ x 
+                                <fmt:formatNumber type="number" value="${numberOfHours}" pattern="#"/> giờ
                             </span>
-                        </div>                        
+                        </div>
+
                         <c:if test="${not empty booking.bookingServices}">
-                            <c:forEach var="bookingService" items="${booking.bookingServices}">            
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>${bookingService.service.serviceName}</span>
-                                    <span class="fw-bold">
-                                        <fmt:formatNumber type="number" value="${bookingService.service.price}" /> x  
-                                        <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
-                                    </span>
-                                </div>
+                            <c:forEach var="bookingService" items="${booking.bookingServices}">   
+                                <c:if test="${bookingService.service.isPrepaid}">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span>${bookingService.service.serviceName}</span>
+                                        <span class="fw-bold">
+                                            <fmt:formatNumber type="number" value="${bookingService.service.price}" />đ x  
+                                            <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
+                                        </span>
+                                    </div>
+                                </c:if>  
                             </c:forEach>
                         </c:if>
-                        <hr>
-                
-                        <div class="py rounded">
-                            <div class="d-flex justify-content-between border-bottom pb-2">
-                                <span class="fw-bold">Tổng tiền (đã bao gồm giảm giá)</span>
-                                <span class="fw-bold text-dark">
-                                    <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ
-                                </span>
+
+                        <c:if test="${not empty booking.bookingExtensions}">
+                            <div class="border-top pt-3 mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Chi phí gia hạn</span>
+                                </div>
+                                <c:set var="totalExtensionAmount" value="0"/>
+                                <c:forEach var="extension" items="${booking.bookingExtensions}">
+                                    <div class="d-flex justify-content-between mb-2 ps-3">
+                                        <span class="text-muted small">
+                                            Gia hạn <fmt:formatNumber type="number" value="${extension.extendedHours}" pattern="#"/> giờ 
+                                            <!-- (${f:formatLocalDateTime(extension.createdAt)}) -->
+                                        </span>
+                                        <c:if test="${extension.paymentDetail != null}">
+                                            <span class="fw-bold">
+                                                <fmt:formatNumber type="number" value="${extension.paymentDetail.finalAmount}" />đ
+                                            </span>
+                                        </c:if>
+                                        <c:if test="${extension.paymentDetail == null}">
+                                            <a onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS')"
+                                            class="btn btn-primary btn-sm">
+                                                Thanh toán
+                                            </a>
+                                        </c:if>
+                                    </div>
+                                </c:forEach>
                             </div>
-                            <div class="d-flex justify-content-between pt-2">
+                        </c:if>
+
+                        <c:set var="hasPostpaidServices" value="false"/>
+                        <c:forEach var="bookingService" items="${booking.bookingServices}">
+                            <c:if test="${!bookingService.service.isPrepaid}">
+                                <c:set var="hasPostpaidServices" value="true"/>
+                            </c:if>
+                        </c:forEach>
+
+                        <c:set var="hasPaidPostServices" value="true"/>
+                        <c:if test="${hasPostpaidServices}">
+                            <div class="border-top pt-3 mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="fw-bold">Dịch vụ trả sau</span>
+                                </div>
+                                <c:forEach var="bookingService" items="${booking.bookingServices}">            
+                                    <c:if test="${!bookingService.service.isPrepaid}">
+                                        <div class="d-flex justify-content-between mb-2 ps-3">
+                                            <span class="text-muted small">${bookingService.service.serviceName}</span>
+                                            <span class="fw-bold">
+                                                <fmt:formatNumber type="number" value="${bookingService.service.price}" />đ x
+                                                <c:choose>
+                                                    <c:when test="${not empty bookingService.quantity}">
+                                                        <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="text-muted">(đang cập nhật)</span>
+                                                        <c:set var="hasPaidPostServices" value="false"/>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </span>
+                                        </div>
+                                    </c:if>
+                                </c:forEach>
+                            </div>
+                        </c:if>
+
+                        <div class="border-top pt-3 mt-3">
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="fw-bold">Tổng tiền (đã bao gồm giảm giá)</span>
+                                <div class="text-end">
+                                    <span class="fw-bold text-danger">
+                                        <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ
+                                    </span>
+                                    <c:if test="${!hasPaidPostServices}">
+                                        <div class="text-muted small">* Chưa bao gồm dịch vụ trả sau</div>
+                                    </c:if>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
                                 <span class="fw-bold">Đã thanh toán</span>
                                 <span class="fw-bold text-success">
                                     <fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ
                                 </span>
                             </div>
-                
+
                             <c:if test="${booking.status == 'CANCELLED'}">
-                                <div class="d-flex justify-content-between border-top pt-2 mt-2">
+                                <div class="d-flex justify-content-between border-top pt-3">
                                     <span class="fw-bold">Trạng thái hoàn tiền</span>
                                     <span class="fw-bold ${booking.totalAmount == booking.paidAmount ? 'text-warning' : 'text-success'}">
                                         ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
@@ -347,6 +456,10 @@
     <jsp:include page="../../shared/partial/_script-handle-cancel-booking.jsp" />
     <jsp:include page="../../admin/layout/partial/_script-preview-image-update.jsp" />
     <jsp:include page="../layout/partial/_payment-handler.jsp" />
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <%@ include file="./_modal-book-services.jsp" %>
+    <jsp:include page="./_modal-error.jsp" />
+    <jsp:include page="./_script-handle.jsp" />
     <script>
         setupImagePreview("review");
     </script>
@@ -423,6 +536,5 @@
             });
         });
     </script>
-
 </body>
 </html>

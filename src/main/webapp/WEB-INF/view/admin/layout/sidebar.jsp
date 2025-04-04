@@ -32,6 +32,11 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             >
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/admin/booking-extension"
+              >Gia hạn đặt phòng</a
+            >
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/admin/booking-service">Dịch vụ đã đặt</a>
           </li>
         </ul>

@@ -2,12 +2,14 @@ package com.lullabyhomestay.homestay_management.controller.client;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
+import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.Review;
 import com.lullabyhomestay.homestay_management.domain.Room;
@@ -35,6 +38,8 @@ import com.lullabyhomestay.homestay_management.service.*;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.BookingUtils;
+import com.lullabyhomestay.homestay_management.utils.Constants;
+import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.RefundType;
 
 import jakarta.validation.Valid;
@@ -56,6 +61,7 @@ public class ClientBookingController {
     private final ModelMapper mapper;
     private final ReviewService reviewService;
     private final RefundService refundService;
+    private final BookingExtensionService bookingExtensionService;
 
     @PostMapping("/booking")
     public String postCreateBooking(@ModelAttribute("newBooking") @Valid Booking booking,
@@ -198,6 +204,7 @@ public class ClientBookingController {
         model.addAttribute("numberOfHours", booking.getNumberOfHours());
         model.addAttribute("newReview", new Review());
         model.addAttribute("editReview", new Review());
+        model.addAttribute("listServicesPostPay", service.getServiceByIsPrepaid(false));
         return "client/booking/detail-booking-history";
     }
 
@@ -249,6 +256,91 @@ public class ClientBookingController {
         BookingUtils.validateBooking(booking, customerDTO);
         this.bookingService.cancelBooking(bookingID);
         return "redirect:/booking/booking-history";
+    }
+
+    @PostMapping("/booking/booking-service/create")
+    public ResponseEntity<?> postCreateBookingServices(@RequestBody List<BookingServices> bookingServices) {
+        for (BookingServices request : bookingServices) {
+            BookingServices newBookingService = new BookingServices();
+            Long bookingID = request.getBooking().getBookingID();
+            Long serviceID = request.getService().getServiceID();
+
+            newBookingService.setBooking(bookingService.getBookingByID(bookingID));
+            newBookingService.setService(service.getServiceByID(serviceID));
+            newBookingService.setDescription(request.getDescription());
+
+            bookingExtraService.handleSaveBookingServiceExtra(newBookingService);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/booking/can-booking-extension/{id}")
+    public ResponseEntity<Boolean> canBookingExtension(@PathVariable long id) {
+        boolean canBookingExtension = bookingExtensionService.canExtendBooking(id);
+        return ResponseEntity.ok(canBookingExtension);
+    }
+
+    @GetMapping("/booking/booking-extension/{id}")
+    public String getBookingExtensionPage(@PathVariable long id, Model model) {
+        Booking booking = bookingService.getBookingByID(id);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        BookingUtils.validateBooking(booking, customerDTO);
+        model.addAttribute("booking", booking);
+        return "client/booking/booking-extension";
+    }
+
+    @PostMapping("/booking/booking-extension")
+    public String postBookingExtension(@RequestParam("bookingID") Long bookingID,
+            @RequestParam("newCheckoutTime") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime newCheckout,
+            Model model) {
+        Booking booking = bookingService.getBookingByID(bookingID);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        BookingUtils.validateBooking(booking, customerDTO);
+
+        LocalDateTime currentCheckout = booking.getCheckOut();
+        LocalDateTime checkOutWithCleaningBuffer = currentCheckout.plus(Constants.CLEANING_HOURS, ChronoUnit.HOURS);
+
+        // Thời gian dọn dẹp sau check-out mới
+        LocalDateTime newCheckoutWithCleaningBuffer = newCheckout.plus(Constants.CLEANING_HOURS, ChronoUnit.HOURS);
+
+        // Kiểm tra trùng lịch từ checkOutWithCleaningBuffer đến
+        // newCheckoutWithCleaningBuffer
+        boolean isOverlapping = roomStatusHistoryService.existsOverlappingStatuses(
+                booking.getRoom().getRoomID(),
+                checkOutWithCleaningBuffer,
+                newCheckoutWithCleaningBuffer);
+        if (isOverlapping) {
+            model.addAttribute("errorMessage", "Hiện thời gian bạn chọn đã có lịch trình");
+            model.addAttribute("booking", booking);
+            return "client/booking/booking-extension";
+        }
+
+        Float minutesDelay = (float) ChronoUnit.MINUTES.between(currentCheckout, newCheckout);
+        Float hoursDelay = (float) (Math.ceil(minutesDelay / 30.0) * 0.5);
+        if (hoursDelay <= 0) {
+            model.addAttribute("errorMessage",
+                    "Thời gian gia hạn không hợp lệ. Vui lòng chọn thời gian checkout mới sau thời gian hiện tại.");
+            model.addAttribute("booking", booking);
+            return "client/booking/booking-extension";
+        }
+
+        BookingExtension extension = new BookingExtension();
+        extension.setBooking(booking);
+        extension.setExtendedHours(hoursDelay);
+
+        model.addAttribute("hoursDelay", hoursDelay);
+        model.addAttribute("newCheckout", newCheckout);
+        bookingExtensionService.handleBookingExtensions(extension);
+        model.addAttribute("extension", extension);
+        model.addAttribute("finalAmount", extension.getTotalAmount()
+                - DiscountUtil.calculateDiscountAmount(extension.getTotalAmount(), booking.getCustomer()));
+
+        double originalAmount = extension.getTotalAmount()
+                / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
+        double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
+        model.addAttribute("discountAmount", discountAmount);
+        return "client/booking/confirm-extension";
     }
 
     private String prepareModelWithoutSearch(Model model, SearchBookingCriteriaDTO criteria, int validPage) {
