@@ -14,6 +14,7 @@ import com.lullabyhomestay.homestay_management.domain.Customer;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingServiceCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
+import com.lullabyhomestay.homestay_management.repository.PaymentDetailRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.BookingServiceSpecification;
 import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
@@ -27,36 +28,24 @@ public class BookingExtraService {
 
     private final BookingServiceRepository bookingServiceRepo;
     private final BookingService bookingService;
+    private final PaymentDetailRepository paymentDetailRepo;
 
     @Transactional
-    public BookingServices handleSaveBookingServiceExtra(BookingServices bookingService) {
+    public BookingServices handleSaveBookingServiceExtra(BookingServices bService) {
 
-        Booking currentBooking = this.bookingService.getBookingByID(bookingService.getBooking().getBookingID());
+        Booking currentBooking = this.bookingService.getBookingByID(bService.getBooking().getBookingID());
         Customer customer = currentBooking.getCustomer();
 
-        Double oldTotalPrice = (double) 0;
-        // Với trường hợp sửa số lượng
-        if (bookingService.getBookingServiceID() != null) {
-            Optional<BookingServices> currentBookingServiceOpt = this.bookingServiceRepo
-                    .findByBookingServiceID(bookingService.getBookingServiceID());
-            if (currentBookingServiceOpt.isPresent()) {
-                oldTotalPrice = currentBookingServiceOpt.get().getRawTotalAmount() - DiscountUtil
-                        .calculateDiscountAmount(currentBookingServiceOpt.get().getRawTotalAmount(), customer);
-            }
+        if (bService.getService().getIsPrepaid() || bService.getQuantity() != null) {
+            Double rawAmount = bService.getRawTotalAmount();
+            Double discount = DiscountUtil.calculateDiscountAmount(rawAmount, customer);
+            Double finalAmount = rawAmount - discount;
+
+            currentBooking.setTotalAmount(currentBooking.getTotalAmount() + finalAmount);
+            bookingService.handleSaveBooking(currentBooking);
         }
 
-        // Nếu service trả trước thì mới update giá liền đc
-        if (bookingService.getService().getIsPrepaid()) {
-            Double rawServiceTotalAmount = bookingService.getRawTotalAmount();
-            Double discountAmount = DiscountUtil.calculateDiscountAmount(rawServiceTotalAmount, customer);
-
-            Double totalAmount = currentBooking.getTotalAmount() + (rawServiceTotalAmount - discountAmount)
-                    - oldTotalPrice;
-            currentBooking.setTotalAmount(totalAmount);
-            currentBooking = this.bookingService.handleSaveBooking(currentBooking);
-        }
-
-        return bookingServiceRepo.save(bookingService);
+        return bookingServiceRepo.save(bService);
     }
 
     public Page<BookingServices> searchBookingServices(SearchBookingServiceCriteriaDTO criteria, int page) {
@@ -85,5 +74,69 @@ public class BookingExtraService {
 
     public List<BookingServices> getListBookingServiceByBookingID(Long bookingID) {
         return bookingServiceRepo.findByBooking_BookingID(bookingID);
+    }
+
+    @Transactional
+    public void updateQuantityBookingServices(BookingServices bService, Float newQuantity) {
+        Booking currentBooking = bookingService.getBookingByID(bService.getBooking().getBookingID());
+        Customer customer = bService.getBooking().getCustomer();
+        BookingServices currentBookingService = getBookingServiceByID(bService.getBookingServiceID());
+
+        Double oldTotalPriceService = currentBookingService.getRawTotalAmount() - DiscountUtil
+                .calculateDiscountAmount(currentBookingService.getRawTotalAmount(), customer);
+
+        // Tránh tình trạng bị Hibernate cache sai dữ liệu cũ
+        bService.setQuantity(newQuantity);
+        Double rawServiceTotalAmount = bService.getRawTotalAmount();
+        Double discountAmount = DiscountUtil.calculateDiscountAmount(rawServiceTotalAmount, customer);
+
+        Double currentTotal = currentBooking.getTotalAmount();
+        Double newPriceService = rawServiceTotalAmount - discountAmount;
+        Double totalAmount = currentTotal - oldTotalPriceService + newPriceService;
+
+        currentBooking.setTotalAmount(totalAmount);
+        currentBooking = bookingService.handleSaveBooking(currentBooking);
+
+        bookingServiceRepo.save(bService);
+    }
+
+    public boolean canDeleteBookingService(Long bookingServiceID) {
+        boolean hasPaid = paymentDetailRepo.existsByBookingService_BookingServiceID(bookingServiceID);
+        return !hasPaid;
+    }
+
+    @Transactional
+    public void deleteBookingServiceByID(Long bookingServiceID) {
+        BookingServices currentBService = getBookingServiceByID(bookingServiceID);
+        Booking currentBooking = currentBService.getBooking();
+        Customer customer = currentBService.getBooking().getCustomer();
+
+        Double oldTotalPriceService = currentBService.getRawTotalAmount() - DiscountUtil
+                .calculateDiscountAmount(currentBService.getRawTotalAmount(), customer);
+
+        Double currentTotal = currentBooking.getTotalAmount();
+        Double newPriceService = currentTotal - oldTotalPriceService;
+
+        currentBooking.setTotalAmount(newPriceService);
+        currentBooking = bookingService.handleSaveBooking(currentBooking);
+
+        if (canDeleteBookingService(bookingServiceID)) {
+            this.bookingServiceRepo.deleteByBookingServiceID(bookingServiceID);
+        }
+    }
+
+    public Double calculateUnpaidServicesTotalAmount(Long bookingID) {
+        List<BookingServices> unpaidServices = bookingServiceRepo
+                .findBookingServicesWithoutPaymentDetail(bookingID);
+        if (unpaidServices.isEmpty()) {
+            return 0.0;
+        }
+        Customer customer = unpaidServices.get(0).getBooking().getCustomer();
+        Double totalAmount = 0.0;
+        for (BookingServices bService : unpaidServices) {
+            totalAmount += bService.getRawTotalAmount();
+        }
+        totalAmount = totalAmount - DiscountUtil.calculateDiscountAmount(totalAmount, customer);
+        return totalAmount;
     }
 }

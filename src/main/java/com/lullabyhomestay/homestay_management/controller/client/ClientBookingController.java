@@ -200,11 +200,13 @@ public class ClientBookingController {
         BookingUtils.validateBooking(booking, customerDTO);
         BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
+        model.addAttribute("canCancel", bookingService.canCancelBooking(booking));
         model.addAttribute("booking", booking);
         model.addAttribute("numberOfHours", booking.getNumberOfHours());
         model.addAttribute("newReview", new Review());
         model.addAttribute("editReview", new Review());
         model.addAttribute("listServicesPostPay", service.getServiceByIsPrepaid(false));
+        model.addAttribute("totalUnpaidPostpaidAmount", bookingExtraService.calculateUnpaidServicesTotalAmount(id));
         return "client/booking/detail-booking-history";
     }
 
@@ -213,6 +215,13 @@ public class ClientBookingController {
         Booking booking = bookingService.getBookingByID(bookingID);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         BookingUtils.validateBooking(booking, customerDTO);
+
+        if (booking.getPaidAmount() == null || booking.getPaidAmount() <= 0) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("refundAmount", 0.0);
+            response.put("refundPercentage", 0);
+            return ResponseEntity.ok(response);
+        }
 
         if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) {
             throw new IllegalStateException("Chỉ được hủy khi booking chưa bắt đầu.");
@@ -234,20 +243,6 @@ public class ClientBookingController {
 
         return ResponseEntity.ok(response);
     }
-
-    // @GetMapping("/booking/cancel")
-    // @ResponseBody
-    // public ResponseEntity<ApiResponseDTO<String>>
-    // cancelAndRefundForBooking(@RequestParam Long bookingID,
-    // HttpServletRequest request) {
-    // CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
-    // BookingUtils.validateBooking(bookingService.getBookingByID(bookingID),
-    // customerDTO);
-    // String refundUrl = paymentService.createVnPayPaymentRefundURL(request,
-    // bookingID);
-    // return ResponseEntity.ok(new ApiResponseDTO<>(refundUrl, "Thực hiện hủy đặt
-    // phòng và hoàn tiền"));
-    // }
 
     @PostMapping("/booking/cancel")
     public String postCancelBooking(@RequestParam("bookingID") long bookingID) {

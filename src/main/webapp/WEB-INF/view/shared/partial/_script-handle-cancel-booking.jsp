@@ -24,15 +24,20 @@
 
         let formattedRefundAmount = refundAmount.toLocaleString("vi-VN");
 
-        let message =
-          "<p>Bạn có chắc chắn muốn hủy đặt phòng không?</p>" +
-          "<p>Số tiền hoàn lại: <b>" +
-          formattedRefundAmount +
-          "đ </b> (" +
-          refundPercentage +
-          "% số tiền đã thanh toán).</p>";
+        if (refundAmount === 0) {
+          let message = "<p>Bạn có chắc chắn muốn hủy đặt phòng không?</p>";
+          $("#refundMessage").html(message);
+        } else {
+          let message =
+            "<p>Bạn có chắc chắn muốn hủy đặt phòng không?</p>" +
+            "<p>Số tiền hoàn lại: <b>" +
+            formattedRefundAmount +
+            "đ </b> (" +
+            refundPercentage +
+            "% số tiền đã thanh toán).</p>";
+          $("#refundMessage").html(message);
+        }
 
-        $("#refundMessage").html(message);
         $("#bookingIDInput").val(bookingId);
         $("#refundConfirmModal").modal("show");
       },

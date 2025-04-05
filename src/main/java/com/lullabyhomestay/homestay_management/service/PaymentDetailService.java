@@ -71,16 +71,17 @@ public class PaymentDetailService {
             List<BookingServices> listBookingServices = bookingServiceRepo
                     .findBookingServicesWithoutPaymentDetail(bookingID);
             for (BookingServices bService : listBookingServices) {
-                PaymentDetail paymentServiceDetail = new PaymentDetail();
+                PaymentDetail paymentDetail = new PaymentDetail();
+                paymentDetail.setPayment(payment);
 
-                paymentServiceDetail.setPaymentPurpose(PaymentPurpose.ADDITIONAL_SERVICE);
-                paymentServiceDetail.setBookingService(bService);
+                paymentDetail.setPaymentPurpose(PaymentPurpose.ADDITIONAL_SERVICE);
+                paymentDetail.setBookingService(bService);
 
                 Double rawTotalAmount = bService.getRawTotalAmount();
-                paymentServiceDetail.setBaseAmount(rawTotalAmount);
-                paymentServiceDetail.setFinalAmount(rawTotalAmount - DiscountUtil
+                paymentDetail.setBaseAmount(rawTotalAmount);
+                paymentDetail.setFinalAmount(rawTotalAmount - DiscountUtil
                         .calculateDiscountAmount(rawTotalAmount, payment.getBooking().getCustomer()));
-                paymentDetailRepo.save(paymentServiceDetail);
+                paymentDetailRepo.save(paymentDetail);
             }
         }
     }

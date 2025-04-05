@@ -10,7 +10,7 @@ uri="http://www.springframework.org/tags/form" %>
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Sửa việc đặt dịch vụ</title>
+    <title>Tạo mới đặt dịch vụ</title>
     <jsp:include page="../layout/import-css.jsp" />
   </head>
   <body>
@@ -28,15 +28,14 @@ uri="http://www.springframework.org/tags/form" %>
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title mb-4 text-center">
-                      Sửa việc đặt dịch vụ
+                      Tạo việc đặt dịch vụ
                     </h4>
                     <form:form
                       class="form-horizontal"
-                      action="/admin/booking-service/update"
+                      action="/admin/booking-service/create"
                       method="post"
-                      modelAttribute="bookingService"
+                      modelAttribute="newBookingService"
                     >
-                      <form:input type="hidden" path="bookingServiceID" />
                       <form:input type="hidden" path="booking.bookingID" />
 
                       <c:set var="errorQuantity">
@@ -67,16 +66,21 @@ uri="http://www.springframework.org/tags/form" %>
 
                       <div class="form-group row">
                         <label class="control-label col-sm-2"
-                          >Tên dịch vụ <span class="text-danger"></span
-                        ></label>
+                          >Dịch vụ <span class="text-danger">*</span></label
+                        >
                         <div class="col-sm-10">
-                          <input
-                            type="text"
-                            class="form-control"
-                            value="${bookingService.service.serviceName}"
-                            readonly
-                          />
-                          <form:input type="hidden" path="service"></form:input>
+                          <form:select
+                            class="form-select form-control ${not empty errorService ? 'is-invalid' : ''}"
+                            path="service"
+                          >
+                            <form:option value="">Chọn dịch vụ</form:option>
+                            <form:options
+                              items="${listServices}"
+                              itemValue="serviceID"
+                              itemLabel="serviceName"
+                            />
+                          </form:select>
+                          ${errorService}
                         </div>
                       </div>
 
@@ -97,7 +101,7 @@ uri="http://www.springframework.org/tags/form" %>
                       <div class="form-group row">
                         <label class="control-label col-sm-2">Mô tả</label>
                         <div class="col-sm-10">
-                          <form:textarea
+                          <form:input
                             type="text"
                             class="form-control"
                             path="description"
@@ -108,12 +112,12 @@ uri="http://www.springframework.org/tags/form" %>
                       <div class="form-group row">
                         <div class="col-sm-offset-2 col-sm-10 text-center">
                           <a
-                            href="javascript:history.back()"
+                            href="/admin/booking-service"
                             class="btn btn-secondary"
                             >Hủy</a
                           >
-                          <button type="submit" class="btn btn-warning">
-                            Sửa
+                          <button type="submit" class="btn btn-primary">
+                            Tạo mới
                           </button>
                         </div>
                       </div>

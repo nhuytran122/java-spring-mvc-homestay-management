@@ -157,7 +157,17 @@ uri="http://lullabyhomestay.com/functions" %>
 
                     <div class="row mt-4">
                       <div class="col-md-12">
-                        <h5 class="mb-3 fw-bold">Dịch vụ bổ sung</h5>
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-3"
+                        >
+                          <h5 class="fw-bold mb-0">Dịch vụ bổ sung</h5>
+                          <a
+                            href="/admin/booking-service/create/${booking.bookingID}"
+                            class="btn btn-primary btn-sm"
+                          >
+                            <i class="bi bi-plus-circle"></i> Thêm mới
+                          </a>
+                        </div>
                         <c:choose>
                           <c:when test="${not empty booking.bookingServices}">
                             <div class="table-responsive">
@@ -170,32 +180,56 @@ uri="http://lullabyhomestay.com/functions" %>
                                     <th>Đơn giá</th>
                                     <th>Số lượng</th>
                                     <th>Ngày tạo</th>
+                                    <th>Hành động</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   <c:forEach
-                                    var="service"
+                                    var="bService"
                                     items="${booking.bookingServices}"
                                   >
                                     <tr>
-                                      <td>${service.bookingServiceID}</td>
-                                      <td>${service.service.serviceName}</td>
-                                      <td>${service.description}</td>
+                                      <td>${bService.bookingServiceID}</td>
+                                      <td>${bService.service.serviceName}</td>
+                                      <td>${bService.description}</td>
                                       <td>
                                         <fmt:formatNumber
                                           type="number"
-                                          value="${service.service.price}"
+                                          value="${bService.service.price}"
                                         />đ
                                       </td>
                                       <td>
                                         <fmt:formatNumber
                                           type="number"
-                                          value="${service.quantity}"
+                                          value="${bService.quantity}"
                                           pattern="#"
                                         />
                                       </td>
                                       <td>
-                                        ${f:formatLocalDateTime(service.createdAt)}
+                                        ${f:formatLocalDateTime(bService.createdAt)}
+                                      </td>
+
+                                      <td class="text-center">
+                                        <a
+                                          href="/admin/booking-service/update/${bService.bookingServiceID}"
+                                          class="btn btn-warning btn-sm"
+                                          title="Sửa"
+                                        >
+                                          <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button
+                                          class="btn btn-danger btn-sm"
+                                          title="Xóa"
+                                          onclick="checkBeforeDelete(this)"
+                                          data-entity-id="${bService.bookingServiceID}"
+                                          data-entity-name="${bService.service.serviceName}"
+                                          data-entity-type="Việc đặt dịch vụ"
+                                          data-delete-url="/admin/booking-service/delete"
+                                          data-check-url="/admin/booking-service/can-delete/"
+                                          data-id-name="bookingServiceID"
+                                        >
+                                          <i class="bi bi-trash"></i>
+                                        </button>
                                       </td>
                                     </tr>
                                   </c:forEach>
@@ -283,5 +317,13 @@ uri="http://lullabyhomestay.com/functions" %>
     </div>
 
     <jsp:include page="../layout/import-js.jsp" />
+    <jsp:include page="../layout/partial/_modals-delete.jsp" />
+    <script>
+      $("#deleteWarningModal").on("show.bs.modal", function () {
+        $(this)
+          .find(".modal-body")
+          .html("Dịch vụ này đã được thanh toán, không thể xóa.");
+      });
+    </script>
   </body>
 </html>

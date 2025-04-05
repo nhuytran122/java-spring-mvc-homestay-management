@@ -396,6 +396,21 @@
                                         </div>
                                     </c:if>
                                 </c:forEach>
+
+                                <c:if test="${totalUnpaidPostpaidAmount != 0}">
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <span class="me-3 fw-bold">
+                                            Tổng tiền chưa thanh toán: 
+                                            <span class="text-danger">
+                                                <fmt:formatNumber type="number" value="${totalUnpaidPostpaidAmount}" />đ
+                                            </span>
+                                        </span>
+                                        <button class="btn btn-primary btn-sm" 
+                                                onclick="handlePayment('${booking.bookingID}', 'ADDITIONAL_SERVICE')">
+                                            Thanh toán dịch vụ trả sau
+                                        </button>
+                                    </div>
+                                </c:if>
                             </div>
                         </c:if>
 
@@ -430,7 +445,7 @@
                     </div>
                 </div>
                 
-                <c:if test="${booking.status != 'CANCELLED' and booking.status != 'COMPLETED' and now < booking.checkIn}">
+                <c:if test="${canCancel}">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-grid gap-2">

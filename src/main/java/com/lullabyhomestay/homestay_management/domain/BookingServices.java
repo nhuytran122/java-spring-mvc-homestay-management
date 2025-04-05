@@ -44,7 +44,7 @@ public class BookingServices {
 
     @ManyToOne
     @JoinColumn(name = "ServiceID")
-    @NotNull(message = "Vui lòng chọn dịch vụ")
+    @NotNull(message = "Vui lòng chọn dịch vụ", groups = AdminValidation.class)
     private Service service;
 
     @ManyToOne

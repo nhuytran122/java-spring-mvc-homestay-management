@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,21 +113,28 @@ public class BookingService {
 
     @Transactional
     public void cancelBooking(Long bookingID) {
-
         // Lấy và validate booking
         Booking currentBooking = validateAndGetBooking(bookingID);
+        if (canCancelBooking(currentBooking)) {
+            // Xóa dữ liệu liên quan
+            // Không xóa bookingServices để truy vết paymentDetails
+            roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
+            // currentBooking.setBookingServices(new ArrayList<>());
 
-        // Xóa dữ liệu liên quan
-        // Không xóa bookingServices để truy vết paymentDetails
-        roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
-        // currentBooking.setBookingServices(new ArrayList<>());
+            // Xử lý payment và refund
+            Payment payment = validateAndGetPayment(currentBooking);
+            Refund refund = createPendingRefund(payment, currentBooking);
 
-        // Xử lý payment và refund
-        Payment payment = validateAndGetPayment(currentBooking);
-        Refund refund = createPendingRefund(payment, currentBooking);
+            // Cập nhật booking
+            updateBookingAfterCancellation(currentBooking, refund);
+        }
+    }
 
-        // Cập nhật booking
-        updateBookingAfterCancellation(currentBooking, refund);
+    public boolean canCancelBooking(Booking booking) {
+        LocalDateTime now = LocalDateTime.now();
+        return booking.getStatus() != BookingStatus.CANCELLED
+                && booking.getStatus() != BookingStatus.COMPLETED
+                && now.isBefore(booking.getCheckIn());
     }
 
     private Booking validateAndGetBooking(Long bookingID) {

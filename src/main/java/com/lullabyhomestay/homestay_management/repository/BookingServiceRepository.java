@@ -29,8 +29,11 @@ public interface BookingServiceRepository extends JpaRepository<BookingServices,
 
     boolean existsByBooking_BookingID(Long bookingID);
 
+    void deleteByBookingServiceID(Long bookingServiceID);
+
     @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingID = :bookingID " +
             "AND NOT EXISTS (SELECT pd FROM PaymentDetail pd WHERE pd.bookingService.bookingServiceID = bs.bookingServiceID)")
+
     List<BookingServices> findBookingServicesWithoutPaymentDetail(@Param("bookingID") Long bookingID);
 
 }

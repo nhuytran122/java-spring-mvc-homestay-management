@@ -40,6 +40,7 @@ public class PaymentService {
     private final PaymentDetailService paymentDetailService;
     private final BookingExtensionService bookingExtensionService;
     private final RoomStatusHistoryService roomStatusHistoryService;
+    private final BookingExtraService bookingExtraService;
 
     public String createVnPayPaymentURL(HttpServletRequest request, Long bookingID, PaymentPurpose paymentPurpose) {
         Booking booking = bookingService.getBookingByID(bookingID);
@@ -55,10 +56,12 @@ public class PaymentService {
             Double rawAmount = bookingExtension.getTotalAmount();
             Double totalAmountDouble = rawAmount
                     - DiscountUtil.calculateDiscountAmount(rawAmount, booking.getCustomer());
-
+            amount = totalAmountDouble.longValue() * 100L;
+        } else if (paymentPurpose == PaymentPurpose.ADDITIONAL_SERVICE) {
+            // Lấy tổng tiền dịch vụ trả sau mà khách chưa thanh toán
+            Double totalAmountDouble = bookingExtraService.calculateUnpaidServicesTotalAmount(bookingID);
             amount = totalAmountDouble.longValue() * 100L;
         }
-
         String bankCode = request.getParameter("bankCode");
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(bookingID, paymentPurpose);
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));

@@ -53,15 +53,13 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="card-title">Danh sách đặt dịch vụ</h4>
-                                        <a href="/admin/booking-service/create" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-plus-circle"></i> Thêm mới
-                                        </a>
                                     </div>
 
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead class="table-light">
                                                 <tr>
+                                                    <th>Mã đặt phòng</th>
                                                     <th>Tên khách hàng</th>
                                                     <th>Chi nhánh</th>
                                                     <th>Phòng</th>
@@ -83,6 +81,7 @@
                                                     <c:otherwise>
                                                         <c:forEach var="bookingService" items="${listBookingServices}">
                                                             <tr style="height: 70px;">
+                                                                <td>${bookingService.booking.bookingID}</td>
                                                                 <td>${bookingService.booking.customer.fullName}</td>
                                                                 <td>${bookingService.booking.room.branch.branchName}</td>
                                                                 <td>${bookingService.booking.room.roomNumber}</td>
@@ -118,16 +117,19 @@
                                                                         <a href="/admin/booking-service/update/${bookingService.bookingServiceID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                             <i class="bi bi-pencil"></i>
                                                                         </a>
-                                                                        <button class="btn btn-danger btn-sm" title="Xóa"
-                                                                                onclick="checkBeforeDelete(this)" 
-                                                                                data-entity-id="${bookingService.bookingServiceID}" 
-                                                                                data-entity-name="${bookingService.booking.customer.fullName}" 
-                                                                                data-entity-type="Việc đặt dịch vụ của khách hàng" 
-                                                                                data-delete-url="/admin/booking-service/delete" 
-                                                                                data-check-url="/admin/booking-service/can-delete/" 
-                                                                                data-id-name="bookingServiceID">
+                                                                        <button
+                                                                            class="btn btn-danger btn-sm"
+                                                                            title="Xóa"
+                                                                            onclick="checkBeforeDelete(this)"
+                                                                            data-entity-id="${bookingService.bookingServiceID}"
+                                                                            data-entity-name="${bookingService.service.serviceName}"
+                                                                            data-entity-type="Việc đặt dịch vụ"
+                                                                            data-delete-url="/admin/booking-service/delete"
+                                                                            data-check-url="/admin/booking-service/can-delete/"
+                                                                            data-id-name="bookingServiceID"
+                                                                            >
                                                                             <i class="bi bi-trash"></i>
-                                                                        </button>
+                                                                            </button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -153,7 +155,17 @@
         </div>
     </div>
 
-    <jsp:include page="../layout/partial/_modals-delete.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
+    <jsp:include page="../layout/partial/_modals-delete.jsp" />
+    <script>
+      $("#deleteWarningModal").on("show.bs.modal", function () {
+
+        $(this)
+          .find(".modal-body")
+          .html(
+            'Dịch vụ này đã được thanh toán, không thể xóa.'
+          );
+      });
+    </script>
 </body>
 </html>
