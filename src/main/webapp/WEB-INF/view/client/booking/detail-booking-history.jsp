@@ -233,10 +233,13 @@
                 <c:if test="${booking.status == 'CONFIRMED'}">
                     <div class="mb-4">
                         <div class="d-flex justify-content-between gap-2">
-                            <button class="btn btn-primary btn-sm flex-fill" data-bs-toggle="modal" 
-                            data-bs-target="#bookServicesModal">
+                            <button class="btn btn-primary btn-sm flex-fill"
+                                onclick="checkBeforeBookServices(this)"
+                                data-booking-id="${booking.bookingID}"
+                                data-booking-status="${booking.status}">
                                 <i class="bi bi-plus-circle me-1"></i>Đặt dịch vụ
                             </button>
+
                             <button class="btn btn-success btn-sm" title="Gia hạn"
                                 onclick="checkBeforeBookingExtension(this)" 
                                     data-booking-id="${booking.bookingID}" >
@@ -257,13 +260,13 @@
                                     booking.status == 'CANCELLED' ? 'bg-danger' : 
                                     booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
                                     ${booking.status.displayName}</span>    
-                                    
-                                    <c:if test="${booking.status == 'CANCELLED'}">
-                                        <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
-                                            ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
-                                        </span>                 
+                                    <c:if test="${not empty booking.payments}">
+                                        <c:if test="${booking.status == 'CANCELLED'}">
+                                            <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
+                                                ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                            </span>                 
+                                        </c:if>
                                     </c:if>
-                                    
                             </div>
                         </div>
                         <div class="mb-3">
@@ -432,14 +435,15 @@
                                     <fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ
                                 </span>
                             </div>
-
-                            <c:if test="${booking.status == 'CANCELLED'}">
-                                <div class="d-flex justify-content-between border-top pt-3">
-                                    <span class="fw-bold">Trạng thái hoàn tiền</span>
-                                    <span class="fw-bold ${booking.totalAmount == booking.paidAmount ? 'text-warning' : 'text-success'}">
-                                        ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
-                                    </span>
-                                </div>
+                            <c:if test="${not empty booking.payments}">
+                                <c:if test="${booking.status == 'CANCELLED'}">
+                                    <div class="d-flex justify-content-between border-top pt-3">
+                                        <span class="fw-bold">Trạng thái hoàn tiền</span>
+                                        <span class="fw-bold ${booking.totalAmount == booking.paidAmount ? 'text-warning' : 'text-success'}">
+                                            ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                        </span>
+                                    </div>
+                                </c:if>
                             </c:if>
                         </div>
                     </div>

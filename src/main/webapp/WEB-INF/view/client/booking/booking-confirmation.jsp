@@ -154,6 +154,25 @@ uri="http://lullabyhomestay.com/functions" %>
 
             <div class="action-buttons my-4">
               <div class="btn-group" role="group">
+                <form action="/booking/cancel" method="post">
+                  <input
+                    type="hidden"
+                    name="${_csrf.parameterName}"
+                    value="${_csrf.token}"
+                  />
+                  <input
+                    type="hidden"
+                    name="bookingID"
+                    value="${booking.bookingID}"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-outline-danger btn-lg mx-2"
+                  >
+                    <i class="bi bi-x-circle"></i> Hủy đặt phòng
+                  </button>
+                </form>
+
                 <a
                   onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')"
                   class="btn btn-primary btn-lg"

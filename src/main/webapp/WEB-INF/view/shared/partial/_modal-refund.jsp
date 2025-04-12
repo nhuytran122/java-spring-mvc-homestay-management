@@ -18,22 +18,34 @@
         <p id="refundMessage"></p>
       </div>
       <div class="modal-footer">
-        <form id="cancelForm" method="post" action="/booking/cancel">
-          <input type="hidden" id="bookingIDInput" name="bookingID" />
+        <div id="refundFooterError" style="display: none">
           <button
             type="button"
             class="btn btn-secondary"
             data-bs-dismiss="modal"
           >
-            Hủy
+            Đóng
           </button>
-          <button type="submit" class="btn btn-danger">Chắc chắn</button>
-          <input
-            type="hidden"
-            name="${_csrf.parameterName}"
-            value="${_csrf.token}"
-          />
-        </form>
+        </div>
+
+        <div id="refundFooterConfirm">
+          <form id="cancelForm" method="post" action="/booking/cancel">
+            <input type="hidden" id="bookingIDInput" name="bookingID" />
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Hủy
+            </button>
+            <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+            <input
+              type="hidden"
+              name="${_csrf.parameterName}"
+              value="${_csrf.token}"
+            />
+          </form>
+        </div>
       </div>
     </div>
   </div>

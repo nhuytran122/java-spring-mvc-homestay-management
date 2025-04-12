@@ -18,9 +18,18 @@
       dataType: "json",
       success: function (response) {
         console.log("Response từ server:", response);
+        if (response.data == null) {
+          let errorMessage = response.message;
+          $("#refundMessage").html(errorMessage);
+          $("#bookingIDInput").val("");
+          $("#refundFooterConfirm").hide();
+          $("#refundFooterError").show();
+          $("#refundConfirmModal").modal("show");
+          return;
+        }
 
-        let refundAmount = Number(response.refundAmount) || 0;
-        let refundPercentage = response.refundPercentage || 0;
+        let refundAmount = Number(response.data.refundAmount) || 0;
+        let refundPercentage = response.data.refundPercentage || 0;
 
         let formattedRefundAmount = refundAmount.toLocaleString("vi-VN");
 
@@ -43,9 +52,10 @@
       },
       error: function (xhr, status, error) {
         console.error("Lỗi kiểm tra hoàn tiền:", xhr.status, xhr.responseText);
-        $("#refundMessage").html(
-          "<p>Có lỗi xảy ra khi kiểm tra hoàn tiền. Vui lòng thử lại.</p>"
-        );
+
+        let errorMessage =
+          "<p>Có lỗi xảy ra khi kiểm tra hoàn tiền. Vui lòng thử lại.</p>";
+        $("#refundMessage").html(errorMessage);
         $("#refundConfirmModal").modal("show");
       },
     });

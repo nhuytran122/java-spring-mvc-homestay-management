@@ -2,7 +2,6 @@
 <script>
   function saveSelectedBookingServices() {
     let selectedItems = [];
-    let hasError = false;
 
     $(".item-checkbox:checked").each(function () {
       let bookingID = $(this).data("booking-id");
@@ -20,8 +19,6 @@
       });
     });
 
-    if (hasError) return;
-
     if (selectedItems.length === 0) {
       $("#errorModal .modal-body").html(
         "<p class='text-danger'>Vui lòng chọn ít nhất một dịch vụ để đặt!</p>"
@@ -35,12 +32,24 @@
       type: "POST",
       contentType: "application/json",
       data: JSON.stringify(selectedItems),
-      success: function () {
-        location.reload();
+      success: function (response) {
+        if (response && response.success === false) {
+          $("#errorModal .modal-body").html(
+            `<p class='text-danger'>${response.message}</p>`
+          );
+          $("#errorModal").modal("show");
+        } else {
+          location.reload();
+        }
       },
-      error: function () {
+      error: function (xhr) {
+        let message = "Có lỗi xảy ra, vui lòng thử lại!";
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+          message = xhr.responseJSON.message;
+        }
+
         $("#errorModal .modal-body").html(
-          "<p class='text-danger'>Có lỗi xảy ra, vui lòng thử lại!</p>"
+          `<p class='text-danger'>${message}</p>`
         );
         $("#errorModal").modal("show");
       },
@@ -55,18 +64,45 @@
       type: "GET",
       dataType: "json",
       success: function (response) {
-        if (response === true) {
+        console.log("Response từ server:", response);
+
+        if (response.data === true) {
           window.location.href = "/booking/booking-extension/" + bookingID;
         } else {
+          let message =
+            response.message || "Không thể thực hiện gia hạn giờ thuê.";
           $("#errorModal .modal-body").html(
-            "<p class='text-danger'>Vui lòng thanh toán yêu cầu gia hạn giờ thuê phòng trước đó!</p>"
+            "<p class='text-danger'>" + message + "</p>"
           );
           $("#errorModal").modal("show");
         }
       },
+
       error: function (xhr, status, error) {
         console.error("Lỗi kiểm tra thuê thêm giờ:", error);
       },
     });
+  }
+
+  function checkBeforeBookServices(button) {
+    let status = $(button).data("booking-status");
+
+    if (status === "CANCELLED" || status === "PENDING") {
+      let message = "";
+
+      if (status === "CANCELLED") {
+        message = "Không thể đặt dịch vụ vì đơn đặt phòng đã bị hủy.";
+      } else if (status === "PENDING") {
+        message = "Không thể đặt dịch vụ vì đơn đặt phòng chưa được xác nhận.";
+      }
+
+      $("#errorModal .modal-body")
+        .empty()
+        .append($("<p>").addClass("text-danger").text(message));
+
+      $("#errorModal").modal("show");
+      return;
+    }
+    $("#bookServicesModal").modal("show");
   }
 </script>

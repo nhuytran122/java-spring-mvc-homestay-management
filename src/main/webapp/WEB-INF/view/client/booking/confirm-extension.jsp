@@ -97,6 +97,14 @@ uri="http://lullabyhomestay.com/functions" %>
 
             <div class="action-buttons my-4">
               <div class="btn-group" role="group">
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-lg"
+                  onclick="history.back()"
+                >
+                  <i class="bi bi-arrow-left-circle"></i> Hủy
+                </button>
+
                 <a
                   onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS')"
                   class="btn btn-primary btn-lg"

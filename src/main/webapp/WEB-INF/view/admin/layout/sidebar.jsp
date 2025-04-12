@@ -251,9 +251,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <li class="nav-item">
             <a class="nav-link" href="/admin/review"> Đánh giá </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/report"> Khiếu nại </a>
-          </li>
         </ul>
       </div>
     </li>

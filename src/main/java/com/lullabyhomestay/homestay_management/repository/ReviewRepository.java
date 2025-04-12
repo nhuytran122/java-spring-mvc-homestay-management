@@ -1,6 +1,10 @@
 package com.lullabyhomestay.homestay_management.repository;
 
 import com.lullabyhomestay.homestay_management.domain.Review;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,4 +34,14 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByRoomID(@Param("roomId") Long roomId);
 
     List<Review> findTop10ByRatingOrderByCreatedAtDesc(int rating);
+
+    Page<Review> findAll(Specification<Review> spec, Pageable page);
+
+    @Query("SELECT rv FROM Review rv " +
+            "JOIN rv.booking b " +
+            "JOIN b.room r " +
+            "JOIN r.branch br " +
+            "WHERE br.branchID = :branchId")
+    Page<Review> findByBranchID(@Param("branchId") Long branchId, Pageable pageable);
+
 }

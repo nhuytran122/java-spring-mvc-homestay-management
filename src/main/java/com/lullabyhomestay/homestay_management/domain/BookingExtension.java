@@ -44,6 +44,12 @@ public class BookingExtension {
     private PaymentDetail paymentDetail;
 
     public Double getTotalAmount() {
-        return booking.getRoom().getRoomType().getExtraPricePerHour() * extendedHours;
+        double pricePerHour = booking.getRoom().getRoomType().getExtraPricePerHour();
+        boolean isDorm = booking.getRoom().getRoomType().getName().toLowerCase().contains("dorm");
+        int guestCount = booking.getGuestCount();
+        double adjustedPrice = isDorm ? pricePerHour * guestCount : pricePerHour;
+
+        return adjustedPrice * extendedHours;
     }
+
 }

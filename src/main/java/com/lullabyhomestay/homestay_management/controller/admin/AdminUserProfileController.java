@@ -61,7 +61,6 @@ public class AdminUserProfileController {
 
     @GetMapping("/admin/change-password")
     public String getChangePasswordPage(Model model) {
-        EmployeeDTO currentEmployeeDTO = AuthUtils.getLoggedInEmployee(employeeService);
         model.addAttribute("passwordForm", new PasswordChangeDTO());
         return "admin/profile/change-password";
     }

@@ -107,11 +107,13 @@ uri="http://www.springframework.org/tags/form" %>
 
                       <div class="form-group row">
                         <div class="col-sm-offset-2 col-sm-10 text-center">
-                          <a
-                            href="javascript:history.back()"
+                          <button
+                            type="button"
                             class="btn btn-secondary"
-                            >Hủy</a
+                            onclick="history.back()"
                           >
+                            Hủy
+                          </button>
                           <button type="submit" class="btn btn-warning">
                             Sửa
                           </button>

@@ -2,7 +2,9 @@
 uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="form"
 uri="http://www.springframework.org/tags/form" %> <%@ taglib prefix="fmt"
 uri="http://java.sun.com/jsp/jstl/fmt" %> <%@ taglib prefix="f"
-uri="http://lullabyhomestay.com/functions" %>
+uri="http://lullabyhomestay.com/functions" %> <%@ taglib prefix="fn"
+uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -39,6 +41,10 @@ uri="http://lullabyhomestay.com/functions" %>
                     <p>
                       <strong>Check-out hiện tại:</strong>
                       ${f:formatLocalDateTime(booking.checkOut)}
+                    </p>
+                    <p>
+                      <strong>Số lượng khách:</strong>
+                      ${booking.guestCount}
                     </p>
                   </div>
                 </div>
@@ -77,12 +83,31 @@ uri="http://lullabyhomestay.com/functions" %>
                 </div>
 
                 <div class="mb-4">
-                  <label class="form-label" for="extensionFee"
-                    >Phí gia hạn (<fmt:formatNumber
+                  <label class="form-label" for="extensionFee">
+                    Phí gia hạn (<fmt:formatNumber
                       type="number"
                       value="${booking.room.roomType.extraPricePerHour}"
-                    />đ / giờ)</label
-                  >
+                    />đ /
+                    <c:if
+                      test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"
+                    >
+                      người / </c:if
+                    >giờ)
+                    <small class="text-muted d-block my-1">
+                      <c:choose>
+                        <c:when
+                          test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"
+                        >
+                          * Phòng Dorm: phí được tính theo số lượng khách và số
+                          giờ gia hạn.
+                        </c:when>
+                        <c:otherwise>
+                          * Phí chỉ tính theo số giờ gia hạn.
+                        </c:otherwise>
+                      </c:choose>
+                    </small>
+                  </label>
+
                   <input
                     type="text"
                     class="form-control"
@@ -120,45 +145,64 @@ uri="http://lullabyhomestay.com/functions" %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
     <script>
       $(document).ready(function () {
-        var roomTypeExtraPricePerHour = parseFloat(
-          $("#extensionFee").data("extra-hours-fee")
-        );
-        var currentCheckout = "${booking.checkOut}";
+        let pricePerHour =
+          parseFloat("${booking.room.roomType.extraPricePerHour}") || 0;
+        let roomTypeName = "${booking.room.roomType.name}".toLowerCase();
+        let isDorm = roomTypeName.includes("dorm");
+        let guestCount = parseInt("${booking.guestCount}") || 1;
+        let currentCheckout = moment("${booking.checkOut}", "YYYY-MM-DD HH:mm");
 
-        var now = moment();
-        var startDate = moment(currentCheckout, "YYYY-MM-DD HH:mm");
-
-        $("#newCheckoutTime")
-          .daterangepicker({
+        $("#newCheckoutTime").daterangepicker(
+          {
             singleDatePicker: true,
             timePicker: true,
             timePicker24Hour: true,
             timePickerIncrement: 30,
-            minDate: startDate,
-            startDate: startDate,
+            autoUpdateInput: true,
+            minDate: currentCheckout,
+            startDate: currentCheckout,
             locale: {
               format: "DD/MM/YYYY HH:mm",
+              applyLabel: "Chọn",
+              cancelLabel: "Hủy",
             },
-          })
-          .on("apply.daterangepicker", updateExtensionFee);
+          },
+          function (start) {
+            $("#newCheckoutTime").val(start.format("DD/MM/YYYY HH:mm"));
+            updateExtensionFee();
+          }
+        );
 
         function updateExtensionFee() {
-          var newCheckoutDate = moment(
+          let newCheckout = moment(
             $("#newCheckoutTime").val(),
             "DD/MM/YYYY HH:mm"
           );
-          var oldCheckoutDate = moment(currentCheckout, "YYYY-MM-DD HH:mm");
-          var extendedHours = newCheckoutDate.diff(
-            oldCheckoutDate,
-            "hours",
-            true
-          );
 
-          var extensionFee = roomTypeExtraPricePerHour * extendedHours;
+          if (
+            !newCheckout.isValid() ||
+            !currentCheckout.isValid() ||
+            !newCheckout.isAfter(currentCheckout)
+          ) {
+            $("#extensionFee").val("0đ");
+            $("#extensionBreakdown").hide();
+            return;
+          }
 
-          $("#extensionFee").val(extensionFee.toLocaleString("vi-VN") + "đ");
+          let extendedHours = newCheckout.diff(currentCheckout, "hours", true);
+          let totalFee = isDorm
+            ? pricePerHour * extendedHours * guestCount
+            : pricePerHour * extendedHours;
+
+          let breakdown = `${pricePerHour.toLocaleString(
+            "vi-VN"
+          )}đ x ${extendedHours.toFixed(1)} giờ${
+            isDorm ? " x " + guestCount + " người" : ""
+          }`;
+
+          $("#extensionFee").val(totalFee.toLocaleString("vi-VN") + "đ");
+          $("#extensionBreakdown").text(breakdown).show();
         }
-
         updateExtensionFee();
       });
     </script>

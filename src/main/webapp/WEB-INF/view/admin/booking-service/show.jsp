@@ -103,7 +103,7 @@
                                                                             </span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-secondary">Chưa thanh toán</span>
+                                                                            <span class="badge bg-secondary">Đã hủy</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>

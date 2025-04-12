@@ -216,23 +216,22 @@ public class ClientBookingController {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         BookingUtils.validateBooking(booking, customerDTO);
 
-        if (booking.getPaidAmount() == null || booking.getPaidAmount() <= 0) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("refundAmount", 0.0);
-            response.put("refundPercentage", 0);
-            return ResponseEntity.ok(response);
+        if (!bookingService.canCancelBooking(booking)) {
+            return ResponseEntity.ok(
+                    new ApiResponseDTO<>(null, "Không thể hủy booking đã hoàn tất hoặc đã hủy."));
         }
 
-        if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) {
-            throw new IllegalStateException("Chỉ được hủy khi booking chưa bắt đầu.");
+        Map<String, Object> response = new HashMap<>();
+        if (booking.getPaidAmount() == null || booking.getPaidAmount() <= 0) {
+            response.put("refundAmount", 0.0);
+            response.put("refundPercentage", 0);
+            return ResponseEntity.ok(new ApiResponseDTO<>(response, "Không có khoản thanh toán nào để hoàn tiền"));
         }
 
         Double refundAmount = refundService.calculateRefundAmount(booking);
         RefundType refundType = refundService.getRefundType(booking);
 
-        Map<String, Object> response = new HashMap<>();
         response.put("refundAmount", refundAmount);
-
         if (refundType == RefundType.FULL) {
             response.put("refundPercentage", 100);
         } else if (refundType == RefundType.PARTIAL_70) {
@@ -241,7 +240,7 @@ public class ClientBookingController {
             response.put("refundPercentage", 30);
         }
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ApiResponseDTO<>(response, "Tính toán hoàn tiền thành công"));
     }
 
     @PostMapping("/booking/cancel")
@@ -254,26 +253,53 @@ public class ClientBookingController {
     }
 
     @PostMapping("/booking/booking-service/create")
-    public ResponseEntity<?> postCreateBookingServices(@RequestBody List<BookingServices> bookingServices) {
+    public ResponseEntity<?> postCreateBookingServices(
+            @RequestBody List<BookingServices> bookingServices) {
         for (BookingServices request : bookingServices) {
-            BookingServices newBookingService = new BookingServices();
             Long bookingID = request.getBooking().getBookingID();
             Long serviceID = request.getService().getServiceID();
 
-            newBookingService.setBooking(bookingService.getBookingByID(bookingID));
+            Booking booking = bookingService.getBookingByID(bookingID);
+            if (booking == null) {
+                return ResponseEntity.ok().body(new ApiResponseDTO<>(false, "Không tìm thấy đơn đặt phòng."));
+            }
+
+            if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) {
+                return ResponseEntity.ok()
+                        .body(new ApiResponseDTO<>(false, "Không thể đặt dịch vụ cho đơn đã hủy hoặc hoàn tất."));
+            }
+
+            BookingServices newBookingService = new BookingServices();
+            newBookingService.setBooking(booking);
             newBookingService.setService(service.getServiceByID(serviceID));
             newBookingService.setDescription(request.getDescription());
 
             bookingExtraService.handleSaveBookingServiceExtra(newBookingService);
         }
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ApiResponseDTO<>(true, "Đặt dịch vụ thành công."));
     }
 
     @GetMapping("/booking/can-booking-extension/{id}")
-    public ResponseEntity<Boolean> canBookingExtension(@PathVariable long id) {
-        boolean canBookingExtension = bookingExtensionService.canExtendBooking(id);
-        return ResponseEntity.ok(canBookingExtension);
+    public ResponseEntity<?> canBookingExtension(@PathVariable long id) {
+        Booking booking = bookingService.getBookingByID(id);
+        if (booking == null) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponseDTO<>(false, "Không tìm thấy đơn đặt phòng"));
+        }
+        if (booking.getStatus() == BookingStatus.PENDING) {
+            return ResponseEntity
+                    .ok(new ApiResponseDTO<>(false, "Vui lòng thanh toán đơn đặt phòng trước để dùng chức năng này"));
+        }
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            return ResponseEntity.ok(new ApiResponseDTO<>(false, "Đơn đặt phòng đã bị hủy, không thể gia hạn"));
+        }
+        if (booking.getStatus() == BookingStatus.COMPLETED) {
+            return ResponseEntity.ok(new ApiResponseDTO<>(false, "Đơn đặt phòng đã hoàn tất, không thể gia hạn"));
+        }
+        if (!bookingExtensionService.canExtendBooking(id)) {
+            return ResponseEntity.ok(new ApiResponseDTO<>(false, "Vui lòng thanh toán yêu cầu gia hạn trước đó!"));
+        }
+        return ResponseEntity.ok(new ApiResponseDTO<>(true, "Có thể gia hạn"));
     }
 
     @GetMapping("/booking/booking-extension/{id}")
@@ -319,7 +345,6 @@ public class ClientBookingController {
             model.addAttribute("booking", booking);
             return "client/booking/booking-extension";
         }
-
         BookingExtension extension = new BookingExtension();
         extension.setBooking(booking);
         extension.setExtendedHours(hoursDelay);

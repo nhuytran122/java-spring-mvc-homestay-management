@@ -115,6 +115,13 @@ public class BookingService {
     public void cancelBooking(Long bookingID) {
         // Lấy và validate booking
         Booking currentBooking = validateAndGetBooking(bookingID);
+        if (currentBooking.getStatus() == BookingStatus.PENDING) {
+            roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
+            // Cập nhật trạng thái đơn là CANCELLED
+            updateBookingAfterCancellation(currentBooking);
+            return;
+        }
+
         if (canCancelBooking(currentBooking)) {
             // Xóa dữ liệu liên quan
             // Không xóa bookingServices để truy vết paymentDetails
@@ -126,7 +133,7 @@ public class BookingService {
             Refund refund = createPendingRefund(payment, currentBooking);
 
             // Cập nhật booking
-            updateBookingAfterCancellation(currentBooking, refund);
+            updateBookingAfterCancellation(currentBooking);
         }
     }
 
@@ -186,7 +193,7 @@ public class BookingService {
         return refund;
     }
 
-    private void updateBookingAfterCancellation(Booking booking, Refund refund) {
+    private void updateBookingAfterCancellation(Booking booking) {
         booking.setStatus(BookingStatus.CANCELLED);
     }
 
