@@ -93,7 +93,7 @@
                                                                 <td>${f:formatLocalDateTime(bookingService.createdAt)}</td>
                                                                 <td>
                                                                     <c:choose>
-                                                                        <c:when test="${not empty bookingService.paymentDetail and not empty bookingService.paymentDetail.payment}">
+                                                                        <c:when test="${not empty bookingService.paymentDetail}">
                                                                             <c:set var="paymentStatus" value="${bookingService.paymentDetail.payment.status}" />
                                                                             <span class="badge 
                                                                                 ${paymentStatus == 'COMPLETED' ? 'bg-success' : 
@@ -103,7 +103,7 @@
                                                                             </span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-secondary">Đã hủy</span>
+                                                                            <span class="badge bg-secondary">Đang chờ</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>

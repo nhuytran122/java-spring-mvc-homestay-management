@@ -82,8 +82,11 @@ public class BookingExtraService {
         Customer customer = bService.getBooking().getCustomer();
         BookingServices currentBookingService = getBookingServiceByID(bService.getBookingServiceID());
 
-        Double oldTotalPriceService = currentBookingService.getRawTotalAmount() - DiscountUtil
-                .calculateDiscountAmount(currentBookingService.getRawTotalAmount(), customer);
+        Double oldTotalPriceService = 0.0;
+        if (currentBookingService.getQuantity() != null) {
+            oldTotalPriceService = currentBookingService.getRawTotalAmount() - DiscountUtil
+                    .calculateDiscountAmount(currentBookingService.getRawTotalAmount(), customer);
+        }
 
         // Tránh tình trạng bị Hibernate cache sai dữ liệu cũ
         bService.setQuantity(newQuantity);
@@ -134,7 +137,8 @@ public class BookingExtraService {
         Customer customer = unpaidServices.get(0).getBooking().getCustomer();
         Double totalAmount = 0.0;
         for (BookingServices bService : unpaidServices) {
-            totalAmount += bService.getRawTotalAmount();
+            if (bService.getQuantity() != null)
+                totalAmount += bService.getRawTotalAmount();
         }
         totalAmount = totalAmount - DiscountUtil.calculateDiscountAmount(totalAmount, customer);
         return totalAmount;

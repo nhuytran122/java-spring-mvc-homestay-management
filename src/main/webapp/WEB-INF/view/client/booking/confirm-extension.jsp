@@ -97,13 +97,21 @@ uri="http://lullabyhomestay.com/functions" %>
 
             <div class="action-buttons my-4">
               <div class="btn-group" role="group">
-                <button
-                  type="button"
-                  class="btn btn-secondary btn-lg"
-                  onclick="history.back()"
-                >
-                  <i class="bi bi-arrow-left-circle"></i> Hủy
-                </button>
+                <form method="post" action="/booking/booking-extension/cancel">
+                  <input
+                    type="hidden"
+                    name="${_csrf.parameterName}"
+                    value="${_csrf.token}"
+                  />
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="${extension.extensionID}"
+                  />
+                  <button type="submit" class="btn btn-secondary btn-lg">
+                    <i class="bi bi-arrow-left-circle"></i> Hủy
+                  </button>
+                </form>
 
                 <a
                   onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS')"

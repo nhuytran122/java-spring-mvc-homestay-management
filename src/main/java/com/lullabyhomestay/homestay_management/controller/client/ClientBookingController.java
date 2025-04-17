@@ -296,9 +296,6 @@ public class ClientBookingController {
         if (booking.getStatus() == BookingStatus.COMPLETED) {
             return ResponseEntity.ok(new ApiResponseDTO<>(false, "Đơn đặt phòng đã hoàn tất, không thể gia hạn"));
         }
-        if (!bookingExtensionService.canExtendBooking(id)) {
-            return ResponseEntity.ok(new ApiResponseDTO<>(false, "Vui lòng thanh toán yêu cầu gia hạn trước đó!"));
-        }
         return ResponseEntity.ok(new ApiResponseDTO<>(true, "Có thể gia hạn"));
     }
 
@@ -356,11 +353,21 @@ public class ClientBookingController {
         model.addAttribute("finalAmount", extension.getTotalAmount()
                 - DiscountUtil.calculateDiscountAmount(extension.getTotalAmount(), booking.getCustomer()));
 
-        double originalAmount = extension.getTotalAmount()
-                / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
+        double originalAmount = extension.getTotalAmount();
         double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
         model.addAttribute("discountAmount", discountAmount);
         return "client/booking/confirm-extension";
+    }
+
+    @PostMapping("/booking/booking-extension/cancel")
+    public String postCancelBookingExtension(@RequestParam("id") Long id, Model model) {
+        Booking booking = bookingService
+                .getBookingByID(bookingExtensionService.getBookingExtensionByID(id).getBooking().getBookingID());
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        BookingUtils.validateBooking(booking, customerDTO);
+
+        bookingExtensionService.deleteByExtensionID(id);
+        return "redirect:/booking/booking-extension/" + booking.getBookingID();
     }
 
     private String prepareModelWithoutSearch(Model model, SearchBookingCriteriaDTO criteria, int validPage) {

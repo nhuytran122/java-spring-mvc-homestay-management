@@ -30,4 +30,6 @@ public interface BookingExtensionRepository extends JpaRepository<BookingExtensi
 
     void deleteByExtensionID(Long extensionID);
 
+    Optional<BookingExtension> findByExtensionID(Long id);
+
 }

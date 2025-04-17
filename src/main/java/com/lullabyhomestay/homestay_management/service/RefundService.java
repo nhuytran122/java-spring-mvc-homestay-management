@@ -63,30 +63,33 @@ public class RefundService {
         return refundRepository.findAll(spec, pageable);
     }
 
-    public Double calculateRefundAmount(Booking booking) {
-        LocalDateTime checkInTime = booking.getCheckIn();
-        LocalDateTime now = LocalDateTime.now();
-        long daysDifference = ChronoUnit.DAYS.between(now, checkInTime);
-
-        if (daysDifference > 7) {
-            return booking.getPaidAmount();
-        } else if (daysDifference > 3) {
-            return booking.getPaidAmount() * 0.7;
-        } else {
-            return booking.getPaidAmount() * 0.3;
-        }
-    }
-
     public RefundType getRefundType(Booking booking) {
-        Double refundAmount = calculateRefundAmount(booking);
-        Double paidAmount = booking.getPaidAmount();
+        LocalDateTime checkIn = booking.getCheckIn();
+        LocalDateTime now = LocalDateTime.now();
+        long daysDiff = ChronoUnit.DAYS.between(now.toLocalDate(), checkIn.toLocalDate());
 
-        if (refundAmount.equals(paidAmount)) {
+        if (daysDiff > 7)
             return RefundType.FULL;
-        } else if (refundAmount.equals(paidAmount * 0.7)) {
+        else if (daysDiff > 3)
             return RefundType.PARTIAL_70;
-        } else {
+        else
             return RefundType.PARTIAL_30;
+    }
+
+    public Double calculateRefundAmount(Booking booking) {
+        RefundType type = getRefundType(booking);
+        double paid = booking.getPaidAmount();
+
+        switch (type) {
+            case FULL:
+                return paid;
+            case PARTIAL_70:
+                return paid * 0.7;
+            case PARTIAL_30:
+                return paid * 0.3;
+            default:
+                return 0.0;
         }
     }
+
 }

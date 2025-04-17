@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="f" uri="http://lullabyhomestay.com/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -320,8 +321,10 @@
                         <div class="d-flex justify-content-between mb-3">
                             <span>Tiền phòng</span>
                             <span class="fw-bold">
+                                
                                 <fmt:formatNumber type="number" value="${booking.room.roomType.pricePerHour}" />đ x 
                                 <fmt:formatNumber type="number" value="${numberOfHours}" pattern="#"/> giờ
+                                <c:if test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"> x ${booking.guestCount} người</c:if>
                             </span>
                         </div>
 

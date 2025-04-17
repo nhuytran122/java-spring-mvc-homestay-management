@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lullabyhomestay.homestay_management.domain.Booking;
+import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 import com.lullabyhomestay.homestay_management.domain.Customer;
 import com.lullabyhomestay.homestay_management.domain.Payment;
 import com.lullabyhomestay.homestay_management.domain.Refund;
@@ -92,6 +93,31 @@ public class BookingService {
 
     public Booking handleSaveBooking(Booking booking) {
         return bookingRepository.save(booking);
+    }
+
+    public void handleSaveBookingAfterExtend(Long bookingID,
+            BookingExtension bookingExtension) {
+        Booking currentBooking = getBookingByID(bookingID);
+        // Chỉ Update time checkout mới khi đã thanh toán
+        LocalDateTime oldCheckout = bookingExtension.getBooking().getCheckOut();
+        Float extendedHours = bookingExtension.getExtendedHours();
+
+        // Lấy số phút gia hạn từ extendedHours
+        long extraMinutes = Math.round(extendedHours * 60);
+
+        LocalDateTime newCheckout = oldCheckout.plusMinutes(extraMinutes);
+        currentBooking.setCheckOut(newCheckout);
+
+        double discountedPrice = calculateFinalExtensionAmount(bookingExtension);
+        currentBooking.setTotalAmount(currentBooking.getTotalAmount() + discountedPrice);
+        handleSaveBooking(currentBooking);
+
+    }
+
+    private double calculateFinalExtensionAmount(BookingExtension bookingExtension) {
+        double rawPrice = bookingExtension.getTotalAmount();
+        double discount = DiscountUtil.calculateDiscountAmount(rawPrice, bookingExtension.getBooking().getCustomer());
+        return rawPrice - discount;
     }
 
     public Long countByBookingStatusAndCustomerID(BookingStatus bookingStatus, Long customerID) {

@@ -179,6 +179,7 @@ uri="http://lullabyhomestay.com/functions" %>
                                     <th>Mô tả</th>
                                     <th>Đơn giá</th>
                                     <th>Số lượng</th>
+                                    <th>Tình trạng thanh toán</th>
                                     <th>Ngày tạo</th>
                                     <th>Hành động</th>
                                   </tr>
@@ -204,6 +205,28 @@ uri="http://lullabyhomestay.com/functions" %>
                                           value="${bService.quantity}"
                                           pattern="#"
                                         />
+                                      </td>
+                                      <td>
+                                        <c:choose>
+                                          <c:when
+                                            test="${not empty bookingService.paymentDetail}"
+                                          >
+                                            <c:set
+                                              var="paymentStatus"
+                                              value="${bookingService.paymentDetail.payment.status}"
+                                            />
+                                            <span
+                                              class="badge ${paymentStatus == 'COMPLETED' ? 'bg-success' : paymentStatus == 'FAILED' ? 'bg-danger' : paymentStatus == 'PENDING' ? 'bg-primary' : 'bg-info'}"
+                                            >
+                                              ${paymentStatus.displayName}
+                                            </span>
+                                          </c:when>
+                                          <c:otherwise>
+                                            <span class="badge bg-secondary"
+                                              >Đang chờ</span
+                                            >
+                                          </c:otherwise>
+                                        </c:choose>
                                       </td>
                                       <td>
                                         ${f:formatLocalDateTime(bService.createdAt)}
@@ -258,6 +281,7 @@ uri="http://lullabyhomestay.com/functions" %>
                                     <th>Số giờ gia hạn</th>
                                     <th>Đơn giá/giờ</th>
                                     <th>Tổng tiền cuối</th>
+                                    <th>Tình trạng thanh toán</th>
                                     <th>Ngày tạo</th>
                                   </tr>
                                 </thead>
@@ -275,20 +299,42 @@ uri="http://lullabyhomestay.com/functions" %>
                                         />
                                       </td>
                                       <td>
+                                        <fmt:formatNumber
+                                          type="number"
+                                          value="${extension.booking.room.roomType.extraPricePerHour}"
+                                        />đ
+                                      </td>
+                                      <td>
                                         <c:if
                                           test="${extension.paymentDetail != null}"
                                         >
                                           <fmt:formatNumber
                                             type="number"
-                                            value="${extension.booking.room.roomType.extraPricePerHour}"
+                                            value="${extension.paymentDetail.finalAmount}"
                                           />đ
                                         </c:if>
                                       </td>
                                       <td>
-                                        <fmt:formatNumber
-                                          type="number"
-                                          value="${extension.paymentDetail.finalAmount}"
-                                        />đ
+                                        <c:choose>
+                                          <c:when
+                                            test="${not empty extension.paymentDetail}"
+                                          >
+                                            <c:set
+                                              var="paymentStatus"
+                                              value="${extension.paymentDetail.payment.status}"
+                                            />
+                                            <span
+                                              class="badge ${paymentStatus == 'COMPLETED' ? 'bg-success' : paymentStatus == 'FAILED' ? 'bg-danger' : paymentStatus == 'PENDING' ? 'bg-primary' : 'bg-info'}"
+                                            >
+                                              ${paymentStatus.displayName}
+                                            </span>
+                                          </c:when>
+                                          <c:otherwise>
+                                            <span class="badge bg-secondary"
+                                              >Đang chờ</span
+                                            >
+                                          </c:otherwise>
+                                        </c:choose>
                                       </td>
                                       <td>
                                         ${f:formatLocalDateTime(extension.createdAt)}

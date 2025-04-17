@@ -49,8 +49,7 @@ public class PaymentService {
             Double totalAmountDouble = booking.getTotalAmount();
             amount = totalAmountDouble.longValue() * 100L;
         } else if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
-            // Lấy gia hạn thuê mới nhất (chỉ được gia hạn khi đã thanh toán yêu cầu gia hạn
-            // trước đó (nếu có))
+            // Lấy gia hạn thuê mới nhất
             BookingExtension bookingExtension = bookingExtensionService
                     .getLatestBookingExtensionByBookingID(bookingID);
             Double rawAmount = bookingExtension.getTotalAmount();
@@ -93,16 +92,8 @@ public class PaymentService {
             BookingExtension bookingExtension = bookingExtensionService
                     .getLatestBookingExtensionByBookingID(currentBooking.getBookingID());
 
-            // Chỉ Update time checkout mới khi đã thanh toán
-            LocalDateTime oldCheckout = bookingExtension.getBooking().getCheckOut();
-            Float extendedHours = bookingExtension.getExtendedHours();
-
-            // Lấy số phút gia hạn từ extendedHours
-            long extraMinutes = Math.round(extendedHours * 60);
-
-            LocalDateTime newCheckout = oldCheckout.plusMinutes(extraMinutes);
-            currentBooking.setCheckOut(newCheckout);
-            bookingService.handleSaveBooking(currentBooking);
+            // Cập nhật checkout, giá
+            bookingService.handleSaveBookingAfterExtend(currentBooking.getBookingID(), bookingExtension);
 
             // Cập nhật lịch trình của phòng
             roomStatusHistoryService.handleBookingExtensions(bookingExtension);
