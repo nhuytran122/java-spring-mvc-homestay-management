@@ -1,5 +1,7 @@
 package com.lullabyhomestay.homestay_management.utils;
 
+import java.util.Random;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -25,5 +27,13 @@ public class BookingUtils {
         if (!booking.getCustomer().getCustomerID().equals(customerDTO.getCustomerID())) {
             throw new AccessDeniedException("Lịch đặt phòng này không thuộc quyền truy cập của bạn");
         }
+    }
+
+    private static final Random random = new Random();
+
+    public static Long generateTemporaryBookingId() {
+        long timestamp = System.currentTimeMillis();
+        long randomNum = random.nextLong(10000);
+        return Math.abs(timestamp + randomNum);
     }
 }

@@ -31,7 +31,8 @@ import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.Review;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.dto.ApiResponseDTO;
-import com.lullabyhomestay.homestay_management.domain.dto.BookingServiceRequestDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.BookingRequestDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.BookingServiceDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.*;
@@ -42,6 +43,8 @@ import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.RefundType;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -66,7 +69,7 @@ public class ClientBookingController {
     @PostMapping("/booking")
     public String postCreateBooking(@ModelAttribute("newBooking") @Valid Booking booking,
             BindingResult result,
-            Model model, RedirectAttributes redirectAttributes) {
+            Model model, RedirectAttributes redirectAttributes, HttpServletRequest request) {
         Long roomID = booking.getRoom().getRoomID();
         Room room = roomService.getRoomByID(booking.getRoom().getRoomID());
         if (booking.getCheckIn() != null && !booking.getCheckIn().isAfter(LocalDateTime.now())) {
@@ -89,23 +92,29 @@ public class ClientBookingController {
         booking.setRoom(room);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
         BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
-        booking = bookingService.handleBooking(booking);
 
-        redirectAttributes.addFlashAttribute("bookingID", booking.getBookingID());
+        HttpSession session = request.getSession(false);
+        BookingRequestDTO bookingRequest = new BookingRequestDTO();
+
+        bookingRequest.setCheckin(booking.getCheckIn());
+        bookingRequest.setCheckout(booking.getCheckOut());
+        bookingRequest.setGuestCount(booking.getGuestCount());
+        bookingRequest.setCustomerID(booking.getCustomer().getCustomerID());
+        bookingRequest.setRoomID(roomID);
+        session.setAttribute("bookingRequest", bookingRequest);
+        // booking = bookingService.handleBooking(booking);
+
+        // redirectAttributes.addFlashAttribute("bookingID", booking.getBookingID());
         return "redirect:/booking/booking-service";
     }
 
     @GetMapping("/booking/booking-service")
-    public String selectService(Model model, @ModelAttribute("bookingID") Long bookingID) {
-        if (bookingID == null) {
+    public String selectService(Model model,
+            HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
+        if (bookingRequest == null)
             return "redirect:/";
-        }
-        Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
-        BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
-
-        BookingUtils.validateBooking(booking, customerDTO);
-        model.addAttribute("bookingID", bookingID);
         model.addAttribute("listServices", service.getServiceByIsPrepaid(true));
         model.addAttribute("listNotPrePaidServices", service.getServiceByIsPrepaid(false));
         return "client/booking/booking-service";
@@ -114,24 +123,35 @@ public class ClientBookingController {
     @PostMapping("/booking/confirm-services")
     @ResponseBody
     public ResponseEntity<ApiResponseDTO<Long>> postConfirmBookingService(
-            @RequestBody BookingServiceRequestDTO requestDTO,
-            Model model) {
-        Long bookingID = requestDTO.getBookingID();
-        List<BookingServices> listBookingServices = requestDTO.getServices();
-        Booking booking = bookingService.getBookingByID(bookingID);
-
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
-        BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
-
-        if (booking == null || !booking.getCustomer().getEmail().equals(customerDTO.getEmail())) {
+            @RequestBody BookingRequestDTO requestServiceDTO,
+            Model model, HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
+        HttpSession session = request.getSession(false);
+        BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
+        if (bookingRequest == null)
             return ResponseEntity.badRequest()
-                    .body(new ApiResponseDTO<>(null, "Không tìm thấy booking hoặc không đủ quyền truy cập booking"));
+                    .body(new ApiResponseDTO<>(null, "Không tìm thấy booking"));
+        Booking booking = new Booking();
+        if (bookingRequest.isCreatedFlag()) {
+            booking = bookingService.getBookingByID(bookingRequest.getBookingID());
+            bookingExtraService.deleteByBookingID(bookingRequest.getBookingID());
+        } else {
+            bookingRequest.setCreatedFlag(true);
+            booking.setCheckIn(bookingRequest.getCheckin());
+            booking.setCheckOut(bookingRequest.getCheckout());
+            booking.setGuestCount(bookingRequest.getGuestCount());
+            booking.setRoom(roomService.getRoomByID(bookingRequest.getRoomID()));
+            booking.setStatus(BookingStatus.PENDING);
+            CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+            BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
+            booking = bookingService.handleBooking(booking);
         }
+        List<BookingServiceDTO> listBookingServices = requestServiceDTO.getServices();
         if (listBookingServices != null && !listBookingServices.isEmpty()) {
-            for (BookingServices bService : listBookingServices) {
+            for (BookingServiceDTO bService : listBookingServices) {
                 BookingServices newBookingService = new BookingServices();
 
-                Long serviceID = bService.getService().getServiceID();
+                Long serviceID = bService.getServiceID();
                 Float quantity = bService.getQuantity();
                 String description = bService.getDescription();
 
@@ -140,25 +160,37 @@ public class ClientBookingController {
 
                 newBookingService.setDescription(description);
                 newBookingService.setBooking(booking);
-
                 this.bookingExtraService.handleSaveBookingServiceExtra(newBookingService);
             }
         }
-        return ResponseEntity.ok(new ApiResponseDTO<>(bookingID, "Xác nhận dịch vụ thành công"));
+        bookingRequest.setBookingID(booking.getBookingID());
+        bookingRequest.setServices(listBookingServices);
+        session.setAttribute("bookingRequest", bookingRequest);
+        // redirectAttributes.addAttribute("bookingID", booking.getBookingID());
+        return ResponseEntity.ok(new ApiResponseDTO<>(booking.getBookingID(), "Xác nhận dịch vụ thành công"));
     }
 
     @GetMapping("/booking/booking-confirmation")
-    public String getBookingSuccessPage(@RequestParam("bookingID") Long bookingID, Model model) {
-        Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
-        BookingUtils.validateBooking(booking, customerDTO);
-        model.addAttribute("booking", booking);
+    public String getBookingConfirmationPage(
+            @RequestParam("bookingID") Long bookingID,
+            HttpServletRequest request,
+            Model model) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("bookingRequest") == null) {
+            return "redirect:/";
+        }
+        BookingRequestDTO sessionDTO = (BookingRequestDTO) session.getAttribute("bookingRequest");
 
+        if (!bookingID.equals(sessionDTO.getBookingID())) {
+            return "redirect:/";
+        }
+
+        Booking booking = bookingService.getBookingByID(bookingID);
+        model.addAttribute("booking", booking);
         double originalAmount = booking.getTotalAmount()
                 / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
         double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
         model.addAttribute("discountAmount", discountAmount);
-
         return "client/booking/booking-confirmation";
     }
 

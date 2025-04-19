@@ -153,8 +153,18 @@ uri="http://lullabyhomestay.com/functions" %>
             </div>
 
             <div class="action-buttons my-4">
-              <div class="btn-group" role="group">
-                <form action="/booking/cancel" method="post">
+              <div
+                class="d-flex gap-3 justify-content-center align-items-center flex-wrap mb-3"
+              >
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-lg"
+                  onclick="window.history.back()"
+                >
+                  <i class="bi bi-arrow-left"></i> Quay lại
+                </button>
+
+                <form action="/booking/cancel" method="post" class="m-0">
                   <input
                     type="hidden"
                     name="${_csrf.parameterName}"
@@ -165,17 +175,16 @@ uri="http://lullabyhomestay.com/functions" %>
                     name="bookingID"
                     value="${booking.bookingID}"
                   />
-                  <button
-                    type="submit"
-                    class="btn btn-outline-danger btn-lg mx-2"
-                  >
+                  <button type="submit" class="btn btn-outline-danger btn-lg">
                     <i class="bi bi-x-circle"></i> Hủy đặt phòng
                   </button>
                 </form>
+              </div>
 
+              <div class="text-center">
                 <a
                   onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')"
-                  class="btn btn-primary btn-lg"
+                  class="btn btn-success btn-lg shadow px-5"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán
                   (<fmt:formatNumber

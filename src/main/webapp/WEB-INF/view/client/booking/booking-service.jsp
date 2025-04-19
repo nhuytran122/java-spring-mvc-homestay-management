@@ -39,7 +39,7 @@
         <h2 class="my-4">Chọn các dịch vụ bổ sung</h2>
         <div id="errorMessage" class="error-message"></div>
         <form id="bookingServiceForm">
-            <input type="hidden" name="bookingID" value="${bookingID}">
+            <!-- <input type="hidden" name="bookingID" value="${bookingID}"> -->
             <div class="row">
                 <div class="col-12">
                     <c:forEach var="service" items="${listServices}" varStatus="loop">
@@ -95,10 +95,21 @@
                 Tổng tiền: <span id="totalPrice">0</span> VNĐ
             </div>
 
-            <div class="mt-4 d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary w-25" id="skipServicesBtn">Bỏ qua</button>
-                <button type="button" class="btn btn-primary w-25 mx-2" id="saveServicesBtn">Đặt dịch vụ</button>
+            <div class="mt-4 text-center">
+                <button type="button" class="btn btn-success btn-lg px-5 py-2 mb-3" id="saveServicesBtn">
+                    <i class="bi bi-check-circle"></i> Đặt dịch vụ
+                </button>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <button type="button" class="btn btn-outline-dark btn-lg px-5 py-2" onclick="window.history.back()">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </button>
+            
+                    <button type="button" class="btn btn-secondary btn-lg px-5 py-2" id="skipServicesBtn">
+                        <i class="bi bi-slash-circle"></i> Bỏ qua dịch vụ
+                    </button>
+                </div>
             </div>
+            
         </form>
     </div>
 
@@ -139,10 +150,11 @@
                 $('#totalPrice').text(total.toLocaleString('vi-VN'));
                 $('#errorMessage').hide(); 
             });
+            $('.service-checkbox, .quantity-input').trigger('change');
 
             function saveSelectedServices() {
                 let selectedServices = [];
-                let bookingID = $("input[name='bookingID']").val();
+                // let bookingID = $("input[name='bookingID']").val();
                 let hasError = false;
 
                 $('.service-checkbox:checked').each(function() {
@@ -159,11 +171,16 @@
                         quantityInput.removeClass('is-invalid');
                     }
 
+                    // selectedServices.push({
+                    //     service: { serviceID: serviceId },
+                    //     quantity: quantity,
+                    //     description: description,
+                    //     // booking: { bookingID: bookingID }
+                    // });
                     selectedServices.push({
-                        service: { serviceID: serviceId },
+                        serviceID: serviceId,
                         quantity: quantity,
                         description: description,
-                        booking: { bookingID: bookingID }
                     });
                 });
 
@@ -173,7 +190,7 @@
                 }
 
                 let requestData = {
-                    bookingID: bookingID,
+                    // bookingID: bookingID,
                     services: selectedServices
                 };
 
@@ -183,6 +200,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
                     success: function(response) {
+                        console.log(response.data);
                         window.location.href = "/booking/booking-confirmation?bookingID=" + response.data;
                     },
                     error: function(xhr) {
@@ -193,9 +211,9 @@
             }
 
             function skipServices() {
-                let bookingID = $("input[name='bookingID']").val();
+                // let bookingID = $("input[name='bookingID']").val();
                 let requestData = {
-                    bookingID: bookingID,
+                    // bookingID: bookingID,
                     services: [] 
                 };
 
@@ -205,6 +223,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
                     success: function(response) {
+                        console.log(response.data);
                         window.location.href = "/booking/booking-confirmation?bookingID=" + response.data;
                     },
                     error: function(xhr) {

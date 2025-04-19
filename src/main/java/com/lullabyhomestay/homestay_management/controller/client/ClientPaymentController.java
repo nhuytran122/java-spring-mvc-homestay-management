@@ -21,6 +21,7 @@ import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
 import com.lullabyhomestay.homestay_management.utils.PaymentType;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -61,6 +62,10 @@ public class ClientPaymentController {
             String[] parts = orderInfo.split("_PURPOSE_");
             Long bookingID = Long.parseLong(parts[0].replace("BOOKING_", ""));
             PaymentPurpose paymentPurpose = PaymentPurpose.valueOf(parts[1]);
+            if (paymentPurpose == PaymentPurpose.ROOM_BOOKING) {
+                HttpSession session = request.getSession(false);
+                session.setAttribute("bookingRequest", null);
+            }
 
             Booking booking = bookingService.getBookingByID(bookingID);
             payment.setBooking(booking);

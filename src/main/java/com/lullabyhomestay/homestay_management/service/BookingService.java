@@ -244,4 +244,10 @@ public class BookingService {
         return bookingRepository.findByStatus(bookingStatus);
     }
 
+    @Transactional
+    public void deleteByBookingID(Long id) {
+        bookingRepository.deleteByBookingID(id);
+        roomStatusHistoryRepo.deleteByBooking_BookingID(id);
+    }
+
 }

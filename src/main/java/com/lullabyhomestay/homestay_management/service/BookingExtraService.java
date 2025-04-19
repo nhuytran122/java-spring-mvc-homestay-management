@@ -143,4 +143,12 @@ public class BookingExtraService {
         totalAmount = totalAmount - DiscountUtil.calculateDiscountAmount(totalAmount, customer);
         return totalAmount;
     }
+
+    @Transactional
+    public void deleteByBookingID(Long id) {
+        List<BookingServices> lBookingServices = getListBookingServiceByBookingID(id);
+        for (BookingServices bService : lBookingServices) {
+            deleteBookingServiceByID(bService.getBookingServiceID());
+        }
+    }
 }

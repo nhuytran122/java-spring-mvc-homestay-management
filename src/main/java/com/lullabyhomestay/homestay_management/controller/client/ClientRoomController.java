@@ -14,17 +14,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.domain.dto.BookingRequestDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
-import com.lullabyhomestay.homestay_management.service.BranchService;
-import com.lullabyhomestay.homestay_management.service.ReviewService;
-import com.lullabyhomestay.homestay_management.service.RoomService;
-import com.lullabyhomestay.homestay_management.service.RoomTypeService;
-
+import com.lullabyhomestay.homestay_management.service.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
 public class ClientRoomController {
+
+    private final BookingService bookingService;
     private final RoomService roomService;
     private final RoomTypeService roomTypeService;
     private final BranchService branchService;
@@ -54,10 +55,20 @@ public class ClientRoomController {
     }
 
     @GetMapping("/room/{id}")
-    public String getDetailRoomPage(Model model, @PathVariable long id) {
+    public String getDetailRoomPage(Model model,
+            @PathVariable long id,
+            HttpServletRequest request) {
         model.addAttribute("newBooking", new Booking());
         model.addAttribute("room", roomService.getRoomByID(id));
         model.addAttribute("listReviews", reviewService.getReviewsByRoomID(id));
+
+        // Đối với trường hợp user back từ confirm -> detail room
+        HttpSession session = request.getSession(false);
+        BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
+        if (bookingRequest.getBookingID() != null) {
+            bookingService.deleteByBookingID(bookingRequest.getBookingID());
+            session.setAttribute("bookingRequest", null);
+        }
         return "client/room/detail";
     }
 
