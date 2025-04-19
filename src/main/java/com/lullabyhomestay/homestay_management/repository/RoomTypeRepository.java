@@ -24,4 +24,8 @@ public interface RoomTypeRepository extends JpaRepository<RoomType, Long> {
 
     void deleteByRoomTypeID(long id);
 
+    boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCaseAndRoomTypeIDNot(String name, Long roomTypeID);
+
 }

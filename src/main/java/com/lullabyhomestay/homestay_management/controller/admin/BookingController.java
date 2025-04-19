@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingScheduleData;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
+import com.lullabyhomestay.homestay_management.service.BookingExtensionService;
 import com.lullabyhomestay.homestay_management.service.BookingService;
 import com.lullabyhomestay.homestay_management.service.BranchService;
 import com.lullabyhomestay.homestay_management.service.RoomStatusHistoryService;
@@ -30,6 +31,7 @@ public class BookingController {
     private final BranchService branchService;
     private final RoomTypeService roomTypeService;
     private final RoomStatusHistoryService roomStatusHistoryService;
+    private final BookingExtensionService bookingExtensionService;
 
     @GetMapping("/admin/booking")
     public String getBookingPage(Model model,
@@ -98,4 +100,38 @@ public class BookingController {
         model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
         return "admin/booking/show";
     }
+
+    // @PostMapping("/admin/booking/booking-extension/edit")
+    // public String editBookingExtension(@RequestParam("extensionID") Long
+    // extensionID,
+    // @RequestParam("newCheckoutTime") @DateTimeFormat(pattern = "dd/MM/yyyy
+    // HH:mm") LocalDateTime newCheckout,
+    // Model model) {
+    // BookingExtension extension = bookingExtensionService.getById(extensionID);
+    // Booking booking = extension.getBooking();
+
+    // // Check trùng lịch như bên trên (bỏ qua booking hiện tại)
+
+    // // Tính lại extendedHours
+    // LocalDateTime currentCheckout = booking.getCheckOut();
+    // float newExtendedHours = (float)
+    // (Math.ceil(ChronoUnit.MINUTES.between(currentCheckout, newCheckout) / 30.0)
+    // * 0.5);
+
+    // if (newExtendedHours <= 0) {
+    // model.addAttribute("errorMessage", "Gia hạn không hợp lệ");
+    // return "admin/booking/edit-extension";
+    // }
+
+    // // Update
+    // extension.setExtendedHours(newExtendedHours);
+    // booking.setCheckOut(newCheckout);
+    // bookingExtensionService.save(extension);
+    // bookingService.handleSaveBooking(booking);
+
+    // // Ghi log sửa (optional)
+
+    // return "redirect:/admin/booking/details?bookingID=" + booking.getBookingID();
+    // }
+
 }

@@ -23,4 +23,8 @@ public interface AmenityCategoryRepository extends JpaRepository<AmenityCategory
     AmenityCategory save(AmenityCategory category);
 
     void deleteByCategoryID(long id);
+
+    boolean existsByCategoryNameIgnoreCase(String name);
+
+    boolean existsByCategoryNameIgnoreCaseAndCategoryIDNot(String name, Long categoryID);
 }

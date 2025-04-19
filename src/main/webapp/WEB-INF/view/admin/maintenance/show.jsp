@@ -10,6 +10,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Quản lý bảo trì</title>
   <jsp:include page="../layout/import-css.jsp" />
+  <meta name="_csrf" content="${_csrf.token}"/>
+  <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 
 <body>
@@ -133,13 +135,15 @@
                                                                             title="Cập nhật trạng thái">
                                                                     <i class="bi bi-gear"></i>
                                                                     </button>
-                                                                    <button class="btn btn-danger btn-sm"
+                                                                    <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${item.requestID}" 
-                                                                            data-entity-name="${item.description}" 
-                                                                            data-entity-type="Yêu cầu bảo trì" 
-                                                                            data-delete-url="/admin/maintenance/delete" 
-                                                                            data-id-name="requestID">
+                                                                        data-entity-id="${item.requestID}" 
+                                                                        data-entity-name="${item.description}" 
+                                                                        data-entity-type="Yêu cầu bảo trì" 
+                                                                        data-delete-url="/admin/maintenance/delete" 
+                                                                        data-check-url="/admin/maintenance/can-delete/" 
+                                                                        data-warning-message="Yêu cầu đã được xử lý hoặc bị hủy, không thể xóa."
+                                                                        data-id-name="requestID">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>
@@ -168,7 +172,7 @@
   </div>
 
   <jsp:include page="../layout/import-js.jsp" />
-  <jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
+  <jsp:include page="../layout/partial/_modals-delete.jsp" />
   <jsp:include page="_script-modal-warning-update.jsp" />
   <jsp:include page="_script-modal-update-status.jsp" />
 </body>

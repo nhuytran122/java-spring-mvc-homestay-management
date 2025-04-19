@@ -37,12 +37,9 @@ public class InventoryStockService {
         this.stockRepository.save(stock);
     }
 
-    public InventoryStock findStockByItemIDAndBranchID(long itemID, long branchID) {
+    public Optional<InventoryStock> findStockByItemIDAndBranchID(long itemID, long branchID) {
         Optional<InventoryStock> stockOpt = stockRepository.findByInventoryItem_ItemIDAndBranch_BranchID(itemID,
                 branchID);
-        if (!stockOpt.isPresent()) {
-            throw new NotFoundException("Đồ trong kho");
-        }
-        return stockOpt.get();
+        return stockOpt;
     }
 }

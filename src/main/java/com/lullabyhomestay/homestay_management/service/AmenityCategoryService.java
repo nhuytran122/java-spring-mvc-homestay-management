@@ -57,4 +57,13 @@ public class AmenityCategoryService {
             this.amenityCategoryRepository.deleteByCategoryID(categoryID);
         }
     }
+
+    public boolean existsByName(String name) {
+        return amenityCategoryRepository.existsByCategoryNameIgnoreCase(name.trim());
+    }
+
+    public boolean existsByNameAndNotId(String name, Long id) {
+        return amenityCategoryRepository.existsByCategoryNameIgnoreCaseAndCategoryIDNot(name.trim(), id);
+    }
+
 }

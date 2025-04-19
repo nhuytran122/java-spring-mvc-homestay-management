@@ -53,7 +53,10 @@ public class CustomerTypeController {
             @ModelAttribute("newType") @Valid CustomerType customerType,
             BindingResult result,
             HttpServletRequest request) {
-        // HttpSession session = request.getSession(false);
+        if (customerTypeService.existsByName(customerType.getName())) {
+            result.rejectValue("name", "error.name",
+                    "Tên phân loại khách hàng đã tồn tại!");
+        }
         if (result.hasErrors()) {
             return "admin/customer-type/create";
         }
@@ -75,8 +78,11 @@ public class CustomerTypeController {
             BindingResult result,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
         CustomerType currentType = customerTypeService.getCustomerTypeByID(type.getCustomerTypeID());
+        if (customerTypeService.existsByNameAndNotId(type.getName(), type.getCustomerTypeID())) {
+            result.rejectValue("name", "error.name",
+                    "Tên phân loại khách hàng đã tồn tại!");
+        }
         if (result.hasErrors()) {
             return "admin/customer-type/update";
         }

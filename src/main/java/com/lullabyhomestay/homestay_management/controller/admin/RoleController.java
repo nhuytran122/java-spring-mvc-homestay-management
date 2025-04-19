@@ -44,7 +44,10 @@ public class RoleController {
             BindingResult newRoleBindingResult,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
+        if (roleService.existsByName(role.getRoleName())) {
+            newRoleBindingResult.rejectValue("roleName", "error.roleName",
+                    "Tên chức vụ đã tồn tại!");
+        }
         if (newRoleBindingResult.hasErrors()) {
             return "admin/role/create";
         }
@@ -65,8 +68,11 @@ public class RoleController {
             BindingResult roleBindingResult,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
         Role currentRole = roleService.getRoleByRoleID(role.getRoleID());
+        if (roleService.existsByNameAndNotId(role.getRoleName(), role.getRoleID())) {
+            roleBindingResult.rejectValue("roleName", "error.roleName",
+                    "Tên chức vụ đã tồn tại!");
+        }
         if (roleBindingResult.hasErrors()) {
             return "admin/role/update";
         }

@@ -10,6 +10,8 @@
   <title>Sửa phòng</title>
   <jsp:include page="../layout/import-css.jsp" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <meta name="_csrf" content="${_csrf.token}"/>
+  <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 <body>
   <div class="container-scroller">

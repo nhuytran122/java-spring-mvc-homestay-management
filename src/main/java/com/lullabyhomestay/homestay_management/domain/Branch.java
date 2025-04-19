@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,14 +30,17 @@ public class Branch {
     private Long branchID;
 
     @NotBlank(message = "Vui lòng nhập tên chi nhánh")
+    @Size(max = 255, message = "Tên chi nhánh không được vượt quá 255 ký tự")
     @Column(name = "BranchName")
     private String branchName;
 
     @NotBlank(message = "Vui lòng nhập địa chỉ")
+    @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
     @Column(name = "Address")
     private String address;
 
     @Column(name = "Phone")
+    @Pattern(message = "Số điện thoại không hợp lệ", regexp = "(?:\\+84|0084|0)[235789][0-9]{1,2}[0-9]{7}(?:[^\\d]+|$)")
     private String phone;
 
     @Column(name = "Image")

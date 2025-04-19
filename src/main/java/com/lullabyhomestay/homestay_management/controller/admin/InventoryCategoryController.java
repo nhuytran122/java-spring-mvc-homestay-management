@@ -53,7 +53,11 @@ public class InventoryCategoryController {
             @ModelAttribute("newCategory") @Valid InventoryCategory inventoryCategory,
             BindingResult newCategoryBindingResult,
             HttpServletRequest request) {
-        // HttpSession session = request.getSession(false);
+        if (inventoryCategoryService.existsByNameAndNotId(inventoryCategory.getCategoryName(),
+                inventoryCategory.getCategoryID())) {
+            newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
+                    "Tên phân loại đồ dùng đã tồn tại!");
+        }
 
         if (newCategoryBindingResult.hasErrors()) {
             return "admin/inventory-category/create";
@@ -81,6 +85,10 @@ public class InventoryCategoryController {
         InventoryCategory currentCategory = this.inventoryCategoryService
                 .getInventoryCategoryByID(category.getCategoryID());
 
+        if (inventoryCategoryService.existsByNameAndNotId(category.getCategoryName(), category.getCategoryID())) {
+            newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
+                    "Tên phân loại đồ dùng đã tồn tại!");
+        }
         if (newCategoryBindingResult.hasErrors()) {
             return "admin/inventory-category/update";
         }

@@ -16,7 +16,6 @@ import com.lullabyhomestay.homestay_management.domain.InventoryItem;
 import com.lullabyhomestay.homestay_management.domain.InventoryStock;
 import com.lullabyhomestay.homestay_management.domain.InventoryTransaction;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchTransactionCriterialDTO;
-import com.lullabyhomestay.homestay_management.exception.InventoryException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
@@ -76,17 +75,13 @@ public class InventoryTransactionService {
     private boolean handleChangeStock(InventoryTransaction transaction) {
         Optional<InventoryItem> currentItem = this.itemRepository
                 .findByItemID(transaction.getInventoryItem().getItemID());
-        if (!currentItem.isPresent()) {
-            throw new InventoryException("Không tìm thấy đồ dùng", transaction);
-        }
 
         Optional<InventoryStock> currentStockOpt = stockRepository.findByInventoryItem_ItemIDAndBranch_BranchID(
                 currentItem.get().getItemID(), transaction.getBranch().getBranchID());
         InventoryStock currentStock;
         if (!currentStockOpt.isPresent()) {
             if (transaction.getTransactionType() == TransactionType.EXPORT) {
-                throw new InventoryException(
-                        "Hiện không có đồ dùng này trong kho.", transaction);
+                return false;
             }
             currentStock = new InventoryStock();
             currentStock.setQuantity(0);
@@ -103,8 +98,7 @@ public class InventoryTransactionService {
         } else {
             newQuantity = currentStock.getQuantity() - transaction.getQuantity();
             if (newQuantity < 0) {
-                throw new InventoryException(
-                        "Số lượng xuất vượt quá tồn kho.", transaction);
+                return false;
             }
         }
         currentStock.setQuantity(newQuantity);
@@ -150,7 +144,7 @@ public class InventoryTransactionService {
         } else {
             newStockQuantity = currentStock.getQuantity() - quantityDifference;
             if (newStockQuantity < 0) {
-                throw new InventoryException("Số lượng xuất vượt quá tồn kho.", transaction);
+                return;
             }
         }
         currentStock.setQuantity(newStockQuantity);

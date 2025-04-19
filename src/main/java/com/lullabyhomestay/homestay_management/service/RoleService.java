@@ -45,4 +45,12 @@ public class RoleService {
             this.roleRepository.deleteByRoleID(roleID);
         }
     }
+
+    public boolean existsByName(String name) {
+        return roleRepository.existsByRoleNameIgnoreCase(name.trim());
+    }
+
+    public boolean existsByNameAndNotId(String name, Long id) {
+        return roleRepository.existsByRoleNameIgnoreCaseAndRoleIDNot(name.trim(), id);
+    }
 }

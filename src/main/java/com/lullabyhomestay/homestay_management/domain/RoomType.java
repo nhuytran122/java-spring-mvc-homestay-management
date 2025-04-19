@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class RoomType {
     private Long roomTypeID;
 
     @NotBlank(message = "Vui lòng nhập tên loại phòng")
+    @Size(max = 255, message = "Tên loại phòng không được vượt quá 255 ký tự")
     @Column(name = "Name")
     private String name;
 
@@ -48,6 +50,7 @@ public class RoomType {
     private String photo;
 
     @Column(name = "Description")
+    @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
     private String description;
 
     @Min(value = 1, message = "Giá phòng bù giờ phải lớn hơn 0")

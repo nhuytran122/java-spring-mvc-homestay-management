@@ -57,4 +57,12 @@ public class InventoryCategoryService {
             this.inventoryCategoryRepository.deleteByCategoryID(categoryID);
         }
     }
+
+    public boolean existsByName(String name) {
+        return inventoryCategoryRepository.existsByCategoryNameIgnoreCase(name.trim());
+    }
+
+    public boolean existsByNameAndNotId(String name, Long id) {
+        return inventoryCategoryRepository.existsByCategoryNameIgnoreCaseAndCategoryIDNot(name.trim(), id);
+    }
 }

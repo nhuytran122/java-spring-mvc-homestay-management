@@ -94,7 +94,7 @@
                                                             <td>${room.branch.branchName}</td>
                                                             <td>
                                                                 <span class="badge ${room.isActive ? 'bg-success' : 'bg-danger'}">
-                                                                    ${room.isActive ? 'Hoạt động' : 'Ngừng hoạt động'}
+                                                                    ${room.isActive ? 'Hoạt động' : 'Tạm ngừng hoạt động'}
                                                                 </span>
                                                             </td>
                                                             <td>

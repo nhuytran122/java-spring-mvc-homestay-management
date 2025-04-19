@@ -59,4 +59,13 @@ public class RoomTypeService {
             roomTypeRepository.deleteByRoomTypeID(id);
         }
     }
+
+    public boolean existsByName(String name) {
+        return roomTypeRepository.existsByNameIgnoreCase(name.trim());
+    }
+
+    public boolean existsByNameAndNotId(String name, Long id) {
+        return roomTypeRepository.existsByNameIgnoreCaseAndRoomTypeIDNot(name.trim(), id);
+    }
+
 }

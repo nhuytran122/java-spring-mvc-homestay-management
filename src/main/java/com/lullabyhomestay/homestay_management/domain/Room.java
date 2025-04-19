@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,12 +30,12 @@ public class Room {
     @Column(name = "RoomID")
     private Long roomID;
 
-    @Min(value = 1, message = "Vui lòng nhập số phòng")
+    @NotNull(message = "Vui lòng nhập số phòng")
     @Column(name = "RoomNumber")
-    private int roomNumber;
+    private Integer roomNumber;
 
     @Column(name = "Area")
-    private float area;
+    private Float area;
 
     @Column(name = "Thumbnail")
     private String thumbnail;

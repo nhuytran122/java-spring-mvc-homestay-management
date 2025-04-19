@@ -94,7 +94,7 @@
                                                                         onclick="checkBeforeDelete(this)" 
                                                                             data-entity-id="${service.serviceID}" 
                                                                             data-entity-name="${service.serviceName}" 
-                                                                            data-entity-type="dịch vụ" 
+                                                                            data-entity-type="Dịch vụ" 
                                                                             data-delete-url="/admin/service/delete" 
                                                                             data-check-url="/admin/service/can-delete/" 
                                                                             data-id-name="serviceID">

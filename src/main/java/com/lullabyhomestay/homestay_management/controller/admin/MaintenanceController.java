@@ -115,14 +115,14 @@ public class MaintenanceController {
 
     @GetMapping("/admin/maintenance/can-update/{id}")
     public ResponseEntity<Boolean> canUpdateRequest(@PathVariable Long id) {
-        boolean canUpdate = maintenanceService.canUpdateRequest(id);
+        boolean canUpdate = maintenanceService.canUpdateAndDeleteRequest(id);
         return ResponseEntity.ok(canUpdate);
     }
 
     @GetMapping("/admin/maintenance/update/{id}")
     public String getUpdateMaintenancePage(Model model, @PathVariable Long id) {
         MaintenanceRequest request = maintenanceService.getMaintenanceRequestByID(id);
-        boolean canUpdate = maintenanceService.canUpdateRequest(id);
+        boolean canUpdate = maintenanceService.canUpdateAndDeleteRequest(id);
         model.addAttribute("request", request);
         if (!canUpdate) {
             model.addAttribute("canUpdate", false);
@@ -188,6 +188,12 @@ public class MaintenanceController {
         maintenance.setUpdatedAt(LocalDateTime.now());
         maintenanceService.handleSaveMaintenanceRequest(maintenance);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/admin/maintenance/can-delete/{id}")
+    public ResponseEntity<Boolean> canDeleteRequest(@PathVariable long id) {
+        boolean canDelete = maintenanceService.canUpdateAndDeleteRequest(id);
+        return ResponseEntity.ok(canDelete);
     }
 
     @PostMapping("/admin/maintenance/delete")

@@ -6,6 +6,7 @@ import com.lullabyhomestay.homestay_management.service.validator.UniqueEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class CustomerDTO {
     private Long customerID;
 
     @NotBlank(message = "Vui lòng nhập họ tên")
+    @Size(max = 255, message = "Tên khách hàng không được vượt quá 255 ký tự")
     private String fullName;
 
     @NotBlank(message = "Vui lòng nhập số điện thoại")
@@ -31,6 +33,7 @@ public class CustomerDTO {
     private String email;
 
     private String address;
+    @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
     private String avatar;
     private Double rewardPoints;
     private Boolean enabled;

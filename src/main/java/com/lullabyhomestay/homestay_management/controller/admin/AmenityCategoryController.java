@@ -53,7 +53,10 @@ public class AmenityCategoryController {
             BindingResult newCategoryBindingResult,
             HttpServletRequest request) {
         // HttpSession session = request.getSession(false);
-
+        if (amenityCategoryService.existsByName(amenityCategory.getCategoryName())) {
+            newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
+                    "Tên phân loại tiện nghi đã tồn tại!");
+        }
         if (newCategoryBindingResult.hasErrors()) {
             model.addAttribute("iconList", iconService.getCachedIconList());
             return "admin/amenity-category/create";
@@ -78,10 +81,13 @@ public class AmenityCategoryController {
             BindingResult newCategoryBindingResult,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
-
         AmenityCategory currentCategory = this.amenityCategoryService.getAmenityCategoryByID(category.getCategoryID());
 
+        if (amenityCategoryService.existsByNameAndNotId(currentCategory.getCategoryName(),
+                currentCategory.getCategoryID())) {
+            newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
+                    "Tên phân loại tiện nghi đã tồn tại!");
+        }
         if (newCategoryBindingResult.hasErrors()) {
             model.addAttribute("iconList", iconService.getCachedIconList());
             return "admin/amenity-category/update";

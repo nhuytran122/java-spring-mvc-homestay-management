@@ -24,4 +24,8 @@ public interface InventoryCategoryRepository extends JpaRepository<InventoryCate
 
     void deleteByCategoryID(long id);
 
+    boolean existsByCategoryNameIgnoreCase(String name);
+
+    boolean existsByCategoryNameIgnoreCaseAndCategoryIDNot(String name, Long categoryID);
+
 }

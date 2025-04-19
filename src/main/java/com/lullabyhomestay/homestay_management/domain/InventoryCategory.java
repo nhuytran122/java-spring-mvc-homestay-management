@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +29,12 @@ public class InventoryCategory {
     private Long categoryID;
 
     @NotBlank(message = "Vui lòng nhập tên danh mục")
+    @Size(max = 255, message = "Tên danh mục không được vượt quá 255 ký tự")
     @Column(name = "CategoryName")
     private String categoryName;
 
     @Column(name = "Description")
+    @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
     private String description;
 
     @OneToMany(mappedBy = "inventoryCategory")

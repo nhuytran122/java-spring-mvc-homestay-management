@@ -77,7 +77,9 @@ public class RoomTypeController {
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
+        if (roomTypeService.existsByName(roomType.getName())) {
+            newRoomTypeBindingResult.rejectValue("name", "error.name", "Tên loại phòng đã tồn tại!");
+        }
         if (file.isEmpty()) {
             newRoomTypeBindingResult.rejectValue("photo", "error.photo", "Vui lòng upload ảnh");
         }
@@ -108,7 +110,9 @@ public class RoomTypeController {
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
+        if (roomTypeService.existsByNameAndNotId(roomType.getName(), roomType.getRoomTypeID())) {
+            roomTypeBindingResult.rejectValue("name", "error.name", "Tên loại phòng đã tồn tại!");
+        }
         RoomType currentRoomType = roomTypeService.getRoomTypeById(roomType.getRoomTypeID());
         if (roomTypeBindingResult.hasErrors()) {
             return "admin/room-type/update";

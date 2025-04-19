@@ -55,25 +55,31 @@ public class MaintenanceRequestService {
         return maintenanceRepository.findAll(spec, pageable);
     }
 
-    public boolean canUpdateRequest(Long requestID) {
+    public boolean canUpdateAndDeleteRequest(Long requestID) {
         Optional<MaintenanceRequest> requestOpt = maintenanceRepository.findByRequestID(requestID);
         if (!requestOpt.isPresent()) {
             throw new NotFoundException("Yêu cầu bảo trì");
         }
-        MaintenanceRequest transaction = requestOpt.get();
-        if (transaction.getStatus() != MaintenanceStatus.PENDING)
-            return false;
-        return true;
+        MaintenanceRequest request = requestOpt.get();
+        if (request.getStatus() == MaintenanceStatus.PENDING
+                || request.getStatus() == MaintenanceStatus.IN_PROGRESS
+                || request.getStatus() == MaintenanceStatus.ON_HOLD)
+            return true;
+        return false;
     }
 
     public void handleSaveMaintenanceRequest(MaintenanceRequest request) {
+        Long roomID = request.getRoom().getRoomID();
+        Room room = new Room();
+        if (roomID != null) {
+            room = roomService.getRoomByID(roomID);
+        }
         if (request.getStatus() == MaintenanceStatus.IN_PROGRESS) {
-            Long roomID = request.getRoom().getRoomID();
-            if (roomID != null) {
-                Room room = roomService.getRoomByID(roomID);
-                room.setIsActive(false);
-                roomService.handleSaveRoom(room);
-            }
+            room.setIsActive(false);
+            roomService.handleSaveRoom(room);
+        } else if (request.getStatus() == MaintenanceStatus.COMPLETED) {
+            room.setIsActive(true);
+            roomService.handleSaveRoom(room);
         }
         this.maintenanceRepository.save(request);
     }
@@ -88,6 +94,17 @@ public class MaintenanceRequestService {
 
     @Transactional
     public void deleteByMaintenanceRequestID(long requestID) {
-        this.maintenanceRepository.deleteByRequestID(requestID);
+        if (canUpdateAndDeleteRequest(requestID)) {
+            MaintenanceRequest request = getMaintenanceRequestByID(requestID);
+            Long roomID = request.getRoom().getRoomID();
+            Room room = new Room();
+            if (roomID != null) {
+                room = roomService.getRoomByID(roomID);
+            }
+            room.setIsActive(false);
+            roomService.handleSaveRoom(room);
+
+            this.maintenanceRepository.deleteByRequestID(requestID);
+        }
     }
 }

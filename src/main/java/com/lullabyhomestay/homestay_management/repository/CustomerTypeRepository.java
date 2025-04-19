@@ -26,4 +26,8 @@ public interface CustomerTypeRepository extends JpaRepository<CustomerType, Long
 
     Optional<CustomerType> findFirstByOrderByMinPointAsc();
 
+    boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCaseAndCustomerTypeIDNot(String name, Long customerTypeID);
+
 }

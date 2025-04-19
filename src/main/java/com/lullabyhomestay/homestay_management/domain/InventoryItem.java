@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,10 +33,12 @@ public class InventoryItem {
     private Long itemID;
 
     @NotBlank(message = "Vui lòng nhập tên đồ dùng")
+    @Size(max = 255, message = "Tên đồ dùng không được vượt quá 255 ký tự")
     @Column(name = "ItemName")
     private String itemName;
 
     @NotBlank(message = "Vui lòng nhập đơn vị tính")
+    @Size(max = 100, message = "Đơn vị tính không được vượt quá 255 ký tự")
     @Column(name = "Unit")
     private String unit;
 

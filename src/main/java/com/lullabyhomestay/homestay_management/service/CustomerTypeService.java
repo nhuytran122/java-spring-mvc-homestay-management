@@ -62,4 +62,12 @@ public class CustomerTypeService {
         if (canDeleteType(id))
             typeRepository.deleteByCustomerTypeID(id);
     }
+
+    public boolean existsByName(String name) {
+        return typeRepository.existsByNameIgnoreCase(name.trim());
+    }
+
+    public boolean existsByNameAndNotId(String name, Long id) {
+        return typeRepository.existsByNameIgnoreCaseAndCustomerTypeIDNot(name.trim(), id);
+    }
 }

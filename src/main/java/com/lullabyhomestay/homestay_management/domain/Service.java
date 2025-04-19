@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +24,12 @@ public class Service {
     private Long serviceID;
 
     @NotBlank(message = "Vui lòng nhập tên dịch vụ")
+    @Size(max = 255, message = "Tên dịch vụ không được vượt quá 255 ký tự")
     @Column(name = "ServiceName")
     private String serviceName;
 
     @NotBlank(message = "Vui lòng nhập đơn vị tính")
+    @Size(max = 100, message = "Đơn vị tính không được vượt quá 100 ký tự")
     @Column(name = "Unit")
     private String unit;
 

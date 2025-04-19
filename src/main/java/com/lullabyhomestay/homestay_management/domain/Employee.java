@@ -68,4 +68,7 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<InventoryTransaction> inventoryTransactions;
+
+    @OneToMany(mappedBy = "employee")
+    List<ActionLog> actionLogs;
 }

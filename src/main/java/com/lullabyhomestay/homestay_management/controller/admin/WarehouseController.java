@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -86,6 +87,7 @@ public class WarehouseController {
             @ModelAttribute("newImport") @Valid InventoryTransaction transaction,
             BindingResult bindingResult,
             HttpServletRequest request) {
+
         return handleTransaction(model, transaction, bindingResult, TransactionType.IMPORT, "newImport",
                 "admin/warehouse/import", request);
     }
@@ -104,6 +106,20 @@ public class WarehouseController {
             @ModelAttribute("newExport") @Valid InventoryTransaction transaction,
             BindingResult bindingResult,
             HttpServletRequest request) {
+        if (transaction.getTransactionType() == TransactionType.EXPORT) {
+            Optional<InventoryStock> currentStock = stockService.findStockByItemIDAndBranchID(
+                    transaction.getInventoryItem().getItemID(), transaction.getBranch().getBranchID());
+            if (!currentStock.isPresent()) {
+                model.addAttribute("error", "Không tìm thấy đồ dùng trong chi nhánh này");
+            }
+            if (currentStock.get().getQuantity() < transaction.getQuantity()) {
+                model.addAttribute("error",
+                        "Số lượng xuất vượt quá tồn kho. Chỉ còn " + currentStock.get().getQuantity()
+                                + " " + currentStock.get().getInventoryItem().getItemName() + " trong kho");
+                model.addAttribute("newExport", transaction);
+                return "admin/warehouse/transaction/export";
+            }
+        }
         return handleTransaction(model, transaction, bindingResult, TransactionType.EXPORT, "newExport",
                 "admin/warehouse/export", request);
     }
@@ -147,11 +163,24 @@ public class WarehouseController {
             BindingResult result,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
         Long transactionId = transaction.getTransactionID();
         InventoryTransaction currentTransaction = this.transactionService.getTransactionByID(transactionId);
         if (result.hasErrors()) {
             return "admin/warehouse/transaction/update";
+        }
+        Optional<InventoryStock> currentStock = stockService.findStockByItemIDAndBranchID(
+                currentTransaction.getInventoryItem().getItemID(), currentTransaction.getBranch().getBranchID());
+        if (transaction.getTransactionType() == TransactionType.EXPORT) {
+            if (!currentStock.isPresent()) {
+                model.addAttribute("error", "Không tìm thấy đồ dùng trong chi nhánh này");
+            }
+            if (currentStock.get().getQuantity() < transaction.getQuantity()) {
+                model.addAttribute("error",
+                        "Số lượng xuất vượt quá tồn kho. Chỉ còn " + currentStock.get().getQuantity()
+                                + " " + currentStock.get().getInventoryItem().getItemName() + " trong kho");
+                model.addAttribute("transaction", transaction);
+                return "admin/warehouse/transaction/update";
+            }
         }
         int oldQuantity = currentTransaction.getQuantity();
         currentTransaction.setQuantity(transaction.getQuantity());
@@ -169,7 +198,7 @@ public class WarehouseController {
     private InventoryTransaction createTransactionFromParams(Long branchID, Long itemID) {
         InventoryTransaction transaction = new InventoryTransaction();
         if (branchID != null && itemID != null) {
-            InventoryStock stock = stockService.findStockByItemIDAndBranchID(itemID, branchID);
+            InventoryStock stock = stockService.findStockByItemIDAndBranchID(itemID, branchID).get();
             transaction.setInventoryItem(stock.getInventoryItem());
             transaction.setBranch(stock.getBranch());
         }

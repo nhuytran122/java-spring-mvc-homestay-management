@@ -90,9 +90,7 @@ uri="http://www.springframework.org/tags/form" %>
                       </div>
 
                       <div class="form-group row">
-                        <label class="control-label col-sm-2"
-                          >Địa chỉ <span class="text-danger">*</span></label
-                        >
+                        <label class="control-label col-sm-2">Địa chỉ</label>
                         <div class="col-sm-10">
                           <form:input
                             type="text"

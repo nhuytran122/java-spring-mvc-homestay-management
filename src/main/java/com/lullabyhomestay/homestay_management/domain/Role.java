@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +31,12 @@ public class Role {
     private Long roleID;
 
     @NotBlank(message = "Vui lòng nhập tên vai trò")
+    @Size(max = 255, message = "Tên vai trò không được vượt quá 255 ký tự")
     @Column(name = "RoleName")
     private String roleName;
 
     @Column(name = "Description")
+    @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
     private String description;
 
     @OneToMany(mappedBy = "role")
