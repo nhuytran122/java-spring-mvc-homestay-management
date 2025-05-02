@@ -268,6 +268,12 @@
                                             </span>                 
                                         </c:if>
                                     </c:if>
+
+                                    <c:if test="${booking.status == 'PENDING'}">
+                                        <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-credit-card"></i> Thanh toán
+                                        </a>
+                                    </c:if>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -359,12 +365,12 @@
                                                 <fmt:formatNumber type="number" value="${extension.paymentDetail.finalAmount}" />đ
                                             </span>
                                         </c:if>
-                                        <c:if test="${extension.paymentDetail == null}">
+                                        <!-- <c:if test="${extension.paymentDetail == null}">
                                             <a onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS')"
                                             class="btn btn-primary btn-sm">
                                                 Thanh toán
                                             </a>
-                                        </c:if>
+                                        </c:if> -->
                                     </div>
                                 </c:forEach>
                             </div>

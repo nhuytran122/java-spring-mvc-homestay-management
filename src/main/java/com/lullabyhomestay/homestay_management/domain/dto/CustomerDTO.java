@@ -36,6 +36,5 @@ public class CustomerDTO {
     @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
     private String avatar;
     private Double rewardPoints;
-    private Boolean enabled;
     private CustomerType customerType;
 }

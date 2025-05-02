@@ -24,15 +24,6 @@
                         name="keyword" 
                         placeholder="Tìm kiếm khách hàng..." 
                         value="${keyword}"/>
-                    <select name="enabled" class="form-select form-select-sm">
-                        <option value="" ${criteria.enabled == null ? 'selected' : ''}>Chọn trạng thái</option>
-                        <option value="true" ${true == criteria.enabled ? 'selected' : ''}>
-                            Đã khóa
-                        </option>
-                        <option value="false" ${true == criteria.enabled ? 'selected' : ''}>
-                            Hoạt động
-                        </option>
-                    </select>
                     <select name="customerTypeID" class="form-select form-select-sm" >
                         <option value="">Chọn phân loại</option>
                         <c:forEach var="type" items="${listTypes}">
@@ -80,7 +71,6 @@
                                                 <th>Địa chỉ</th>
                                                 <th>Điểm tích lũy</th>
                                                 <th>Phân loại</th>
-                                                <th>Trạng thái</th>
                                                 <th>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -102,11 +92,6 @@
                                                                 value="${customer.rewardPoints}" />
                                                             </td>
                                                             <td>${customer.customerType.name}</td>
-                                                            <td>
-                                                                <span class="badge ${customer.enabled == true ? 'bg-danger' : 'bg-success'}">
-                                                                    ${customer.enabled == true ? 'Đã khóa' : 'Đang hoạt động'}
-                                                                </span>
-                                                            </td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
                                                                     <a href="/admin/customer/update/${customer.customerID}" class="btn btn-warning btn-sm" title="Sửa">

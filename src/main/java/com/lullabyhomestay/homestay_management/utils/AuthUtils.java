@@ -60,10 +60,6 @@ public class AuthUtils {
 
         try {
             EmployeeDTO employeeDTO = employeeService.getEmployeeDTOByEmail(email);
-            if (!employeeDTO.getIsWorking()) {
-                throw new AccessDeniedException(
-                        "Bạn không còn đủ quyền truy cập trang này! Vui lòng liên hệ quản trị viên để được hỗ trợ");
-            }
             return employeeDTO;
         } catch (NotFoundException e) {
             throw new AccessDeniedException("Không tìm thấy tài khoản nhân viên với email: " + email);

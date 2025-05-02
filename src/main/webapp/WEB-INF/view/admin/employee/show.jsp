@@ -24,14 +24,6 @@
                         name="keyword" 
                         placeholder="Tìm kiếm nhân viên..." 
                         value="${keyword}"/>
-                    <select name="isWorking" class="form-select form-select-sm">
-                        <option value="" ${criteria.isWorking == null ? 'selected' : ''}>Chọn trạng thái</option>
-                        <c:forEach var="option" items="${isWorkingOptions}">
-                            <option value="${option}" ${option == criteria.isWorking ? 'selected' : ''}>
-                                ${option ? 'Đang làm việc' : 'Nghỉ làm'}
-                            </option>
-                        </c:forEach>
-                    </select>
                     <select name="roleId" class="form-select form-select-sm" >
                         <option value="">Chọn vai trò</option>
                         <c:forEach var="role" items="${listRoles}">

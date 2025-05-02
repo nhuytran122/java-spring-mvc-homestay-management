@@ -46,16 +46,6 @@
                                                     <p><strong>Vai trò:</strong> ${employee.role.roleName}</p>
                                                     <p><strong>Lương:</strong> <fmt:formatNumber type="number"
                                                         value="${employee.salary}" /> đ</p>
-                                                    <p><strong>Trạng thái làm việc:</strong>
-                                                        <c:choose>
-                                                            <c:when test="${employee.isWorking}">
-                                                                <span class="badge bg-success">Đang làm việc</span>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span class="badge bg-danger">Nghỉ việc</span>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </p>
                                                 </div>
                                             </div>
                                                 <div class="row">

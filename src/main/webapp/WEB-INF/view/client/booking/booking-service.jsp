@@ -154,10 +154,15 @@
 
             function saveSelectedServices() {
                 let selectedServices = [];
-                // let bookingID = $("input[name='bookingID']").val();
                 let hasError = false;
 
-                $('.service-checkbox:checked').each(function() {
+                const checkedCheckboxes = $('.service-checkbox:checked');
+                if (checkedCheckboxes.length === 0) {
+                    $('#errorMessage').text("Vui lòng chọn ít nhất một dịch vụ để tiếp tục!").show();
+                    return;
+                }
+
+                checkedCheckboxes.each(function() {
                     let serviceId = $(this).data('service-id');
                     let quantityInput = $('#quantity-' + serviceId);
                     let noteInput = $('#note-' + serviceId);
@@ -171,12 +176,6 @@
                         quantityInput.removeClass('is-invalid');
                     }
 
-                    // selectedServices.push({
-                    //     service: { serviceID: serviceId },
-                    //     quantity: quantity,
-                    //     description: description,
-                    //     // booking: { bookingID: bookingID }
-                    // });
                     selectedServices.push({
                         serviceID: serviceId,
                         quantity: quantity,
@@ -190,7 +189,6 @@
                 }
 
                 let requestData = {
-                    // bookingID: bookingID,
                     services: selectedServices
                 };
 

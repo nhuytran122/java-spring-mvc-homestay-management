@@ -11,10 +11,6 @@ public class CustomerSpecifications {
         return BaseSpecifications.equalJoin(Customer_.CUSTOMER_TYPE, CustomerType_.CUSTOMER_TYPE_ID, typeID);
     }
 
-    public static Specification<Customer> enabled(Boolean enabled) {
-        return BaseSpecifications.equal(Customer_.ENABLED, enabled);
-    }
-
     public static Specification<Customer> nameLike(String keyword) {
         return BaseSpecifications.like(Customer_.FULL_NAME, keyword);
     }

@@ -40,22 +40,20 @@ public class BookingScheduler {
 
     @Scheduled(fixedDelayString = "${booking.pending.timeout.milliseconds}")
     public void cancelPendingBookings() {
-        List<Booking> pendingBookings = bookingService.getListBookingByStatus(BookingStatus.PENDING);
+        List<Booking> pendingBookings = bookingService.findPendingBookingsBefore(timeoutMinutes);
         for (Booking booking : pendingBookings) {
-            if (booking.getCreatedAt().isBefore(LocalDateTime.now().minusMinutes(timeoutMinutes))) {
-                Long bookingID = booking.getBookingID();
-                booking.setStatus(BookingStatus.CANCELLED);
-                bookingService.handleSaveBooking(booking);
+            Long bookingID = booking.getBookingID();
+            booking.setStatus(BookingStatus.CANCELLED);
+            bookingService.handleSaveBooking(booking);
 
-                // Xóa các dữ liệu liên quan đến Booking: lịch trình
-                roomStatusHistoryService.deleteByBookingID(bookingID);
+            // Xóa các dữ liệu liên quan đến Booking: lịch trình
+            roomStatusHistoryService.deleteByBookingID(bookingID);
 
-                ActionLog actionLog = new ActionLog();
-                actionLog.setActionType(ActionType.CANCEL_BOOKING);
-                actionLog.setObjectID(bookingID);
-                actionLog.setObjectType(ObjectType.BOOKING);
-                actionLogService.handleSaveLog(actionLog);
-            }
+            ActionLog actionLog = new ActionLog();
+            actionLog.setActionType(ActionType.CANCEL_BOOKING);
+            actionLog.setObjectID(bookingID);
+            actionLog.setObjectType(ObjectType.BOOKING);
+            actionLogService.handleSaveLog(actionLog);
         }
     }
 
@@ -82,31 +80,26 @@ public class BookingScheduler {
         }
     }
 
-    @Scheduled(fixedDelay = 72000000) // 2h
+    @Scheduled(fixedDelayString = "${booking.pending.timeout.milliseconds}")
     public void deleteBookingExtensionWithoutPayment() {
-        List<BookingExtension> extensionsToDelete = bookingExtensionService.findAllByPaymentDetailIsNull();
+        // List<BookingExtension> extensionsToDelete =
+        // bookingExtensionService.findAllByPaymentDetailIsNull();
 
-        for (BookingExtension extension : extensionsToDelete) {
-            Booking currentBooking = extension.getBooking();
+        // for (BookingExtension extension : extensionsToDelete) {
+        // // Xóa BookingExtension
+        // bookingExtensionService.deleteByExtensionID(extension.getExtensionID());
 
-            // Update lại giá
-            Double rawExtensionPrice = extension.getTotalAmount();
-            Double discountAmount = DiscountUtil.calculateDiscountAmount(rawExtensionPrice,
-                    currentBooking.getCustomer());
-            Double amountToSubtract = rawExtensionPrice - discountAmount;
+        // ActionLog actionLog = new ActionLog();
+        // actionLog.setActionType(ActionType.DELETE_BOOKING_EXTENSION);
+        // actionLog.setObjectID(extension.getExtensionID());
+        // actionLog.setObjectType(ObjectType.BOOKING_EXTENSION);
+        // actionLogService.handleSaveLog(actionLog);
+        // }
 
-            currentBooking.setTotalAmount(currentBooking.getTotalAmount() - amountToSubtract);
-            bookingService.handleSaveBooking(currentBooking);
+        Long count = bookingExtensionService.countAllByPaymentDetailIsNull();
 
-            // Xóa BookingExtension
-            bookingExtensionService.deleteByExtensionID(extension.getExtensionID());
-
-            ActionLog actionLog = new ActionLog();
-            actionLog.setActionType(ActionType.DELETE_BOOKING_EXTENSION);
-            actionLog.setObjectID(extension.getExtensionID());
-            actionLog.setObjectType(ObjectType.BOOKING_EXTENSION);
-            actionLogService.handleSaveLog(actionLog);
+        if (count > 0) {
+            bookingExtensionService.deleteAllByPaymentDetailIsNull();
         }
     }
-
 }

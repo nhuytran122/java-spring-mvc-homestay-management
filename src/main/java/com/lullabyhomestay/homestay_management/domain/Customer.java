@@ -49,9 +49,6 @@ public class Customer {
     @Column(name = "RewardPoints", insertable = false)
     private Double rewardPoints;
 
-    @Column(name = "Enabled")
-    private boolean enabled;
-
     @ManyToOne
     @JoinColumn(name = "CustomerTypeID")
     private CustomerType customerType;

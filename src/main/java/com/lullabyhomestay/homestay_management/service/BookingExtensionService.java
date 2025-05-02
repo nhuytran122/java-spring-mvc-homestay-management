@@ -40,9 +40,23 @@ public class BookingExtensionService {
         bookingExtensionRepository.deleteByExtensionID(extensionID);
     }
 
+    public void deleteLatestExtensionByBookingID(Long bookingID) {
+        bookingExtensionRepository.findFirstByBooking_BookingIDOrderByCreatedAtDesc(bookingID)
+                .ifPresent(latest -> bookingExtensionRepository.deleteByExtensionID(latest.getExtensionID()));
+    }
+
     public BookingExtension getBookingExtensionByID(Long id) {
         return bookingExtensionRepository.findByExtensionID(id)
                 .orElseThrow(() -> new NotFoundException("Gia hạn thuê phòng"));
+    }
+
+    public Long countAllByPaymentDetailIsNull() {
+        return bookingExtensionRepository.countByPaymentDetailIsNull();
+    }
+
+    @Transactional
+    public void deleteAllByPaymentDetailIsNull() {
+        bookingExtensionRepository.deleteAllByPaymentDetailIsNull();
     }
 
 }

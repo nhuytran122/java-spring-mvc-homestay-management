@@ -52,7 +52,7 @@ uri="http://lullabyhomestay.com/functions" %>
                     </p>
                     <p>
                       <strong>Check-out mới:</strong>
-                      ${f:formatLocalDateTime(extension.booking.checkOut)}
+                      ${f:formatLocalDateTime(newCheckout)}
                     </p>
                     <p>
                       <strong>Số lượng khách:</strong>
@@ -109,13 +109,13 @@ uri="http://lullabyhomestay.com/functions" %>
                     value="${extension.extensionID}"
                   />
                   <button type="submit" class="btn btn-secondary btn-lg">
-                    <i class="bi bi-arrow-left-circle"></i> Hủy
+                    <i class="bi bi-arrow-left-circle"></i> Quay lại
                   </button>
                 </form>
 
                 <a
                   onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS')"
-                  class="btn btn-primary btn-lg"
+                  class="btn btn-success btn-lg"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán
                   (<fmt:formatNumber type="number" value="${finalAmount}" />đ)

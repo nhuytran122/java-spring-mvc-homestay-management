@@ -144,11 +144,17 @@ public class BookingExtraService {
         return totalAmount;
     }
 
+    // @Transactional
+    // public void deleteByBookingID(Long id) {
+    // List<BookingServices> lBookingServices =
+    // getListBookingServiceByBookingID(id);
+    // for (BookingServices bService : lBookingServices) {
+    // deleteBookingServiceByID(bService.getBookingServiceID());
+    // }
+    // }
+
     @Transactional
     public void deleteByBookingID(Long id) {
-        List<BookingServices> lBookingServices = getListBookingServiceByBookingID(id);
-        for (BookingServices bService : lBookingServices) {
-            deleteBookingServiceByID(bService.getBookingServiceID());
-        }
+        bookingServiceRepo.deleteByBooking_BookingID(id);
     }
 }

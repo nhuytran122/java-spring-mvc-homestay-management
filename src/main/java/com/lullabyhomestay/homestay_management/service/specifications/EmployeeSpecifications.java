@@ -11,10 +11,6 @@ public class EmployeeSpecifications {
         return BaseSpecifications.equalJoin(Employee_.ROLE, Role_.ROLE_ID, roleID);
     }
 
-    public static Specification<Employee> isWorking(Boolean isWorking) {
-        return BaseSpecifications.equal(Employee_.IS_WORKING, isWorking);
-    }
-
     public static Specification<Employee> nameLike(String keyword) {
         return BaseSpecifications.like(Employee_.FULL_NAME, keyword);
     }

@@ -34,6 +34,9 @@
                                     <c:set var="errorAddress">
                                         <form:errors path="address" cssClass="invalid-feedback" />
                                     </c:set>
+                                    <c:set var="errorPhone">
+                                        <form:errors path="phone" cssClass="invalid-feedback" />
+                                    </c:set>
                                     <c:set var="errorPassword">
                                         <form:errors path="branchPassword" cssClass="invalid-feedback" />
                                     </c:set>
@@ -63,10 +66,11 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label class="control-label col-sm-2">Số điện thoại</label>
+                                        <label class="control-label col-sm-2">Số điện thoại <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:input type="text" class="form-control" 
+                                            <form:input type="text" class="form-control ${not empty errorPhone ? 'is-invalid' : ''}" 
                                             path="phone" />
+                                            ${errorPhone}
                                         </div>
                                     </div>
 

@@ -45,10 +45,6 @@ uri="http://lullabyhomestay.com/functions" %>
                     <p>
                       <strong>Địa chỉ:</strong> ${booking.room.branch.address}
                     </p>
-                    <p>
-                      <strong>Mật khẩu cổng:</strong>
-                      Vui lòng xem chi tiết thông tin tại lịch sử đặt phòng
-                    </p>
                   </div>
                   <div class="col-md-6">
                     <h5 class="mb-3">Thông tin đặt phòng</h5>
@@ -153,8 +149,20 @@ uri="http://lullabyhomestay.com/functions" %>
             </div>
 
             <div class="action-buttons my-4">
+              <div class="text-center">
+                <a
+                  onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')"
+                  class="btn btn-success btn-lg shadow px-5"
+                >
+                  <i class="bi bi-credit-card"></i> Thanh toán
+                  (<fmt:formatNumber
+                    type="number"
+                    value="${booking.totalAmount}"
+                  />đ)
+                </a>
+              </div>
               <div
-                class="d-flex gap-3 justify-content-center align-items-center flex-wrap mb-3"
+                class="d-flex gap-3 justify-content-center align-items-center flex-wrap mt-3"
               >
                 <button
                   type="button"
@@ -179,19 +187,6 @@ uri="http://lullabyhomestay.com/functions" %>
                     <i class="bi bi-x-circle"></i> Hủy đặt phòng
                   </button>
                 </form>
-              </div>
-
-              <div class="text-center">
-                <a
-                  onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')"
-                  class="btn btn-success btn-lg shadow px-5"
-                >
-                  <i class="bi bi-credit-card"></i> Thanh toán
-                  (<fmt:formatNumber
-                    type="number"
-                    value="${booking.totalAmount}"
-                  />đ)
-                </a>
               </div>
             </div>
 

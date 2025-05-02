@@ -84,21 +84,6 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Điểm tích lũy</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="fa fa-star"></i></span>
-                                    <form:input type="text" path="rewardPoints" class="form-control form-control-lg rounded-end-3 bg-light" readonly="true" />
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Hạng thành viên</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="fa fa-crown"></i></span>
-                                    <form:input type="text" path="customerType.name" class="form-control form-control-lg rounded-end-3 bg-light" readonly="true" />
-                                </div>
-                            </div>
-
                             <div class="col-12 text-center mt-4">
                                 <button type="submit" class="btn btn-primary btn-lg rounded-3 me-2">
                                     <i class="fa fa-save"></i> Lưu thay đổi

@@ -314,6 +314,8 @@ public class ClientBookingController {
     @GetMapping("/booking/can-booking-extension/{id}")
     public ResponseEntity<?> canBookingExtension(@PathVariable long id) {
         Booking booking = bookingService.getBookingByID(id);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        BookingUtils.validateBooking(booking, customerDTO);
         if (booking == null) {
             return ResponseEntity.badRequest()
                     .body(new ApiResponseDTO<>(false, "Không tìm thấy đơn đặt phòng"));

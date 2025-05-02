@@ -43,8 +43,6 @@ public class EmployeeController {
         List<EmployeeDTO> listEmployees = employees.getContent();
 
         List<Role> roleOptions = roleService.getAllRoles();
-        List<Boolean> isWorkingOptions = Arrays.asList(true, false);
-        model.addAttribute("isWorkingOptions", isWorkingOptions);
         model.addAttribute("listRoles", roleOptions);
         model.addAttribute("criteria", criteria);
         model.addAttribute("extraParams", criteria.convertToExtraParams());
@@ -88,7 +86,6 @@ public class EmployeeController {
             img = this.uploadService.handleSaveUploadFile(file, "avatar");
             employee.setAvatar(img);
         }
-        employee.setIsWorking(true);
         this.employeeService.handleSaveEmployee(employee);
         return "redirect:/admin/employee";
     }
@@ -127,7 +124,6 @@ public class EmployeeController {
         currentEmployee.setPhone(employee.getPhone());
         currentEmployee.setRole(employee.getRole());
         currentEmployee.setSalary(employee.getSalary());
-        currentEmployee.setIsWorking(employee.getIsWorking());
 
         this.employeeService.handleSaveEmployee(currentEmployee);
         return "redirect:/admin/employee";

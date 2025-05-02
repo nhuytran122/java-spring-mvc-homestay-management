@@ -33,8 +33,6 @@ public class EmployeeDTO {
     @NotBlank(message = "Vui lòng nhập email")
     private String email;
 
-    private Boolean isWorking;
-
     @NotNull(message = "Vui lòng nhập mức lương")
     private Double salary;
 

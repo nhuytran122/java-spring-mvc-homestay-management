@@ -43,4 +43,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
     Double getTotalAmountByCustomerId(@Param("customerId") Long customerId);
 
     List<Booking> findByStatus(BookingStatus status);
+
+    @Query(value = "SELECT * FROM Bookings WHERE status = 'PENDING' AND CreatedAt < DATEADD(MINUTE, -:timeoutMinutes, GETDATE())", nativeQuery = true)
+    List<Booking> findPendingBookingsBefore(@Param("timeoutMinutes") int timeoutMinutes);
 }

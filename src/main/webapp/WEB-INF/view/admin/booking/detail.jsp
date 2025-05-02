@@ -209,11 +209,11 @@ uri="http://lullabyhomestay.com/functions" %>
                                       <td>
                                         <c:choose>
                                           <c:when
-                                            test="${not empty bookingService.paymentDetail}"
+                                            test="${not empty bService.paymentDetail}"
                                           >
                                             <c:set
                                               var="paymentStatus"
-                                              value="${bookingService.paymentDetail.payment.status}"
+                                              value="${bService.paymentDetail.payment.status}"
                                             />
                                             <span
                                               class="badge ${paymentStatus == 'COMPLETED' ? 'bg-success' : paymentStatus == 'FAILED' ? 'bg-danger' : paymentStatus == 'PENDING' ? 'bg-primary' : 'bg-info'}"

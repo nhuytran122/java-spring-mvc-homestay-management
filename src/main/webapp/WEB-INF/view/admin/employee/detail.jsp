@@ -85,13 +85,7 @@
                                             <div class="row mb-3 d-flex align-items-center">
                                                 <div class="col-md-4 fw-bold text-md-start">Địa chỉ:</div>
                                                 <div class="col-md-8">${employee.address}</div>
-                                            </div>    
-                                            <div class="row mb-3 d-flex align-items-center">
-                                                <div class="col-md-4 fw-bold text-md-start">Tình trạng:</div>
-                                                <div class="col-md-8"><span class="badge ${employee.isWorking == true ? 'bg-scucess' : 'bg-danger'}">
-                                                    ${employee.isWorking == true ? 'Đang làm việc' : 'Đã nghỉ làm'}
-                                                </span></div>
-                                            </div>                                               
+                                            </div>                                                
                                         </div>
                                     </div>
                                     

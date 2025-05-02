@@ -38,7 +38,6 @@ public class CustomerService {
         Customer customer = mapper.map(registerDTO, Customer.class);
         customer.setPassword(this.passwordEncoder.encode(registerDTO.getPassword()));
         customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
-        customer.setEnabled(false);
         Customer savedCustomer = customerRepository.save(customer);
         return mapper.map(savedCustomer, CustomerDTO.class);
     }
@@ -49,7 +48,6 @@ public class CustomerService {
             customer = mapper.map(requestDTO, Customer.class);
             customer.setPassword(this.passwordEncoder.encode("lullabyhomestay"));
             customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
-            customer.setEnabled(true);
         } else {
             customer = getCustomerByID(requestDTO.getCustomerID());
             customer = updateCustomerInfo(customer, requestDTO);
@@ -112,9 +110,6 @@ public class CustomerService {
             spec = spec.and(Specification.where(CustomerSpecifications.nameLike(criteria.getKeyword()))
                     .or(CustomerSpecifications.addressLike(criteria.getKeyword()))
                     .or(CustomerSpecifications.phoneEqual(criteria.getKeyword())));
-        }
-        if (criteria.getEnabled() != null) {
-            spec = spec.and(CustomerSpecifications.enabled(criteria.getEnabled()));
         }
         if (criteria.getCustomerTypeID() != null) {
             spec = spec.and(CustomerSpecifications.hasType(criteria.getCustomerTypeID()));

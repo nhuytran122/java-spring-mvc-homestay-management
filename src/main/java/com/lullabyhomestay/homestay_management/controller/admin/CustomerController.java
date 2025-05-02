@@ -39,8 +39,6 @@ public class CustomerController {
         List<CustomerDTO> listCustomers = customers.getContent();
 
         List<CustomerType> listTypes = customerTypeService.getAllCustomerTypes();
-        // List<Boolean> isWorkingOptions = Arrays.asList(true, false);
-        // model.addAttribute("isWorkingOptions", isWorkingOptions);
         model.addAttribute("listTypes", listTypes);
         model.addAttribute("criteria", criteria);
         model.addAttribute("extraParams", criteria.convertToExtraParams());
@@ -66,7 +64,6 @@ public class CustomerController {
         if (result.hasErrors()) {
             return "admin/customer/create";
         }
-        customer.setEnabled(true);
         this.customerService.handleSaveCustomer(customer);
         return "redirect:/admin/customer";
     }
@@ -92,7 +89,6 @@ public class CustomerController {
         currentCustomer.setFullName(customer.getFullName());
         currentCustomer.setAddress(customer.getAddress());
         currentCustomer.setPhone(customer.getPhone());
-        currentCustomer.setEnabled(customer.getEnabled());
 
         this.customerService.handleSaveCustomer(currentCustomer);
         return "redirect:/admin/customer";

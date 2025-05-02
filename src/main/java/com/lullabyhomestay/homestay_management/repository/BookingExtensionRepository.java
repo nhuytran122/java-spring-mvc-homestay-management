@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +28,12 @@ public interface BookingExtensionRepository extends JpaRepository<BookingExtensi
                 )
             """)
     List<BookingExtension> findAllByPaymentDetailIsNull();
+
+    Long countByPaymentDetailIsNull();
+
+    @Modifying
+    @Query("DELETE FROM BookingExtension b WHERE b.paymentDetail IS NULL")
+    void deleteAllByPaymentDetailIsNull();
 
     void deleteByExtensionID(Long extensionID);
 

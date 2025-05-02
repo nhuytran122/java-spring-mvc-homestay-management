@@ -99,19 +99,6 @@ uri="http://www.springframework.org/tags/form" %>
                           />
                         </div>
                       </div>
-
-                      <div class="form-group row align-items-center">
-                        <label class="col-sm-2 col-form-label">Bị khóa</label>
-                        <div class="col-sm-10">
-                          <div class="form-check form-switch">
-                            <form:checkbox
-                              path="enabled"
-                              class="form-check-input"
-                              style="transform: scale(1.3)"
-                            />
-                          </div>
-                        </div>
-                      </div>
                       <div class="form-group row">
                         <div class="col-sm-offset-2 col-sm-10 text-center">
                           <a href="/admin/customer" class="btn btn-secondary"

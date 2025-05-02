@@ -19,6 +19,7 @@ import com.lullabyhomestay.homestay_management.domain.Refund;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
+import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
 import com.lullabyhomestay.homestay_management.repository.PaymentRepository;
 import com.lullabyhomestay.homestay_management.repository.RefundRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomStatusHistoryRepository;
@@ -41,6 +42,7 @@ public class BookingService {
     private final PaymentRepository paymentRepository;
     private final RefundRepository refundRepository;
     private final RefundService refundService;
+    private final BookingServiceRepository bookingServiceRepository;
 
     public Page<Booking> searchBookings(SearchBookingCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
@@ -244,8 +246,13 @@ public class BookingService {
         return bookingRepository.findByStatus(bookingStatus);
     }
 
+    public List<Booking> findPendingBookingsBefore(int minutes) {
+        return bookingRepository.findPendingBookingsBefore(minutes);
+    }
+
     @Transactional
     public void deleteByBookingID(Long id) {
+        bookingServiceRepository.deleteByBooking_BookingID(id);
         bookingRepository.deleteByBookingID(id);
         roomStatusHistoryRepo.deleteByBooking_BookingID(id);
     }

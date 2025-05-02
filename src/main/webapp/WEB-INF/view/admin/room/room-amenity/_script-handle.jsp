@@ -22,11 +22,19 @@
       let quantityInput = $(
         ".amenity-quantity[data-amenity-id='" + amenityID + "']"
       );
-      let quantity = quantityInput.val();
+      let quantity = quantityInput.val().trim();
+
+      // Reset lại trạng thái lỗi
+      quantityInput.removeClass("is-invalid");
+      if (quantity) {
+        if (isNaN(quantity) || parseInt(quantity) <= 0) {
+          hasError = true;
+          quantityInput.addClass("is-invalid");
+        }
+      }
 
       selectedItems.push({
         roomAmenityID: {
-          // Lồng vào object roomAmenityID
           roomID: roomID,
           amenityID: amenityID,
         },
@@ -34,14 +42,16 @@
       });
     });
 
-    if (hasError) return;
-
     if (selectedItems.length === 0) {
       $("#errorModal .modal-body").html(
         "<p class='text-danger'>Vui lòng chọn ít nhất một tiện nghi để lưu!</p>"
       );
       $("#errorModal").modal("show");
       return;
+    }
+
+    if (hasError) {
+      return; // Dừng lại nếu có lỗi
     }
 
     $.ajax({
@@ -82,10 +92,11 @@
     let $errorDiv = $("#quantityError");
 
     $errorDiv.hide().text("");
-
-    if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
-      $errorDiv.text("Số lượng phải là số nguyên dương!").show();
-      return;
+    if (quantity) {
+      if (isNaN(quantity) || parseInt(quantity) <= 0) {
+        $errorDiv.text("Số lượng phải là số nguyên dương!").show();
+        return;
+      }
     }
 
     $.ajax({

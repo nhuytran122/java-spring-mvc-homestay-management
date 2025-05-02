@@ -73,9 +73,6 @@ public class EmployeeService {
                     .or(EmployeeSpecifications.emailEqual(criteria.getKeyword()))
                     .or(EmployeeSpecifications.phoneEqual(criteria.getKeyword())));
         }
-        if (criteria.getIsWorking() != null) {
-            spec = spec.and(EmployeeSpecifications.isWorking(criteria.getIsWorking()));
-        }
         if (criteria.getRoleID() != null) {
             spec = spec.and(EmployeeSpecifications.hasRole(criteria.getRoleID()));
         }

@@ -31,6 +31,9 @@
                                     <td>
                                         <input type="number" class="form-control amenity-quantity"
                                                data-amenity-id="${item.amenityID}">
+                                               <div class="invalid-feedback">
+                                                Số lượng phải là số nguyên dương!
+                                            </div>
                                     </td>
                                 </tr>
                             </c:forEach>

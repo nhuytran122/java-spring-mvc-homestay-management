@@ -90,7 +90,8 @@
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <a href="/login" class="btn btn-primary px-4">Đăng nhập</a>
+                            <a href="/login" class="btn btn-primary px-3">Đăng nhập</a>
+                            <a href="/register" class="btn btn-primary px-3 ms-2">Đăng ký</a>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -141,7 +142,7 @@
                     <div class="col-md-4">
                         <div class="card h-100 shadow-sm overflow-hidden border-0 rounded-4">
                             <img src="/images/room/${roomType.photo}" class="card-img-top" alt="${roomType.name}" style="height: 200px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column">
+                            <div class="card-body d-flex flex-column flex-nowrap">
                                 <h5 class="card-title mb-2 fw-bold">${roomType.name}</h5>
                                 <p class="card-text text-muted mb-3" style="flex-grow: 1;">${roomType.description}</p>
                                 

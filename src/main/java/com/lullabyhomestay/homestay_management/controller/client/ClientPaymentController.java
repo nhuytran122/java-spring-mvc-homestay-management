@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Payment;
 import com.lullabyhomestay.homestay_management.domain.dto.ApiResponseDTO;
+import com.lullabyhomestay.homestay_management.service.BookingExtensionService;
 import com.lullabyhomestay.homestay_management.service.BookingService;
 import com.lullabyhomestay.homestay_management.service.PaymentService;
 import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
@@ -30,6 +31,7 @@ public class ClientPaymentController {
 
     private final PaymentService paymentService;
     private final BookingService bookingService;
+    private final BookingExtensionService bookingExtensionService;
 
     @GetMapping("/checkout")
     @ResponseBody
@@ -42,12 +44,15 @@ public class ClientPaymentController {
     @GetMapping("/checkout/vn-pay-callback")
     public String payCallbackHandler(HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         String status = request.getParameter("vnp_ResponseCode");
+        String orderInfo = request.getParameter("vnp_OrderInfo");
+        String[] parts = orderInfo.split("_PURPOSE_");
+        Long bookingID = Long.parseLong(parts[0].replace("BOOKING_", ""));
+        PaymentPurpose paymentPurpose = PaymentPurpose.valueOf(parts[1]);
         if (status.equals("00")) {
             Payment payment = new Payment();
             payment.setPaymentType(PaymentType.TRANSFER);
             payment.setStatus(PaymentStatus.COMPLETED);
 
-            String orderInfo = request.getParameter("vnp_OrderInfo");
             String vnpTxnRef = request.getParameter("vnp_TxnRef");
             String vnpPayDate = request.getParameter("vnp_PayDate");
             String vnpTransactionNo = request.getParameter("vnp_TransactionNo");
@@ -58,10 +63,6 @@ public class ClientPaymentController {
             paymentDate = LocalDateTime.parse(vnpPayDate, formatter);
             payment.setPaymentDate(paymentDate);
             payment.setVnpTransactionNo(vnpTransactionNo);
-
-            String[] parts = orderInfo.split("_PURPOSE_");
-            Long bookingID = Long.parseLong(parts[0].replace("BOOKING_", ""));
-            PaymentPurpose paymentPurpose = PaymentPurpose.valueOf(parts[1]);
             if (paymentPurpose == PaymentPurpose.ROOM_BOOKING) {
                 HttpSession session = request.getSession(false);
                 session.setAttribute("bookingRequest", null);
@@ -79,8 +80,12 @@ public class ClientPaymentController {
 
             return "redirect:/booking/booking-history/" + bookingID;
         } else if (status.equals("24")) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Giao dịch của bạn đã bị hủy");
+            if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
+                bookingExtensionService.deleteLatestExtensionByBookingID(bookingID);
+                redirectAttributes.addFlashAttribute("errorMessage", "Giao dịch của bạn đã bị hủy");
+            }
         }
+
         return "redirect:/checkout/payment-failed";
 
     }

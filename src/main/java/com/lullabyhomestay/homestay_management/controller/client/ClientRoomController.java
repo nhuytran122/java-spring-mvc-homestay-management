@@ -65,7 +65,7 @@ public class ClientRoomController {
         // Đối với trường hợp user back từ confirm -> detail room
         HttpSession session = request.getSession(false);
         BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
-        if (bookingRequest.getBookingID() != null) {
+        if (bookingRequest != null && bookingRequest.getBookingID() != null) {
             bookingService.deleteByBookingID(bookingRequest.getBookingID());
             session.setAttribute("bookingRequest", null);
         }
