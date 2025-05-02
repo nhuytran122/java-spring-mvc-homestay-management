@@ -52,7 +52,7 @@ public class PasswordChangeValidator implements ConstraintValidator<PasswordChan
                 currentPassword = customer.getPassword();
             }
         } else {
-            Employee employee = employeeService.getEmployeeByEmail(email);
+            Employee employee = employeeService.getEmployeeByEmail(email).get();
             if (employee != null) {
                 currentPassword = employee.getPassword();
             }

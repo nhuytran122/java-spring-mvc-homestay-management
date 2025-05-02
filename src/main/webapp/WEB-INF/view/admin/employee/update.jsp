@@ -29,6 +29,7 @@
                                     modelAttribute="employee" enctype="multipart/form-data">
                                     
                                     <form:input type="hidden" path="employeeID"/>
+                                    <form:input type="hidden" path="email"/>
 
                                     <c:set var="errorName">
                                         <form:errors path="fullName" cssClass="invalid-feedback" />

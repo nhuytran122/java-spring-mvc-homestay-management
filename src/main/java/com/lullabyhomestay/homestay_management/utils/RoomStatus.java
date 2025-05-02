@@ -7,8 +7,7 @@ import lombok.Getter;
 @Getter
 public enum RoomStatus {
     BUSY("Đã đặt", "busy", true),
-    CLEANING("Dọn dẹp", "cleaning", false),
-    TEMP_EXTENSION("Tạm giữ phòng", "temp", false);
+    CLEANING("Dọn dẹp", "cleaning", false);
 
     private final String description;
     private final String cssClass;

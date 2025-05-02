@@ -22,29 +22,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "Customers")
-public class Customer {
+public class Customer extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CustomerID")
     private Long customerID;
-
-    @Column(name = "FullName")
-    private String fullName;
-
-    @Column(name = "Phone")
-    private String phone;
-
-    @Column(name = "Email")
-    private String email;
-
-    @Column(name = "Address")
-    private String address;
-
-    @Column(name = "Avatar")
-    private String avatar;
-
-    @Column(name = "Password")
-    private String password;
 
     @Column(name = "RewardPoints", insertable = false)
     private Double rewardPoints;

@@ -24,32 +24,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "Employees")
-public class Employee {
+public class Employee extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EmployeeID")
     private Long employeeID;
-
-    @NotBlank(message = "Vui lòng nhập họ tên nhân viên")
-    @Column(name = "FullName")
-    private String fullName;
-
-    @NotBlank(message = "Vui lòng nhập số điện thoại")
-    @Column(name = "Phone")
-    private String phone;
-
-    @Column(name = "Email")
-    private String email;
-
-    @NotBlank(message = "Vui lòng nhập địa chỉ")
-    @Column(name = "Address")
-    private String address;
-
-    @Column(name = "Avatar")
-    private String avatar;
-
-    @Column(name = "Password")
-    private String password;
 
     @NotNull(message = "Vui lòng nhập mức lương")
     @Column(name = "Salary")
