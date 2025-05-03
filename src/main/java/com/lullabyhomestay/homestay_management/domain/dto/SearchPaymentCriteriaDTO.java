@@ -14,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SearchPaymentCriteriaDTO {
-    private String keyword;
     private String timeRange = "";
     private String status;
     private String type;
@@ -29,9 +28,6 @@ public class SearchPaymentCriteriaDTO {
         }
         if (timeRange != null) {
             extraParams.append("&timeRange=").append(URLEncoder.encode(timeRange, StandardCharsets.UTF_8));
-        }
-        if (keyword != null && !keyword.isEmpty()) {
-            extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
         }
         return extraParams.toString();
     }

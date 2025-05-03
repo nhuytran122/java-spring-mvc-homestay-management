@@ -205,25 +205,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <li class="nav-item">
       <a
         class="nav-link"
-        data-toggle="collapse"
-        href="#employees"
+        href="/admin/employee"
         aria-expanded="false"
-        aria-controls="employees"
+        aria-controls="maintainance"
       >
-        <i class="bi bi-person-bounding-box menu-icon"></i>
+        <i class="bi bi bi-person-bounding-box menu-icon"></i>
         <span class="menu-title">Nhân viên</span>
-        <i class="menu-arrow"></i>
       </a>
-      <div class="collapse" id="employees">
-        <ul class="nav flex-column sub-menu">
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/employee">Nhân viên</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/employee-role">Chức vụ</a>
-          </li>
-        </ul>
-      </div>
     </li>
 
     <li class="nav-item">

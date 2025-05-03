@@ -9,8 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.lullabyhomestay.homestay_management.domain.Customer;
-import com.lullabyhomestay.homestay_management.domain.Employee;
+import com.lullabyhomestay.homestay_management.domain.Role;
 
 import lombok.AllArgsConstructor;
 
@@ -18,28 +17,22 @@ import lombok.AllArgsConstructor;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final CustomerService customerService;
-    private final EmployeeService employeeService;
+    private final UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = customerService.getCustomerByEmail(username);
-        if (customer != null) {
+        com.lullabyhomestay.homestay_management.domain.User user = userService.getUserByEmail(username);
+        if (user != null) {
+            Role role = user.getRole();
+            if (role == null || role.getRoleName() == null) {
+                throw new UsernameNotFoundException("Người dùng không có vai trò hợp lệ.");
+            }
+            String roleName = "ROLE_" + role.getRoleName().name();
             return new User(
-                    customer.getEmail(),
-                    customer.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+                    user.getEmail(),
+                    user.getPassword(),
+                    Collections.singletonList(new SimpleGrantedAuthority(roleName)));
         }
-
-        Employee employee = employeeService.getEmployeeByEmail(username);
-        if (employee != null) {
-            return new User(
-                    employee.getEmail(),
-                    employee.getPassword(),
-                    Collections.singletonList(
-                            new SimpleGrantedAuthority("ROLE_" + employee.getRole().convertToSystemRoleName())));
-        }
-
         throw new UsernameNotFoundException("Không tìm thấy người dùng với email: " + username);
     }
 }

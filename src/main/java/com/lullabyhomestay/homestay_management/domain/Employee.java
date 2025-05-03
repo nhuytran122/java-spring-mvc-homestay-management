@@ -8,23 +8,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "Employees")
-public class Employee extends Person {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EmployeeID")
@@ -34,10 +34,9 @@ public class Employee extends Person {
     @Column(name = "Salary")
     private Double salary;
 
-    @ManyToOne
-    @NotNull(message = "Vui lòng chọn vai trò")
-    @JoinColumn(name = "RoleID")
-    private Role role;
+    @OneToOne
+    @JoinColumn(name = "UserID")
+    private User user;
 
     @OneToMany(mappedBy = "employee")
     private List<MaintenanceRequest> maintenanceRequests;
@@ -46,5 +45,5 @@ public class Employee extends Person {
     private List<InventoryTransaction> inventoryTransactions;
 
     @OneToMany(mappedBy = "employee")
-    List<ActionLog> actionLogs;
+    private List<ActionLog> actionLogs;
 }

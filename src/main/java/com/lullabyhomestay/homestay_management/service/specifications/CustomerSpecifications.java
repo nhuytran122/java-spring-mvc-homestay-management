@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.lullabyhomestay.homestay_management.domain.Customer;
 import com.lullabyhomestay.homestay_management.domain.CustomerType_;
 import com.lullabyhomestay.homestay_management.domain.Customer_;
+import com.lullabyhomestay.homestay_management.domain.User_;
 
 public class CustomerSpecifications {
     public static Specification<Customer> hasType(Long typeID) {
@@ -12,18 +13,18 @@ public class CustomerSpecifications {
     }
 
     public static Specification<Customer> nameLike(String keyword) {
-        return BaseSpecifications.like(Customer_.FULL_NAME, keyword);
+        return BaseSpecifications.likeJoin(Customer_.USER, User_.FULL_NAME, keyword);
     }
 
     public static Specification<Customer> addressLike(String keyword) {
-        return BaseSpecifications.like(Customer_.ADDRESS, keyword);
+        return BaseSpecifications.likeJoin(Customer_.USER, User_.ADDRESS, keyword);
     }
 
     public static Specification<Customer> emailEqual(String keyword) {
-        return BaseSpecifications.equal(Customer_.EMAIL, keyword);
+        return BaseSpecifications.equalJoin(Customer_.USER, User_.EMAIL, keyword);
     }
 
     public static Specification<Customer> phoneEqual(String keyword) {
-        return BaseSpecifications.equal(Customer_.PHONE, keyword);
+        return BaseSpecifications.equalJoin(Customer_.USER, User_.PHONE, keyword);
     }
 }

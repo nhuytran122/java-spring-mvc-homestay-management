@@ -14,6 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
+import com.lullabyhomestay.homestay_management.utils.SystemRole;
+
 import jakarta.servlet.DispatcherType;
 
 @Configuration
@@ -67,7 +69,9 @@ public class SecurityConfiguration {
                                 "/images/**")
                         .permitAll()
 
-                        .requestMatchers("/admin/**").hasRole("QUAN_LY")
+                        .requestMatchers("/admin/**")
+                        .hasAnyRole(SystemRole.ADMIN.name(), SystemRole.MANAGER.name(), SystemRole.HOUSEKEEPER.name(),
+                                SystemRole.EMPLOYEE.name())
 
                         .anyRequest().authenticated())
 

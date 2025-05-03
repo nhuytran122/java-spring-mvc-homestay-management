@@ -68,7 +68,7 @@ public class HomePageController {
         if (result.hasErrors()) {
             return "client/auth/register";
         }
-        this.customerService.handleRegisterCustomer(registerDTO);
+        this.customerService.handleRegisterAccount(registerDTO);
         return "redirect:/login";
     }
 

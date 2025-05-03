@@ -31,21 +31,21 @@
 
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <img src="/images/avatar/${not empty employee.avatar ? employee.avatar : 'default-img.jpg'}"
+                                            <img src="/images/avatar/${not empty user.avatar ? user.avatar : 'default-img.jpg'}"
                                                 class="img-fluid rounded-circle mb-3"
                                                 style="width: 150px; height: 150px;">
-                                            <h5>${employee.fullName}</h5>
+                                            <h5>${user.fullName}</h5>
                                         </div>
 
                                         <div class="col-md-8">
                                             <div class="row mb-3">
                                                 <div class="col-md-12">
-                                                    <p><strong>Email:</strong> ${employee.email}</p>
-                                                    <p><strong>Số điện thoại:</strong> ${employee.phone}</p>
-                                                    <p><strong>Địa chỉ:</strong> ${employee.address}</p>
-                                                    <p><strong>Vai trò:</strong> ${employee.role.roleName}</p>
+                                                    <p><strong>Email:</strong> ${user.email}</p>
+                                                    <p><strong>Số điện thoại:</strong> ${user.phone}</p>
+                                                    <p><strong>Địa chỉ:</strong> ${user.address}</p>
+                                                    <p><strong>Vai trò:</strong> ${user.role.description}</p>
                                                     <p><strong>Lương:</strong> <fmt:formatNumber type="number"
-                                                        value="${employee.salary}" /> đ</p>
+                                                        value="${user.salary}" /> đ</p>
                                                 </div>
                                             </div>
                                                 <div class="row">

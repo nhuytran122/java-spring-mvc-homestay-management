@@ -58,13 +58,13 @@ public class ClientBookingController {
     private final RoomService roomService;
     private final RoomStatusHistoryService roomStatusHistoryService;
     private final HomestayServiceService service;
-    private final CustomerService customerService;
     private final BranchService branchService;
     private final RoomTypeService roomTypeService;
     private final ModelMapper mapper;
     private final ReviewService reviewService;
     private final RefundService refundService;
     private final BookingExtensionService bookingExtensionService;
+    private final UserService userService;
 
     @PostMapping("/booking")
     public String postCreateBooking(@ModelAttribute("newBooking") @Valid Booking booking,
@@ -90,7 +90,7 @@ public class ClientBookingController {
         }
         booking.setStatus(BookingStatus.PENDING);
         booking.setRoom(room);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
         HttpSession session = request.getSession(false);
@@ -142,7 +142,7 @@ public class ClientBookingController {
             booking.setGuestCount(bookingRequest.getGuestCount());
             booking.setRoom(roomService.getRoomByID(bookingRequest.getRoomID()));
             booking.setStatus(BookingStatus.PENDING);
-            CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+            CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
             BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
             booking = bookingService.handleBooking(booking);
         }
@@ -198,6 +198,10 @@ public class ClientBookingController {
     public String getBookingHistory(Model model,
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchBookingCriteriaDTO criteria) {
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
+        if (customerDTO == null) {
+            throw new AccessDeniedException("Vui lòng đăng nhập để sử dụng chức năng này");
+        }
         int validPage = Math.max(1, page);
         String sort = (criteria.getSort() != null && !criteria.getSort().isEmpty()) ? criteria.getSort() : "desc";
         criteria.setSort(sort);
@@ -213,10 +217,6 @@ public class ClientBookingController {
             return prepareModelWithoutSearch(model, criteria, validPage);
         }
 
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
-        if (customerDTO == null) {
-            throw new AccessDeniedException("Vui lòng đăng nhập để sử dụng chức năng này");
-        }
         criteria.setCustomerID(customerDTO.getCustomerID());
         Page<Booking> bookings = bookingService.searchBookings(criteria, validPage);
         List<Booking> listBookings = bookings.getContent();
@@ -228,7 +228,7 @@ public class ClientBookingController {
     @GetMapping("/booking/booking-history/{id}")
     public String getDetailBooking(Model model, @PathVariable long id) {
         Booking booking = bookingService.getBookingByID(id);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
         BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
@@ -245,7 +245,7 @@ public class ClientBookingController {
     @GetMapping("/booking/check-refund/{bookingID}")
     public ResponseEntity<?> checkRefundForBooking(@PathVariable Long bookingID) {
         Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
 
         if (!bookingService.canCancelBooking(booking)) {
@@ -278,7 +278,7 @@ public class ClientBookingController {
     @PostMapping("/booking/cancel")
     public String postCancelBooking(@RequestParam("bookingID") long bookingID) {
         Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
         this.bookingService.cancelBooking(bookingID);
         return "redirect:/booking/booking-history";
@@ -314,7 +314,7 @@ public class ClientBookingController {
     @GetMapping("/booking/can-booking-extension/{id}")
     public ResponseEntity<?> canBookingExtension(@PathVariable long id) {
         Booking booking = bookingService.getBookingByID(id);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
         if (booking == null) {
             return ResponseEntity.badRequest()
@@ -336,7 +336,7 @@ public class ClientBookingController {
     @GetMapping("/booking/booking-extension/{id}")
     public String getBookingExtensionPage(@PathVariable long id, Model model) {
         Booking booking = bookingService.getBookingByID(id);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
         model.addAttribute("booking", booking);
         return "client/booking/booking-extension";
@@ -347,7 +347,7 @@ public class ClientBookingController {
             @RequestParam("newCheckoutTime") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime newCheckout,
             Model model) {
         Booking booking = bookingService.getBookingByID(bookingID);
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
 
         LocalDateTime currentCheckout = booking.getCheckOut();
@@ -397,7 +397,7 @@ public class ClientBookingController {
     public String postCancelBookingExtension(@RequestParam("id") Long id, Model model) {
         Booking booking = bookingService
                 .getBookingByID(bookingExtensionService.getBookingExtensionByID(id).getBooking().getBookingID());
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
 
         bookingExtensionService.deleteByExtensionID(id);
@@ -405,7 +405,7 @@ public class ClientBookingController {
     }
 
     private String prepareModelWithoutSearch(Model model, SearchBookingCriteriaDTO criteria, int validPage) {
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         model.addAttribute("customer", customerDTO);
         addCriteriaAttributes(model, criteria, validPage);
         addBookingStatistics(model, customerDTO.getCustomerID());

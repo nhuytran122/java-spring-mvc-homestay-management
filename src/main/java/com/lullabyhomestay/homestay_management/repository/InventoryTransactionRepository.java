@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryTransaction;
 
-
 @Repository
 public interface InventoryTransactionRepository
         extends JpaRepository<InventoryTransaction, Long>, JpaSpecificationExecutor<InventoryTransaction> {
@@ -26,5 +25,7 @@ public interface InventoryTransactionRepository
     InventoryTransaction save(InventoryTransaction transaction);
 
     Optional<InventoryTransaction> findByTransactionID(Long transactionID);
+
+    boolean existsByEmployee_EmployeeID(long employeeID);
 
 }

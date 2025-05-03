@@ -8,6 +8,7 @@ import com.lullabyhomestay.homestay_management.domain.Branch_;
 import com.lullabyhomestay.homestay_management.domain.Customer_;
 import com.lullabyhomestay.homestay_management.domain.RoomType_;
 import com.lullabyhomestay.homestay_management.domain.Room_;
+import com.lullabyhomestay.homestay_management.domain.User_;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Booking_;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
@@ -31,7 +32,7 @@ public class BookingSpecifications {
     }
 
     public static Specification<Booking> customerNameLike(String keyword) {
-        return BaseSpecifications.likeJoin(Booking_.CUSTOMER, Customer_.FULL_NAME, keyword);
+        return BaseSpecifications.likeJoinTwoLevels(Booking_.CUSTOMER, Customer_.USER, User_.FULL_NAME, keyword);
     }
 
     public static Specification<Booking> statusEqual(BookingStatus status) {

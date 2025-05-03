@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +21,7 @@ import com.lullabyhomestay.homestay_management.domain.dto.SearchEmployeeCriteria
 import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.RoleService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
+import com.lullabyhomestay.homestay_management.service.validator.AdminValidation;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -86,7 +87,7 @@ public class EmployeeController {
             img = this.uploadService.handleSaveUploadFile(file, "avatar");
             employee.setAvatar(img);
         }
-        this.employeeService.handleSaveEmployee(employee);
+        this.employeeService.handleCreateEmployee(employee);
         return "redirect:/admin/employee";
     }
 
@@ -102,7 +103,7 @@ public class EmployeeController {
 
     @PostMapping("/admin/employee/update")
     public String postUpdateEmployee(Model model,
-            @ModelAttribute("employee") @Valid EmployeeDTO employee,
+            @ModelAttribute("employee") @Validated(AdminValidation.class) @Valid EmployeeDTO employee,
             BindingResult newEmployeeBindingResult,
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
@@ -125,7 +126,7 @@ public class EmployeeController {
         currentEmployee.setRole(employee.getRole());
         currentEmployee.setSalary(employee.getSalary());
 
-        this.employeeService.handleSaveEmployee(currentEmployee);
+        this.employeeService.handleUpdateEmployee(currentEmployee);
         return "redirect:/admin/employee";
     }
 

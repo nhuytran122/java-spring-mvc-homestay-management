@@ -23,7 +23,7 @@
                         <h3 class="card-title mb-0 fw-bold">Cập nhật thông tin tài khoản</h3>
                     </div>
                     <div class="card-body p-4">
-                        <form:form class="row g-4" action="/profile/update" method="POST" enctype="multipart/form-data" modelAttribute="customer">
+                        <form:form class="row g-4" action="/profile/update" method="POST" enctype="multipart/form-data" modelAttribute="user">
                             <form:input type="hidden" path="customerID" />
 
                             <c:set var="errorName">
@@ -40,7 +40,7 @@
                                 <label class="form-label fw-bold text-dark">Ảnh đại diện</label>
                                 <form:input type="hidden" path="avatar" id="oldImage"/>
                                 <div class="mb-3">
-                                    <img src="/images/avatar/${customer.avatar != null && !customer.avatar.isEmpty() ? customer.avatar : 'default-img.jpg'}"
+                                    <img src="/images/avatar/${user.avatar != null && !user.avatar.isEmpty() ? user.avatar : 'default-img.jpg'}"
                                          alt="Avatar" class="rounded-circle border border-primary border-2 image-preview" 
                                          style="width: 120px; height: 120px; object-fit: cover;" id="avatarPreview">
                                     

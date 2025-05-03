@@ -28,7 +28,7 @@
                         <option value="">Chọn vai trò</option>
                         <c:forEach var="role" items="${listRoles}">
                             <option value="${role.roleID}" ${role.roleID == criteria.roleID ? 'selected' : ''}>
-                                ${role.roleName}
+                                ${role.description}
                             </option>
                         </c:forEach>
                     </select>
@@ -74,19 +74,12 @@
                                                     <c:forEach var="employee" items="${listEmployees}">
                                                         <tr>
                                                             <td>
-                                                                <c:choose>
-                                                                    <c:when test="${not empty employee.avatar}">
-                                                                        <img src="/images/avatar/${employee.avatar}" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <img src="/images/avatar/default-img.jpg" class="img-fluid rounded" style="width: auto; height: 100px; object-fit: cover;">
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                <img src="${not empty employee.user.avatar ? '/images/avatar/' + employee.user.avatar : '/images/avatar/default-img.jpg'}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
                                                             </td>
-                                                            <td>${employee.fullName}</td>
-                                                            <td>${employee.phone}</td>
-                                                            <td>${employee.email}</td>
-                                                            <td>${employee.role.roleName}</td>
+                                                            <td>${employee.user.fullName}</td>
+                                                            <td>${employee.user.phone}</td>
+                                                            <td>${employee.user.email}</td>
+                                                            <td>${employee.user.role.description}</td>
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${employee.salary}" /> đ</td>
                                                             <td>
@@ -101,7 +94,7 @@
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
                                                                             data-entity-id="${employee.employeeID}" 
-                                                                            data-entity-name="${employee.fullName}" 
+                                                                            data-entity-name="${employee.user.fullName}" 
                                                                             data-entity-type="Nhân viên" 
                                                                             data-delete-url="/admin/employee/delete" 
                                                                             data-check-url="/admin/employee/can-delete/" 

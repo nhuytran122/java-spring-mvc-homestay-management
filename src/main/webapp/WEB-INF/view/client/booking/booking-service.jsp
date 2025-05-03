@@ -88,7 +88,7 @@
                         <strong>${service.serviceName}:</strong> <fmt:formatNumber type="number" value="${service.price}" /> VNĐ / ${service.unit}
                     </div>
                 </c:forEach>
-                <p>Vui lòng liên hệ nhân viên của chúng tôi để được hỗ trợ thêm. Ngoài ra, khi bạn ở homestay, bạn có thể truy cập chức năng <strong>Dịch vụ</strong> để đặt thêm các dịch vụ khác.</p>
+                <p>Vui lòng liên hệ nhân viên của chúng tôi để được hỗ trợ thêm. Ngoài ra, khi bạn ở homestay, bạn có thể truy cập chức năng <strong>Lịch sử đặt phòng - Xem chi tiết đơn đặt phòng</strong> để đặt thêm các dịch vụ khác.</p>
             </div>
 
             <div class="total-section fs-4 fw-bold mt-4">

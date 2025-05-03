@@ -108,8 +108,7 @@ public class PaymentService {
     public Page<Payment> searchPayments(SearchPaymentCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE, Sort.by("paymentDate").descending());
 
-        boolean isAllCriteriaEmpty = (criteria.getKeyword() == null || criteria.getKeyword().isEmpty())
-                && (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty())
+        boolean isAllCriteriaEmpty = (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty())
                 && (criteria.getStatus() == null || criteria.getStatus().isEmpty())
                 && (criteria.getType() == null || criteria.getType().isEmpty());
 
@@ -137,10 +136,7 @@ public class PaymentService {
 
         Specification<Payment> spec = Specification.where(PaymentSpecification.statusEqual(status))
                 .and(PaymentSpecification.typeEqual(type))
-                .and(PaymentSpecification.paymentDateBetween(criteria.getFromTime(), criteria.getToTime()))
-                .and(PaymentSpecification.customerNameLike(criteria.getKeyword())
-                        .or(PaymentSpecification.customerPhoneLike(criteria.getKeyword()))
-                        .or(PaymentSpecification.customerEmailLike(criteria.getKeyword())));
+                .and(PaymentSpecification.paymentDateBetween(criteria.getFromTime(), criteria.getToTime()));
 
         return paymentRepository.findAll(spec, pageable);
     }

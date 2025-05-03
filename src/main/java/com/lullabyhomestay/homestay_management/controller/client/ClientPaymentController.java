@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasRole('CUSTOMER')")
 public class ClientPaymentController {
 
     private final PaymentService paymentService;

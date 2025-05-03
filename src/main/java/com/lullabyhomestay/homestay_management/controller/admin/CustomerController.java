@@ -18,6 +18,7 @@ import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchCustomerCriterialDTO;
 import com.lullabyhomestay.homestay_management.service.CustomerService;
 import com.lullabyhomestay.homestay_management.service.CustomerTypeService;
+import com.lullabyhomestay.homestay_management.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ import lombok.AllArgsConstructor;
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomerTypeService customerTypeService;
+    private final UserService userService;
 
     @GetMapping("/admin/customer")
     public String getCustomerPage(
@@ -49,6 +51,13 @@ public class CustomerController {
         return "admin/customer/show";
     }
 
+    @GetMapping("/admin/customer/{id}")
+    public String getDetailCustomerPage(Model model, @PathVariable long id) {
+        CustomerDTO customerDTO = customerService.getCustomerDTOByID(id);
+        model.addAttribute("customer", customerDTO);
+        return "admin/customer/detail";
+    }
+
     @GetMapping("/admin/customer/create")
     public String getCreateCustomerPage(Model model) {
         model.addAttribute("newCustomer", new CustomerDTO());
@@ -64,7 +73,7 @@ public class CustomerController {
         if (result.hasErrors()) {
             return "admin/customer/create";
         }
-        this.customerService.handleSaveCustomer(customer);
+        this.customerService.handleCreateCustomer(customer);
         return "redirect:/admin/customer";
     }
 
@@ -77,20 +86,16 @@ public class CustomerController {
 
     @PostMapping("/admin/customer/update")
     public String postUpdateCustomer(Model model,
-            @ModelAttribute("customer") @Valid CustomerDTO customer,
+            @ModelAttribute("customer") @Valid CustomerDTO customerDTO,
             BindingResult result,
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        CustomerDTO currentCustomer = (customerService.getCustomerDTOByID(customer.getCustomerID()));
+        CustomerDTO customer = (customerService.getCustomerDTOByID(customerDTO.getCustomerID()));
         if (result.hasErrors()) {
             return "admin/customer/update";
         }
-        currentCustomer.setFullName(customer.getFullName());
-        currentCustomer.setAddress(customer.getAddress());
-        currentCustomer.setPhone(customer.getPhone());
-
-        this.customerService.handleSaveCustomer(currentCustomer);
+        this.userService.updateProfile(customer.getUserID(), customerDTO);
         return "redirect:/admin/customer";
     }
 

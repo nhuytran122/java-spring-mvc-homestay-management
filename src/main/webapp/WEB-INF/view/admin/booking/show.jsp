@@ -106,9 +106,22 @@
                                                     <c:otherwise>
                                                         <c:forEach var="booking" items="${listBookings}">
                                                             <tr style="height: 70px;">
-                                                                <td>${booking.customer.fullName}</td>
-                                                                <td>${booking.customer.phone}</td>
-                                                                <td>${booking.room.branch.branchName}</td>
+                                                                <td>
+                                                                    <a href="/admin/customer/${booking.customer.customerID}" 
+                                                                       class="text-dark text-decoration-none" 
+                                                                       title="Xem chi tiết">
+                                                                        ${booking.customer.user.fullName}
+                                                                    </a>
+                                                                </td>
+                                                                
+                                                                <td>${booking.customer.user.phone}</td>
+                                                                <td>
+                                                                    <a href="/admin/branch/${booking.room.branch.branchID}" 
+                                                                       class="text-dark text-decoration-none" 
+                                                                       title="Xem chi tiết">
+                                                                        ${booking.room.branch.branchName}
+                                                                    </a>
+                                                                </td>
                                                                 <td>${booking.room.roomNumber}</td>
                                                                 <td>${f:formatLocalDateTime(booking.checkIn)}</td>
                                                                 <td>${f:formatLocalDateTime(booking.checkOut)}</td>

@@ -1,6 +1,7 @@
 package com.lullabyhomestay.homestay_management.controller.client;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,9 +14,9 @@ import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Review;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.service.BookingService;
-import com.lullabyhomestay.homestay_management.service.CustomerService;
 import com.lullabyhomestay.homestay_management.service.ReviewService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
+import com.lullabyhomestay.homestay_management.service.UserService;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingUtils;
 
@@ -25,12 +26,13 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasRole('CUSTOMER')")
 public class ClientReviewController {
     private final ReviewService reviewService;
     private final BookingService bookingService;
-    private final CustomerService customerService;
     private final UploadService uploadService;
     private final ModelMapper mapper;
+    private final UserService userService;
 
     @PostMapping("/review/create")
     public String postCreateReview(Model model,
@@ -38,9 +40,9 @@ public class ClientReviewController {
             BindingResult result,
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         if (result.hasErrors()) {
             Booking booking = bookingService.getBookingByID(review.getBooking().getBookingID());
-            CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
             BookingUtils.validateBooking(booking, customerDTO);
             BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
@@ -49,7 +51,6 @@ public class ClientReviewController {
             return "client/booking/detail-booking-history";
         }
         Booking booking = bookingService.getBookingByID(review.getBooking().getBookingID());
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
 
         if (booking != null && booking.getStatus().toString().equals("COMPLETED")
                 && booking.getCustomer().getCustomerID().equals(customerDTO.getCustomerID())) {
@@ -68,7 +69,7 @@ public class ClientReviewController {
             BindingResult result,
             @RequestParam(value = "fileImg") MultipartFile file,
             Model model) {
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         Long bookingID = review.getBooking().getBookingID();
         Long reviewID = review.getReviewID();
 
@@ -101,7 +102,7 @@ public class ClientReviewController {
 
     @PostMapping("/review/delete")
     public String deleteReview(@RequestParam("reviewID") Long reviewID) {
-        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(customerService);
+        CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         Review review = reviewService.getReviewByID(reviewID);
         BookingUtils.validateBooking(review.getBooking(), customerDTO);
 

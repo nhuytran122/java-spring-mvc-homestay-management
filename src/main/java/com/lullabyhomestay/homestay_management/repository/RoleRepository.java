@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.lullabyhomestay.homestay_management.domain.Role;
+import com.lullabyhomestay.homestay_management.utils.SystemRole;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
@@ -14,11 +15,5 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     Optional<Role> findByRoleID(long roleID);
 
-    Role save(Role role);
-
-    void deleteByRoleID(long roleID);
-
-    boolean existsByRoleNameIgnoreCase(String name);
-
-    boolean existsByRoleNameIgnoreCaseAndRoleIDNot(String name, Long roleID);
+    Role findByRoleName(SystemRole role);
 }

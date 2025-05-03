@@ -4,10 +4,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.PasswordChangeDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
 import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
+import com.lullabyhomestay.homestay_management.service.UserService;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,39 +24,40 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Controller
 public class AdminUserProfileController {
-    private final EmployeeService employeeService;
     private final UploadService uploadService;
+    private final UserService userService;
+    private final EmployeeService employeeService;
 
     @GetMapping("/admin/profile")
-    public String getProfilePage(Model model) {
-        EmployeeDTO employeeDTO = AuthUtils.getLoggedInEmployee(employeeService);
-        model.addAttribute("employee", employeeDTO);
+    public String getProfilePage(Model model, HttpSession session) {
+        Long userID = AuthUtils.getLoggedInUserID(session);
+        model.addAttribute("user", employeeService.getEmployeeDTOByUserID(userID));
         return "admin/profile/show";
     }
 
     @GetMapping("/admin/profile/update")
     public String getUpdateProfilePage(Model model) {
-        EmployeeDTO employeeDTO = AuthUtils.getLoggedInEmployee(employeeService);
-        model.addAttribute("employee", employeeDTO);
+        UserDTO userDTO = AuthUtils.getLoggedInUser(userService);
+        model.addAttribute("user", userDTO);
         return "admin/profile/update";
     }
 
     @PostMapping("/admin/profile/update")
-    public String postUpdateProfile(@ModelAttribute("employee") @Valid EmployeeDTO employeeDTO,
+    public String postUpdateProfile(@ModelAttribute("user") @Valid UserDTO userDTO,
             BindingResult result,
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        EmployeeDTO currentEmployeeDTO = AuthUtils.getLoggedInEmployee(employeeService);
+        Long userID = AuthUtils.getLoggedInUserID(session);
         if (result.hasErrors())
             return "admin/profile/update";
         String img;
         if (!file.isEmpty()) {
             img = this.uploadService.handleSaveUploadFile(file, "avatar");
-            employeeDTO.setAvatar(img);
+            userDTO.setAvatar(img);
         }
-        employeeService.updateProfile(currentEmployeeDTO.getEmployeeID(), employeeDTO);
-        AuthUtils.handleUpdateUserSession(employeeDTO, session);
+        userDTO = userService.updateProfile(userID, userDTO);
+        AuthUtils.handleUpdateUserSession(userDTO, session);
         return "redirect:/admin/profile";
     }
 
@@ -70,11 +72,11 @@ public class AdminUserProfileController {
             BindingResult result,
             HttpSession session,
             Model model) {
-        EmployeeDTO currentEmployeeDTO = AuthUtils.getLoggedInEmployee(employeeService);
+        Long userID = AuthUtils.getLoggedInUserID(session);
         if (result.hasErrors()) {
             return "admin/profile/change-password";
         }
-        employeeService.changePassword(currentEmployeeDTO.getEmployeeID(), passwordForm.getNewPassword());
+        userService.changePassword(userID, passwordForm.getNewPassword());
         model.addAttribute("message", "Đổi mật khẩu thành công! Bạn sẽ được chuyển hướng sau 3 giây.");
         model.addAttribute("redirect", "/admin/profile");
 

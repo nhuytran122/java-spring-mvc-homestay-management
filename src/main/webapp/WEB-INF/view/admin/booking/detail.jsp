@@ -69,7 +69,13 @@ uri="http://lullabyhomestay.com/functions" %>
                             Khách hàng:
                           </div>
                           <div class="col-md-8">
-                            ${booking.customer.fullName}
+                            <a
+                              href="/admin/customer/${booking.customer.customerID}"
+                              class="fw-bold text-dark text-decoration-none"
+                              title="Xem chi tiết"
+                            >
+                              ${booking.customer.user.fullName}
+                            </a>
                           </div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">

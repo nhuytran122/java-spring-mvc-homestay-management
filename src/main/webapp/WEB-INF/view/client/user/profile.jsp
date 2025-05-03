@@ -61,7 +61,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                       ><i class="fa fa-phone"></i
                     ></span>
                     <span class="form-control form-control-lg rounded-end-3"
-                      >${customer.phone}</span
+                      >${user.phone}</span
                     >
                   </div>
                 </div>
@@ -73,7 +73,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                       ><i class="fa fa-envelope"></i
                     ></span>
                     <span class="form-control form-control-lg rounded-end-3"
-                      >${customer.email}</span
+                      >${user.email}</span
                     >
                   </div>
                 </div>
@@ -85,36 +85,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                       ><i class="fa fa-map-marker-alt"></i
                     ></span>
                     <span class="form-control form-control-lg rounded-end-3"
-                      >${customer.address}</span
-                    >
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label fw-bold text-dark"
-                    >Điểm tích lũy</label
-                  >
-                  <div class="input-group">
-                    <span class="input-group-text bg-light"
-                      ><i class="fa fa-star"></i
-                    ></span>
-                    <span class="form-control form-control-lg rounded-end-3"
-                      ><fmt:formatNumber
-                        type="number"
-                        value="${customer.rewardPoints}"
-                    /></span>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold text-dark"
-                    >Hạng thành viên</label
-                  >
-                  <div class="input-group">
-                    <span class="input-group-text bg-light"
-                      ><i class="fa fa-crown"></i
-                    ></span>
-                    <span class="form-control form-control-lg rounded-end-3"
-                      >${customer.customerType.name}</span
+                      >${user.address}</span
                     >
                   </div>
                 </div>

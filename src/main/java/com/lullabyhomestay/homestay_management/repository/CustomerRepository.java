@@ -25,9 +25,4 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
     Page<Customer> findAll(Specification<Customer> spec, Pageable page);
 
     boolean existsByCustomerType_CustomerTypeID(long typeID);
-
-    Optional<Customer> findByEmail(String email);
-
-    boolean existsByEmail(String email);
-
 }

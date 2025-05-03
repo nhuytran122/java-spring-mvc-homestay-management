@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "Customers")
-public class Customer extends Person {
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CustomerID")
@@ -31,10 +32,11 @@ public class Customer extends Person {
     @Column(name = "RewardPoints", insertable = false)
     private Double rewardPoints;
 
+    @OneToOne
+    @JoinColumn(name = "UserID")
+    private User user;
+
     @ManyToOne
     @JoinColumn(name = "CustomerTypeID")
     private CustomerType customerType;
-
-    @OneToMany(mappedBy = "customer")
-    List<Booking> bookings;
 }

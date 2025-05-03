@@ -1,6 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="fmt"
-uri="http://java.sun.com/jsp/jstl/fmt" %>
+uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,7 +8,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Chi tiết nhân viên</title>
+    <title>Chi tiết khách hàng</title>
     <jsp:include page="../layout/import-css.jsp" />
   </head>
 
@@ -29,12 +28,12 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                       class="row mb-3 d-flex justify-content-between align-items-center"
                     >
                       <div class="col-md-6">
-                        <h4 class="card-title mb-0">Chi tiết nhân viên</h4>
+                        <h4 class="card-title mb-0">Chi tiết khách hàng</h4>
                       </div>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
                           <a
-                            href="/admin/employee/update/${employee.employeeID}"
+                            href="/admin/customer/update/${customer.customerID}"
                             class="btn btn-warning btn-sm"
                           >
                             <i class="bi bi-pencil"></i> Sửa
@@ -43,17 +42,17 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                             class="btn btn-danger btn-sm"
                             title="Xóa"
                             onclick="checkBeforeDelete(this)"
-                            data-entity-id="${employee.employeeID}"
-                            data-entity-name="${employee.user.fullName}"
-                            data-entity-type="Nhân viên"
-                            data-delete-url="/admin/employee/delete"
-                            data-check-url="/admin/employee/can-delete/"
-                            data-id-name="employeeID"
+                            data-entity-id="${customer.customerID}"
+                            data-entity-name="${customer.user.fullName}"
+                            data-entity-type="Khách hàng"
+                            data-delete-url="/admin/customer/delete"
+                            data-check-url="/admin/customer/can-delete/"
+                            data-id-name="customerID"
                           >
                             <i class="bi bi-trash"></i> Xóa
                           </button>
                           <a
-                            href="/admin/employee"
+                            href="/admin/customer"
                             class="btn btn-secondary btn-sm"
                           >
                             <i class="bi bi-arrow-left"></i> Quay lại danh sách
@@ -64,7 +63,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                     <div class="row">
                       <div class="col-md-3">
                         <img
-                          src="${not empty employee.user.avatar ? '/images/avatar/' + employee.user.avatar : '/images/avatar/default-img.jpg'}"
+                          src="${not empty customer.user.avatar ? '/images/avatar/' + customer.user.avatar : '/images/avatar/default-img.jpg'}"
                           class="img-fluid rounded"
                           style="width: 100%; height: auto; object-fit: cover"
                         />
@@ -73,48 +72,42 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                       <div class="col-md-9">
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
-                            Tên nhân viên:
+                            Tên khách hàng:
                           </div>
-                          <div class="col-md-8">${employee.user.fullName}</div>
+                          <div class="col-md-8">${customer.user.fullName}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Số điện thoại:
                           </div>
-                          <div class="col-md-8">${employee.user.phone}</div>
-                        </div>
-                        <div class="row mb-3 d-flex align-items-center">
-                          <div class="col-md-4 fw-bold text-md-start">
-                            Chức vụ :
-                          </div>
-                          <div class="col-md-8">
-                            ${employee.user.role.roleName} -
-                            ${employee.user.role.description}
-                          </div>
-                        </div>
-                        <div class="row mb-3 d-flex align-items-center">
-                          <div class="col-md-4 fw-bold text-md-start">
-                            Mức lương:
-                          </div>
-                          <div class="col-md-8">
-                            <fmt:formatNumber
-                              type="number"
-                              value="${employee.salary}"
-                            />
-                            đ
-                          </div>
+                          <div class="col-md-8">${customer.user.phone}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Email:
                           </div>
-                          <div class="col-md-8">${employee.user.email}</div>
+                          <div class="col-md-8">${customer.user.email}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Địa chỉ:
                           </div>
-                          <div class="col-md-8">${employee.user.address}</div>
+                          <div class="col-md-8">${customer.user.address}</div>
+                        </div>
+                        <div class="row mb-3 d-flex align-items-center">
+                          <div class="col-md-4 fw-bold text-md-start">
+                            Điểm tích lũy
+                          </div>
+                          <div class="col-md-8">${customer.rewardPoints}</div>
+                        </div>
+
+                        <div class="row mb-3 d-flex align-items-center">
+                          <div class="col-md-4 fw-bold text-md-start">
+                            Hạng thành viên:
+                          </div>
+                          <div class="col-md-8">
+                            ${customer.customerType.name}
+                          </div>
                         </div>
                       </div>
                     </div>

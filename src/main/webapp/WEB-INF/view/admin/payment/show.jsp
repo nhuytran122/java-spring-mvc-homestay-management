@@ -20,10 +20,6 @@
             <div class="main-panel">
                 <div class="search-form-container my-4">
                     <form action="/admin/payment" method="get" class="search-form">
-                        <input type="text" class="form-control form-control-sm"
-                               name="keyword" 
-                               placeholder="Tìm kiếm lịch sử thanh toán..." 
-                               value="${criteria.keyword}"/>
                         <select name="status" class="form-select form-control form-select-sm">
                             <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
                                 Tất cả tình trạng

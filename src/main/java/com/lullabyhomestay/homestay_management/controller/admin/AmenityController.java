@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,6 +57,7 @@ public class AmenityController {
         return "admin/amenity/show";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping("/admin/amenity/create")
     public String getCreateAmenityPage(Model model) {
         model.addAttribute("newAmenity", new Amenity());
@@ -63,6 +65,7 @@ public class AmenityController {
         return "admin/amenity/create";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping("/admin/amenity/create")
     public String postCreateAmenity(Model model,
             @ModelAttribute("newAmenity") @Valid Amenity amenity,

@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.lullabyhomestay.homestay_management.domain.Booking_;
-import com.lullabyhomestay.homestay_management.domain.Customer_;
 import com.lullabyhomestay.homestay_management.domain.Payment;
 import com.lullabyhomestay.homestay_management.domain.Payment_;
 import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
@@ -22,17 +20,5 @@ public class PaymentSpecification {
 
     public static Specification<Payment> typeEqual(PaymentType paymentType) {
         return BaseSpecifications.equal(Payment_.PAYMENT_TYPE, paymentType);
-    }
-
-    public static Specification<Payment> customerNameLike(String keyword) {
-        return BaseSpecifications.likeJoinTwoLevels(Payment_.BOOKING, Booking_.CUSTOMER, Customer_.FULL_NAME, keyword);
-    }
-
-    public static Specification<Payment> customerPhoneLike(String keyword) {
-        return BaseSpecifications.equalJoinTwoLevels(Payment_.BOOKING, Booking_.CUSTOMER, Customer_.PHONE, keyword);
-    }
-
-    public static Specification<Payment> customerEmailLike(String keyword) {
-        return BaseSpecifications.equalJoinTwoLevels(Payment_.BOOKING, Booking_.CUSTOMER, Customer_.EMAIL, keyword);
     }
 }

@@ -27,10 +27,8 @@
                 <div class="card-body">
                   <h4 class="card-title mb-4 text-center">Chỉnh sửa thông tin</h4>
                   
-                  <form:form action="/admin/profile/update" method="post" modelAttribute="employee" enctype="multipart/form-data">                   
-                    <form:input type="hidden" path="employeeID" />
-                    <form:input type="hidden" path="salary" />
-                    <form:input type="hidden" path="role" />
+                  <form:form action="/admin/profile/update" method="post" modelAttribute="user" enctype="multipart/form-data">                   
+                    <form:input type="hidden" path="userID" />
                     <form:input type="hidden" path="avatar" id="oldImage"/>
                     <c:set var="errorName">
                       <form:errors path="fullName" cssClass="invalid-feedback" />
@@ -44,7 +42,7 @@
 
                     <div class="text-center mb-3">
                       <img id="avatarPreview" 
-                           src="/images/avatar/${employee.avatar != null && !employee.avatar.isEmpty() ? employee.avatar : 'default-img.jpg'}"
+                           src="/images/avatar/${user.avatar != null && !user.avatar.isEmpty() ? user.avatar : 'default-img.jpg'}"
                            alt="Avatar"
                            class="rounded-circle border border-primary border-3"
                            style="width: 120px; height: 120px; object-fit: cover;">
@@ -63,7 +61,7 @@
                     <div class="mb-3">
                       <label class="form-label">Email</label>
                       <form:input type="hidden" path="email"/>
-                      <input type="email" class="form-control" value="${employee.email}" readonly="true">
+                      <input type="email" class="form-control" value="${user.email}" readonly="true">
                     </div>
 
                     <div class="mb-3">

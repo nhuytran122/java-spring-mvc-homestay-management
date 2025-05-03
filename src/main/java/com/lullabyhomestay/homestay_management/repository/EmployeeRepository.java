@@ -23,11 +23,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 
         Optional<Employee> findByEmployeeID(long employeeID);
 
+        Optional<Employee> findByUser_UserID(long userID);
+
         Employee save(Employee employee);
 
         void deleteByEmployeeID(long employeeID);
-
-        boolean existsByRole_RoleID(long roleID);
-
-        Optional<Employee> findByEmail(String email);
 }

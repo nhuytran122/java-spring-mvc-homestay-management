@@ -84,16 +84,19 @@
                                                 <c:otherwise>
                                                     <c:forEach var="customer" items="${listCustomers}">
                                                         <tr style="height: 70px;">
-                                                            <td>${customer.fullName}</td>
-                                                            <td>${customer.phone}</td>
-                                                            <td>${customer.email}</td>
-                                                            <td>${customer.address}</td>
+                                                            <td>${customer.user.fullName}</td>
+                                                            <td>${customer.user.phone}</td>
+                                                            <td>${customer.user.email}</td>
+                                                            <td>${customer.user.address}</td>
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${customer.rewardPoints}" />
                                                             </td>
                                                             <td>${customer.customerType.name}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
+                                                                    <a href="/admin/customer/${customer.customerID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <i class="bi bi-eye"></i>
+                                                                    </a>
                                                                     <a href="/admin/customer/update/${customer.customerID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
@@ -101,7 +104,7 @@
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
                                                                             data-entity-id="${customer.customerID}" 
-                                                                            data-entity-name="${customer.fullName}" 
+                                                                            data-entity-name="${customer.user.fullName}" 
                                                                             data-entity-type="Khách hàng" 
                                                                             data-delete-url="/admin/customer/delete" 
                                                                             data-check-url="/admin/customer/can-delete/" 

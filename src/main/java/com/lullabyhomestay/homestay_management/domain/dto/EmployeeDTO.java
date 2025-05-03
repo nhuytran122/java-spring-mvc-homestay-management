@@ -1,8 +1,8 @@
 package com.lullabyhomestay.homestay_management.domain.dto;
 
-import com.lullabyhomestay.homestay_management.domain.Role;
-import com.lullabyhomestay.homestay_management.service.validator.UniqueEmail;
+import com.lullabyhomestay.homestay_management.domain.User;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,14 +13,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@UniqueEmail(entityType = "EMPLOYEE", emailField = "email", idField = "employeeID")
-public class EmployeeDTO extends PersonDTO {
-
+public class EmployeeDTO extends UserDTO {
+    @NotNull(message = "Vui lòng chọn vai trò")
     private Long employeeID;
 
     @NotNull(message = "Vui lòng nhập mức lương")
+    @Min(value = 1, message = "Mức lương phải lớn hơn 0")
     private Double salary;
 
-    @NotNull(message = "Vui lòng chọn vai trò")
-    private Role role;
+    private User user;
 }

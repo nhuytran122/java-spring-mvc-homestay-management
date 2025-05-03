@@ -39,62 +39,57 @@
                 </form>
             </div>
 
-            <div class="content-wrapper">
-                <div class="row">
-                    <div class="col-md-12 grid-margin stretch-card">
-                        <div class="card position-relative">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 class="card-title">Lịch trạng thái phòng - Ngày: ${dateFormatted}</h4>
-                                    <a href="/admin/booking/create" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-plus-circle"></i> Thêm mới đặt phòng
-                                    </a>
+            <div class="schedule-container">
+                <div class="timeline-header">
+                    <div class="room-label">Phòng</div>
+                    <div class="timeline">
+                        <div class="timeline-grid"></div>
+                        <c:forEach var="hour" begin="0" end="23">
+                            <div class="timeline-hour">${hour}:00</div>
+                        </c:forEach>
+                    </div>
+                </div>
+            
+                <c:choose>
+                    <c:when test="${empty roomSchedules}">
+                        <div class="text-center mt-4 text-danger">
+                            <em>Không có lịch đặt phòng cho hôm nay.</em>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="room" items="${listRooms}">
+                            <div class="timeline-room">
+                                <div class="room-label">
+                                    ${room.roomNumber} (${room.branch.branchName})
                                 </div>
-                                <div class="schedule-container">
-                                    <div class="timeline-header">
-                                        <div class="room-label">Phòng</div>
-                                        <div class="timeline">
-                                            <div class="timeline-grid"></div> 
-                                            <c:forEach var="hour" begin="0" end="23">
-                                                <div class="timeline-hour">${hour}:00</div>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                                    <c:forEach var="room" items="${listRooms}">
-                                        <div class="timeline-room">
-                                            <div class="room-label">
-                                                ${room.roomNumber} (${room.branch.branchName})
-                                            </div>
-                                            <div class="timeline">
-                                                <div class="timeline-grid"></div> 
-                                                <c:forEach var="statusEntry" items="${roomSchedules[room.roomID]}">
-                                                    <c:set var="startHour" value="${statusEntry.startedAt.hour + statusEntry.startedAt.minute / 60.0}" />
-                                                    <c:set var="endHour" value="${statusEntry.endedAt.hour + statusEntry.endedAt.minute / 60.0}" />
-                                                        <div class="status-block ${statusEntry.status.cssClass}"
-                                                             data-start-hour="${startHour}" 
-                                                             data-end-hour="${endHour}"
-                                                             title="${statusEntry.status.description} (${statusEntry.startedAt.hour}:${statusEntry.startedAt.minute < 10 ? '0' : ''}${statusEntry.startedAt.minute} - ${statusEntry.endedAt.hour}:${statusEntry.endedAt.minute < 10 ? '0' : ''}${statusEntry.endedAt.minute})">
-                                                            <c:choose>
-                                                                <c:when test="${statusEntry.status.hasLink}">
-                                                                    <a href="/admin/booking/${statusEntry.booking.bookingID}" style="color: inherit; text-decoration: none;">
-                                                                        ${statusEntry.status.description}
-                                                                    </a>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    ${statusEntry.status.description}
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                        </div>
-                                                </c:forEach>
-                                            </div>
+                                <div class="timeline">
+                                    <div class="timeline-grid"></div>
+                                    <c:forEach var="statusEntry" items="${roomSchedules[room.roomID]}">
+                                        <c:set var="startHour" value="${statusEntry.startedAt.hour + statusEntry.startedAt.minute / 60.0}" />
+                                        <c:set var="endHour" value="${statusEntry.endedAt.hour + statusEntry.endedAt.minute / 60.0}" />
+                                        <div class="status-block ${statusEntry.status.cssClass}"
+                                             data-start-hour="${startHour}" 
+                                             data-end-hour="${endHour}"
+                                             title="${statusEntry.status.description} (${statusEntry.startedAt.hour}:${statusEntry.startedAt.minute < 10 ? '0' : ''}${statusEntry.startedAt.minute} - ${statusEntry.endedAt.hour}:${statusEntry.endedAt.minute < 10 ? '0' : ''}${statusEntry.endedAt.minute})">
+                                            <c:choose>
+                                                <c:when test="${statusEntry.status.hasLink}">
+                                                    <a href="/admin/booking/${statusEntry.booking.bookingID}" style="color: inherit; text-decoration: none;">
+                                                        ${statusEntry.status.description}
+                                                    </a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    ${statusEntry.status.description}
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </c:forEach>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
             </div>
+            
         </div>
     </div>
 </div>
