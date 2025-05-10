@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,4 +47,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
 
     @Query(value = "SELECT * FROM Bookings WHERE status = 'PENDING' AND CreatedAt < DATEADD(MINUTE, -:timeoutMinutes, GETDATE())", nativeQuery = true)
     List<Booking> findPendingBookingsBefore(@Param("timeoutMinutes") int timeoutMinutes);
+
+    @Query("SELECT COUNT(b) FROM Booking b WHERE b.createdAt BETWEEN :startDate AND :endDate")
+    Long countBookingsByDateRange(@Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
 }

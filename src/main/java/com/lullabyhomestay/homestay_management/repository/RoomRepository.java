@@ -72,4 +72,17 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
                         @Param("endTime") LocalDateTime endTime,
                         Pageable pageable);
 
+        @Query(value = """
+                        SELECT TOP 5 r.RoomID, r.RoomNumber, br.BranchName, rt.name, COUNT(b.BookingID) AS bookingCount
+                        FROM Rooms r
+                        LEFT JOIN Bookings b ON b.RoomID = r.RoomID
+                        JOIN Branches br ON r.BranchID = br.BranchID
+                        JOIN RoomTypes rt ON r.RoomTypeID = rt.RoomTypeID
+                        WHERE b.CheckIn BETWEEN :startDate AND :endDate
+                        GROUP BY r.RoomID, r.RoomNumber, br.BranchName, rt.name
+                        ORDER BY bookingCount DESC
+                        """, nativeQuery = true)
+        List<Object[]> findTop5RoomsWithCount(@Param("startDate") LocalDateTime startDate,
+                        @Param("endDate") LocalDateTime endDate);
+
 }

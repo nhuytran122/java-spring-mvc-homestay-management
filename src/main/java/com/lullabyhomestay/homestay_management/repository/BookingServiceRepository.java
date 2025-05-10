@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,36 +16,47 @@ import com.lullabyhomestay.homestay_management.domain.BookingServices;
 
 @Repository
 public interface BookingServiceRepository extends JpaRepository<BookingServices, Long> {
-    Page<BookingServices> findAll(Pageable page);
+        Page<BookingServices> findAll(Pageable page);
 
-    Page<BookingServices> findAll(Specification<BookingServices> spec, Pageable page);
+        Page<BookingServices> findAll(Specification<BookingServices> spec, Pageable page);
 
-    Optional<BookingServices> findByBookingServiceID(long bookingID);
+        Optional<BookingServices> findByBookingServiceID(long bookingID);
 
-    List<BookingServices> findByBooking_BookingID(Long bookingID);
+        List<BookingServices> findByBooking_BookingID(Long bookingID);
 
-    boolean existsByService_ServiceID(long serviceID);
+        boolean existsByService_ServiceID(long serviceID);
 
-    BookingServices save(BookingServices bookingService);
+        BookingServices save(BookingServices bookingService);
 
-    boolean existsByBooking_BookingID(Long bookingID);
+        boolean existsByBooking_BookingID(Long bookingID);
 
-    void deleteByBookingServiceID(Long bookingServiceID);
+        void deleteByBookingServiceID(Long bookingServiceID);
 
-    void deleteByBooking_BookingID(Long bookingID);
+        void deleteByBooking_BookingID(Long bookingID);
 
-    @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingID = :bookingID " +
-            "AND NOT EXISTS (SELECT pd FROM PaymentDetail pd WHERE pd.bookingService.bookingServiceID = bs.bookingServiceID)")
+        @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingID = :bookingID " +
+                        "AND NOT EXISTS (SELECT pd FROM PaymentDetail pd WHERE pd.bookingService.bookingServiceID = bs.bookingServiceID)")
 
-    List<BookingServices> findBookingServicesWithoutPaymentDetail(@Param("bookingID") Long bookingID);
+        List<BookingServices> findBookingServicesWithoutPaymentDetail(@Param("bookingID") Long bookingID);
 
-    @Query("""
-                SELECT COUNT(bs) > 0
-                FROM BookingServices bs
-                WHERE bs.booking.bookingID = :bookingID
-                  AND bs.service.isPrepaid = false
-                  AND (bs.quantity IS NULL OR bs.quantity <= 0)
-            """)
-    boolean existsPostpaidServiceWithoutQuantity(@Param("bookingID") Long bookingID);
+        @Query("""
+                            SELECT COUNT(bs) > 0
+                            FROM BookingServices bs
+                            WHERE bs.booking.bookingID = :bookingID
+                              AND bs.service.isPrepaid = false
+                              AND (bs.quantity IS NULL OR bs.quantity <= 0)
+                        """)
+        boolean existsPostpaidServiceWithoutQuantity(@Param("bookingID") Long bookingID);
+
+        @Query("""
+                        SELECT s, COUNT(bs.bookingServiceID) AS serviceCount
+                        FROM Service s
+                        LEFT JOIN s.bookingServices bs
+                        WHERE bs.booking.checkIn BETWEEN :startDate AND :endDate
+                        GROUP BY s
+                        ORDER BY serviceCount DESC
+                        """)
+        List<Object[]> findTopServicesWithCount(@Param("startDate") LocalDateTime startDate,
+                        @Param("endDate") LocalDateTime endDate);
 
 }

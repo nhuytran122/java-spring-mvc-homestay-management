@@ -1,0 +1,85 @@
+.stat-card {
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 20px;
+}
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.stat-card p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+.stat-card .icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+.total-revenue {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #fff;
+}
+.room-revenue {
+  background: linear-gradient(135deg, #28a745, #1e7e34);
+  color: #fff;
+}
+.service-revenue {
+  background: linear-gradient(135deg, #fd7e14, #d65f00);
+  color: #fff;
+}
+.extension-revenue {
+  background: linear-gradient(135deg, #6f42c1, #5a32a3);
+  color: #fff;
+}
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+.filter-form {
+  margin-bottom: 20px;
+}
+.daterange-picker {
+  width: 300px;
+  cursor: pointer;
+}
+.chart-container {
+  height: 400px;
+  margin-top: 20px;
+}
+@media (max-width: 768px) {
+  .stat-card p {
+    font-size: 1.4rem;
+  }
+  .stat-card h5 {
+    font-size: 1rem;
+  }
+  .stat-card {
+    padding: 15px;
+  }
+  .card-title {
+    font-size: 1.1rem;
+  }
+  .daterange-picker {
+    width: 100%;
+  }
+  .chart-container {
+    height: 300px;
+  }
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}

@@ -29,4 +29,5 @@ public interface MaintenanceRequestRepository
     boolean existsByEmployee_EmployeeID(long employeeID);
 
     boolean existsByBranch_BranchID(long branchID);
+
 }
