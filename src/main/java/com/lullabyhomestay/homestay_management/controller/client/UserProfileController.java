@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.lullabyhomestay.homestay_management.domain.dto.PasswordChangeDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
 import com.lullabyhomestay.homestay_management.service.BookingService;
+import com.lullabyhomestay.homestay_management.service.CustomerService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
 import com.lullabyhomestay.homestay_management.service.UserService;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
@@ -32,11 +33,14 @@ public class UserProfileController {
         private final UploadService uploadService;
         private final UserService userService;
         private final ModelMapper mapper;
+        private final CustomerService customerService;
 
         @GetMapping("/profile")
         public String getProfilePage(Model model) {
                 UserDTO currentUserDTO = AuthUtils.getLoggedInUser(userService);
                 Long customerID = currentUserDTO.getCustomer().getCustomerID();
+                model.addAttribute("customer",
+                                customerService.getCustomerDTOByID(customerID));
                 model.addAttribute("user", currentUserDTO);
 
                 model.addAttribute("countTotalBooked",
@@ -52,6 +56,9 @@ public class UserProfileController {
         @GetMapping("/profile/update")
         public String getUpdateProfilePage(Model model) {
                 UserDTO currentUserDTO = AuthUtils.getLoggedInUser(userService);
+                Long customerID = currentUserDTO.getCustomer().getCustomerID();
+                model.addAttribute("customer",
+                                customerService.getCustomerDTOByID(customerID));
                 model.addAttribute("user", currentUserDTO);
                 return "client/user/update";
         }
@@ -63,6 +70,7 @@ public class UserProfileController {
                         HttpServletRequest request) {
                 HttpSession session = request.getSession(false);
                 Long userID = AuthUtils.getLoggedInUserID(session);
+
                 if (result.hasErrors())
                         return "client/user/update";
                 String img;

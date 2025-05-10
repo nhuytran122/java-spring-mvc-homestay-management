@@ -103,7 +103,7 @@ public class BookingExtraService {
         bookingServiceRepo.save(bService);
     }
 
-    public boolean canDeleteBookingService(Long bookingServiceID) {
+    public boolean canUpdateAndDeleteBookingService(Long bookingServiceID) {
         boolean hasPaid = paymentDetailRepo.existsByBookingService_BookingServiceID(bookingServiceID);
         return !hasPaid;
     }
@@ -111,19 +111,20 @@ public class BookingExtraService {
     @Transactional
     public void deleteBookingServiceByID(Long bookingServiceID) {
         BookingServices currentBService = getBookingServiceByID(bookingServiceID);
-        Booking currentBooking = currentBService.getBooking();
-        Customer customer = currentBService.getBooking().getCustomer();
+        if (currentBService.getQuantity() != null) {
+            Booking currentBooking = currentBService.getBooking();
+            Customer customer = currentBService.getBooking().getCustomer();
 
-        Double oldTotalPriceService = currentBService.getRawTotalAmount() - DiscountUtil
-                .calculateDiscountAmount(currentBService.getRawTotalAmount(), customer);
+            Double oldTotalPriceService = currentBService.getRawTotalAmount() - DiscountUtil
+                    .calculateDiscountAmount(currentBService.getRawTotalAmount(), customer);
 
-        Double currentTotal = currentBooking.getTotalAmount();
-        Double newPriceService = currentTotal - oldTotalPriceService;
+            Double currentTotal = currentBooking.getTotalAmount();
+            Double newPriceService = currentTotal - oldTotalPriceService;
 
-        currentBooking.setTotalAmount(newPriceService);
-        currentBooking = bookingService.handleSaveBooking(currentBooking);
-
-        if (canDeleteBookingService(bookingServiceID)) {
+            currentBooking.setTotalAmount(newPriceService);
+            currentBooking = bookingService.handleSaveBooking(currentBooking);
+        }
+        if (canUpdateAndDeleteBookingService(bookingServiceID)) {
             this.bookingServiceRepo.deleteByBookingServiceID(bookingServiceID);
         }
     }
@@ -144,17 +145,16 @@ public class BookingExtraService {
         return totalAmount;
     }
 
-    // @Transactional
-    // public void deleteByBookingID(Long id) {
-    // List<BookingServices> lBookingServices =
-    // getListBookingServiceByBookingID(id);
-    // for (BookingServices bService : lBookingServices) {
-    // deleteBookingServiceByID(bService.getBookingServiceID());
-    // }
-    // }
-
     @Transactional
-    public void deleteByBookingID(Long id) {
-        bookingServiceRepo.deleteByBooking_BookingID(id);
+    public void deleteByBookingID(Long bookingID) {
+        List<BookingServices> bookingServices = getListBookingServiceByBookingID(bookingID);
+        for (BookingServices bService : bookingServices) {
+            deleteBookingServiceByID(bService.getBookingServiceID());
+        }
     }
+
+    public boolean allPostpaidServicesHaveQuantity(Long bookingID) {
+        return !bookingServiceRepo.existsPostpaidServiceWithoutQuantity(bookingID);
+    }
+
 }

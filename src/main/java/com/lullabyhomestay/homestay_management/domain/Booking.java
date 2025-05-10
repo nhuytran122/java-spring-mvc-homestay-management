@@ -91,7 +91,7 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "RoomID")
-    @NotNull(message = "Vui lòng chọn phòng")
+    @NotNull(message = "Vui lòng chọn phòng", groups = AdminValidation.class)
     private Room room;
 
     @OneToMany(mappedBy = "booking")

@@ -78,7 +78,7 @@ public class ClientPaymentController {
             }
             Double totalAmount = Double.parseDouble(vnpAmountStr) / 100;
             payment.setTotalAmount(totalAmount);
-            paymentService.handleSavePayment(payment, paymentPurpose);
+            paymentService.handleSavePaymentWhenCheckout(payment, paymentPurpose);
 
             return "redirect:/booking/booking-history/" + bookingID;
         } else if (status.equals("24")) {

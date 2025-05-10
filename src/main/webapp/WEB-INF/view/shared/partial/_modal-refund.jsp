@@ -29,7 +29,7 @@
         </div>
 
         <div id="refundFooterConfirm">
-          <form id="cancelForm" method="post" action="/booking/cancel">
+          <form id="cancelForm" method="post">
             <input type="hidden" id="bookingIDInput" name="bookingID" />
             <button
               type="button"

@@ -69,18 +69,21 @@ public class MaintenanceRequestService {
     }
 
     public void handleSaveMaintenanceRequest(MaintenanceRequest request) {
-        Long roomID = request.getRoom().getRoomID();
-        Room room = new Room();
-        if (roomID != null) {
-            room = roomService.getRoomByID(roomID);
+        if (request.getRoom() != null) {
+            Long roomID = request.getRoom().getRoomID();
+            Room room = new Room();
+            if (roomID != null) {
+                room = roomService.getRoomByID(roomID);
+            }
+            if (request.getStatus() == MaintenanceStatus.IN_PROGRESS) {
+                room.setIsActive(false);
+                roomService.handleSaveRoom(room);
+            } else if (request.getStatus() == MaintenanceStatus.COMPLETED) {
+                room.setIsActive(true);
+                roomService.handleSaveRoom(room);
+            }
         }
-        if (request.getStatus() == MaintenanceStatus.IN_PROGRESS) {
-            room.setIsActive(false);
-            roomService.handleSaveRoom(room);
-        } else if (request.getStatus() == MaintenanceStatus.COMPLETED) {
-            room.setIsActive(true);
-            roomService.handleSaveRoom(room);
-        }
+
         this.maintenanceRepository.save(request);
     }
 

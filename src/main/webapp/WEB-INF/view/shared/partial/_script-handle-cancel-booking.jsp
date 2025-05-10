@@ -10,7 +10,12 @@
 
   function checkBeforeCancel(button) {
     let bookingId = $(button).data("entity-id");
-    let checkUrl = "/booking/check-refund/" + bookingId;
+    let role = $(button).data("role");
+
+    let checkUrl =
+      role === "admin"
+        ? "/admin/booking/check-refund/" + bookingId
+        : "/booking/check-refund/" + bookingId;
 
     $.ajax({
       url: checkUrl,
@@ -48,6 +53,11 @@
         }
 
         $("#bookingIDInput").val(bookingId);
+
+        let cancelUrl =
+          role === "admin" ? "/admin/booking/cancel" : "/booking/cancel";
+        $("#cancelForm").attr("action", cancelUrl);
+
         $("#refundConfirmModal").modal("show");
       },
       error: function (xhr, status, error) {

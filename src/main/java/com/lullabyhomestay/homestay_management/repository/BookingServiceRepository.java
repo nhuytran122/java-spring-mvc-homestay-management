@@ -38,4 +38,13 @@ public interface BookingServiceRepository extends JpaRepository<BookingServices,
 
     List<BookingServices> findBookingServicesWithoutPaymentDetail(@Param("bookingID") Long bookingID);
 
+    @Query("""
+                SELECT COUNT(bs) > 0
+                FROM BookingServices bs
+                WHERE bs.booking.bookingID = :bookingID
+                  AND bs.service.isPrepaid = false
+                  AND (bs.quantity IS NULL OR bs.quantity <= 0)
+            """)
+    boolean existsPostpaidServiceWithoutQuantity(@Param("bookingID") Long bookingID);
+
 }

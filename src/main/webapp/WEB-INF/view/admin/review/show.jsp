@@ -77,7 +77,7 @@
                                                 <c:otherwise>
                                                     <c:forEach var="item" items="${items}">
                                                         <tr style="height: 80px;">
-                                                            <td>${review.booking.customer.fullName}</td>
+                                                            <td>${review.booking.customer.user.fullName}</td>
                                                             <td>
                                                                 ${review.comment}
                                                             </td>

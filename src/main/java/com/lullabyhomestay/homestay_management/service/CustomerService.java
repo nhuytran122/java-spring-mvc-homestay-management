@@ -2,6 +2,7 @@ package com.lullabyhomestay.homestay_management.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -120,6 +121,13 @@ public class CustomerService {
     public Page<CustomerDTO> getAllCustomers(Pageable pageable) {
         Page<Customer> customerPage = customerRepository.findAll(pageable);
         return customerPage.map(customer -> mapper.map(customer, CustomerDTO.class));
+    }
+
+    public List<CustomerDTO> getAllCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+        return customers.stream()
+                .map(customer -> mapper.map(customer, CustomerDTO.class))
+                .collect(Collectors.toList());
     }
 
     public Page<CustomerDTO> searchCustomers(SearchCustomerCriterialDTO criteria, int page) {

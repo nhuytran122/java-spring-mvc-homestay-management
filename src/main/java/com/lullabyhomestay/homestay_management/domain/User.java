@@ -1,5 +1,7 @@
 package com.lullabyhomestay.homestay_management.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,6 +45,9 @@ public class User {
 
     @Column(name = "Password")
     private String password;
+
+    @Column(name = "CreatedAt", insertable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "RoleID")

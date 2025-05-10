@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Quản lý đặt dịch vụ</title>
     <jsp:include page="../layout/import-css.jsp" />
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 <body>
     <div class="container-scroller">
@@ -82,7 +84,7 @@
                                                         <c:forEach var="bookingService" items="${listBookingServices}">
                                                             <tr style="height: 70px;">
                                                                 <td>${bookingService.booking.bookingID}</td>
-                                                                <td>${bookingService.booking.customer.fullName}</td>
+                                                                <td>${bookingService.booking.customer.user.fullName}</td>
                                                                 <td>${bookingService.booking.room.branch.branchName}</td>
                                                                 <td>${bookingService.booking.room.roomNumber}</td>
                                                                 <td>${bookingService.service.serviceName}</td>
@@ -114,18 +116,22 @@
                                                                         <a href="/admin/booking/${bookingService.booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
-                                                                        <a href="/admin/booking-service/update/${bookingService.bookingServiceID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                        <button class="btn btn-warning btn-sm" title="Sửa"
+                                                                            onclick="checkBeforeUpdate(this)" 
+                                                                                data-booking-service-id="${bookingService.bookingServiceID}"
+                                                                                data-entity-type="Đơn đặt dịch vụ"
+                                                                                data-check-url="/admin/booking-service/can-handle/" >
                                                                             <i class="bi bi-pencil"></i>
-                                                                        </a>
+                                                                        </button>
                                                                         <button
                                                                             class="btn btn-danger btn-sm"
                                                                             title="Xóa"
                                                                             onclick="checkBeforeDelete(this)"
                                                                             data-entity-id="${bookingService.bookingServiceID}"
                                                                             data-entity-name="${bookingService.service.serviceName}"
-                                                                            data-entity-type="Việc đặt dịch vụ"
+                                                                            data-entity-type="Đơn đặt dịch vụ"
                                                                             data-delete-url="/admin/booking-service/delete"
-                                                                            data-check-url="/admin/booking-service/can-delete/"
+                                                                            data-check-url="/admin/booking-service/can-handle/"
                                                                             data-id-name="bookingServiceID"
                                                                             >
                                                                             <i class="bi bi-trash"></i>
@@ -157,6 +163,7 @@
 
     <jsp:include page="../layout/import-js.jsp" />
     <jsp:include page="../layout/partial/_modals-delete.jsp" />
+    <jsp:include page="_script-modal-warning-update.jsp" />
     <script>
       $("#deleteWarningModal").on("show.bs.modal", function () {
 

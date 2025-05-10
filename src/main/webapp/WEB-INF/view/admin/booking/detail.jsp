@@ -10,7 +10,7 @@ uri="http://lullabyhomestay.com/functions" %>
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Chi tiết lịch đặt phòng</title>
+    <title>Chi tiết đơn đặt phòng</title>
     <jsp:include page="../layout/import-css.jsp" />
     <meta name="_csrf" content="${_csrf.token}" />
     <meta name="_csrf_header" content="${_csrf.headerName}" />
@@ -32,7 +32,7 @@ uri="http://lullabyhomestay.com/functions" %>
                       class="row mb-3 d-flex justify-content-between align-items-center"
                     >
                       <div class="col-md-6">
-                        <h4 class="card-title mb-0">Chi tiết lịch đặt phòng</h4>
+                        <h4 class="card-title mb-0">Chi tiết đơn đặt phòng</h4>
                       </div>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
@@ -45,8 +45,7 @@ uri="http://lullabyhomestay.com/functions" %>
                               onclick="checkBeforeCancel(this)"
                               data-entity-id="${booking.bookingID}"
                               data-id-name="bookingID"
-                              data-check-url="/admin/booking/booking-history/can-cancel/"
-                              data-cancel-url="/admin/booking/booking-history/cancel"
+                              data-role="admin"
                             >
                               <i class="bi bi-x-circle"></i>
                               Hủy đặt phòng
@@ -56,8 +55,10 @@ uri="http://lullabyhomestay.com/functions" %>
                           <a
                             href="/admin/booking"
                             class="btn btn-secondary btn-sm"
+                            title="Xem chi tiết"
                           >
-                            <i class="bi bi-arrow-left"></i> Trở về
+                            <i class="bi bi-arrow-left"></i>
+                            Trở về
                           </a>
                         </div>
                       </div>
@@ -167,12 +168,12 @@ uri="http://lullabyhomestay.com/functions" %>
                           class="d-flex justify-content-between align-items-center mb-3"
                         >
                           <h5 class="fw-bold mb-0">Dịch vụ bổ sung</h5>
-                          <a
-                            href="/admin/booking-service/create/${booking.bookingID}"
-                            class="btn btn-primary btn-sm"
+                          <button
+                            class="btn btn-primary btn-sm check-booking-service"
+                            data-booking-id="${booking.bookingID}"
                           >
-                            <i class="bi bi-plus-circle"></i> Thêm mới
-                          </a>
+                            Đặt dịch vụ
+                          </button>
                         </div>
                         <c:choose>
                           <c:when test="${not empty booking.bookingServices}">
@@ -180,7 +181,6 @@ uri="http://lullabyhomestay.com/functions" %>
                               <table class="table table-bordered">
                                 <thead>
                                   <tr>
-                                    <th>Mã dịch vụ</th>
                                     <th>Tên dịch vụ</th>
                                     <th>Mô tả</th>
                                     <th>Đơn giá</th>
@@ -196,7 +196,6 @@ uri="http://lullabyhomestay.com/functions" %>
                                     items="${booking.bookingServices}"
                                   >
                                     <tr>
-                                      <td>${bService.bookingServiceID}</td>
                                       <td>${bService.service.serviceName}</td>
                                       <td>${bService.description}</td>
                                       <td>
@@ -239,22 +238,25 @@ uri="http://lullabyhomestay.com/functions" %>
                                       </td>
 
                                       <td class="text-center">
-                                        <a
-                                          href="/admin/booking-service/update/${bService.bookingServiceID}"
+                                        <button
                                           class="btn btn-warning btn-sm"
                                           title="Sửa"
+                                          onclick="checkBeforeUpdate(this)"
+                                          data-booking-service-id="${bService.bookingServiceID}"
+                                          data-entity-type="Đơn đặt dịch vụ"
+                                          data-check-url="/admin/booking-service/can-handle/"
                                         >
                                           <i class="bi bi-pencil"></i>
-                                        </a>
+                                        </button>
                                         <button
                                           class="btn btn-danger btn-sm"
                                           title="Xóa"
                                           onclick="checkBeforeDelete(this)"
                                           data-entity-id="${bService.bookingServiceID}"
                                           data-entity-name="${bService.service.serviceName}"
-                                          data-entity-type="Việc đặt dịch vụ"
+                                          data-entity-type="Đơn đặt dịch vụ"
                                           data-delete-url="/admin/booking-service/delete"
-                                          data-check-url="/admin/booking-service/can-delete/"
+                                          data-check-url="/admin/booking-service/can-handle/"
                                           data-id-name="bookingServiceID"
                                         >
                                           <i class="bi bi-trash"></i>
@@ -264,6 +266,50 @@ uri="http://lullabyhomestay.com/functions" %>
                                   </c:forEach>
                                 </tbody>
                               </table>
+
+                              <c:if test="${totalUnpaidPostpaidAmount != 0}">
+                                <div class="card border-0 shadow-sm mt-4">
+                                  <div
+                                    class="card-body d-flex justify-content-between align-items-center"
+                                  >
+                                    <div>
+                                      <span class="fw-semibold text-secondary"
+                                        >Tổng tiền dịch vụ trả sau chưa thanh
+                                        toán:</span
+                                      >
+                                      <span
+                                        class="fw-bold text-danger fs-5 ms-2"
+                                      >
+                                        <fmt:formatNumber
+                                          type="number"
+                                          value="${totalUnpaidPostpaidAmount}"
+                                        />đ
+                                      </span>
+                                    </div>
+
+                                    <c:choose>
+                                      <c:when test="${canPayBServices}">
+                                        <button
+                                          class="btn btn-primary btn-sm px-4"
+                                          onclick="handlePayment('${booking.bookingID}', 'ADDITIONAL_SERVICE', true)"
+                                        >
+                                          <i class="bi bi-wallet2 me-1"></i>
+                                          Xác nhận thanh toán đơn đặt dịch vụ
+                                        </button>
+                                      </c:when>
+                                      <c:otherwise>
+                                        <span
+                                          class="text-muted small fst-italic"
+                                        >
+                                          * Số tiền chính xác cần thanh toán sẽ
+                                          được cập nhật khi nhân viên cập nhật
+                                          số lượng dùng
+                                        </span>
+                                      </c:otherwise>
+                                    </c:choose>
+                                  </div>
+                                </div>
+                              </c:if>
                             </div>
                           </c:when>
                           <c:otherwise>
@@ -277,7 +323,17 @@ uri="http://lullabyhomestay.com/functions" %>
 
                     <div class="row mt-4">
                       <div class="col-md-12">
-                        <h5 class="mb-3 fw-bold">Gia hạn đặt phòng</h5>
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-3"
+                        >
+                          <h5 class="mb-3 fw-bold">Gia hạn đặt phòng</h5>
+                          <button
+                            class="btn btn-primary btn-sm check-booking-extend"
+                            data-booking-id="${booking.bookingID}"
+                          >
+                            Gia hạn giờ thuê
+                          </button>
+                        </div>
                         <c:choose>
                           <c:when test="${not empty booking.bookingExtensions}">
                             <div class="table-responsive">
@@ -370,11 +426,57 @@ uri="http://lullabyhomestay.com/functions" %>
 
     <jsp:include page="../layout/import-js.jsp" />
     <jsp:include page="../layout/partial/_modals-delete.jsp" />
+    <jsp:include page="../../shared/partial/_modal-refund.jsp" />
+    <jsp:include
+      page="../../shared/partial/_script-handle-cancel-booking.jsp"
+    />
+    <jsp:include page="../layout/partial/_modal-warning.jsp" />
+    <jsp:include page="../booking-service/_script-modal-warning-update.jsp" />
+    <%@ include file="./_modal-payment.jsp" %>
     <script>
+      function checkBookingEligibility(
+        bookingID,
+        successRedirectUrl,
+        failureMessage
+      ) {
+        $.ajax({
+          url: "/admin/booking/can-add-service-or-extend/" + bookingID,
+          method: "GET",
+          success: function (response) {
+            if (response === true) {
+              window.location.href = successRedirectUrl;
+            } else {
+              showWarningModal(failureMessage);
+            }
+          },
+          error: function () {
+            showWarningModal("Đã xảy ra lỗi khi kiểm tra điều kiện.");
+          },
+        });
+      }
+
       $("#deleteWarningModal").on("show.bs.modal", function () {
         $(this)
           .find(".modal-body")
           .html("Dịch vụ này đã được thanh toán, không thể xóa.");
+      });
+
+      $(".check-booking-service").click(function () {
+        let bookingID = $(this).data("booking-id");
+        checkBookingEligibility(
+          bookingID,
+          "/admin/booking-service/create/" + bookingID,
+          "Đơn đặt phòng không đủ điều kiện để thêm dịch vụ."
+        );
+      });
+
+      $(".check-booking-extend").click(function () {
+        let bookingID = $(this).data("booking-id");
+        checkBookingEligibility(
+          bookingID,
+          "/admin/booking/booking-extension/create/" + bookingID,
+          "Đơn đặt phòng không đủ điều kiện để gia hạn."
+        );
       });
     </script>
   </body>

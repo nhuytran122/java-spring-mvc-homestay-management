@@ -112,39 +112,17 @@
   </script>
   <jsp:include page="_script-modal-warning-update.jsp" />
   <script>
-    $(document).ready(function() {
-        let $dataCheck = $('.data-check');
-        let $input = $dataCheck.find('input[type="hidden"]');
-        let canUpdate = $input.data('can-update');
-        let currentStatus = $('input[name="status"]').val();
-    
-        if (canUpdate === false) {
-            let message = '';
-            if (currentStatus === 'COMPLETED') {
-                message = 'Việc bảo trì này đã hoàn thành';
-            } else if (currentStatus === 'CANCELLED') {
-                message = 'Việc bảo trì này đã bị hủy';
-            } else if (currentStatus === 'IN_PROGRESS') {
-                message = 'Việc bảo trì này đang được xử lý';
-            } else if (currentStatus === 'ON_HOLD') {
-                message = 'Việc bảo trì này đang tạm hoãn';
-            } else if (currentStatus === 'PENDING') {
-                message = 'Việc bảo trì này đang chờ xử lý';
-            } else {
-                message = 'Việc bảo trì này có trạng thái không cho phép sửa đổi';
-            }
-            let $textSub = $('.text-sub');
-                $textSub.text(message);
-                $("#updateWarningModal").modal({
-                    backdrop: 'static',
-                    keyboard: false
-                }).modal('show');
-    
-            $('#updateWarningModal').on('hidden.bs.modal', function () {
-                window.location.href = '/admin/maintenance';
-            });
-        }
+    $(document).ready(function () {
+    let canUpdate = $('.data-check input[type="hidden"]').data('can-update');
+    let currentStatus = $('input[name="status"]').val();
+
+    if (canUpdate === false) {
+        showWarningModal(getStatusWarningMessage(currentStatus));
+        $("#warningModal").on("hidden.bs.modal", function () {
+        window.location.href = '/admin/maintenance';
+        });
+    }
     });
-    </script>
+</script>
 </body>
 </html>

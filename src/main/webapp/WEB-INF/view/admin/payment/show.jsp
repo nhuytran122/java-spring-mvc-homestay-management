@@ -24,18 +24,18 @@
                             <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
                                 Tất cả tình trạng
                             </option>
-                            <c:forEach var="type" items="${paymentStatuses}">
-                                <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
-                                    ${type.displayName} 
+                            <c:forEach var="status" items="${paymentStatuses}">
+                                <option value="${status}" ${criteria.status == status ? 'selected' : ''}>
+                                    ${status.displayName} 
                                 </option>
                             </c:forEach>
                         </select>
                         <select name="type" class="form-select form-control form-select-sm">
-                            <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
+                            <option value="" ${criteria.type == null || criteria.type == '' ? 'selected' : ''}>
                                 Tất cả hình thức
                             </option>
                             <c:forEach var="type" items="${paymentTypes}">
-                                <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
+                                <option value="${type}" ${criteria.type == type ? 'selected' : ''}>
                                     ${type.displayName} 
                                 </option>
                             </c:forEach>
@@ -86,13 +86,15 @@
                                                         <c:forEach var="payment" items="${listPayments}">
                                                             <tr style="height: 70px;">
                                                                 <td>${payment.booking.bookingID}</td>
-                                                                <td>${payment.booking.customer.fullName}</td>
+                                                                <td>${payment.booking.customer.user.fullName}</td>
                                                                 <td>
                                                                     <span class="badge ${payment.paymentType == 'TRANSFER' ? 'bg-success' : 
-                                                                                        payment.paymentType == 'CASH'}">
-                                                                        ${payment.paymentType.displayName}
+                                                                                        payment.paymentType == 'CASH' ? 'bg-info' : 'bg-secondary'}">
+                                                                        ${payment.paymentType == 'TRANSFER' ? 'Chuyển khoản' : 
+                                                                            payment.paymentType == 'CASH' ? 'Tiền mặt' : 'Chưa xác định'}
                                                                     </span>
                                                                 </td>
+
                                                                 <td>
                                                                     <span class="badge ${payment.status == 'COMPLETED' ? 'bg-success' : 
                                                                                         payment.status == 'FAILED' ? 'bg-danger' : 
@@ -109,9 +111,6 @@
                                                                     <div class="btn-group" role="group">
                                                                         <a href="/admin/payment/${payment.paymentID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
-                                                                        </a>
-                                                                        <a href="/admin/payment/update/${payment.paymentID}" class="btn btn-warning btn-sm" title="Sửa">
-                                                                            <i class="bi bi-pencil"></i>
                                                                         </a>
                                                                     </div>
                                                                 </td>

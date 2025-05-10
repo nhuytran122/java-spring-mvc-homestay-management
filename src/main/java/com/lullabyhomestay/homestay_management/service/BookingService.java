@@ -25,6 +25,7 @@ import com.lullabyhomestay.homestay_management.repository.RefundRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomStatusHistoryRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.BookingSpecifications;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
+import com.lullabyhomestay.homestay_management.utils.Cancelability;
 import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
@@ -150,7 +151,7 @@ public class BookingService {
             return;
         }
 
-        if (canCancelBooking(currentBooking)) {
+        if (checkCancelability(bookingID) == Cancelability.ALLOWED) {
             // Xóa dữ liệu liên quan
             // Không xóa bookingServices để truy vết paymentDetails
             roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
@@ -165,11 +166,29 @@ public class BookingService {
         }
     }
 
-    public boolean canCancelBooking(Booking booking) {
-        LocalDateTime now = LocalDateTime.now();
-        return booking.getStatus() != BookingStatus.CANCELLED
-                && booking.getStatus() != BookingStatus.COMPLETED
-                && now.isBefore(booking.getCheckIn());
+    // public boolean canCancelBooking(Long bookingID) {
+    // Booking booking = getBookingByID(bookingID);
+    // BookingStatus bookingStatus = booking.getStatus();
+    // LocalDateTime now = LocalDateTime.now();
+    // return bookingStatus != BookingStatus.CANCELLED
+    // && bookingStatus != BookingStatus.COMPLETED
+    // && now.isBefore(booking.getCheckIn());
+    // }
+
+    public Cancelability checkCancelability(Long bookingID) {
+        Booking booking = getBookingByID(bookingID);
+        if (booking.getStatus() == BookingStatus.CANCELLED)
+            return Cancelability.CANCELLED;
+        if (booking.getStatus() == BookingStatus.COMPLETED)
+            return Cancelability.COMPLETED;
+        if (LocalDateTime.now().isAfter(booking.getCheckIn()))
+            return Cancelability.CHECKIN_TIME_PASSED;
+        return Cancelability.ALLOWED;
+    }
+
+    public boolean canBookServiceOrBookExtension(Long bookingID) {
+        Booking booking = getBookingByID(bookingID);
+        return booking.getStatus() == BookingStatus.CONFIRMED;
     }
 
     private Booking validateAndGetBooking(Long bookingID) {

@@ -112,7 +112,7 @@
                                                             <td>${item.inventoryItem.inventoryCategory.categoryName}</td>
                                                             <td>${item.branch.branchName}</td>
                                                             <td><fmt:formatNumber type="number" value="${item.quantity}" /></td>
-                                                            <td>${item.employee.fullName}</td>
+                                                            <td>${item.employee.user.fullName}</td>
                                                             <td>${f:formatLocalDateTime(item.createdAt)}</td>
                                                             <td>${f:formatLocalDateTime(item.updatedAt)}</td>
                                                             <td>

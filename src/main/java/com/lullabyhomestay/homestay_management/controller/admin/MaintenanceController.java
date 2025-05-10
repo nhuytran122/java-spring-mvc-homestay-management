@@ -17,16 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lullabyhomestay.homestay_management.domain.Employee;
 import com.lullabyhomestay.homestay_management.domain.MaintenanceRequest;
-import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
+import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.domain.dto.RoomDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchMaintenanceCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.BranchService;
-import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.MaintenanceRequestService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
+import com.lullabyhomestay.homestay_management.service.UserService;
 import com.lullabyhomestay.homestay_management.utils.MaintenanceStatus;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,8 +40,7 @@ public class MaintenanceController {
     private final BranchService branchService;
     private final UploadService uploadService;
     private final RoomService roomService;
-    private final EmployeeService employeeService;
-    private final ModelMapper mapper;
+    private final UserService userService;
 
     @GetMapping("/admin/maintenance")
     public String getMaintenancePage(Model model,
@@ -101,13 +99,14 @@ public class MaintenanceController {
             maintenance.setImage(img);
             ;
         }
-        if (maintenance.getRoom() != null && maintenance.getRoom().getRoomID() == null) {
-            maintenance.setRoom(null);
+        if (maintenance.getRoom() != null) {
+            if (maintenance.getRoom().getRoomID() == null)
+                maintenance.setRoom(null);
         }
         HttpSession session = request.getSession(false);
-        Long employeeID = (Long) session.getAttribute("id");
-        EmployeeDTO employee = employeeService.getEmployeeDTOByID(employeeID);
-        maintenance.setEmployee(mapper.map(employee, Employee.class));
+        Long userID = (Long) session.getAttribute("id");
+        User user = userService.getUserByUserID(userID);
+        maintenance.setEmployee(user.getEmployee());
         maintenance.setStatus(MaintenanceStatus.PENDING);
         this.maintenanceService.handleSaveMaintenanceRequest(maintenance);
         return "redirect:/admin/maintenance";

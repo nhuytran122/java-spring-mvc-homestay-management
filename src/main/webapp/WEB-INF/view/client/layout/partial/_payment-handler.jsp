@@ -1,6 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <script>
-  function handlePayment(bookingID, paymentPurpose) {
+  function handlePayment(bookingID, paymentPurpose, canPay) {
+    if (!canPay) {
+      alert("Bạn hiện tại không thể thanh toán!");
+      return;
+    }
     $.ajax({
       url:
         "/checkout?bookingID=" +

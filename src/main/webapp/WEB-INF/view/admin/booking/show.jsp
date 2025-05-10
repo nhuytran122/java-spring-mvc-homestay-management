@@ -146,7 +146,7 @@
                                                                         <button class="btn btn-danger btn-sm" title="Xóa"
                                                                                 onclick="checkBeforeDelete(this)" 
                                                                                 data-entity-id="${booking.bookingID}" 
-                                                                                data-entity-name="${booking.customer.fullName}" 
+                                                                                data-entity-name="${booking.customer.user.fullName}" 
                                                                                 data-entity-type="Lịch đặt phòng của khách hàng" 
                                                                                 data-delete-url="/admin/booking/delete" 
                                                                                 data-check-url="/admin/booking/can-delete/" 

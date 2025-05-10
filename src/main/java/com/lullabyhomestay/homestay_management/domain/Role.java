@@ -2,6 +2,7 @@ package com.lullabyhomestay.homestay_management.domain;
 
 import java.io.Serializable;
 import java.util.List;
+
 import com.lullabyhomestay.homestay_management.utils.SystemRole;
 
 import jakarta.persistence.Column;

@@ -87,7 +87,7 @@
                                                         <c:forEach var="refund" items="${listRefunds}">
                                                             <tr style="height: 70px;">
                                                                 <td>${refund.payment.booking.bookingID}</td>
-                                                                <td>${refund.payment.booking.customer.fullName}</td>
+                                                                <td>${refund.payment.booking.customer.user.fullName}</td>
                                                                 <td>
                                                                     <span class="badge ${refund.refundType == 'FULL' ? 'bg-success' : 
                                                                                         refund.refundType == 'PARTIAL_70' ? 'bg-warning' :
@@ -110,9 +110,6 @@
                                                                     <div class="btn-group" role="group">
                                                                         <a href="/admin/refund/${refund.refundID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
-                                                                        </a>
-                                                                        <a href="/admin/refund/update/${refund.refundID}" class="btn btn-warning btn-sm" title="Sửa">
-                                                                            <i class="bi bi-pencil"></i>
                                                                         </a>
                                                                     </div>
                                                                 </td>

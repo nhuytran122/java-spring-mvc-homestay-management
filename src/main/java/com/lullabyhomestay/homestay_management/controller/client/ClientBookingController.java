@@ -39,6 +39,7 @@ import com.lullabyhomestay.homestay_management.service.*;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.BookingUtils;
+import com.lullabyhomestay.homestay_management.utils.Cancelability;
 import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.RefundType;
@@ -232,13 +233,14 @@ public class ClientBookingController {
         BookingUtils.validateBooking(booking, customerDTO);
         BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
-        model.addAttribute("canCancel", bookingService.canCancelBooking(booking));
+        model.addAttribute("canCancel", bookingService.checkCancelability(id) == Cancelability.ALLOWED);
         model.addAttribute("booking", booking);
         model.addAttribute("numberOfHours", booking.getNumberOfHours());
         model.addAttribute("newReview", new Review());
         model.addAttribute("editReview", new Review());
         model.addAttribute("listServicesPostPay", service.getServiceByIsPrepaid(false));
         model.addAttribute("totalUnpaidPostpaidAmount", bookingExtraService.calculateUnpaidServicesTotalAmount(id));
+        model.addAttribute("canPayBServices", bookingExtraService.allPostpaidServicesHaveQuantity(id));
         return "client/booking/detail-booking-history";
     }
 
@@ -248,11 +250,16 @@ public class ClientBookingController {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
 
-        if (!bookingService.canCancelBooking(booking)) {
-            return ResponseEntity.ok(
-                    new ApiResponseDTO<>(null, "Không thể hủy booking đã hoàn tất hoặc đã hủy."));
-        }
+        Cancelability result = bookingService.checkCancelability(bookingID);
 
+        switch (result) {
+            case CANCELLED:
+                return ResponseEntity.ok(new ApiResponseDTO<>(null, "Đơn đặt phòng đã bị hủy trước đó."));
+            case COMPLETED:
+                return ResponseEntity.ok(new ApiResponseDTO<>(null, "Đơn đặt phòng đã hoàn tất và không thể hủy."));
+            case CHECKIN_TIME_PASSED:
+                return ResponseEntity.ok(new ApiResponseDTO<>(null, "Thời gian nhận phòng đã đến, không thể hủy đơn."));
+        }
         Map<String, Object> response = new HashMap<>();
         if (booking.getPaidAmount() == null || booking.getPaidAmount() <= 0) {
             response.put("refundAmount", 0.0);

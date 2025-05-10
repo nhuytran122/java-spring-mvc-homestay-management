@@ -13,6 +13,7 @@ import com.lullabyhomestay.homestay_management.domain.Service;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
 import com.lullabyhomestay.homestay_management.repository.ServiceRepository;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -35,7 +36,7 @@ public class HomestayServiceService {
     }
 
     public Page<Service> searchServices(String keyword, int page, String sortOrder) {
-        Pageable pageable = PageRequest.of(page - 1, 1,
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
                 "asc".equals(sortOrder) ? Sort.by("Price").ascending()
                         : "desc".equals(sortOrder) ? Sort.by("Price").descending() : Sort.unsorted());
 

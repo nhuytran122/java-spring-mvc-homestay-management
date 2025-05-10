@@ -61,7 +61,14 @@
                                                     <c:forEach var="branch" items="${branches}">
                                                         <tr>
                                                             <td>
-                                                                <img src="${not empty branch.image ? '/images/branch/' + branch.image : '/images/branch/default-img.jpg'}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
+                                                                <c:choose>
+                                                                    <c:when test="${not empty branch.image}">
+                                                                        <img src="/images/branch/${branch.image}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <img src="/images/branch/default-img.jpg" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </td>
                                                             <td>${branch.branchName}</td>
                                                             <td>${branch.address}</td>

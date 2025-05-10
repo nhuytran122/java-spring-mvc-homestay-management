@@ -119,6 +119,9 @@ uri="http://www.springframework.org/tags/form" %>
                           </button>
                         </div>
                       </div>
+                      <div class="data-check" style="display: none;">
+                        <input type="hidden" data-can-update="${canUpdate}">
+                    </div>
                     </form:form>
                   </div>
                 </div>
@@ -131,5 +134,20 @@ uri="http://www.springframework.org/tags/form" %>
 
     <jsp:include page="../layout/import-js.jsp" />
     <jsp:include page="../layout/partial/_script-number-separator.jsp" />
+    <jsp:include page="_script-modal-warning-update.jsp" />
+    <script>
+      $(document).ready(function () {
+        let canUpdate = $('.data-check input[type="hidden"]').data("can-update");
+        let bookingID = $('input[name="booking\\.bookingID"]').val();
+    
+        if (canUpdate === false) {
+          showWarningModal("Đơn đặt dịch vụ này đã được thanh toán, không thể sửa");
+          $("#warningModal").on("hidden.bs.modal", function () {
+            window.location.href = "/admin/booking/" + bookingID;
+          });
+        }
+      });
+    </script>
+    
   </body>
 </html>

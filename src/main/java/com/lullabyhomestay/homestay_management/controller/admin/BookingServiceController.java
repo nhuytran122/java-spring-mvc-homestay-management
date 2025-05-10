@@ -56,29 +56,36 @@ public class BookingServiceController {
 
     @GetMapping("/admin/booking-service/create/{id}")
     public String getCreateBookingServicePage(Model model, @PathVariable long id) {
-        model.addAttribute("listServices", homestayServiceService.getAllServices());
         BookingServices newBookingServices = new BookingServices();
+        boolean canBook = bookingService.canBookServiceOrBookExtension(id);
         newBookingServices.setBooking(bookingService.getBookingByID(id));
         model.addAttribute("newBookingService", newBookingServices);
+        if (!canBook) {
+            model.addAttribute("canBook", canBook);
+        } else {
+            model.addAttribute("listServices", homestayServiceService.getAllServices());
+        }
         return "admin/booking-service/create";
     }
 
     @PostMapping("/admin/booking-service/create")
     public String postCreateBookingService(Model model,
             @ModelAttribute("newBookingService") @Validated(AdminValidation.class) BookingServices bookingService,
-            BindingResult result) {
+            BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             model.addAttribute("listServices", homestayServiceService.getAllServices());
             return "admin/booking-service/create";
         }
         bookingExtraService.handleSaveBookingServiceExtra(bookingService);
-        return "redirect:/admin/booking-service";
+        return "redirect:/admin/booking/" + bookingService.getBooking().getBookingID();
     }
 
     @GetMapping("/admin/booking-service/update/{id}")
     public String getUpdateBookingServicePage(Model model, @PathVariable long id) {
         BookingServices bookingService = bookingExtraService.getBookingServiceByID(id);
         model.addAttribute("bookingService", bookingService);
+        boolean canUpdate = bookingExtraService.canUpdateAndDeleteBookingService(id);
+        model.addAttribute("canUpdate", canUpdate);
         return "admin/booking-service/update";
     }
 
@@ -95,18 +102,27 @@ public class BookingServiceController {
         }
         currentBookingService.setDescription(bookingService.getDescription());
         this.bookingExtraService.updateQuantityBookingServices(currentBookingService, bookingService.getQuantity());
-        return "redirect:/admin/booking-service";
+        return "redirect:/admin/booking/" + currentBookingService.getBooking().getBookingID();
     }
 
-    @GetMapping("/admin/booking-service/can-delete/{id}")
-    public ResponseEntity<Boolean> canDeleteBookingService(@PathVariable long id) {
-        boolean canDelete = bookingExtraService.canDeleteBookingService(id);
-        return ResponseEntity.ok(canDelete);
+    @GetMapping("/admin/booking-service/can-handle/{id}")
+    public ResponseEntity<Boolean> canHandleBookingService(@PathVariable long id) {
+        boolean canHandle = bookingExtraService.canUpdateAndDeleteBookingService(id);
+        return ResponseEntity.ok(canHandle);
     }
 
     @PostMapping("/admin/booking-service/delete")
-    public String postDeleteBranch(@RequestParam("bookingServiceID") Long bookingServiceID) {
+    public String postDeleteBranch(@RequestParam("bookingServiceID") Long bookingServiceID,
+            HttpServletRequest request) {
         this.bookingExtraService.deleteBookingServiceByID(bookingServiceID);
-        return "redirect:/admin/booking-service";
+        return redirectToReferer(request, "admin/booking-service");
+    }
+
+    private String redirectToReferer(HttpServletRequest request, String fallbackUrl) {
+        String referer = request.getHeader("Referer");
+        if (referer == null || referer.isEmpty()) {
+            return "redirect:" + fallbackUrl;
+        }
+        return "redirect:" + referer;
     }
 }

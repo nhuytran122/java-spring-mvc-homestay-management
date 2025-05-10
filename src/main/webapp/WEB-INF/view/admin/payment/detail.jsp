@@ -35,12 +35,6 @@ uri="http://lullabyhomestay.com/functions" %>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
                           <a
-                            href="/admin/payment/update/${payment.paymentID}"
-                            class="btn btn-warning btn-sm"
-                          >
-                            <i class="bi bi-pencil"></i> Sửa
-                          </a>
-                          <a
                             href="/admin/payment"
                             class="btn btn-secondary btn-sm"
                           >

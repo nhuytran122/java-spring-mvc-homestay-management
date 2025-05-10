@@ -114,7 +114,7 @@ uri="http://lullabyhomestay.com/functions" %>
                 </form>
 
                 <a
-                  onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS')"
+                  onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS', true)"
                   class="btn btn-success btn-lg"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán

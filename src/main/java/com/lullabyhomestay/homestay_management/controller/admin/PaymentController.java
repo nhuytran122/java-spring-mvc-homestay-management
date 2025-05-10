@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lullabyhomestay.homestay_management.domain.Payment;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchPaymentCriteriaDTO;
 import com.lullabyhomestay.homestay_management.service.PaymentService;
+import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
 import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
 import com.lullabyhomestay.homestay_management.utils.PaymentType;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @AllArgsConstructor
 @Controller
@@ -64,4 +66,17 @@ public class PaymentController {
         model.addAttribute("payment", payment);
         return "admin/payment/detail";
     }
+
+    @PostMapping("/admin/payment/handle")
+    public String handlePayment(
+            @RequestParam("bookingID") Long bookingID,
+            @RequestParam("purpose") PaymentPurpose purpose,
+            @RequestParam("paymentType") PaymentType paymentType) {
+        System.out.println("Booking ID: " + bookingID);
+        System.out.println("Purpose: " + purpose);
+        System.out.println("Payment Type: " + paymentType);
+        paymentService.handleSavePaymentWithAdmin(bookingID, paymentType, purpose);
+        return "redirect:/admin/booking/" + bookingID;
+    }
+
 }

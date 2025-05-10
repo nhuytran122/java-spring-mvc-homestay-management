@@ -151,7 +151,7 @@ uri="http://lullabyhomestay.com/functions" %>
             <div class="action-buttons my-4">
               <div class="text-center">
                 <a
-                  onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')"
+                  onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING', true)"
                   class="btn btn-success btn-lg shadow px-5"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán

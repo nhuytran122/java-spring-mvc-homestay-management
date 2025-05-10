@@ -2,6 +2,7 @@ package com.lullabyhomestay.homestay_management.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Refund;
+import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchRefundCriteriaDTO;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RefundRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.RefundSpecification;
 import com.lullabyhomestay.homestay_management.utils.Constants;
@@ -90,6 +93,14 @@ public class RefundService {
             default:
                 return 0.0;
         }
+    }
+
+    public Refund getRefundByID(Long id) {
+        Optional<Refund> refundOpt = this.refundRepository.findById(id);
+        if (!refundOpt.isPresent()) {
+            throw new NotFoundException("Yêu cầu hoàn tiền");
+        }
+        return refundOpt.get();
     }
 
 }

@@ -270,7 +270,7 @@
                                     </c:if>
 
                                     <c:if test="${booking.status == 'PENDING'}">
-                                        <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING')" class="btn btn-sm btn-primary">
+                                        <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING', true)" class="btn btn-sm btn-primary">
                                             <i class="bi bi-credit-card"></i> Thanh toán
                                         </a>
                                     </c:if>
@@ -410,19 +410,31 @@
                                 </c:forEach>
 
                                 <c:if test="${totalUnpaidPostpaidAmount != 0}">
-                                    <div class="d-flex justify-content-end mt-3">
-                                        <span class="me-3 fw-bold">
-                                            Tổng tiền chưa thanh toán: 
-                                            <span class="text-danger">
-                                                <fmt:formatNumber type="number" value="${totalUnpaidPostpaidAmount}" />đ
-                                            </span>
-                                        </span>
-                                        <button class="btn btn-primary btn-sm" 
-                                                onclick="handlePayment('${booking.bookingID}', 'ADDITIONAL_SERVICE')">
-                                            Thanh toán dịch vụ trả sau
-                                        </button>
+                                    <div class="card border-0 shadow-sm mt-4">
+                                        <div class="card-body d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="fw-semibold text-secondary">Tổng tiền dịch vụ trả sau chưa thanh toán:</span>
+                                                <span class="fw-bold text-danger fs-5 ms-2">
+                                                    <fmt:formatNumber type="number" value="${totalUnpaidPostpaidAmount}" />đ
+                                                </span>
+                                            </div>
+
+                                            <c:choose>
+                                                <c:when test="${canPayBServices}">
+                                                    <button class="btn btn-primary btn-sm px-4"
+                                                        onclick="handlePayment('${booking.bookingID}', 'ADDITIONAL_SERVICE', true)">
+                                                        <i class="bi bi-wallet2 me-1"></i> Thanh toán ngay
+                                                    </button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="text-muted small fst-italic">
+                                                        * Số tiền chính xác cần thanh toán sẽ được cập nhật khi nhân viên cập nhật số lượng dùng của bạn                                                    </span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
                                     </div>
                                 </c:if>
+
                             </div>
                         </c:if>
 
@@ -434,7 +446,7 @@
                                         <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ
                                     </span>
                                     <c:if test="${!hasPaidPostServices}">
-                                        <div class="text-muted small">* Chưa bao gồm dịch vụ trả sau</div>
+                                        <div class="text-muted small">* đang chờ cập nhật</div>
                                     </c:if>
                                 </div>
                             </div>
@@ -466,7 +478,8 @@
                                     class="btn btn-danger btn-sm"
                                     title="Hủy đặt phòng"
                                     onclick="checkBeforeCancel(this)"
-                                    data-entity-id="${booking.bookingID}">
+                                    data-entity-id="${booking.bookingID}"
+                                    data-role="customer">
                                     Hủy đặt phòng
                                 </button>
                             </div>
@@ -483,11 +496,11 @@
     <jsp:include page="../../shared/partial/_modal-refund.jsp" />
     <jsp:include page="../../shared/partial/_script-handle-cancel-booking.jsp" />
     <jsp:include page="../../admin/layout/partial/_script-preview-image-update.jsp" />
-    <jsp:include page="../layout/partial/_payment-handler.jsp" />
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <%@ include file="./_modal-book-services.jsp" %>
     <jsp:include page="./_modal-error.jsp" />
     <jsp:include page="./_script-handle.jsp" />
+    <jsp:include page="../layout/partial/_payment-handler.jsp" />
     <script>
         setupImagePreview("review");
     </script>

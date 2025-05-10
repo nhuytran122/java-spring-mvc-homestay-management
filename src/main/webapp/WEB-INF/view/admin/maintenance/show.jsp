@@ -113,7 +113,7 @@
                                                             <td>${item.description}</td>
                                                             <td>${item.branch.branchName}</td>
                                                             <td>${item.room.roomNumber}</td>
-                                                            <td>${item.employee.fullName}</td>
+                                                            <td>${item.employee.user.fullName}</td>
                                                             <td>${f:formatLocalDateTime(item.createdAt)}</td>
                                                             <td>${f:formatLocalDateTime(item.updatedAt)}</td>
                                                             <td>

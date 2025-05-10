@@ -28,7 +28,7 @@ uri="http://www.springframework.org/tags/form" %>
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title mb-4 text-center">
-                      Tạo việc đặt dịch vụ
+                      Tạo đơn đặt dịch vụ
                     </h4>
                     <form:form
                       class="form-horizontal"
@@ -37,7 +37,7 @@ uri="http://www.springframework.org/tags/form" %>
                       modelAttribute="newBookingService"
                     >
                       <form:input type="hidden" path="booking.bookingID" />
-
+                      <input type="hidden" data-can-book="${canBook}">
                       <c:set var="errorQuantity">
                         <form:errors
                           path="quantity"
@@ -136,5 +136,20 @@ uri="http://www.springframework.org/tags/form" %>
 
     <jsp:include page="../layout/import-js.jsp" />
     <jsp:include page="../layout/partial/_script-number-separator.jsp" />
+    <jsp:include page="../layout/partial/_modal-warning.jsp" />
+    <script>
+      $(document).ready(function () {
+        let input = $("input[data-can-book]");
+        let canBook = input.data("can-book");
+        let bookingID = $("input[name='booking.bookingID']").val();
+        if (canBook === false) {
+          showWarningModal("Đơn đặt phòng không đủ điều kiện để thêm dịch vụ.");
+          $('#warningModal').on('hidden.bs.modal', function () {
+            window.location.href = '/admin/booking/' + bookingID;
+          });
+        }
+      });
+    </script>
+    
   </body>
 </html>

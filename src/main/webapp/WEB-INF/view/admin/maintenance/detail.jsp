@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Chi tiết bảo trì</title>
     <jsp:include page="../layout/import-css.jsp" />
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 
 <body>
@@ -93,7 +95,7 @@
                                             </div>
                                             <div class="row mb-3 d-flex align-items-center">
                                                 <div class="col-md-4 fw-bold text-md-start">Người tạo:</div>
-                                                <div class="col-md-8">${request.employee.fullName}</div>
+                                                <div class="col-md-8">${request.employee.user.fullName}</div>
                                             </div>
                                             <div class="row mb-3 d-flex align-items-center">
                                                 <div class="col-md-4 fw-bold text-md-start">Ngày tạo:</div>
@@ -102,7 +104,8 @@
                                             <div class="row mb-3 d-flex align-items-center">
                                                 <div class="col-md-4 fw-bold text-md-start">Ngày cập nhật:</div>
                                                 <div class="col-md-8">${f:formatLocalDateTime(request.updatedAt)}</div>
-                                            </div>                                          
+                                            </div>  
+                                            <input type="hidden" data-view-detail="true">                                        
                                         </div>
                                     </div>
                                 </div>

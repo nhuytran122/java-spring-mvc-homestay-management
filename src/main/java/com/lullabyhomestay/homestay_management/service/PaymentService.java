@@ -1,6 +1,7 @@
 package com.lullabyhomestay.homestay_management.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import com.lullabyhomestay.homestay_management.utils.PaymentType;
 import com.lullabyhomestay.homestay_management.utils.VNPayUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -78,7 +80,7 @@ public class PaymentService {
     }
 
     @Transactional
-    public Payment handleSavePayment(Payment payment, PaymentPurpose paymentPurpose) {
+    public Payment handleSavePaymentWhenCheckout(Payment payment, PaymentPurpose paymentPurpose) {
         Payment newPayment = paymentRepository.save(payment);
         Booking currentBooking = payment.getBooking();
 
@@ -101,6 +103,50 @@ public class PaymentService {
 
         Double oldPaidAmount = currentBooking.getPaidAmount() != null ? currentBooking.getPaidAmount() : 0;
         currentBooking.setPaidAmount(oldPaidAmount + payment.getTotalAmount());
+        paymentDetailService.handleSavePaymentDetail(newPayment, paymentPurpose);
+        return newPayment;
+    }
+
+    @Transactional
+    public Payment handleSavePaymentWithAdmin(Long bookingID, PaymentType paymentType,
+            PaymentPurpose paymentPurpose) {
+        Booking booking = bookingService.getBookingByID(bookingID);
+        // Payment newPayment = paymentRepository.save(payment);
+        Payment newPayment = new Payment();
+        newPayment.setPaymentType(paymentType);
+        newPayment.setStatus(PaymentStatus.COMPLETED);
+        newPayment.setPaymentDate(LocalDateTime.now());
+        newPayment.setBooking(booking);
+        Double totalAmount = 0.0;
+        if (paymentPurpose == PaymentPurpose.ROOM_BOOKING) {
+            booking.setStatus(BookingStatus.CONFIRMED);
+            bookingService.handleSaveBooking(booking);
+            totalAmount = booking.getTotalAmount();
+        } else if (paymentPurpose == PaymentPurpose.ADDITIONAL_SERVICE) {
+            totalAmount = bookingExtraService.calculateUnpaidServicesTotalAmount(bookingID);
+        } else {
+            BookingExtension bookingExtension = bookingExtensionService
+                    .getLatestBookingExtensionByBookingID(bookingID);
+            Double rawAmount = bookingExtension.getTotalAmount();
+            totalAmount = rawAmount
+                    - DiscountUtil.calculateDiscountAmount(rawAmount, booking.getCustomer());
+        }
+        if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
+            BookingExtension bookingExtension = bookingExtensionService
+                    .getLatestBookingExtensionByBookingID(booking.getBookingID());
+
+            // Cập nhật checkout, giá
+            bookingService.handleSaveBookingAfterExtend(booking.getBookingID(),
+                    bookingExtension);
+
+            // Cập nhật lịch trình của phòng
+            roomStatusHistoryService.handleBookingExtensions(bookingExtension);
+        }
+        newPayment.setTotalAmount(totalAmount);
+
+        newPayment = paymentRepository.save(newPayment);
+        Double oldPaidAmount = booking.getPaidAmount() != null ? booking.getPaidAmount() : 0;
+        booking.setPaidAmount(oldPaidAmount + newPayment.getTotalAmount());
         paymentDetailService.handleSavePaymentDetail(newPayment, paymentPurpose);
         return newPayment;
     }

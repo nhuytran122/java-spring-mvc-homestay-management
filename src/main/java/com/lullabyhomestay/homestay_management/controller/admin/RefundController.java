@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Refund;
@@ -45,6 +46,13 @@ public class RefundController {
         model.addAttribute("totalPages", refunds.getTotalPages());
         model.addAttribute("listRefunds", listRefunds);
         return prepareModelWithoutSearch(model, criteria, validPage);
+    }
+
+    @GetMapping("/admin/refund/{id}")
+    public String getDetailRefundPage(Model model, @PathVariable Long id) {
+        Refund refund = refundService.getRefundByID(id);
+        model.addAttribute("refund", refund);
+        return "admin/refund/detail";
     }
 
     private String prepareModelWithoutSearch(Model model, SearchRefundCriteriaDTO criteria, int validPage) {
