@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingServiceCriteriaDTO;
@@ -20,6 +22,7 @@ import com.lullabyhomestay.homestay_management.service.BookingExtraService;
 import com.lullabyhomestay.homestay_management.service.BookingService;
 import com.lullabyhomestay.homestay_management.service.HomestayServiceService;
 import com.lullabyhomestay.homestay_management.service.validator.AdminValidation;
+import com.lullabyhomestay.homestay_management.utils.BookingServiceStatus;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -124,5 +127,32 @@ public class BookingServiceController {
             return "redirect:" + fallbackUrl;
         }
         return "redirect:" + referer;
+    }
+
+    @PostMapping("/admin/booking-service/update-status")
+    @ResponseBody
+    public ResponseEntity<?> updateBookingServiceStatus(
+            @RequestParam("bookingServiceID") Long bookingServiceID,
+            @RequestParam("status") String status) {
+        BookingServices bService = bookingExtraService.getBookingServiceByID(bookingServiceID);
+        BookingServiceStatus currentStatus = bService.getStatus();
+        BookingServiceStatus newStatus = BookingServiceStatus.valueOf(status.toUpperCase());
+
+        if (currentStatus == BookingServiceStatus.COMPLETED) {
+            return ResponseEntity.badRequest().body("Đơn đặt dịch vụ này đã hoàn tất, không thể cập nhật!");
+        }
+        if (currentStatus == BookingServiceStatus.CANCELLED) {
+            return ResponseEntity.badRequest().body("Đơn đặt dịch vụ này đã bị hủy, không thể cập nhật!");
+        }
+        if (currentStatus == BookingServiceStatus.PENDING && newStatus == BookingServiceStatus.PENDING) {
+            return ResponseEntity.badRequest().body("Đơn đặt dịch vụ này đã đang chờ xử lý, không cần cập nhật lại!");
+        }
+        if (currentStatus == BookingServiceStatus.IN_PROGRESS &&
+                (newStatus == BookingServiceStatus.PENDING || newStatus == BookingServiceStatus.IN_PROGRESS)) {
+            return ResponseEntity.badRequest().body("Đang xử lý, không thể quay lại chờ hoặc giữ nguyên!");
+        }
+        bService.setStatus(newStatus);
+        bookingExtraService.handleUpdateStatusBookingService(bService);
+        return ResponseEntity.ok().build();
     }
 }

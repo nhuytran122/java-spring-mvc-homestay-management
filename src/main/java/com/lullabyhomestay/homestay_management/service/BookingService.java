@@ -144,19 +144,18 @@ public class BookingService {
     public void cancelBooking(Long bookingID) {
         // Lấy và validate booking
         Booking currentBooking = validateAndGetBooking(bookingID);
-        if (currentBooking.getStatus() == BookingStatus.PENDING) {
-            roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
-            // Cập nhật trạng thái đơn là CANCELLED
-            updateBookingAfterCancellation(currentBooking);
-            return;
-        }
 
         if (checkCancelability(bookingID) == Cancelability.ALLOWED) {
             // Xóa dữ liệu liên quan
             // Không xóa bookingServices để truy vết paymentDetails
             roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
-            // currentBooking.setBookingServices(new ArrayList<>());
+            bookingServiceRepository.bulkCancelServicesByBookingID(bookingID);
 
+            if (currentBooking.getStatus() == BookingStatus.PENDING) {
+                // Cập nhật trạng thái đơn là CANCELLED
+                updateBookingAfterCancellation(currentBooking);
+                return;
+            }
             // Xử lý payment và refund
             Payment payment = validateAndGetPayment(currentBooking);
             Refund refund = createPendingRefund(payment, currentBooking);

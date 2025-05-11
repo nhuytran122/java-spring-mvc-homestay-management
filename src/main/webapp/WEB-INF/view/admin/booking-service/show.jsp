@@ -61,13 +61,13 @@
                                         <table class="table table-hover">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>Mã đặt phòng</th>
                                                     <th>Tên khách hàng</th>
                                                     <th>Chi nhánh</th>
                                                     <th>Phòng</th>
                                                     <th>Dịch vụ</th>
                                                     <th>Số lượng</th>
                                                     <th>Mô tả</th>
+                                                    <th>Tình trạng</th>
                                                     <th>Ngày đặt</th>
                                                     <th>Tình trạng thanh toán</th>
                                                     <th>Thao tác</th>
@@ -82,8 +82,11 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="bookingService" items="${listBookingServices}">
+                                                            <c:set
+                                                                var="status"
+                                                                value="${bookingService.status}"
+                                                                />
                                                             <tr style="height: 70px;">
-                                                                <td>${bookingService.booking.bookingID}</td>
                                                                 <td>${bookingService.booking.customer.user.fullName}</td>
                                                                 <td>${bookingService.booking.room.branch.branchName}</td>
                                                                 <td>${bookingService.booking.room.roomNumber}</td>
@@ -92,6 +95,14 @@
                                                                     <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
                                                                 </td>
                                                                 <td>${bookingService.description}</td>
+                                                                <td>
+                                                                <span class="badge ${status == 'COMPLETED' ? 'bg-success' : 
+                                                                                    status == 'PENDING' ? 'bg-secondary' : 
+                                                                                    status == 'IN_PROGRESS' ? 'bg-warning' : 
+                                                                                    status == 'CANCELLED' ? 'bg-danger' : 'bg-info'}">
+                                                                    ${status.displayName}
+                                                                </span>
+                                                            </td>
                                                                 <td>${f:formatLocalDateTime(bookingService.createdAt)}</td>
                                                                 <td>
                                                                     <c:choose>
@@ -110,7 +121,6 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 
-                                                                
                                                                 <td>
                                                                     <div class="btn-group" role="group">
                                                                         <a href="/admin/booking/${bookingService.booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">
@@ -122,6 +132,12 @@
                                                                                 data-entity-type="Đơn đặt dịch vụ"
                                                                                 data-check-url="/admin/booking-service/can-handle/" >
                                                                             <i class="bi bi-pencil"></i>
+                                                                        </button>
+                                                                        <button class="btn btn-info btn-sm status-update-btn" 
+                                                                            data-booking-service-id="${bookingService.bookingServiceID}" 
+                                                                            data-current-status="${bookingService.status}"
+                                                                            title="Cập nhật trạng thái">
+                                                                            <i class="bi bi-gear"></i>
                                                                         </button>
                                                                         <button
                                                                             class="btn btn-danger btn-sm"
@@ -164,6 +180,7 @@
     <jsp:include page="../layout/import-js.jsp" />
     <jsp:include page="../layout/partial/_modals-delete.jsp" />
     <jsp:include page="_script-modal-warning-update.jsp" />
+    <jsp:include page="_script-modal-update-status.jsp" />
     <script>
       $("#deleteWarningModal").on("show.bs.modal", function () {
 

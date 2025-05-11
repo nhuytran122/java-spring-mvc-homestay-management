@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -155,6 +156,11 @@ public class BookingExtraService {
 
     public boolean allPostpaidServicesHaveQuantity(Long bookingID) {
         return !bookingServiceRepo.existsPostpaidServiceWithoutQuantity(bookingID);
+    }
+
+    public void handleUpdateStatusBookingService(BookingServices bService) {
+        bService.setUpdatedAt(LocalDateTime.now());
+        bookingServiceRepo.save(bService);
     }
 
 }

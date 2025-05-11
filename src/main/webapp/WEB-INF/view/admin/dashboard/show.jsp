@@ -34,6 +34,25 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
         <div class="main-panel">
           <div class="content-wrapper">
             <h4 class="card-title mb-4">Dashboard</h4>
+            <c:set var="totalRevenue" value="${stats.totalRevenue}" />
+            <c:set var="countBookings" value="${stats.countBookings}" />
+            <c:set var="countCustomers" value="${stats.countCustomers}" />
+            <c:set var="countReviews" value="${stats.countReviews}" />
+            <c:set
+              var="roomRevenue"
+              value="${stats.revenueBreakdown.roomRevenue}"
+            />
+            <c:set
+              var="serviceRevenue"
+              value="${stats.revenueBreakdown.serviceRevenue}"
+            />
+            <c:set
+              var="extensionRevenue"
+              value="${stats.revenueBreakdown.extensionRevenue}"
+            />
+            <c:set var="topServices" value="${stats.topServices}" />
+            <c:set var="topRooms" value="${stats.topRooms}" />
+            <c:set var="topCustomers" value="${stats.topCustomers}" />
 
             <div class="filter-form">
               <form action="/admin/dashboard" method="get" class="form-inline">

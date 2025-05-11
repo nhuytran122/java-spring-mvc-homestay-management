@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.lullabyhomestay.homestay_management.domain.Customer;
+import com.lullabyhomestay.homestay_management.domain.dto.statistics.DashboardStatisticsDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.ReportResultDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.RevenueBreakdownDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.RevenueStatisticsCriteriaDTO;
@@ -60,7 +61,8 @@ public class StatisticsService {
     }
 
     public Long countBookingsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        return bookingRepository.countBookingsByDateRange(startDate, endDate);
+        Long countBookings = bookingRepository.countBookingsByDateRange(startDate, endDate);
+        return countBookings;
     }
 
     public Long countCustomersByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
@@ -89,6 +91,27 @@ public class StatisticsService {
             LocalDateTime start,
             LocalDateTime end) {
         return paymentDetailRepository.sumRevenue(branchID, purpose, start, end);
+    }
+
+    public DashboardStatisticsDTO getDashboardStatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        Double totalRevenue = getTotalRevenue(startDate, endDate);
+        Long countBookings = countBookingsByDateRange(startDate, endDate);
+        RevenueBreakdownDTO breakdown = getRevenueBreakdown(startDate, endDate);
+        Long countCustomers = countCustomersByDateRange(startDate, endDate);
+        Long countReviews = countReviewsByDateRange(startDate, endDate);
+        List<Object[]> topServices = getTop5MostUsedServices(startDate, endDate);
+        List<Customer> topCustomers = getTop5CustomersByRewardPoints();
+        List<Object[]> topRooms = getTop5MostBookedRooms(startDate, endDate);
+
+        return new DashboardStatisticsDTO(
+                totalRevenue,
+                countBookings,
+                breakdown,
+                countCustomers,
+                countReviews,
+                topServices,
+                topCustomers,
+                topRooms);
     }
 
     public ReportResultDTO generateRevenueReport(RevenueStatisticsCriteriaDTO criteria) {
@@ -177,7 +200,7 @@ public class StatisticsService {
 
     private void validateDateRange(RevenueStatisticsCriteriaDTO criteria) {
         if (criteria.getEndDate().isBefore(criteria.getStartDate())) {
-            throw new IllegalArgumentException("End date must be after start date");
+            throw new IllegalArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
         }
     }
 

@@ -3,9 +3,13 @@ package com.lullabyhomestay.homestay_management.domain;
 import java.time.LocalDateTime;
 
 import com.lullabyhomestay.homestay_management.service.validator.AdminValidation;
+import com.lullabyhomestay.homestay_management.utils.BookingServiceStatus;
+import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,8 +43,15 @@ public class BookingServices {
     @Column(name = "Description")
     private String description;
 
+    @Column(name = "Status")
+    @Enumerated(EnumType.STRING)
+    private BookingServiceStatus status;
+
     @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "UpdatedAt")
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "ServiceID")

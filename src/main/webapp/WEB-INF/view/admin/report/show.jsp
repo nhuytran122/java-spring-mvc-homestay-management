@@ -78,6 +78,14 @@
 
             <div>
               <h5 class="mb-3">Biểu đồ doanh thu</h5>
+              <div class="card bg-primary text-white">
+                <div class="card-body">
+                  <h5 class="card-title">Tổng doanh thu</h5>
+                  <h3 class="card-text">
+                    <fmt:formatNumber value="${reportData.totalRevenue}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
+                  </h3>
+                </div>
+              </div>
               <canvas id="revenueChart" height="100"></canvas>
             </div>
           </div>

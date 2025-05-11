@@ -185,6 +185,7 @@ uri="http://lullabyhomestay.com/functions" %>
                                     <th>Mô tả</th>
                                     <th>Đơn giá</th>
                                     <th>Số lượng</th>
+                                    <th>Tình trạng phục vụ</th>
                                     <th>Tình trạng thanh toán</th>
                                     <th>Ngày tạo</th>
                                     <th>Hành động</th>
@@ -195,6 +196,10 @@ uri="http://lullabyhomestay.com/functions" %>
                                     var="bService"
                                     items="${booking.bookingServices}"
                                   >
+                                  <c:set
+                                    var="status"
+                                    value="${bService.status}"
+                                  />
                                     <tr>
                                       <td>${bService.service.serviceName}</td>
                                       <td>${bService.description}</td>
@@ -211,6 +216,13 @@ uri="http://lullabyhomestay.com/functions" %>
                                           pattern="#"
                                         />
                                       </td>
+                                      <td>
+                                        <span class="badge ${status == 'COMPLETED' ? 'bg-success' : 
+                                                            status == 'PENDING' ? 'bg-secondary' : 
+                                                            status == 'IN_PROGRESS' ? 'bg-warning' : 
+                                                            status == 'CANCELLED' ? 'bg-danger' : 'bg-info'}">
+                                            ${status.displayName}
+                                        </span>
                                       <td>
                                         <c:choose>
                                           <c:when
@@ -247,6 +259,12 @@ uri="http://lullabyhomestay.com/functions" %>
                                           data-check-url="/admin/booking-service/can-handle/"
                                         >
                                           <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-info btn-sm status-update-btn" 
+                                            data-booking-service-id="${bService.bookingServiceID}" 
+                                            data-current-status="${bService.status}"
+                                            title="Cập nhật trạng thái">
+                                            <i class="bi bi-gear"></i>
                                         </button>
                                         <button
                                           class="btn btn-danger btn-sm"
@@ -432,6 +450,7 @@ uri="http://lullabyhomestay.com/functions" %>
     />
     <jsp:include page="../layout/partial/_modal-warning.jsp" />
     <jsp:include page="../booking-service/_script-modal-warning-update.jsp" />
+    <jsp:include page="../booking-service/_script-modal-update-status.jsp" />
     <%@ include file="./_modal-payment.jsp" %>
     <script>
       function checkBookingEligibility(
