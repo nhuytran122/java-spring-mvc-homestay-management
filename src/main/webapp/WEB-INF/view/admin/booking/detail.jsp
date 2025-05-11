@@ -127,13 +127,12 @@ uri="http://lullabyhomestay.com/functions" %>
                               ${booking.status.displayName}
                             </span>
 
-                            <c:if test="${booking.status == 'CANCELLED'}">
-                              <span
-                                class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}"
-                              >
-                                ${booking.totalAmount == booking.paidAmount ?
-                                'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
-                              </span>
+                            <c:if test="${not empty booking.payments}">
+                                <c:if test="${booking.status == 'CANCELLED'}">
+                                    <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
+                                        ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                    </span>                 
+                                </c:if>
                             </c:if>
                           </div>
                         </div>

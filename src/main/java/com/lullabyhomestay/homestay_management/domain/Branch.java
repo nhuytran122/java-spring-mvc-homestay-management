@@ -50,14 +50,6 @@ public class Branch {
     @Column(name = "BranchPassword")
     private String branchPassword;
 
-    @NotBlank(message = "Vui lòng đường link để nhúng map")
-    @Column(name = "MapEmbedURL")
-    private String mapEmbedURL;
-
-    @NotBlank(message = "Vui lòng đường link để của chi nhánh trong Google Maps")
-    @Column(name = "MapURL")
-    private String mapURL;
-
     @OneToMany(mappedBy = "branch")
     List<InventoryStock> inventoryStocks;
 

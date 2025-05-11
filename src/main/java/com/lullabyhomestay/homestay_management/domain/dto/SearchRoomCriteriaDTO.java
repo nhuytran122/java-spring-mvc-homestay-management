@@ -14,7 +14,6 @@ import lombok.Setter;
 public class SearchRoomCriteriaDTO {
     private Long roomTypeID;
     private Long branchID;
-    private String timeRange;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
@@ -24,17 +23,6 @@ public class SearchRoomCriteriaDTO {
         if (roomTypeID != null) {
             extraParams.append("&roomTypeID=").append(roomTypeID);
         }
-        if (timeRange != null && !timeRange.isEmpty()) {
-            extraParams.append("&timeRange=").append(timeRange);
-        }
         return extraParams.toString();
-    }
-
-    public LocalDateTime getFromTime() {
-        return SplitTimeRangeConverter.parseStartDate(timeRange);
-    }
-
-    public LocalDateTime getToTime() {
-        return SplitTimeRangeConverter.parseEndDate(timeRange);
     }
 }

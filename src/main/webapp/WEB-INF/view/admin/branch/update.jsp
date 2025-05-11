@@ -40,12 +40,6 @@
                                     <c:set var="errorPassword">
                                         <form:errors path="branchPassword" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorMapEmbedURL">
-                                        <form:errors path="mapEmbedURL" cssClass="invalid-feedback" />
-                                    </c:set>
-                                    <c:set var="errorMapURL">
-                                        <form:errors path="mapURL" cssClass="invalid-feedback" />
-                                    </c:set>
 
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Tên chi nhánh <span class="text-danger">*</span></label>
@@ -80,24 +74,6 @@
                                             <form:input type="number" class="form-control ${not empty errorPassword ? 'is-invalid' : ''}" 
                                             path="branchPassword" />
                                             ${errorPassword}
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="control-label col-sm-2">Link nhúng bản đồ <span class="text-danger">*</span></label>
-                                        <div class="col-sm-10">
-                                            <form:input type="text" class="form-control ${not empty errorMapEmbedURL ? 'is-invalid' : ''}" 
-                                            path="mapEmbedURL" />
-                                            ${errorMapEmbedURL}
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="control-label col-sm-2">Link Google Maps <span class="text-danger">*</span></label>
-                                        <div class="col-sm-10">
-                                            <form:input type="text" class="form-control ${not empty errorMapURL ? 'is-invalid' : ''}" 
-                                            path="mapURL" />
-                                            ${errorMapURL}
                                         </div>
                                     </div>
                                     

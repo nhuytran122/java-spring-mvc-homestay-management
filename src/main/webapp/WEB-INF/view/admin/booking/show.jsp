@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Quản lý booking</title>
     <jsp:include page="../layout/import-css.jsp" />
+    <meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" />
 </head>
 <body>
@@ -140,19 +142,17 @@
                                                                         <a href="/admin/booking/${booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
-                                                                        <a href="/admin/booking/update/${booking.bookingID}" class="btn btn-warning btn-sm" title="Sửa">
-                                                                            <i class="bi bi-pencil"></i>
-                                                                        </a>
-                                                                        <button class="btn btn-danger btn-sm" title="Xóa"
-                                                                                onclick="checkBeforeDelete(this)" 
-                                                                                data-entity-id="${booking.bookingID}" 
-                                                                                data-entity-name="${booking.customer.user.fullName}" 
-                                                                                data-entity-type="Lịch đặt phòng của khách hàng" 
-                                                                                data-delete-url="/admin/booking/delete" 
-                                                                                data-check-url="/admin/booking/can-delete/" 
-                                                                                data-id-name="bookingID">
-                                                                            <i class="bi bi-trash"></i>
-                                                                        </button>
+                                                                        <button
+                                                                            class="btn btn-danger btn-sm"
+                                                                            title="Hủy đặt phòng"
+                                                                            onclick="checkBeforeCancel(this)"
+                                                                            data-entity-id="${booking.bookingID}"
+                                                                            data-id-name="bookingID"
+                                                                            data-role="admin"
+                                                                            >
+                                                                            <i class="bi bi-x-circle"></i>
+                                                                            
+                                                                            </button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -178,8 +178,11 @@
         </div>
     </div>
 
-    <jsp:include page="../layout/partial/_modals-delete.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
+    <jsp:include page="../../shared/partial/_modal-refund.jsp" />
+    <jsp:include
+      page="../../shared/partial/_script-handle-cancel-booking.jsp"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
     <script>

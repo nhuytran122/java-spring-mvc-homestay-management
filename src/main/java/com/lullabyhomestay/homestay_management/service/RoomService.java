@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,13 +52,8 @@ public class RoomService {
 
     public Page<Room> searchRoomsForClient(SearchRoomCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
-        LocalDateTime startTime = criteria.getFromTime();
-        LocalDateTime endTime = criteria.getToTime();
 
-        if (startTime == null || endTime == null)
-            throw new IllegalArgumentException("Thời gian check-in phải bé hơn thời gian checkout");
-
-        return roomRepository.findAvailableRooms(criteria.getBranchID(), criteria.getRoomTypeID(), startTime, endTime,
+        return roomRepository.findAvailableRooms(criteria.getBranchID(), criteria.getRoomTypeID(),
                 pageable);
     }
 

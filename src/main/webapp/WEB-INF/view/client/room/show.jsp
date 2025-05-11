@@ -33,13 +33,6 @@
                                     </c:forEach>
                                 </select>
                             </div>
-
-                            <hr>
-                            <div class="mb-4">
-                                <h6 class="fw-bold mb-3">Thời gian ở</h6>
-                                <input type="text" id="timeRange" name="timeRange" class="form-control daterange-picker" 
-                                value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian...">
-                            </div>
                             <hr>
 
                             <div class="mb-4">

@@ -1,7 +1,5 @@
 package com.lullabyhomestay.homestay_management.controller.client;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -36,17 +34,6 @@ public class ClientRoomController {
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchRoomCriteriaDTO criteria) {
         int validPage = Math.max(1, page);
-
-        if (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty()) {
-            LocalDateTime startDefault = LocalDateTime.now();
-            LocalDateTime endDefault = LocalDateTime.now().plusMonths(2);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-            criteria.setTimeRange(startDefault.format(formatter) + " - " + endDefault.format(formatter));
-        }
-        if (criteria.getFromTime().isAfter(criteria.getToTime())) {
-            model.addAttribute("errorMessage", "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
-            return prepareModelWithoutSearch(model, criteria, validPage);
-        }
         Page<Room> rooms = roomService.searchRoomsForClient(criteria, validPage);
         List<Room> listRooms = rooms.getContent();
         model.addAttribute("rooms", listRooms);
