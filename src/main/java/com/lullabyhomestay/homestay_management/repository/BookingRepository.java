@@ -16,40 +16,40 @@ import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
 public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
-    Page<Booking> findAll(Pageable page);
+        Page<Booking> findAll(Pageable page);
 
-    Page<Booking> findAll(Specification<Booking> spec, Pageable page);
+        Page<Booking> findAll(Specification<Booking> spec, Pageable page);
 
-    Optional<Booking> findByBookingID(long bookingID);
+        Optional<Booking> findByBookingID(long bookingID);
 
-    List<Booking> findByCustomer_CustomerID(Long customerID);
+        List<Booking> findByCustomer_CustomerID(Long customerID);
 
-    Booking save(Booking booking);
+        Booking save(Booking booking);
 
-    void deleteByBookingID(long id);
+        void deleteByBookingID(long id);
 
-    boolean existsByRoom_RoomID(long roomID);
+        boolean existsByRoom_RoomID(long roomID);
 
-    boolean existsByCustomer_CustomerID(Long customerID);
+        boolean existsByCustomer_CustomerID(Long customerID);
 
-    Long countByStatusAndCustomer_CustomerID(BookingStatus bookingStatus, Long customerID);
+        Long countByStatusAndCustomer_CustomerID(BookingStatus bookingStatus, Long customerID);
 
-    Long countByCustomer_CustomerID(Long customerID);
+        Long countByCustomer_CustomerID(Long customerID);
 
-    // Double findSumTotalAmountByCustomer_CustomerID(Long customerID);
-    @Query("SELECT SUM(b.totalAmount) FROM Booking b " +
-            "WHERE b.customer.id = :customerId " +
-            "AND b.status = 'COMPLETED' ")
+        // Double findSumTotalAmountByCustomer_CustomerID(Long customerID);
+        @Query("SELECT SUM(b.totalAmount) FROM Booking b " +
+                        "WHERE b.customer.id = :customerId " +
+                        "AND b.status = 'COMPLETED' ")
 
-    Double getTotalAmountByCustomerId(@Param("customerId") Long customerId);
+        Double getTotalAmountByCustomerId(@Param("customerId") Long customerId);
 
-    List<Booking> findByStatus(BookingStatus status);
+        List<Booking> findByStatus(BookingStatus status);
 
-    @Query(value = "SELECT * FROM Bookings WHERE status = 'PENDING' AND CreatedAt < DATEADD(MINUTE, -:timeoutMinutes, GETDATE())", nativeQuery = true)
-    List<Booking> findPendingBookingsBefore(@Param("timeoutMinutes") int timeoutMinutes);
+        @Query(value = "SELECT * FROM Bookings WHERE status = 'PENDING' AND CreatedAt < DATEADD(MINUTE, -:timeoutMinutes, GETDATE())", nativeQuery = true)
+        List<Booking> findPendingBookingsBefore(@Param("timeoutMinutes") int timeoutMinutes);
 
-    @Query("SELECT COUNT(b) FROM Booking b WHERE b.createdAt BETWEEN :startDate AND :endDate")
-    Long countBookingsByDateRange(@Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate);
+        @Query("SELECT COUNT(b) FROM Booking b WHERE b.createdAt BETWEEN :startDate AND :endDate")
+        Long countBookingsByDateRange(@Param("startDate") LocalDateTime startDate,
+                        @Param("endDate") LocalDateTime endDate);
 
 }

@@ -1,16 +1,19 @@
 package com.lullabyhomestay.homestay_management.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.PageRequest;
-
 import com.lullabyhomestay.homestay_management.domain.Customer;
-import com.lullabyhomestay.homestay_management.domain.Room;
-import com.lullabyhomestay.homestay_management.domain.Service;
+import com.lullabyhomestay.homestay_management.domain.dto.statistics.ReportResultDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.RevenueBreakdownDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.statistics.RevenueStatisticsCriteriaDTO;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.CustomerRepository;
 import com.lullabyhomestay.homestay_management.repository.PaymentDetailRepository;
@@ -82,4 +85,104 @@ public class StatisticsService {
         return customerRepository.findTop5CustomersByRewardPoints();
     }
 
+    public BigDecimal getSumRevenue(Long branchID, PaymentPurpose purpose,
+            LocalDateTime start,
+            LocalDateTime end) {
+        return paymentDetailRepository.sumRevenue(branchID, purpose, start, end);
+    }
+
+    public ReportResultDTO generateRevenueReport(RevenueStatisticsCriteriaDTO criteria) {
+        validateDateRange(criteria);
+
+        List<String> labels = new ArrayList<>();
+        List<BigDecimal> revenues = new ArrayList<>();
+
+        switch (criteria.getType()) {
+            case DAILY:
+                generateDailyReport(criteria, labels, revenues);
+                break;
+            case MONTHLY:
+                generateMonthlyReport(criteria, labels, revenues);
+                break;
+            case YEARLY:
+                generateYearlyReport(criteria, labels, revenues);
+                break;
+        }
+
+        BigDecimal total = calculateTotalRevenue(revenues);
+
+        return new ReportResultDTO(
+                labels,
+                revenues,
+                total);
+    }
+
+    private void generateDailyReport(RevenueStatisticsCriteriaDTO criteria,
+            List<String> labels,
+            List<BigDecimal> revenues) {
+        for (LocalDate date = criteria.getStartDate(); !date.isAfter(criteria.getEndDate()); date = date.plusDays(1)) {
+
+            LocalDateTime start = date.atStartOfDay();
+            LocalDateTime end = date.plusDays(1).atStartOfDay();
+
+            BigDecimal revenue = fetchRevenue(criteria, start, end);
+            labels.add(date.format(DateTimeFormatter.ISO_LOCAL_DATE));
+            revenues.add(revenue);
+        }
+    }
+
+    private void generateMonthlyReport(RevenueStatisticsCriteriaDTO criteria,
+            List<String> labels,
+            List<BigDecimal> revenues) {
+        YearMonth startMonth = YearMonth.from(criteria.getStartDate());
+        YearMonth endMonth = YearMonth.from(criteria.getEndDate());
+
+        for (YearMonth month = startMonth; !month.isAfter(endMonth); month = month.plusMonths(1)) {
+            LocalDateTime start = month.atDay(1).atStartOfDay();
+            LocalDateTime end = month.plusMonths(1).atDay(1).atStartOfDay();
+
+            BigDecimal revenue = fetchRevenue(criteria, start, end);
+            labels.add(month.toString());
+            revenues.add(revenue);
+        }
+    }
+
+    private void generateYearlyReport(RevenueStatisticsCriteriaDTO criteria,
+            List<String> labels,
+            List<BigDecimal> revenues) {
+        int startYear = criteria.getStartDate().getYear();
+        int endYear = criteria.getEndDate().getYear();
+
+        for (int year = startYear; year <= endYear; year++) {
+            LocalDateTime start = LocalDate.of(year, 1, 1).atStartOfDay();
+            LocalDateTime end = LocalDate.of(year + 1, 1, 1).atStartOfDay();
+
+            BigDecimal revenue = fetchRevenue(criteria, start, end);
+            labels.add(String.valueOf(year));
+            revenues.add(revenue);
+        }
+    }
+
+    private BigDecimal fetchRevenue(RevenueStatisticsCriteriaDTO criteria,
+            LocalDateTime start,
+            LocalDateTime end) {
+        BigDecimal result = getSumRevenue(
+                criteria.getBranchID(),
+                criteria.getPurpose(),
+                start,
+                end);
+        result = result != null ? result : BigDecimal.ZERO;
+        return result;
+    }
+
+    private void validateDateRange(RevenueStatisticsCriteriaDTO criteria) {
+        if (criteria.getEndDate().isBefore(criteria.getStartDate())) {
+            throw new IllegalArgumentException("End date must be after start date");
+        }
+    }
+
+    private BigDecimal calculateTotalRevenue(List<BigDecimal> revenues) {
+        return revenues.stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }

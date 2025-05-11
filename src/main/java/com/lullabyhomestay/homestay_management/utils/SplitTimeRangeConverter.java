@@ -50,4 +50,14 @@ public class SplitTimeRangeConverter {
         }
         return null;
     }
+
+    public static LocalDate parseStartLocalDate(String timeRange) {
+        LocalDateTime startDateTime = parseStartDate(timeRange);
+        return (startDateTime != null) ? startDateTime.toLocalDate() : null;
+    }
+
+    public static LocalDate parseEndLocalDate(String timeRange) {
+        LocalDateTime endDateTime = parseEndDate(timeRange);
+        return (endDateTime != null) ? endDateTime.toLocalDate() : null;
+    }
 }

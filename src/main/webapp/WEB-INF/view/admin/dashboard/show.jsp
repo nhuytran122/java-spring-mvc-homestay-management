@@ -361,7 +361,6 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
     <jsp:include page="../layout/import-js.jsp" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="/admin/js/dashboard.js"></script>
   </body>
 </html>
