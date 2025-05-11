@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -54,6 +53,7 @@ public class BookingServiceController {
         model.addAttribute("criteria", criteria);
         model.addAttribute("extraParams", criteria.convertToExtraParams());
         model.addAttribute("currentPage", validPage);
+        model.addAttribute("statuses", BookingServiceStatus.values());
         return "admin/booking-service/show";
     }
 

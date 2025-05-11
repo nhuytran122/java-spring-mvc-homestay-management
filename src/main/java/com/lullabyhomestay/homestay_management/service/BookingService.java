@@ -79,6 +79,7 @@ public class BookingService {
     @Transactional
     public Booking handleBooking(Booking booking) {
         booking.setTotalAmount(calculateTotalAmountBookingRoom(booking, booking.getCustomer()));
+        booking.setUpdatedAt(LocalDateTime.now());
         Booking savedBooking = bookingRepository.save(booking);
 
         // Cập nhật lịch trình phòng để giữ phòng cho khách
@@ -95,6 +96,7 @@ public class BookingService {
     }
 
     public Booking handleSaveBooking(Booking booking) {
+        booking.setUpdatedAt(LocalDateTime.now());
         return bookingRepository.save(booking);
     }
 
@@ -114,7 +116,6 @@ public class BookingService {
         double discountedPrice = calculateFinalExtensionAmount(bookingExtension);
         currentBooking.setTotalAmount(currentBooking.getTotalAmount() + discountedPrice);
         handleSaveBooking(currentBooking);
-
     }
 
     private double calculateFinalExtensionAmount(BookingExtension bookingExtension) {
@@ -240,6 +241,7 @@ public class BookingService {
     }
 
     private void updateBookingAfterCancellation(Booking booking) {
+        booking.setUpdatedAt(LocalDateTime.now());
         booking.setStatus(BookingStatus.CANCELLED);
     }
 

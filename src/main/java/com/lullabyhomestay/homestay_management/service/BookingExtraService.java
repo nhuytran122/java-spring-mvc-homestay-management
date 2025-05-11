@@ -54,14 +54,15 @@ public class BookingExtraService {
                 "asc".equals(criteria.getSort()) ? Sort.by("CreatedAt").ascending()
                         : "desc".equals(criteria.getSort()) ? Sort.by("CreatedAt").descending() : Sort.unsorted());
         boolean isAllCriteriaEmpty = (criteria.getKeyword() == null || criteria.getKeyword().isEmpty())
-                && criteria.getIsPrepaid() == null;
+                && criteria.getIsPrepaid() == null && criteria.getStatus() == null;
         if (isAllCriteriaEmpty) {
             return bookingServiceRepo.findAll(pageable);
         }
 
         Specification<BookingServices> spec = Specification
                 .where(BookingServiceSpecification.serviceNameLike(criteria.getKeyword()))
-                .and(BookingServiceSpecification.isAdditionalEqual(criteria.getIsPrepaid()));
+                .and(BookingServiceSpecification.isAdditionalEqual(criteria.getIsPrepaid()))
+                .and(BookingServiceSpecification.statusEqual(criteria.getStatus()));
         return bookingServiceRepo.findAll(spec, pageable);
     }
 

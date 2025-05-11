@@ -34,6 +34,17 @@
                                 Đặt tại homestay
                             </option>
                         </select>
+
+                        <select name="status" class="form-select form-control form-select-sm">
+                            <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
+                                Tất cả tình trạng
+                            </option>
+                            <c:forEach var="type" items="${statuses}">
+                                <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
+                                    ${type.displayName} 
+                                </option>
+                            </c:forEach>
+                        </select>
                         <select name="sort" class="form-select form-control form-select-sm">
                             <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
                                 Cũ nhất

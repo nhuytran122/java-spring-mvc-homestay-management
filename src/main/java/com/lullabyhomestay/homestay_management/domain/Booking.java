@@ -66,6 +66,9 @@ public class Booking {
     @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "UpdatedAt")
+    private LocalDateTime updatedAt;
+
     @Column(name = "TotalAmount")
     private Double totalAmount;
 

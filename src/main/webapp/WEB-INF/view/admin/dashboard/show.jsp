@@ -36,7 +36,10 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
             <h4 class="card-title mb-4">Dashboard</h4>
             <c:set var="totalRevenue" value="${stats.totalRevenue}" />
             <c:set var="countBookings" value="${stats.countBookings}" />
-            <c:set var="countCustomers" value="${stats.countCustomers}" />
+            <c:set
+              var="countPendingBookingServices"
+              value="${stats.countPendingBookingServices}"
+            />
             <c:set var="countReviews" value="${stats.countReviews}" />
             <c:set
               var="roomRevenue"
@@ -72,10 +75,14 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
             </div>
 
             <div class="row">
-              <div class="col-md-3">
-                <div class="stat-card total-revenue">
+              <div class="col-md-3 col-sm-6">
+                <div class="stat-card total-revenue position-relative">
+                  <a
+                    href="/admin/report?timeRange=${timeRange}"
+                    class="stretched-link"
+                  ></a>
                   <i class="fas fa-wallet icon"></i>
-                  <h5>Tổng Doanh Thu</h5>
+                  <h5>Tổng doanh thu</h5>
                   <p>
                     <c:choose>
                       <c:when test="${totalRevenue == 0}">
@@ -91,23 +98,35 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                   </p>
                 </div>
               </div>
+
               <div class="col-md-3 col-sm-6">
-                <div class="stat-card room-revenue">
+                <div class="stat-card room-revenue position-relative">
+                  <a
+                    href="/admin/booking?timeRange=${timeRange}"
+                    class="stretched-link"
+                  ></a>
                   <i class="fas fa-bed icon"></i>
                   <h5>Đơn đặt phòng</h5>
                   <p>${countBookings}</p>
                 </div>
               </div>
+
               <div class="col-md-3 col-sm-6">
-                <div class="stat-card service-revenue">
-                  <i class="fas fa-users icon"></i>
-                  <h5>Khách hàng mới</h5>
-                  <p>${countCustomers}</p>
+                <div class="stat-card service-revenue position-relative">
+                  <a
+                    href="/admin/booking-service?status=PENDING"
+                    class="stretched-link"
+                  ></a>
+                  <i class="fas fa-spinner icon"></i>
+                  <h5>Đơn đặt dịch vụ đang chờ</h5>
+                  <p>${countPendingBookingServices}</p>
                 </div>
               </div>
+
               <div class="col-md-3 col-sm-6">
-                <div class="stat-card extension-revenue">
-                  <i class="fas fa-comment icon"></i>
+                <div class="stat-card review-revenue position-relative">
+                  <a href="/admin/review" class="stretched-link"></a>
+                  <i class="fas fa-bed icon"></i>
                   <h5>Đánh giá</h5>
                   <p>${countReviews}</p>
                 </div>
@@ -286,7 +305,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
               <div class="col-md-4 stretch-card grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <p class="card-title mb-2">Top dịch vụ</p>
+                    <p class="card-title mb-2">Dịch vụ phổ biến nhất</p>
                     <div class="table-responsive">
                       <table class="table table-striped table-borderless">
                         <thead>
@@ -334,7 +353,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
               <div class="col-md-4 stretch-card grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <p class="card-title mb-2">Top khách hàng</p>
+                    <p class="card-title mb-2">Khách hàng thân thiết</p>
                     <div class="table-responsive">
                       <table class="table table-striped table-borderless">
                         <thead>

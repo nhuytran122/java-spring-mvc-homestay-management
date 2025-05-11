@@ -13,8 +13,8 @@ public class DashboardStatisticsDTO {
     private Double totalRevenue;
     private Long countBookings;
     private RevenueBreakdownDTO revenueBreakdown;
-    private Long countCustomers;
     private Long countReviews;
+    private Long countPendingBookingServices;
     private List<Object[]> topServices;
     private List<Customer> topCustomers;
     private List<Object[]> topRooms;

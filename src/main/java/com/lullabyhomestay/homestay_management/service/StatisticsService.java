@@ -16,6 +16,7 @@ import com.lullabyhomestay.homestay_management.domain.dto.statistics.ReportResul
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.RevenueBreakdownDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.RevenueStatisticsCriteriaDTO;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
+import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
 import com.lullabyhomestay.homestay_management.repository.CustomerRepository;
 import com.lullabyhomestay.homestay_management.repository.PaymentDetailRepository;
 import com.lullabyhomestay.homestay_management.repository.PaymentRepository;
@@ -36,6 +37,7 @@ public class StatisticsService {
     private final ReviewRepository reviewRepository;
     private final RoomRepository roomRepository;
     private final ServiceRepository serviceRepository;
+    private final BookingServiceRepository bookingServiceRepository;
 
     public Double getTotalRevenue(LocalDateTime startDate, LocalDateTime endDate) {
         Double totalPayment = paymentRepository.getTotalPaymentAmount(startDate, endDate);
@@ -65,14 +67,21 @@ public class StatisticsService {
         return countBookings;
     }
 
-    public Long countCustomersByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        Long countCustomers = customerRepository.countNewCustomers(startDate, endDate);
-        return countCustomers;
-    }
+    // public Long countCustomersByDateRange(LocalDateTime startDate, LocalDateTime
+    // endDate) {
+    // Long countCustomers = customerRepository.countNewCustomers(startDate,
+    // endDate);
+    // return countCustomers;
+    // }
 
     public Long countReviewsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         Long countReviews = reviewRepository.countReviews(startDate, endDate);
         return countReviews;
+    }
+
+    public Long countPendingBookingServices(LocalDateTime startDate, LocalDateTime endDate) {
+        Long countPending = bookingServiceRepository.countPendingServicesByDateRange(startDate, endDate);
+        return countPending;
     }
 
     public List<Object[]> getTop5MostBookedRooms(LocalDateTime startDate, LocalDateTime endDate) {
@@ -97,8 +106,9 @@ public class StatisticsService {
         Double totalRevenue = getTotalRevenue(startDate, endDate);
         Long countBookings = countBookingsByDateRange(startDate, endDate);
         RevenueBreakdownDTO breakdown = getRevenueBreakdown(startDate, endDate);
-        Long countCustomers = countCustomersByDateRange(startDate, endDate);
+        // Long countCustomers = countCustomersByDateRange(startDate, endDate);
         Long countReviews = countReviewsByDateRange(startDate, endDate);
+        Long countPendingBookingServices = countPendingBookingServices(startDate, endDate);
         List<Object[]> topServices = getTop5MostUsedServices(startDate, endDate);
         List<Customer> topCustomers = getTop5CustomersByRewardPoints();
         List<Object[]> topRooms = getTop5MostBookedRooms(startDate, endDate);
@@ -107,8 +117,8 @@ public class StatisticsService {
                 totalRevenue,
                 countBookings,
                 breakdown,
-                countCustomers,
                 countReviews,
+                countPendingBookingServices,
                 topServices,
                 topCustomers,
                 topRooms);

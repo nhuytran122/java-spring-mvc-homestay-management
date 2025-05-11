@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.BookingServices_;
 import com.lullabyhomestay.homestay_management.domain.Service_;
+import com.lullabyhomestay.homestay_management.utils.BookingServiceStatus;
 
 public class BookingServiceSpecification {
     public static Specification<BookingServices> serviceNameLike(String keyword) {
@@ -16,5 +17,9 @@ public class BookingServiceSpecification {
                 BookingServices_.SERVICE,
                 Service_.IS_PREPAID,
                 isAdditional);
+    }
+
+    public static Specification<BookingServices> statusEqual(BookingServiceStatus status) {
+        return BaseSpecifications.equal(BookingServices_.STATUS, status);
     }
 }
