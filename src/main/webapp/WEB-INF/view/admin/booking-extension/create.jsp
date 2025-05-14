@@ -71,7 +71,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   <div class="form-group">
                     <label>Phí gia hạn (<fmt:formatNumber
                       type="number"
-                      value="${booking.room.roomType.extraPricePerHour}"
+                      value="${booking.pricingSnapshot.extraHourPrice}"
                     />đ /
                     <c:if
                       test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"
@@ -96,7 +96,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                         type="text"
                         class="form-control"
                         id="extensionFee"
-                        data-extra-hours-fee="${booking.room.roomType.extraPricePerHour}"
+                        data-extra-hours-fee="${booking.pricingSnapshot.extraHourPrice}"
                         value="0"
                         readonly
                         placeholder="0đ"

@@ -22,17 +22,6 @@
                 <form action="/admin/room-type" method="get" class="search-form">
                     <input type="text" class="form-control form-control-sm" name="keyword" placeholder="Tìm kiếm loại phòng..." 
                             value="${keyword}">
-                    <select name="sort" class="form-select form-control form-select-sm">
-                        <option value="" ${sort == '' ? 'selected' : ''}>
-                            Không sắp xếp
-                        </option>
-                        <option value="desc" ${sort == 'desc' ? 'selected' : ''}>
-                            Giá giảm dần
-                        </option>
-                        <option value="asc" ${sort == 'asc' ? 'selected' : ''}>
-                            Giá tăng dần
-                        </option>
-                    </select>
                     <button type="submit" class="btn btn-primary btn-sm p-2">
                         <i class="bi bi-search"></i>
                     </button>
@@ -57,9 +46,7 @@
                                             <tr>
                                                 <th style="width: 150px;">Hình ảnh</th>
                                                 <th>Tên loại phòng</th>
-                                                <th>Giá mỗi giờ</th>
                                                 <th>Số lượng khách tối đa</th>
-                                                <th>Phí bù giờ</th>
                                                 <th>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -84,20 +71,17 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td>${roomType.name}</td>
-                                                            <td>
-                                                                <fmt:formatNumber type="number"
-                                                                    value="${roomType.pricePerHour}" />
-                                                                đ
-                                                            </td>
                                                             <td>${roomType.maxGuest}</td>
                                                             <td>
-                                                                <fmt:formatNumber type="number"
-                                                                    value="${roomType.extraPricePerHour}" />
-                                                                đ</td>
-                                                            <td>
                                                                 <div class="btn-group" role="group">
+                                                                    <a href="/admin/room-type/${roomType.roomTypeID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <i class="bi bi-eye"></i>
+                                                                    </a>
                                                                     <a href="/admin/room-type/update/${roomType.roomTypeID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
+                                                                    </a>
+                                                                    <a href="/admin/room-pricing/create/${roomType.roomTypeID}" class="btn btn-info btn-sm" title="Thêm chính sách giá">
+                                                                        <i class="bi bi-plus-circle"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
@@ -124,12 +108,11 @@
                     </div>
                 </div>
 
-                
-                <jsp:include page="../layout/partial/_pagination-with-param.jsp">
+                <jsp:include page="../layout/partial/_pagination-with-keyword.jsp">
                     <jsp:param name="url" value="/admin/room-type" />
                     <jsp:param name="currentPage" value="${currentPage}" />
                     <jsp:param name="totalPages" value="${totalPages}" />
-                    <jsp:param name="extraParams" value="${extraParams}" />
+                    <jsp:param name="keyword" value="${keyword}" />
                 </jsp:include>
             </div>
         </div>

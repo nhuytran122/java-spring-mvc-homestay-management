@@ -93,7 +93,7 @@ public class PaymentDetailService {
         paymentDetail.setPaymentPurpose(PaymentPurpose.EXTENDED_HOURS);
         paymentDetail.setBookingExtension(bookingExtension);
 
-        Double rawTotalAmount = bookingExtension.getTotalAmount();
+        Double rawTotalAmount = bookingExtensionService.calculateFinalExtensionAmount(bookingExtension);
         paymentDetail.setBaseAmount(rawTotalAmount);
         paymentDetail.setFinalAmount(rawTotalAmount
                 - DiscountUtil.calculateDiscountAmount(rawTotalAmount, bookingExtension.getBooking().getCustomer()));

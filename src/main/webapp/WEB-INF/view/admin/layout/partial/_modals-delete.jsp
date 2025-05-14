@@ -73,12 +73,17 @@
     let deleteUrl = button.getAttribute("data-delete-url");
     let checkUrl = button.getAttribute("data-check-url");
     let idName = button.getAttribute("data-id-name");
-    let warningMessage =
-      button.getAttribute("data-warning-message") ||
+    let customMessage = button.getAttribute("data-custom-message");
+    let defaultWarningMessage =
       entityType +
-        " <b class='text-primary'>" +
-        entityName +
-        "</b> đang có dữ liệu liên quan, không thể xóa.";
+      " <b class='text-primary'>" +
+      entityName +
+      "</b> đang có dữ liệu liên quan, không thể xóa.";
+
+    let warningMessage =
+      customMessage ||
+      button.getAttribute("data-warning-message") ||
+      defaultWarningMessage;
 
     $.ajax({
       url: checkUrl + entityId,

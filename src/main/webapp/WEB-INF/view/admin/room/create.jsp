@@ -40,7 +40,7 @@
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Số phòng <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:input type="text" class="form-control ${not empty errorRoomNumber ? 'is-invalid' : ''}" 
+                                            <form:input type="number" class="form-control ${not empty errorRoomNumber ? 'is-invalid' : ''}" 
                                             path="roomNumber" /> 
                                             ${errorRoomNumber}
                                         </div>

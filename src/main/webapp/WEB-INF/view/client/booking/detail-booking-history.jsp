@@ -220,7 +220,12 @@
                                             </form:form>
                                         </c:when>
                                         <c:otherwise>
-                                            <p>Vui lòng hoàn tất đặt phòng để gửi đánh giá.</p>
+                                            <c:if test="${booking.status == 'PENDING'}">
+                                                <p>Vui lòng hoàn tất đặt phòng để có thể gửi đánh giá.</p>
+                                            </c:if>
+                                            <c:if test="${booking.status == 'CONFIRMED'}">
+                                                <p>Bạn sẽ có thể gửi đánh giá sau khi hoàn tất kỳ nghỉ.</p>
+                                            </c:if>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:otherwise>
@@ -240,15 +245,15 @@
                                 data-booking-status="${booking.status}">
                                 <i class="bi bi-plus-circle me-1"></i>Đặt dịch vụ
                             </button>
-
-                            <button class="btn btn-success btn-sm" title="Gia hạn"
-                                onclick="checkBeforeBookingExtension(this)" 
-                                    data-booking-id="${booking.bookingID}" >
-                                    <i class="bi bi-clock me-1"></i>Gia hạn giờ thuê
+                            <button class="btn btn-success btn-sm"
+                                onclick="checkBeforeBookingExtension(this)"
+                                data-booking-id="${booking.bookingID}">
+                                <i class="bi bi-clock me-1"></i>Gia hạn giờ thuê
                             </button>
                         </div>
                     </div>
                 </c:if>
+
                 <div class="card mb-4">
                     <div class="card-header bg-white">
                         <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin đặt phòng</h5>
@@ -257,44 +262,48 @@
                         <div class="mb-3">
                             <div class="small text-muted mb-1">Tình trạng</div>
                             <div>
-                                <span class="badge ms-2 ${booking.status == 'COMPLETED' ? 'bg-success' : 
-                                    booking.status == 'CANCELLED' ? 'bg-danger' : 
+                                <span class="badge ms-2 ${booking.status == 'COMPLETED' ? 'bg-success' :
+                                    booking.status == 'CANCELLED' ? 'bg-danger' :
                                     booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
-                                    ${booking.status.displayName}</span>    
-                                    <c:if test="${not empty booking.payments}">
-                                        <c:if test="${booking.status == 'CANCELLED'}">
-                                            <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
-                                                ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
-                                            </span>                 
-                                        </c:if>
-                                    </c:if>
+                                    ${booking.status.displayName}
+                                </span>
 
-                                    <c:if test="${booking.status == 'PENDING'}">
-                                        <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING', true)" class="btn btn-sm btn-primary">
-                                            <i class="bi bi-credit-card"></i> Thanh toán
-                                        </a>
-                                    </c:if>
+                                <c:if test="${booking.status == 'CANCELLED' && not empty booking.payments}">
+                                    <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
+                                        ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                    </span>
+                                </c:if>
+
+                                <c:if test="${booking.status == 'PENDING'}">
+                                    <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING', true)" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-credit-card"></i> Thanh toán
+                                    </a>
+                                </c:if>
                             </div>
                         </div>
+
                         <div class="mb-3">
                             <div class="small text-muted mb-1">Check-in</div>
                             <div class="fw-bold">${f:formatLocalDateTime(booking.checkIn)}</div>
                         </div>
+
                         <div class="mb-3">
                             <div class="small text-muted mb-1">Check-out</div>
                             <div class="fw-bold">${f:formatLocalDateTime(booking.checkOut)}</div>
                         </div>
+
                         <div class="mb-3">
                             <div class="small text-muted mb-1">Số lượng khách</div>
                             <div class="fw-bold">${booking.guestCount}</div>
                         </div>
+
                         <div>
                             <div class="small text-muted mb-1">Ngày đặt phòng</div>
                             <div class="fw-bold">${f:formatLocalDateTime(booking.createdAt)}</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <c:if test="${not empty booking.bookingExtensions}">
                     <div class="card mb-4">
                         <div class="card-header bg-white">
@@ -310,11 +319,117 @@
                                     <div class="d-flex justify-content-between">
                                         <span class="small text-muted">Số giờ gia hạn</span>
                                         <span class="fw-bold">
-                                            <fmt:formatNumber type="number" value="${extension.extendedHours}" pattern="#"/> giờ
+                                            <fmt:formatNumber type="number" value="${extension.extendedHours}" pattern="#" /> giờ
                                         </span>
                                     </div>
                                 </div>
                             </c:forEach>
+                        </div>
+                    </div>
+                </c:if>
+
+                
+                <c:if test="${not empty booking.bookingServices}">
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-card-checklist me-2"></i>Dịch vụ đã đặt</h5>
+                        </div>
+                        <div class="card-body">
+
+                                <c:if test="${hasPrepaidBService}">
+                                    <h6 class="fw-bold mb-3">Dịch vụ trả trước</h6>
+                                    <c:forEach var="bService" items="${booking.bookingServices}">
+                                        <c:if test="${bService.service.isPrepaid}">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>${bService.service.serviceName}</span>
+                                                <span class="fw-bold">
+                                                    <fmt:formatNumber value="${bService.service.price}" />đ x
+                                                    <fmt:formatNumber value="${bService.quantity}" pattern="#" />
+                                                </span>
+                                            </div>
+                                        </c:if>
+                                    </c:forEach>
+                                    <hr />
+                                </c:if>
+                            
+
+                            <c:if test="${hasPostpaidBService}">
+                                <h6 class="fw-bold mb-3">Dịch vụ trả sau</h6>
+                                <c:forEach var="bService" items="${booking.bookingServices}">
+                                    <c:if test="${!bService.service.isPrepaid}">
+                                        <c:set var="status" value="${bService.status}" />
+                                        <c:choose>
+                                            <c:when test="${not empty bService.quantity}">
+                                                <div class="d-flex justify-content-between mb-2 align-items-center">
+                                                    <div>
+                                                        <span class="me-2">${bService.service.serviceName}</span>
+                                                        <span class="badge 
+                                                            ${status == 'COMPLETED' ? 'bg-success' : 
+                                                            status == 'PENDING' ? 'bg-secondary' : 
+                                                            status == 'IN_PROGRESS' ? 'bg-warning' : 
+                                                            status == 'CANCELLED' ? 'bg-danger' : 'bg-info'}">
+                                                            ${status.displayName}
+                                                        </span>
+                                                    </div>
+                                                    <span class="fw-bold text-end">
+                                                        <fmt:formatNumber value="${bService.service.price * bService.quantity}" />đ
+                                                        <small class="text-muted">
+                                                            (<fmt:formatNumber value="${bService.service.price}" />đ x
+                                                            <fmt:formatNumber value="${bService.quantity}" pattern="#" />)
+                                                        </small>
+                                                    </span>
+                                                </div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="d-flex justify-content-between mb-2 align-items-center">
+                                                    <div>
+                                                        <span class="me-2">${bService.service.serviceName}</span>
+                                                        <span class="badge 
+                                                            ${status == 'COMPLETED' ? 'bg-success' : 
+                                                            status == 'PENDING' ? 'bg-secondary' : 
+                                                            status == 'IN_PROGRESS' ? 'bg-warning' : 
+                                                            status == 'CANCELLED' ? 'bg-danger' : 'bg-info'}">
+                                                            ${status.displayName}
+                                                        </span>
+                                                    </div>
+                                                    <span class="text-muted">Đang cập nhật</span>
+                                                </div>
+                                                <c:set var="hasPaidPostServices" value="false" />
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:if>
+                                </c:forEach>
+
+                                <c:if test="${totalUnpaidPostpaidAmount != 0}">
+                                    <div class="alert alert-info mt-3 p-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-md">
+                                                <div class="text-muted small">Tổng tiền dịch vụ trả sau chưa thanh toán:</div>
+                                                <div class="fw-bold text-danger fs-5">
+                                                    <fmt:formatNumber value="${totalUnpaidPostpaidAmount}" />đ
+                                                </div>
+                                            </div>
+                                            <div class="col-auto mt-3 mt-md-0">
+                                                <c:if test="${canPayBServices}">
+                                                    <button class="btn btn-primary btn-sm px-4"
+                                                            onclick="handlePayment('${booking.bookingID}', 'ADDITIONAL_SERVICE', true)">
+                                                        <i class="bi bi-wallet2 me-1"></i> Thanh toán <br> (<fmt:formatNumber value="${totalUnpaidPostpaidAmount}" />đ)
+                                                    </button>
+                                                </c:if>
+                                            </div>
+                                        </div>
+
+                                        <c:if test="${!canPayBServices}">
+                                            <hr class="my-2" />
+                                            <small class="text-muted">
+                                                * Số tiền chính xác sẽ được cập nhật khi nhân viên xác nhận số lượng sử dụng.
+                                            </small>
+                                        </c:if>
+                                    </div>
+                                </c:if>
+
+                            </c:if>
+
                         </div>
                     </div>
                 </c:if>
@@ -324,159 +439,106 @@
                         <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Chi tiết thanh toán</h5>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Tiền phòng</span>
-                            <span class="fw-bold">
-                                
-                                <fmt:formatNumber type="number" value="${booking.room.roomType.pricePerHour}" />đ x 
-                                <fmt:formatNumber type="number" value="${numberOfHours}" pattern="#"/> giờ
-                                <c:if test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"> x ${booking.guestCount} người</c:if>
-                            </span>
-                        </div>
-
-                        <c:if test="${not empty booking.bookingServices}">
-                            <c:forEach var="bookingService" items="${booking.bookingServices}">   
-                                <c:if test="${bookingService.service.isPrepaid}">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <span>${bookingService.service.serviceName}</span>
-                                        <span class="fw-bold">
-                                            <fmt:formatNumber type="number" value="${bookingService.service.price}" />đ x  
-                                            <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
-                                        </span>
-                                    </div>
-                                </c:if>  
-                            </c:forEach>
-                        </c:if>
-
-                        <c:if test="${not empty booking.bookingExtensions}">
-                            <div class="border-top pt-3 mt-3">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Chi phí gia hạn</span>
-                                </div>
-                                <c:set var="totalExtensionAmount" value="0"/>
-                                <c:forEach var="extension" items="${booking.bookingExtensions}">
-                                    <div class="d-flex justify-content-between mb-2 ps-3">
-                                        <span class="text-muted small">
-                                            Gia hạn <fmt:formatNumber type="number" value="${extension.extendedHours}" pattern="#"/> giờ 
-                                            <!-- (${f:formatLocalDateTime(extension.createdAt)}) -->
-                                        </span>
-                                        <c:if test="${extension.paymentDetail != null}">
-                                            <span class="fw-bold">
-                                                <fmt:formatNumber type="number" value="${extension.paymentDetail.finalAmount}" />đ
-                                            </span>
-                                        </c:if>
-                                        <!-- <c:if test="${extension.paymentDetail == null}">
-                                            <a onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS')"
-                                            class="btn btn-primary btn-sm">
-                                                Thanh toán
-                                            </a>
-                                        </c:if> -->
-                                    </div>
-                                </c:forEach>
-                            </div>
-                        </c:if>
-
-                        <c:set var="hasPostpaidServices" value="false"/>
-                        <c:forEach var="bookingService" items="${booking.bookingServices}">
-                            <c:if test="${!bookingService.service.isPrepaid}">
-                                <c:set var="hasPostpaidServices" value="true"/>
-                            </c:if>
-                        </c:forEach>
-
-                        <c:set var="hasPaidPostServices" value="true"/>
-                        <c:if test="${hasPostpaidServices}">
-                            <div class="border-top pt-3 mt-3">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="fw-bold">Dịch vụ trả sau</span>
-                                </div>
-                                <c:forEach var="bookingService" items="${booking.bookingServices}">            
-                                    <c:if test="${!bookingService.service.isPrepaid}">
-                                        <div class="d-flex justify-content-between mb-2 ps-3">
-                                            <span class="text-muted small">${bookingService.service.serviceName}</span>
-                                            <span class="fw-bold">
-                                                <fmt:formatNumber type="number" value="${bookingService.service.price}" />đ x
-                                                <c:choose>
-                                                    <c:when test="${not empty bookingService.quantity}">
-                                                        <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="text-muted">(đang cập nhật)</span>
-                                                        <c:set var="hasPaidPostServices" value="false"/>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </span>
+                        <c:choose>
+                            <c:when test="${not empty booking.payments}">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <span class="fw-semibold">Tổng cộng</span>
+                                    <div class="text-end">
+                                        <div class="text-danger fw-bold fs-5">
+                                            <fmt:formatNumber value="${booking.totalAmount}" />đ
                                         </div>
-                                    </c:if>
-                                </c:forEach>
+                                        <c:if test="${hasPaidPostServices}">
+                                            <small class="text-muted fst-italic">
+                                                <i class="bi bi-info-circle me-1"></i>Đang chờ cập nhật dịch vụ trả sau
+                                            </small>
+                                        </c:if>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between fw-bold mb-3">
+                                    <span>Đã thanh toán</span>
+                                    <span class="text-success">
+                                        <fmt:formatNumber value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ
+                                    </span>
+                                </div>
 
-                                <c:if test="${totalUnpaidPostpaidAmount != 0}">
-                                    <div class="card border-0 shadow-sm mt-4">
-                                        <div class="card-body d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <span class="fw-semibold text-secondary">Tổng tiền dịch vụ trả sau chưa thanh toán:</span>
-                                                <span class="fw-bold text-danger fs-5 ms-2">
-                                                    <fmt:formatNumber type="number" value="${totalUnpaidPostpaidAmount}" />đ
-                                                </span>
-                                            </div>
+                                <div class="mt-3">
+                                    <a class="text-primary small" data-bs-toggle="collapse" href="#paymentInfo" role="button">
+                                        Xem lịch sử thanh toán
+                                    </a>
+                                    <div class="collapse" id="paymentInfo">
+                                        <div class="text-muted small mt-2">
+                                            <c:forEach var="payment" items="${booking.payments}" varStatus="loop">
+                                                <div class="card mb-3 border">
+                                                    <div class="card-header bg-light d-flex justify-content-between">
+                                                        <span><strong>Thanh toán #${loop.count}</strong></span>
+                                                        <span class="badge 
+                                                            ${payment.status == 'COMPLETED' ? 'bg-success' :
+                                                            payment.status == 'FAILED' ? 'bg-danger' :
+                                                            payment.status == 'PENDING' ? 'bg-primary' : 'bg-secondary'}">
+                                                            ${payment.status.displayName}
+                                                        </span>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <p><strong>Phương thức:</strong>
+                                                            <span class="badge 
+                                                                ${payment.paymentType == 'TRANSFER' ? 'bg-success' :
+                                                                payment.paymentType == 'CASH' ? 'bg-info' : 'bg-secondary'}">
+                                                                ${payment.paymentType == 'TRANSFER' ? 'Chuyển khoản' :
+                                                                payment.paymentType == 'CASH' ? 'Tiền mặt' : 'Chưa xác định'}
+                                                            </span>
+                                                        </p>
+                                                        <c:if test="${not empty payment.vnpTransactionNo}">
+                                                            <p><strong>Mã giao dịch:</strong> ${payment.vnpTransactionNo}</p>
+                                                        </c:if>
+                                                        <c:if test="${not empty payment.paymentDate}">
+                                                            <p><strong>Ngày thanh toán:</strong> ${f:formatLocalDateTime(payment.paymentDate)}</p>
+                                                        </c:if>
+                                                        <p><strong>Tổng tiền:</strong> <fmt:formatNumber value="${payment.totalAmount}" />đ</p>
+                                                        <hr />
+                                                        <p class="mb-1"><strong>Chi tiết thanh toán:</strong></p>
+                                                        <c:forEach var="detail" items="${payment.paymentDetails}">
+                                                            <div class="ms-3">
+                                                                <p>- ${detail.paymentPurpose.description}:
+                                                                    <fmt:formatNumber value="${detail.finalAmount}" />đ
+                                                                </p>
+                                                                            </div>
+                                                        </c:forEach>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <c:if test="${booking.status == 'CANCELLED'}">
+                                    <h6 class="mt-4">Hoàn tiền</h6>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Trạng thái hoàn tiền</span>
+                                        <span class="fw-bold">
                                             <c:choose>
-                                                <c:when test="${canPayBServices}">
-                                                    <button class="btn btn-primary btn-sm px-4"
-                                                        onclick="handlePayment('${booking.bookingID}', 'ADDITIONAL_SERVICE', true)">
-                                                        <i class="bi bi-wallet2 me-1"></i> Thanh toán ngay
-                                                    </button>
+                                                <c:when test="${booking.totalAmount == booking.paidAmount}">
+                                                    <span class="text-warning">Đang chờ hoàn tiền</span>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <span class="text-muted small fst-italic">
-                                                        * Số tiền chính xác cần thanh toán sẽ được cập nhật khi nhân viên cập nhật số lượng dùng của bạn                                                    </span>
+                                                    <span class="text-success">Đã hoàn tiền</span>
                                                 </c:otherwise>
                                             </c:choose>
-                                        </div>
-                                    </div>
-                                </c:if>
-
-                            </div>
-                        </c:if>
-
-                        <div class="border-top pt-3 mt-3">
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="fw-bold">Tổng tiền (đã bao gồm giảm giá)</span>
-                                <div class="text-end">
-                                    <span class="fw-bold text-danger">
-                                        <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ
-                                    </span>
-                                    <c:if test="${!hasPaidPostServices}">
-                                        <div class="text-muted small">* đang chờ cập nhật</div>
-                                    </c:if>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="fw-bold">Đã thanh toán</span>
-                                <span class="fw-bold text-success">
-                                    <fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ
-                                </span>
-                            </div>
-                            <c:if test="${not empty booking.payments}">
-                                <c:if test="${booking.status == 'CANCELLED'}">
-                                    <div class="d-flex justify-content-between border-top pt-3">
-                                        <span class="fw-bold">Trạng thái hoàn tiền</span>
-                                        <span class="fw-bold ${booking.totalAmount == booking.paidAmount ? 'text-warning' : 'text-success'}">
-                                            ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
                                         </span>
                                     </div>
                                 </c:if>
-                            </c:if>
-                        </div>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="text-muted">Chưa có chi phí nào được ghi nhận.</p>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
-                
+
                 <c:if test="${canCancel}">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-grid gap-2">
-                                <button
-                                    class="btn btn-danger btn-sm"
-                                    title="Hủy đặt phòng"
+                                <button class="btn btn-danger btn-sm"
                                     onclick="checkBeforeCancel(this)"
                                     data-entity-id="${booking.bookingID}"
                                     data-role="customer">
@@ -486,7 +548,6 @@
                         </div>
                     </div>
                 </c:if>
-                
             </div>
         </div>
     </div>

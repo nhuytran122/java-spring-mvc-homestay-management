@@ -5,7 +5,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
   $(document).ready(function () {
     let pricePerHour =
-      parseFloat("${booking.room.roomType.extraPricePerHour}") || 0;
+      parseFloat("${booking.pricingSnapshot.extraHourPrice}") || 0;
     let roomTypeName = "${booking.room.roomType.name}".toLowerCase();
     let isDorm = roomTypeName.includes("dorm");
     let guestCount = parseInt("${booking.guestCount}") || 1;

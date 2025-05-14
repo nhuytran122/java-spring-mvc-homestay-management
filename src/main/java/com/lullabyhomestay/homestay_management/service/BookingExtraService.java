@@ -164,4 +164,12 @@ public class BookingExtraService {
         bookingServiceRepo.save(bService);
     }
 
+    public boolean hasPrepaidService(long bookingId) {
+        return bookingServiceRepo.hasPrepaidService(bookingId);
+    }
+
+    public boolean hasPostpaidService(long bookingId) {
+        return bookingServiceRepo.hasPostpaidService(bookingId);
+    }
+
 }

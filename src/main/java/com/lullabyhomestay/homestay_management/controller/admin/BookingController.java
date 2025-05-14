@@ -277,7 +277,7 @@ public class BookingController {
             case COMPLETED:
                 return ResponseEntity.ok(new ApiResponseDTO<>(null, "Đơn đặt phòng đã hoàn tất và không thể hủy."));
             case CHECKIN_TIME_PASSED:
-                return ResponseEntity.ok(new ApiResponseDTO<>(null, "Thời gian nhận phòng đã đến, không thể hủy đơn."));
+                return ResponseEntity.ok(new ApiResponseDTO<>(null, "Đã quá thời gian nhận phòng, không thể hủy đơn."));
         }
 
         Map<String, Object> response = new HashMap<>();
@@ -392,10 +392,9 @@ public class BookingController {
         model.addAttribute("newCheckout", newCheckout);
         bookingExtensionService.handleBookingExtensions(extension);
         model.addAttribute("extension", extension);
-        model.addAttribute("finalAmount", extension.getTotalAmount()
-                - DiscountUtil.calculateDiscountAmount(extension.getTotalAmount(), booking.getCustomer()));
+        model.addAttribute("finalAmount", bookingExtensionService.calculateFinalExtensionAmount(extension));
 
-        double originalAmount = extension.getTotalAmount();
+        double originalAmount = bookingExtensionService.calculateRawTotalAmountBookingExtension(extension);
         double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
         model.addAttribute("discountAmount", discountAmount);
         return "admin/booking-extension/confirm-extension";

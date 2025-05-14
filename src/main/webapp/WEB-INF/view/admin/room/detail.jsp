@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="f" uri="http://lullabyhomestay.com/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,11 +33,14 @@
                           <a href="/admin/room/update/${room.roomID}" class="btn btn-warning btn-sm" title="Sửa">
                               <i class="bi bi-pencil"></i> Sửa
                           </a>
-                          <button class="btn btn-danger btn-sm"
-                              data-room-id="${room.roomID}"
-                              data-room-number="${room.roomNumber}"
-                              onclick="checkBeforeDelete(this)"
-                              title="Xóa">
+                          <button class="btn btn-danger btn-sm" title="Xóa"
+                              onclick="checkBeforeDelete(this)" 
+                                  data-entity-id="${room.roomID}" 
+                                  data-entity-name="${room.roomNumber}" 
+                                  data-entity-type="Phòng" 
+                                  data-delete-url="/admin/room/delete" 
+                                  data-check-url="/admin/room/can-delete/" 
+                                  data-id-name="roomID">
                               <i class="bi bi-trash"></i> Xóa
                           </button>
                       </div>
@@ -89,20 +93,71 @@
                                         <span><i class="bi bi-building me-2"></i>Chi nhánh</span>
                                         <span>${room.branch.branchName}</span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span><i class="bi bi-currency-dollar me-2"></i>Giá mỗi giờ</span>
-                                        <span><fmt:formatNumber type="number"
-                                          value="${room.roomType.pricePerHour}" /> đ</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                      <span><i class="bi bi-currency-dollar me-2"></i>Giá gia hạn mỗi giờ</span>
-                                      <span><fmt:formatNumber type="number"
-                                        value="${room.roomType.extraPricePerHour}" /> đ</span>
+                                    
                                   </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-12">
+                      <div class="card shadow-sm mt-4">
+                          <div class="card-body">
+                              <h4 class="card-title mb-4">Bảng giá theo loại phòng</h4>
+                              <div class="table-responsive">
+                                  <table class="table table-hover table-striped">
+                                      <thead class="table-light">
+                                          <tr class="text-center">
+                                              <th>Thời gian cơ bản (giờ)</th>
+                                              <th>Giá cơ bản</th>
+                                              <th>Giá bù giờ</th>
+                                              <th>Giá qua đêm</th>
+                                              <th>Giá theo ngày</th>
+                                              <th>Áp dụng từ</th>
+                                              <th>Đến</th>
+                                              <th>Mặc định?</th>
+                                              <th>Chính sách</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          <c:choose>
+                                              <c:when test="${empty room.roomType.roomPricings}">
+                                                  <tr>
+                                                      <td style="height: 50px;" colspan="8" class="text-center text-danger">
+                                                          Loại phòng này chưa có bảng giá
+                                                      </td>
+                                                  </tr>
+                                              </c:when>
+                                              <c:otherwise>
+                                                  <c:forEach var="pricing" items="${room.roomType.roomPricings}">
+                                                      <tr style="height: 50px;" class="text-center align-middle">
+                                                          <td>${pricing.baseDuration} giờ</td>
+                                                          <td><fmt:formatNumber value="${pricing.basePrice}"/>đ</td>
+                                                          <td><fmt:formatNumber value="${pricing.extraHourPrice}"/>đ</td>
+                                                          <td><fmt:formatNumber value="${pricing.overnightPrice}"/>đ</td>
+                                                          <td><fmt:formatNumber value="${pricing.dailyPrice}"/>đ</td>
+                                                          <td>${f:formatLocalDateTime(pricing.startDate)}</td>
+                                                          <td>${f:formatLocalDateTime(pricing.endDate)}</td>
+                                                          <td>
+                                                              <c:if test="${pricing.isDefault}">
+                                                                  <span class="badge bg-success">Mặc định</span>
+                                                              </c:if>
+                                                              <c:if test="${!pricing.isDefault}">
+                                                                  <span class="text-muted">-</span>
+                                                              </c:if>
+                                                          </td>
+                                                          <td>${pricing.policy}</td>
+                                                      </tr>
+                                                  </c:forEach>
+                                              </c:otherwise>
+                                          </c:choose>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
         
                     <div class="col-12">
                         <div class="card shadow-sm">
@@ -152,7 +207,7 @@
     </div>
   </div>
 
-  <jsp:include page="_modal-delete.jsp" />
+  <jsp:include page="../layout/partial/_modals-delete.jsp" />
   <jsp:include page="../layout/import-js.jsp" />
 </body>
 </html>

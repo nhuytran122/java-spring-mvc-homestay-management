@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,10 +42,10 @@ public class RoomType {
     @Column(name = "MaxGuest")
     private Integer maxGuest;
 
-    @Min(value = 1, message = "Giá phòng phải lớn hơn 0")
-    @NotNull(message = "Vui lòng nhập giá loại phòng")
-    @Column(name = "PricePerHour")
-    private Double pricePerHour;
+    // @Min(value = 1, message = "Giá phòng phải lớn hơn 0")
+    // @NotNull(message = "Vui lòng nhập giá loại phòng")
+    // @Column(name = "PricePerHour")
+    // private Double pricePerHour;
 
     @Column(name = "Photo")
     private String photo;
@@ -53,10 +54,14 @@ public class RoomType {
     @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
     private String description;
 
-    @Min(value = 1, message = "Giá phòng bù giờ phải lớn hơn 0")
-    @Column(name = "ExtraPricePerHour")
-    private double extraPricePerHour;
+    // @Min(value = 1, message = "Giá phòng bù giờ phải lớn hơn 0")
+    // @Column(name = "ExtraPricePerHour")
+    // private double extraPricePerHour;
 
     @OneToMany(mappedBy = "roomType")
     private List<Room> rooms;
+
+    @Valid
+    @OneToMany(mappedBy = "roomType")
+    private List<RoomPricing> roomPricings;
 }

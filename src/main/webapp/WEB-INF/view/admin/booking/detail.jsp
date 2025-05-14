@@ -33,6 +33,7 @@ uri="http://lullabyhomestay.com/functions" %>
                     >
                       <div class="col-md-6">
                         <h4 class="card-title mb-0">Chi tiết đơn đặt phòng</h4>
+                        <c:set var="pricing" value="${booking.pricingSnapshot}" />
                       </div>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
@@ -55,7 +56,7 @@ uri="http://lullabyhomestay.com/functions" %>
                           <a
                             href="/admin/booking"
                             class="btn btn-secondary btn-sm"
-                            title="Xem chi tiết"
+                            title="Trở về"
                           >
                             <i class="bi bi-arrow-left"></i>
                             Trở về
@@ -209,11 +210,12 @@ uri="http://lullabyhomestay.com/functions" %>
                                         />đ
                                       </td>
                                       <td>
-                                        <fmt:formatNumber
-                                          type="number"
-                                          value="${bService.quantity}"
-                                          pattern="#"
-                                        />
+                                        <c:if test="${bService.quantity != null}">
+                                          <fmt:formatNumber type="number" value="${bService.quantity}" pattern="#" />
+                                        </c:if>
+                                        <c:if test="${bService.quantity == null}">
+                                          Đang chờ cập nhật
+                                        </c:if>
                                       </td>
                                       <td>
                                         <span class="badge ${status == 'COMPLETED' ? 'bg-success' : 
@@ -275,6 +277,7 @@ uri="http://lullabyhomestay.com/functions" %>
                                           data-delete-url="/admin/booking-service/delete"
                                           data-check-url="/admin/booking-service/can-handle/"
                                           data-id-name="bookingServiceID"
+                                          data-custom-message = "Dịch vụ này đã được thanh toán, không thể xóa."
                                         >
                                           <i class="bi bi-trash"></i>
                                         </button>
@@ -380,7 +383,7 @@ uri="http://lullabyhomestay.com/functions" %>
                                       <td>
                                         <fmt:formatNumber
                                           type="number"
-                                          value="${extension.booking.room.roomType.extraPricePerHour}"
+                                          value="${pricing.extraHourPrice}"
                                         />đ
                                       </td>
                                       <td>
@@ -472,12 +475,6 @@ uri="http://lullabyhomestay.com/functions" %>
           },
         });
       }
-
-      $("#deleteWarningModal").on("show.bs.modal", function () {
-        $(this)
-          .find(".modal-body")
-          .html("Dịch vụ này đã được thanh toán, không thể xóa.");
-      });
 
       $(".check-booking-service").click(function () {
         let bookingID = $(this).data("booking-id");

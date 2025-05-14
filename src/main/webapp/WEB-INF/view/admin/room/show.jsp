@@ -59,7 +59,6 @@
                                             <tr>
                                                 <th style="width: 150px;">Thumbnail</th>
                                                 <th>Số phòng</th>
-                                                <th>Giá mỗi giờ</th>
                                                 <th>Loại phòng</th>
                                                 <th>Chi nhánh</th>
                                                 <th>Tình trạng</th>
@@ -87,9 +86,6 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td>${room.roomNumber}</td>
-                                                            
-                                                            <td><fmt:formatNumber type="number"
-                                                                value="${room.roomType.pricePerHour}" /> đ</td>
                                                             <td>${room.roomType.name}</td>
                                                             <td>${room.branch.branchName}</td>
                                                             <td>

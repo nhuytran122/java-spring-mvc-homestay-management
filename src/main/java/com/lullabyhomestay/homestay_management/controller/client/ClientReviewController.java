@@ -47,7 +47,6 @@ public class ClientReviewController {
             BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
             model.addAttribute("booking", booking);
-            model.addAttribute("numberOfHours", booking.getNumberOfHours());
             return "client/booking/detail-booking-history";
         }
         Booking booking = bookingService.getBookingByID(review.getBooking().getBookingID());
@@ -79,7 +78,6 @@ public class ClientReviewController {
             BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
             model.addAttribute("booking", booking);
-            model.addAttribute("numberOfHours", booking.getNumberOfHours());
             return "client/booking/detail-booking-history";
         }
 

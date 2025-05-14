@@ -100,9 +100,10 @@
                     <i class="bi bi-check-circle"></i> Đặt dịch vụ
                 </button>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <button type="button" class="btn btn-outline-dark btn-lg px-5 py-2" onclick="window.history.back()">
+                    <a href="/room/${bookingRequest.roomID}?fromBookingService=true"
+                        class="btn btn-outline-dark btn-lg px-5 py-2">
                         <i class="bi bi-arrow-left"></i> Quay lại
-                    </button>
+                    </a>
             
                     <button type="button" class="btn btn-secondary btn-lg px-5 py-2" id="skipServicesBtn">
                         <i class="bi bi-slash-circle"></i> Bỏ qua dịch vụ

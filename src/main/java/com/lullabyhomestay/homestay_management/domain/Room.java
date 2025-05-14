@@ -41,7 +41,7 @@ public class Room {
     private String thumbnail;
 
     @Column(name = "IsActive")
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     @OneToMany(mappedBy = "room")
     private List<MaintenanceRequest> maintenanceRequests;

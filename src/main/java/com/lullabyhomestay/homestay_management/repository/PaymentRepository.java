@@ -23,6 +23,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpec
 
         Optional<Payment> findByPaymentID(Long paymentID);
 
+        Optional<Payment> findByBooking_BookingID(Long bookingID);
+
         @Query("SELECT SUM(p.totalAmount) FROM Payment p " +
                         "WHERE p.status = 'COMPLETED' " +
                         "AND p.paymentDate BETWEEN :startDate AND :endDate")

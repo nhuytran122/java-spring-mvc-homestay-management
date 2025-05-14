@@ -1,6 +1,7 @@
 package com.lullabyhomestay.homestay_management.controller.client;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.domain.RoomPricing;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingRequestDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +31,7 @@ public class ClientRoomController {
     private final RoomTypeService roomTypeService;
     private final BranchService branchService;
     private final ReviewService reviewService;
+    private final RoomPricingService roomPricingService;
 
     @GetMapping("/room")
     public String getRoomsPage(Model model,
@@ -44,15 +48,24 @@ public class ClientRoomController {
     @GetMapping("/room/{id}")
     public String getDetailRoomPage(Model model,
             @PathVariable long id,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            @RequestParam(value = "fromConfirmPage", required = false) boolean fromConfirmPage) {
+        Room room = roomService.getRoomByID(id);
+        Optional<RoomPricing> roomPricingOpt = roomPricingService
+                .getDefaultRoomPricing(room.getRoomType().getRoomTypeID());
+        if (!roomPricingOpt.isPresent()) {
+            throw new NotFoundException("Giá phòng");
+        }
+        model.addAttribute("roomPricing", roomPricingOpt.get());
         model.addAttribute("newBooking", new Booking());
-        model.addAttribute("room", roomService.getRoomByID(id));
+        model.addAttribute("room", room);
+        model.addAttribute("roomPricing", roomPricingOpt.get());
         model.addAttribute("listReviews", reviewService.getReviewsByRoomID(id));
 
         // Đối với trường hợp user back từ confirm -> detail room
         HttpSession session = request.getSession(false);
         BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
-        if (bookingRequest != null && bookingRequest.getBookingID() != null) {
+        if (bookingRequest != null && bookingRequest.getBookingID() != null && fromConfirmPage) {
             bookingService.deleteByBookingID(bookingRequest.getBookingID());
             session.setAttribute("bookingRequest", null);
         }

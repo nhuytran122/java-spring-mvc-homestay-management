@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,14 +21,12 @@ import com.lullabyhomestay.homestay_management.repository.PaymentRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.PaymentSpecification;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.Constants;
-import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
 import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
 import com.lullabyhomestay.homestay_management.utils.PaymentType;
 import com.lullabyhomestay.homestay_management.utils.VNPayUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -54,9 +51,7 @@ public class PaymentService {
             // Lấy gia hạn thuê mới nhất
             BookingExtension bookingExtension = bookingExtensionService
                     .getLatestBookingExtensionByBookingID(bookingID);
-            Double rawAmount = bookingExtension.getTotalAmount();
-            Double totalAmountDouble = rawAmount
-                    - DiscountUtil.calculateDiscountAmount(rawAmount, booking.getCustomer());
+            Double totalAmountDouble = bookingExtensionService.calculateFinalExtensionAmount(bookingExtension);
             amount = totalAmountDouble.longValue() * 100L;
         } else if (paymentPurpose == PaymentPurpose.ADDITIONAL_SERVICE) {
             // Lấy tổng tiền dịch vụ trả sau mà khách chưa thanh toán
@@ -127,9 +122,7 @@ public class PaymentService {
         } else {
             BookingExtension bookingExtension = bookingExtensionService
                     .getLatestBookingExtensionByBookingID(bookingID);
-            Double rawAmount = bookingExtension.getTotalAmount();
-            totalAmount = rawAmount
-                    - DiscountUtil.calculateDiscountAmount(rawAmount, booking.getCustomer());
+            totalAmount = bookingExtensionService.calculateFinalExtensionAmount(bookingExtension);
         }
         if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
             BookingExtension bookingExtension = bookingExtensionService
@@ -192,6 +185,13 @@ public class PaymentService {
         if (!paymentOpt.isPresent()) {
             throw new NotFoundException("Lịch sử thanh toán");
         }
+        return paymentOpt.get();
+    }
+
+    public Payment getPaymentByBookingID(Long bookingID) {
+        Optional<Payment> paymentOpt = paymentRepository.findByBooking_BookingID(bookingID);
+        if (!paymentOpt.isPresent())
+            return null;
         return paymentOpt.get();
     }
 }

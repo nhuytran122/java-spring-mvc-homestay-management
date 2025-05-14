@@ -62,11 +62,30 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     </div>
                     <div class="row">
                       <div class="col-md-3">
-                        <img
-                          src="${not empty customer.user.avatar ? '/images/avatar/' + customer.user.avatar : '/images/avatar/default-img.jpg'}"
-                          class="img-fluid rounded"
-                          style="width: 100%; height: auto; object-fit: cover"
-                        />
+                        <c:choose>
+                          <c:when test="${not empty customer.user.avatar}">
+                            <img
+                              src="/images/avatar/${customer.user.avatar}"
+                              class="img-fluid rounded"
+                              style="
+                                width: 100%;
+                                height: auto;
+                                object-fit: cover;
+                              "
+                            />
+                          </c:when>
+                          <c:otherwise>
+                            <img
+                              src="/images/avatar/default-img.jpg"
+                              class="img-fluid rounded"
+                              style="
+                                width: 100%;
+                                height: auto;
+                                object-fit: cover;
+                              "
+                            />
+                          </c:otherwise>
+                        </c:choose>
                       </div>
 
                       <div class="col-md-9">

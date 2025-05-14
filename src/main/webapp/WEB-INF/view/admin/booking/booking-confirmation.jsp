@@ -191,7 +191,7 @@
           let paymentMethod = $('input[name="paymentMethod"]:checked').val();
           if (!paymentMethod) {
             $('#paymentMethodError').text('Vui lòng chọn phương thức thanh toán').show();
-            $('#errorMessage').text('Vui lòng chọn phương thức thanh toán').show();
+            
             return;
           }
 

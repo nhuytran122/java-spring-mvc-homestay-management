@@ -216,8 +216,16 @@
                                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                                         <div>
                                                             <strong>${serviceItem.service.serviceName}</strong> 
-                                                            (x<fmt:formatNumber type="number" value="${serviceItem.quantity}" pattern="#"/> / ${serviceItem.service.unit})
+                                                            (<c:choose>
+                                                                <c:when test="${serviceItem.quantity != null}">
+                                                                    x<fmt:formatNumber type="number" value="${serviceItem.quantity}" pattern="#"/> / ${serviceItem.service.unit}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <span class="text-muted">đang chờ cập nhật</span>
+                                                                </c:otherwise>
+                                                            </c:choose> )
                                                         </div>
+
                                                     </li>
                                                 </c:forEach>
                                             </ul>

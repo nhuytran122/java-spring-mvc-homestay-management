@@ -60,11 +60,12 @@
                                             <select id="roomSelect" name="room" class="form-control ${not empty errorRoom ? 'is-invalid' : ''}">
                                                 <option value="">Chọn phòng</option>
                                                 <c:forEach var="room" items="${listRooms}">
-                                                    <option value="${room.roomID}"
-                                                            data-price="${room.roomType.pricePerHour}"
-                                                            data-maxguest="${room.roomType.maxGuest}"
-                                                            data-roomtype="${room.roomType.name}">
-                                                        ${room.branch.branchName} - ${room.roomType.name} - #${room.roomNumber}
+                                                    <option 
+                                                        value="${room.roomID}"
+                                                        data-roomtypeid="${room.roomType.roomTypeID}"
+                                                        data-maxguest="${room.roomType.maxGuest}"
+                                                        data-roomtype="${room.roomType.name}">
+                                                     ${room.branch.branchName} - ${room.roomType.name} - #${room.roomNumber}
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -99,10 +100,8 @@
                                     </div>
 
                                     <div class="price-details my-4">
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span id="hours-text">0đ x 0 giờ</span>
-                                            <span id="subtotal">0đ</span>
-                                        </div>
+                                        <div id="pricing-details" class="text-muted small mb-2"></div>
+
                                         <hr>
                                         <div class="d-flex justify-content-between fw-bold">
                                             <span>Tổng cộng</span>
@@ -134,43 +133,112 @@
   <jsp:include page="../layout/import-js.jsp" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
-  <script>
+<script>
     $(document).ready(function () {
         let now = moment();
-        let pricePerHour = 0;
         let isDorm = false;
+        let roomTypeId = null;
+
+        function initPickers() {
+            $('#checkin, #checkout').daterangepicker({
+                singleDatePicker: true,
+                timePicker: true,
+                timePicker24Hour: true,
+                timePickerIncrement: 30,
+                minDate: now,
+                locale: {
+                    format: 'DD/MM/YYYY HH:mm'
+                }
+            });
+
+            $('#checkin, #checkout').on('apply.daterangepicker', updatePrice);
+            $('#guestCount').on('change', updatePrice);
+        }
 
         function updatePrice() {
             let checkIn = moment($('#checkin').val(), 'DD/MM/YYYY HH:mm');
             let checkOut = moment($('#checkout').val(), 'DD/MM/YYYY HH:mm');
             let guestCount = parseInt($('#guestCount').val()) || 1;
 
-            if (checkIn.isValid() && checkOut.isValid() && checkOut.isAfter(checkIn)) {
-                let hours = Math.ceil(checkOut.diff(checkIn, 'hours', true));
-                let total = isDorm ? pricePerHour * hours * guestCount : pricePerHour * hours;
-
-                $('#hours-text').text(pricePerHour.toLocaleString('vi-VN') + "đ x " + hours + " giờ" + (isDorm ? " x " + guestCount + " người" : ""));
-                $('#subtotal').text(total.toLocaleString('vi-VN') + "đ");
-                $('#total').text(total.toLocaleString('vi-VN') + "đ");
-            } else {
-                $('#hours-text').text(pricePerHour.toLocaleString('vi-VN') + "đ x 0 giờ");
-                $('#subtotal').text("0đ");
+            if (!roomTypeId) {
                 $('#total').text("0đ");
+                $('#hours-text').text("Chưa chọn phòng");
+                return;
+            }
+
+            if (checkIn.isValid() && checkOut.isValid() && checkOut.isAfter(checkIn)) {
+                $.ajax({
+                    url: '/booking/calculate-price',
+                    type: 'GET',
+                    data: {
+                        roomTypeId: roomTypeId,
+                        checkIn: checkIn.format('YYYY-MM-DDTHH:mm'),
+                        checkOut: checkOut.format('YYYY-MM-DDTHH:mm')
+                    },
+                    success: function (response) {
+                        let price = response.data.totalPrice;
+                        let pricingType = response.data.pricingType;
+                        let total = isDorm ? price * guestCount : price;
+                        let totalHours = response.data.totalHours;
+                        let totalDays = response.data.totalDays;
+                        let totalNights = response.data.totalNights;
+                        console.log(totalDays)
+                        console.log(totalNights)
+                        console.log(totalHours)
+
+                        $('#hours-text').text(price.toLocaleString('vi-VN') + "đ x " + totalHours.toFixed(2) + " giờ" + (isDorm ? " x " + guestCount + " người" : ""));
+                        $('#subtotal').text(total.toLocaleString('vi-VN') + "đ");
+                        $('#total').text(total.toLocaleString('vi-VN') + "đ");
+
+                        let pricingDetailsHtml = '';
+                        switch (pricingType) {
+                            case 'DAILY':
+                                pricingDetailsHtml = "<span>Giá theo ngày: " + totalDays + " ngày</span>";
+                                break;
+                            case 'OVERNIGHT':
+                                pricingDetailsHtml = "<span>Giá qua đêm: " + totalNights + " đêm</span>";
+                                break;
+                            case 'MIXED':
+                                pricingDetailsHtml = "<span>Giá kết hợp: ";
+                                if (totalDays > 0) {
+                                    pricingDetailsHtml += totalDays + " ngày";
+                                }
+                                if (totalNights > 0) {
+                                    if (totalDays > 0) {
+                                        pricingDetailsHtml += " + ";
+                                    }
+                                    pricingDetailsHtml += totalNights + " đêm";
+                                }
+                                if (totalHours > 0) {
+                                    if (totalDays > 0 || totalNights > 0) {
+                                        pricingDetailsHtml += " + ";
+                                    }
+                                    pricingDetailsHtml += totalHours + " giờ";
+                                }
+                                pricingDetailsHtml += "</span>";
+                                break;
+                            case 'HOURLY':
+                                pricingDetailsHtml = "<span>Giá theo giờ: " + totalHours + " giờ</span>";
+                                break;
+                            default:
+                                pricingDetailsHtml = "<span>Không xác định được loại giá.</span>";
+                        }
+
+                        $('#pricing-details').html(pricingDetailsHtml);
+                    },
+                    error: function () {
+                        alert("Không thể tính giá phòng.");
+                    }
+                });
+            } else {
+                $('#total').text("0đ");
+                $('#hours-text').text("Vui lòng chọn thời gian hợp lệ");
             }
         }
 
-        $('#checkin, #checkout').daterangepicker({
-            singleDatePicker: true,
-            timePicker: true,
-            timePicker24Hour: true,
-            timePickerIncrement: 30,
-            minDate: now,
-            locale: { format: 'DD/MM/YYYY HH:mm' }
-        }).on('apply.daterangepicker', updatePrice);
-
         $('#roomSelect').on('change', function () {
             const selected = $(this).find(':selected');
-            pricePerHour = parseFloat(selected.data('price')) || 0;
+            roomTypeId = selected.data('roomtypeid');
             let maxGuest = parseInt(selected.data('maxguest')) || 1;
             isDorm = (selected.data('roomtype') || '').toLowerCase().includes('dorm');
 
@@ -178,13 +246,14 @@
             $guestCount.empty();
             for (let i = 1; i <= maxGuest; i++) {
                 $guestCount.append('<option value="' + i + '">' + i + ' người</option>');
-
             }
+
             updatePrice();
         });
 
-        $('#guestCount').on('change', updatePrice);
+        initPickers();
     });
-  </script>
+</script>
+
 </body>
 </html>

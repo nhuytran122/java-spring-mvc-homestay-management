@@ -21,7 +21,7 @@ public class DashboardController {
 
     private final StatisticsService statisticsService;
 
-    @GetMapping("/admin/dashboard")
+    @GetMapping("/admin")
     public String getDashboardPage(
             @RequestParam(value = "timeRange", required = false) String timeRange,
             Model model) {

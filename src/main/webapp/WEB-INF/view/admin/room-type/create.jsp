@@ -33,11 +33,21 @@
                                     <c:set var="errorMaxGuest">
                                         <form:errors path="maxGuest" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorPricePerHour">
-                                        <form:errors path="pricePerHour" cssClass="invalid-feedback" />
+
+                                    <c:set var="errorBasePrice">
+                                        <form:errors path="roomPricings[0].basePrice" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorExtraPrice">
-                                        <form:errors path="extraPricePerHour" cssClass="invalid-feedback" />
+                                    <c:set var="errorExtraHourPrice">
+                                        <form:errors path="roomPricings[0].extraHourPrice" cssClass="invalid-feedback" />
+                                    </c:set>
+                                    <c:set var="errorOvernightPrice">
+                                        <form:errors path="roomPricings[0].overnightPrice" cssClass="invalid-feedback" />
+                                    </c:set>
+                                    <c:set var="errorBaseDuration">
+                                        <form:errors path="roomPricings[0].baseDuration" cssClass="invalid-feedback" />
+                                    </c:set>
+                                    <c:set var="errorDailyPrice">
+                                        <form:errors path="roomPricings[0].dailyPrice" cssClass="invalid-feedback" />
                                     </c:set>
 
                                     <div class="form-group row">
@@ -59,22 +69,47 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label class="control-label col-sm-2">Giá mỗi giờ <span class="text-danger">*</span></label>
+                                        <label class="control-label col-sm-2">Thời gian cơ bản (giờ) <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:input type="text" class="form-control number-separator
-                                            ${not empty errorPricePerHour ? 'is-invalid' : ''}" 
-                                            path="pricePerHour" />
-                                            ${errorPricePerHour}
+                                            <form:input type="text" class="form-control number-separator ${not empty errorBaseDuration ? 'is-invalid' : ''}" 
+                                            path="roomPricings[0].baseDuration" />
+                                            ${errorBaseDuration}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Giá cơ bản <span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:input type="text" class="form-control number-separator ${not empty errorBasePrice ? 'is-invalid' : ''}" 
+                                            path="roomPricings[0].basePrice" />
+                                            ${errorBasePrice}
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Giá bù giờ mỗi giờ <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:input type="text" class="form-control number-separator
-                                            ${not empty errorExtraPrice ? 'is-invalid' : ''}" 
-                                            path="extraPricePerHour" />
-                                            ${errorExtraPrice}
+                                            <form:input type="text" class="form-control number-separator ${not empty errorExtraHourPrice ? 'is-invalid' : ''}" 
+                                            path="roomPricings[0].extraHourPrice" />
+                                            ${errorExtraHourPrice}
+                                        </div>
+                                    </div>                                    
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Giá qua đêm <span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:input type="text" class="form-control number-separator ${not empty errorOvernightPrice ? 'is-invalid' : ''}" 
+                                            path="roomPricings[0].overnightPrice" />
+                                            ${errorOvernightPrice}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-sm-2">Giá theo ngày <span class="text-danger">*</span></label>
+                                        <div class="col-sm-10">
+                                            <form:input type="text" class="form-control number-separator ${not empty errorDailyPrice ? 'is-invalid' : ''}" 
+                                            path="roomPricings[0].dailyPrice" />
+                                            ${errorDailyPrice}
                                         </div>
                                     </div>
 
@@ -86,7 +121,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="control-label col-sm-2">Hình ảnh</label>
+                                        <label class="control-label col-sm-2">Hình ảnh <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
                                             <input type="file" class="form-control"  accept="image/*" 
                                                 name="fileImg" id="fileInput">

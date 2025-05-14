@@ -24,7 +24,7 @@
                     </div>
                     <div class="card-body p-4">
                         <form:form class="row g-4" action="/profile/update" method="POST" enctype="multipart/form-data" modelAttribute="user">
-                            <form:input type="hidden" path="customerID" />
+                            
 
                             <c:set var="errorName">
                                 <form:errors path="fullName" cssClass="invalid-feedback" />
@@ -80,7 +80,9 @@
                                 <label class="form-label fw-bold text-dark">Địa chỉ</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="fa fa-map-marker-alt"></i></span>
-                                    <form:input type="text" path="address" class="form-control form-control-lg rounded-end-3" />
+                                    <form:input type="text" path="address" class="form-control form-control-lg rounded-end-3
+                                        ${not empty errorAddress ? 'is-invalid' : ''}" />
+                                        ${errorAddress}
                                 </div>
                             </div>
 

@@ -9,6 +9,12 @@
     <function>
         <name>formatLocalDateTime</name>
         <function-class>com.lullabyhomestay.homestay_management.utils.ConvertDateToString</function-class>
-        <function-signature>java.lang.String getFormattedDate(java.time.LocalDateTime)</function-signature>
+        <function-signature>java.lang.String getFormattedDateTime(java.time.LocalDateTime)</function-signature>
+    </function>
+
+    <function>
+        <name>formatLocalDate</name>
+        <function-class>com.lullabyhomestay.homestay_management.utils.ConvertDateToString</function-class>
+        <function-signature>java.lang.String getFormattedLocalDate(java.time.LocalDate)</function-signature>
     </function>
 </taglib>

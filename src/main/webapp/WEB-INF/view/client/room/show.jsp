@@ -83,9 +83,7 @@
                                         </div>
                                         <div class="mt-auto d-flex justify-content-between align-items-center">
                                             <div>
-                                                <span class="fs-5 fw-bold text-primary"><fmt:formatNumber type="number"
-                                                    value="${room.roomType.pricePerHour}" />đ</span>
-                                                <small class="text-muted">/ giờ</small>
+                                                
                                             </div>
                                             <a href="/room/${room.roomID}" class="btn btn-primary">Đặt phòng</a>
                                         </div>

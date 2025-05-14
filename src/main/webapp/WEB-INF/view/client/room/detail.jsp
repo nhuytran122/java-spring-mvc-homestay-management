@@ -43,6 +43,7 @@
                     
                     <div class="room-info my-4">
                         <h1 class="mb-3">Phòng ${room.roomNumber} - ${room.roomType.name}</h1>
+                        <input type="hidden" id="roomTypeID" value="${room.roomType.roomTypeID}" />
                         <div class="d-flex align-items-center mb-3 ">
                             <span class="badge bg-primary me-2">${room.branch.branchName}</span>
                             <span class="text-muted">${room.branch.address}</span>
@@ -50,6 +51,32 @@
                         <hr>
                         <h4>Thông tin về loại phòng</h4>
                         <p>${room.roomType.description}</p>
+                        <div class="pricing-policy mt-4">
+                            <div class="policy-description bg-light">
+                                <div style="white-space: pre-line;">
+                                    <h4>Chính sách tính giá phòng</h4>
+                                    <strong>Giá theo giờ</strong> (áp dụng khi thời gian thuê dưới 1 ngày và không rơi vào khung qua đêm):  
+                                    - 3 giờ đầu: <strong><fmt:formatNumber value="${roomPricing.basePrice}" type="number" />đ</strong>  
+                                    - Mỗi giờ tiếp theo: <strong><fmt:formatNumber value="${roomPricing.extraHourPrice}" type="number" />đ/giờ</strong>  
+                                    - Giá 3 giờ đầu chỉ áp dụng một lần. Mọi phần dư sau đó tính theo giá mỗi giờ, không áp dụng lại giá cơ bản.
+
+                                    <strong>Giá qua đêm</strong> (áp dụng khi thuê từ 6 giờ trong khoảng 22:00 – 08:00):  
+                                    - Trọn gói: <strong><fmt:formatNumber value="${roomPricing.overnightPrice}" type="number" />đ</strong>  
+                                    - Nếu ở qua đêm xong vẫn còn dư thời gian, phần dư sẽ tính theo giá mỗi giờ.
+
+                                    <strong>Giá theo ngày</strong> (áp dụng khi ở từ 24 giờ trở lên):  
+                                    - Mỗi 24 giờ: <strong><fmt:formatNumber value="${roomPricing.dailyPrice}" type="number" />đ</strong>  
+                                    - Nếu vượt quá tròn ngày:  
+                                    ▪️ Dư nằm trong khung qua đêm → tính thêm giá qua đêm  
+                                    ▪️ Dư không nằm trong khung → tính thêm giá mỗi giờ (không áp dụng lại 3 giờ đầu)
+
+                                    <strong class="mb-2">Giá gia hạn</strong> (áp dụng khi yêu cầu gia hạn cư trú): <strong> <fmt:formatNumber value="${roomPricing.extraHourPrice}" type="number" />đ/giờ
+                                    </strong>  
+                                    <em>Các mức giá trên chỉ là mặc định, giá thực tế có thể thay đổi tùy vào ngày, sự kiện hoặc khuyến mãi. Bạn có thể chọn thời gian cư trú để biết giá cụ thể</em>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="amenities mt-4">
                             <h4>Tiện nghi trong phòng</h4>
                             <div class="row mt-3">
@@ -70,7 +97,6 @@
                 <div class="col-lg-4">
                     <div class="booking-card card sticky-top p-3">
                         <div class="card-body">
-                            <h3 class="price mb-4"><fmt:formatNumber type="number" value="${room.roomType.pricePerHour}" />đ <small class="text-muted">/giờ</small></h3>
                             <form:form action="/booking" method="post" modelAttribute="newBooking">
                                 <c:set var="errorCheckIn">
                                     <form:errors path="checkIn" cssClass="invalid-feedback" />
@@ -111,9 +137,10 @@
                             </div>
                                 <div class="price-details my-4">
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span id="hours-text"><fmt:formatNumber type="number" value="${room.roomType.pricePerHour}" />đ x 0 giờ</span>
-                                        <span id="subtotal">0đ</span>
+                                        
                                     </div>
+                                    <div class="d-flex justify-content-between mb-2" id="pricing-details"></div> 
+                                    
                                     <hr>
                                     <div class="d-flex justify-content-between fw-bold">
                                         <span>Tổng cộng</span>
@@ -189,60 +216,103 @@
     <script>
         $(document).ready(function () {
             let now = moment();
-            let pricePerHour = parseFloat("${room.roomType.pricePerHour}") || 0;
-            let roomTypeName = "${room.roomType.name}".toLowerCase(); 
-            let isDorm = roomTypeName.includes("dorm"); 
+            
+            let roomTypeName = "${room.roomType.name}".toLowerCase();
+            let isDorm = roomTypeName.includes("dorm");
+            let roomTypeId = $('#roomTypeID').val();
 
-            let checkInVal = $('#checkin').val();
-            let checkOutVal = $('#checkout').val();
-            let startDate = checkInVal && moment(checkInVal, 'DD/MM/YYYY HH:mm').isValid() ? moment(checkInVal, 'DD/MM/YYYY HH:mm') : now;
-            let endDate = checkOutVal && moment(checkOutVal, 'DD/MM/YYYY HH:mm').isValid() ? moment(checkOutVal, 'DD/MM/YYYY HH:mm') : now;
+            function initPickers() {
+                $('#checkin, #checkout').daterangepicker({
+                    singleDatePicker: true,
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    timePickerIncrement: 30,
+                    minDate: now,
+                    locale: {
+                        format: 'DD/MM/YYYY HH:mm'
+                    }
+                });
 
-            $('#checkin').daterangepicker({
-                singleDatePicker: true,
-                timePicker: true,
-                timePicker24Hour: true,
-                timePickerIncrement: 30,
-                minDate: now,
-                startDate: startDate, 
-                locale: { 
-                    format: 'DD/MM/YYYY HH:mm' 
-                }
-            }).on('apply.daterangepicker', updatePrice);
+                $('#checkin, #checkout').on('apply.daterangepicker', updatePrice);
+                $('#guestCount').on('change', updatePrice);
 
-            $('#checkout').daterangepicker({
-                singleDatePicker: true,
-                timePicker: true,
-                timePicker24Hour: true,
-                timePickerIncrement: 30,
-                minDate: now,
-                startDate: endDate, 
-                locale: { 
-                    format: 'DD/MM/YYYY HH:mm' 
-                }
-            }).on('apply.daterangepicker', updatePrice);
-
-            $('#guestCount').on('change', updatePrice); 
+                updatePrice(); 
+            }
 
             function updatePrice() {
-                let checkIn = moment($('#checkin').val(), 'DD/MM/YYYY HH:mm');
-                let checkOut = moment($('#checkout').val(), 'DD/MM/YYYY HH:mm');
-                let guestCount = parseInt($('#guestCount').val()) || 1; 
+            let checkIn = moment($('#checkin').val(), 'DD/MM/YYYY HH:mm');
+            let checkOut = moment($('#checkout').val(), 'DD/MM/YYYY HH:mm');
+            let guestCount = parseInt($('#guestCount').val()) || 1;
 
-                if (checkIn.isValid() && checkOut.isValid() && checkOut.isAfter(checkIn)) {
-                    let hours = Math.ceil(checkOut.diff(checkIn, 'hours', true));
-                    let total = isDorm ? pricePerHour * hours * guestCount : pricePerHour * hours;
+            if (checkIn.isValid() && checkOut.isValid() && checkOut.isAfter(checkIn)) {
+                $.ajax({
+                    url: '/booking/calculate-price',
+                    type: 'GET',
+                    data: {
+                        roomTypeId: roomTypeId,
+                        checkIn: checkIn.format('YYYY-MM-DDTHH:mm'),
+                        checkOut: checkOut.format('YYYY-MM-DDTHH:mm')
+                    },
+                    success: function (response) {
+                        let price = response.data.totalPrice;
+                        let pricingType = response.data.pricingType;
+                        let total = isDorm ? price * guestCount : price;
+                        let totalHours = response.data.totalHours;
+                        let totalDays = response.data.totalDays;
+                        let totalNights = response.data.totalNights;
+                        $('#hours-text').text(price.toLocaleString('vi-VN') + "đ x " + totalHours.toFixed(1) + " giờ" + (isDorm ? " x " + guestCount + " người" : ""));
+                        $('#subtotal').text(total.toLocaleString('vi-VN') + "đ");
+                        $('#total').text(total.toLocaleString('vi-VN') + "đ");
 
-                    $('#hours-text').text(pricePerHour.toLocaleString('vi-VN') + "đ x " + hours + " giờ" + (isDorm ? " x " + guestCount + " người" : ""));
-                    $('#subtotal').text(total.toLocaleString('vi-VN') + "đ");
-                    $('#total').text(total.toLocaleString('vi-VN') + "đ");
-                } else {
-                    $('#hours-text').text(pricePerHour.toLocaleString('vi-VN') + "đ x 0 giờ");
-                    $('#subtotal').text("0đ");
-                    $('#total').text("0đ");
-                }
+                        let pricingDetailsHtml = '';
+                    switch (pricingType) {
+                        case 'DAILY':
+                            pricingDetailsHtml = "<span>Giá theo ngày: " + totalDays + " ngày</span>";
+                            break;
+                        case 'OVERNIGHT':
+                            pricingDetailsHtml = "<span>Giá qua đêm: " + totalNights + " đêm</span>";
+                            break;
+                        case 'MIXED':
+                            pricingDetailsHtml = "<span>Giá kết hợp: ";
+                            if (totalDays > 0) {
+                                pricingDetailsHtml += totalDays + " ngày";
+                            }
+                            if (totalNights > 0) {
+                                if (totalDays > 0) {
+                                    pricingDetailsHtml += " + ";
+                                }
+                                pricingDetailsHtml += totalNights + " đêm";
+                            }
+                            if (totalHours > 0) {
+                                if (totalDays > 0 || totalNights > 0) {
+                                    pricingDetailsHtml += " + ";
+                                }
+                                pricingDetailsHtml += totalHours.toFixed(1) + " giờ";
+                            }
+                            pricingDetailsHtml += "</span>";
+                            break;
+                        case 'HOURLY':
+                            pricingDetailsHtml = "<span>Giá theo giờ: " + totalHours.toFixed(1) + " giờ</span>";
+                            break;
+                        default:
+                            pricingDetailsHtml = "<span>Không xác định được loại giá.</span>";
+                    }
+
+                    $('#pricing-details').html(pricingDetailsHtml);
+
+                    },
+                    error: function () {
+                        alert("Không thể tính giá phòng.");
+                    }
+                });
+            } else {
+                
+                $('#total').text("0đ");
+                $('#pricing-details').empty(); 
             }
-            updatePrice();
+        }
+
+            initPickers();
         });
     </script>
 </body>

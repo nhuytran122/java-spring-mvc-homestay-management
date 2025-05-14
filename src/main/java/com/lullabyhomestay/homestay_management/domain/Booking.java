@@ -100,11 +100,6 @@ public class Booking {
     @OneToMany(mappedBy = "booking")
     List<RoomStatusHistory> roomStatusHistories;
 
-    public long getNumberOfHours() {
-        if (checkIn != null && checkOut != null) {
-            return ChronoUnit.HOURS.between(checkIn, checkOut);
-        }
-        return 0;
-    }
-
+    @OneToOne(mappedBy = "booking")
+    private BookingPricingSnapshot pricingSnapshot;
 }

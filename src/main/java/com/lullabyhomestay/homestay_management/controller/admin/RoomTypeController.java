@@ -1,8 +1,7 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import com.lullabyhomestay.homestay_management.domain.RoomPricing;
 import com.lullabyhomestay.homestay_management.domain.RoomType;
+import com.lullabyhomestay.homestay_management.service.RoomPricingService;
 import com.lullabyhomestay.homestay_management.service.RoomTypeService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
 
@@ -29,29 +30,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
     private final UploadService uploadService;
+    private final RoomPricingService roomPricingService;
 
     @GetMapping("/admin/room-type")
     public String getRoomTypePage(Model model,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(defaultValue = "") String sort) {
+            @RequestParam(defaultValue = "") String keyword) {
         int validPage = Math.max(1, page);
         Page<RoomType> roomTypes = roomTypeService.searchRoomTypes(keyword,
-                validPage, sort);
+                validPage);
         List<RoomType> listRoomTypes = roomTypes.getContent();
-
-        StringBuilder extraParams = new StringBuilder();
-        if (sort != null) {
-            extraParams.append("&sort=").append(sort);
-        }
-        if (keyword != null && !keyword.isEmpty()) {
-            extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
-        }
-        model.addAttribute("extraParams", extraParams);
 
         model.addAttribute("roomTypes", listRoomTypes);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("sort", sort);
         model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", roomTypes.getTotalPages());
         return "admin/room-type/show";
@@ -92,13 +83,22 @@ public class RoomTypeController {
             img = this.uploadService.handleSaveUploadFile(file, "room");
             roomType.setPhoto(img);
         }
-        roomTypeService.handleSaveRoomType(roomType);
+        roomTypeService.createRoomType(roomType);
         return "redirect:/admin/room-type";
     }
 
     @GetMapping("/admin/room-type/update/{id}")
     public String getUpdateRoomTypePage(Model model, @PathVariable long id) {
         RoomType roomType = roomTypeService.getRoomTypeById(id);
+        Optional<RoomPricing> defaultPricingOpt = roomPricingService
+                .getDefaultRoomPricing(id);
+        RoomPricing defaultPricing;
+        if (defaultPricingOpt.isEmpty()) {
+            defaultPricing = new RoomPricing();
+        } else {
+            defaultPricing = defaultPricingOpt.get();
+        }
+        roomType.setRoomPricings(List.of(defaultPricing));
         model.addAttribute("roomType", roomType);
         return "admin/room-type/update";
     }
@@ -124,10 +124,10 @@ public class RoomTypeController {
         currentRoomType.setName(roomType.getName());
         currentRoomType.setDescription(roomType.getDescription());
         currentRoomType.setMaxGuest(roomType.getMaxGuest());
-        currentRoomType.setPricePerHour(roomType.getPricePerHour());
-        currentRoomType.setExtraPricePerHour(roomType.getExtraPricePerHour());
-
-        roomTypeService.handleSaveRoomType(currentRoomType);
+        if (roomType.getRoomPricings() != null && !roomType.getRoomPricings().isEmpty()) {
+            currentRoomType.setRoomPricings(roomType.getRoomPricings());
+        }
+        roomTypeService.updateRoomType(currentRoomType);
         return "redirect:/admin/room-type";
     }
 

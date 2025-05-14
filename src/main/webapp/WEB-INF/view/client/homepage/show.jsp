@@ -99,18 +99,21 @@
             <h2 class="section-title">Các loại phòng của chúng tôi</h2>
             <div class="row g-4">
                 <c:forEach var="roomType" items="${listRoomTypes}">
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0">
-                            <img src="/images/room/${roomType.photo}" class="card-img-top" alt="${roomType.name}" style="height: 200px; object-fit: cover;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm rounded">
+                            <img src="/images/room/${roomType.photo}" class="card-img-top rounded-top" alt="${roomType.name}" style="height: 200px; object-fit: cover;">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title mb-2 fw-bold">${roomType.name}</h5>
-                                <p class="card-text text-muted mb-3 flex-grow-1">${roomType.description}</p>
-                                <ul class="list-unstyled mb-3">
+                                <p class="card-text text-muted mb-3" style="min-height: 60px;">
+                                    ${roomType.description}
+                                </p>
+                                <ul class="list-unstyled text-muted mb-3">
                                     <li><i class="bi bi-people me-2"></i> Số khách tối đa: ${roomType.maxGuest} người</li>
                                 </ul>
-                                <div class="d-flex justify-content-between align-items-center mt-auto">
-                                    <span class="price fw-bold text-danger"><fmt:formatNumber type="number" value="${roomType.pricePerHour}" />đ/giờ</span>
-                                    <a href="/room?roomTypeID=${roomType.roomTypeID}" class="btn btn-primary px-4 py-2">Xem các phòng</a>
+                                <div class="mt-auto">
+                                    <a href="/room?roomTypeID=${roomType.roomTypeID}" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-door-open me-2"></i> Xem các phòng
+                                    </a>
                                 </div>
                             </div>
                         </div>

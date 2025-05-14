@@ -6,13 +6,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,18 +30,20 @@ import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 import com.lullabyhomestay.homestay_management.domain.BookingServices;
 import com.lullabyhomestay.homestay_management.domain.Review;
 import com.lullabyhomestay.homestay_management.domain.Room;
+import com.lullabyhomestay.homestay_management.domain.RoomPricing;
 import com.lullabyhomestay.homestay_management.domain.dto.ApiResponseDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.BookingPriceDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingRequestDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingServiceDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
+import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.service.*;
 import com.lullabyhomestay.homestay_management.utils.AuthUtils;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.BookingUtils;
 import com.lullabyhomestay.homestay_management.utils.Cancelability;
 import com.lullabyhomestay.homestay_management.utils.Constants;
-import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.RefundType;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,7 +53,7 @@ import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
-@PreAuthorize("hasRole('CUSTOMER')")
+// @PreAuthorize("hasRole('CUSTOMER')")
 public class ClientBookingController {
 
     private final BookingExtraService bookingExtraService;
@@ -66,6 +68,7 @@ public class ClientBookingController {
     private final RefundService refundService;
     private final BookingExtensionService bookingExtensionService;
     private final UserService userService;
+    private final RoomPricingService roomPricingService;
 
     @PostMapping("/booking")
     public String postCreateBooking(@ModelAttribute("newBooking") @Valid Booking booking,
@@ -77,6 +80,12 @@ public class ClientBookingController {
             result.rejectValue("checkIn", "error.newBooking", "Giờ check-in phải từ thời điểm hiện tại trở đi");
         }
         if (result.hasErrors()) {
+            Optional<RoomPricing> roomPricingOpt = roomPricingService
+                    .getDefaultRoomPricing(room.getRoomType().getRoomTypeID());
+            if (!roomPricingOpt.isPresent()) {
+                throw new NotFoundException("Giá phòng");
+            }
+            model.addAttribute("roomPricing", roomPricingOpt.get());
             model.addAttribute("room", room);
             model.addAttribute("listReviews", reviewService.getReviewsByRoomID(roomID));
             return "client/room/detail";
@@ -107,6 +116,21 @@ public class ClientBookingController {
 
         // redirectAttributes.addFlashAttribute("bookingID", booking.getBookingID());
         return "redirect:/booking/booking-service";
+    }
+
+    @GetMapping("/booking/calculate-price")
+    @ResponseBody
+    public ResponseEntity<ApiResponseDTO<BookingPriceDTO>> calculatePrice(
+            @RequestParam Long roomTypeId,
+            @RequestParam String checkIn,
+            @RequestParam String checkOut) {
+
+        LocalDateTime checkInTime = LocalDateTime.parse(checkIn);
+        LocalDateTime checkOutTime = LocalDateTime.parse(checkOut);
+
+        BookingPriceDTO price = bookingService.getRoomPriceDetail(roomTypeId, checkInTime, checkOutTime);
+
+        return ResponseEntity.ok(new ApiResponseDTO<>(price, "Tính giá thành công"));
     }
 
     @GetMapping("/booking/booking-service")
@@ -235,12 +259,14 @@ public class ClientBookingController {
 
         model.addAttribute("canCancel", bookingService.checkCancelability(id) == Cancelability.ALLOWED);
         model.addAttribute("booking", booking);
-        model.addAttribute("numberOfHours", booking.getNumberOfHours());
         model.addAttribute("newReview", new Review());
         model.addAttribute("editReview", new Review());
+        model.addAttribute("hasPrepaidBService", bookingExtraService.hasPrepaidService(id));
+        model.addAttribute("hasPostpaidBService", bookingExtraService.hasPostpaidService(id));
         model.addAttribute("listServicesPostPay", service.getServiceByIsPrepaid(false));
         model.addAttribute("totalUnpaidPostpaidAmount", bookingExtraService.calculateUnpaidServicesTotalAmount(id));
         model.addAttribute("canPayBServices", bookingExtraService.allPostpaidServicesHaveQuantity(id));
+        model.addAttribute("paidRoomPricing", 0);
         return "client/booking/detail-booking-history";
     }
 
@@ -349,7 +375,7 @@ public class ClientBookingController {
         return "client/booking/booking-extension";
     }
 
-    @PostMapping("/booking/booking-extension")
+    @PostMapping("/booking/booking-extension/create")
     public String postBookingExtension(@RequestParam("bookingID") Long bookingID,
             @RequestParam("newCheckoutTime") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime newCheckout,
             Model model) {
@@ -391,10 +417,9 @@ public class ClientBookingController {
         model.addAttribute("newCheckout", newCheckout);
         bookingExtensionService.handleBookingExtensions(extension);
         model.addAttribute("extension", extension);
-        model.addAttribute("finalAmount", extension.getTotalAmount()
-                - DiscountUtil.calculateDiscountAmount(extension.getTotalAmount(), booking.getCustomer()));
+        model.addAttribute("finalAmount", bookingExtensionService.calculateFinalExtensionAmount(extension));
 
-        double originalAmount = extension.getTotalAmount();
+        double originalAmount = bookingExtensionService.calculateRawTotalAmountBookingExtension(extension);
         double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
         model.addAttribute("discountAmount", discountAmount);
         return "client/booking/confirm-extension";
