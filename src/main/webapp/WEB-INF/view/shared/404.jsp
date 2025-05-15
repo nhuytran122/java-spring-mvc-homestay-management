@@ -17,9 +17,9 @@
                 <img src="https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b" alt="404 Error" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
             </div>
             <h1 class="error-code mb-4">404</h1>
-            <h2 class="error-title mb-4">Không tìm thấy trang bạn yêu cầu.</h2>
+            <h2 class="error-title mb-4">Không tìm thấy trang bạn yêu cầu</h2>
             <div class="error-actions">
-                <a href="/admin/dashboard" class="btn btn-primary my-4">
+                <a href="/" class="btn btn-primary my-4">
                     <i class="bi bi-house-door me-2"></i>Về trang chủ
                 </a>
             </div>

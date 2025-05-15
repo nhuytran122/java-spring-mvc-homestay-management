@@ -64,10 +64,14 @@ public class SecurityConfiguration {
                                                 .permitAll()
 
                                                 .requestMatchers("/", "/login", "/room/**", "/register",
+                                                                "/forgot-password", "/reset-password", "/error",
                                                                 "/client/**", "/css/**",
                                                                 "/js/**",
-                                                                "/images/**")
+                                                                "/images/**",
+                                                                "/shared/**")
                                                 .permitAll()
+
+                                                .requestMatchers("/WEB-INF/view/shared/**").permitAll()
 
                                                 .requestMatchers("/admin/**")
                                                 .hasAnyRole(SystemRole.MANAGER.name(), SystemRole.HOUSEKEEPER.name(),

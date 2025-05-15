@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
+import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.utils.ConvertDateToString;
 
 import jakarta.mail.MessagingException;
@@ -66,7 +67,7 @@ public class EmailService {
                 NumberFormat currencyFormat = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
                 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-                Resource resource = resourceLoader.getResource("classpath:/reminder/reminder-email.html");
+                Resource resource = resourceLoader.getResource("classpath:/template-emails/reminder-email.html");
                 if (!resource.exists()) {
                         throw new IOException("Không tìm thấy template email");
                 }
@@ -114,6 +115,44 @@ public class EmailService {
                                                                 : "N/A")
                                 .replace("${bookingHistoryLink}",
                                                 baseUrl + "/booking/booking-history/" + booking.getBookingID());
+
+                return content;
+        }
+
+        public void sendPasswordResetEmail(User user, String token) throws MessagingException, IOException {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+                helper.setTo(user.getEmail());
+                helper.setSubject("Yêu cầu đặt lại mật khẩu - Lullaby Homestay");
+                helper.setFrom(sendFrom);
+
+                String emailContent = buildPasswordResetEmail(user, token);
+                helper.setText(emailContent, true);
+
+                helper.addInline("logo.jpg",
+                                resourceLoader.getResource("classpath:/static/images/lullaby.jpg").getFile());
+                try {
+                        mailSender.send(message);
+                        log.info("Gửi email thành công: {}", user.getEmail());
+                } catch (Exception e) {
+                        log.error("Gửi email thất bại {}: {}", user.getEmail(), e.getMessage(),
+                                        e);
+                        throw e;
+                }
+        }
+
+        private String buildPasswordResetEmail(User user, String token) throws IOException {
+                Resource resource = resourceLoader.getResource("classpath:/template-emails/reset-password-email.html");
+                if (!resource.exists()) {
+                        log.error("Không tìm thấy template:/template-emails/reset-password-email.html");
+                        throw new IOException("Không tìm thấy template");
+                }
+                String content = new String(Files.readAllBytes(resource.getFile().toPath()), StandardCharsets.UTF_8);
+
+                String resetLink = baseUrl + "/reset-password?token=" + token;
+                content = content.replace("${userName}", user.getFullName())
+                                .replace("${resetLink}", resetLink);
 
                 return content;
         }

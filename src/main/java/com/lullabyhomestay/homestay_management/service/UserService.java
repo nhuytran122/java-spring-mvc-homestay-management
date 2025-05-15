@@ -1,17 +1,20 @@
 package com.lullabyhomestay.homestay_management.service;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lullabyhomestay.homestay_management.domain.PasswordResetToken;
 import com.lullabyhomestay.homestay_management.domain.Role;
 import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
+import com.lullabyhomestay.homestay_management.repository.PasswordResetTokenRepository;
 import com.lullabyhomestay.homestay_management.repository.RoleRepository;
 import com.lullabyhomestay.homestay_management.repository.UserRepository;
 import com.lullabyhomestay.homestay_management.utils.SystemRole;
@@ -25,6 +28,9 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
+    private final EmailService emailService;
+
+    private final PasswordResetTokenRepository tokenRepository;
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -88,5 +94,34 @@ public class UserService {
         if (dto.getAvatar() != null) {
             user.setAvatar(dto.getAvatar());
         }
+    }
+
+    @Transactional
+    public void requestPasswordReset(String email) throws Exception {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new Exception("Email không tồn tại");
+        }
+        tokenRepository.deleteByUser(user);
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken resetToken = new PasswordResetToken(
+                token,
+                user,
+                LocalDateTime.now().plusMinutes(30));
+        tokenRepository.save(resetToken);
+        emailService.sendPasswordResetEmail(user, token);
+    }
+
+    public void resetPassword(String token, String newPassword) throws Exception {
+        PasswordResetToken resetToken = tokenRepository.findByToken(token);
+        if (resetToken == null || resetToken.isExpired() || resetToken.getIsUsed()) {
+            throw new Exception("Token không hợp lệ hoặc đã hết hạn");
+        }
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        resetToken.setIsUsed(true);
+        tokenRepository.save(resetToken);
     }
 }

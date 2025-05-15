@@ -16,14 +16,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public String handleNotFoundException(NoHandlerFoundException ex, Model model) {
-        return "admin/404";
+        return "shared/404";
     }
 
     @ExceptionHandler(NotFoundException.class)
     public String handleNotFoundException(NotFoundException ex, Model model) {
         String errorMessage = "Không tìm thấy " + ex.getEntityName();
         model.addAttribute("errorMessage", errorMessage);
-        return "admin/not-found";
+        return "shared/not-found";
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -35,6 +35,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDeniedException(AccessDeniedException e, Model model) {
         model.addAttribute("errorMessage", e.getMessage());
-        return "client/auth/deny";
+        return "shared/auth/deny";
     }
 }
