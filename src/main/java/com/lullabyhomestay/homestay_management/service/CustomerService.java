@@ -37,14 +37,14 @@ public class CustomerService {
     private final UserService userService;
 
     @Transactional
-    public CustomerDTO handleRegisterAccount(RegisterDTO registerDTO) {
-        UserDTO userDTO = mapper.map(registerDTO, UserDTO.class);
-        User user = userService.createUserForPerson(userDTO, null, registerDTO.getPassword());
+    public CustomerDTO handleRegisterAccount(RegisterDTO registerDTO) throws Exception {
+        User user = userService.registerUserWithVerification(registerDTO);
 
         Customer customer = mapper.map(registerDTO, Customer.class);
         customer.setCustomerType(customerTypeService.getCustomerTypeWithLowestMinPoint());
         customer.setUser(user);
         Customer savedCustomer = customerRepository.save(customer);
+
         return mapper.map(savedCustomer, CustomerDTO.class);
     }
 

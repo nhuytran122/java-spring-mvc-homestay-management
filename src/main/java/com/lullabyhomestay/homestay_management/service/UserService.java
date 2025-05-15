@@ -8,12 +8,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lullabyhomestay.homestay_management.domain.EmailVerificationToken;
 import com.lullabyhomestay.homestay_management.domain.PasswordResetToken;
 import com.lullabyhomestay.homestay_management.domain.Role;
 import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
+import com.lullabyhomestay.homestay_management.domain.dto.RegisterDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
+import com.lullabyhomestay.homestay_management.repository.EmailVerificationTokenRepository;
 import com.lullabyhomestay.homestay_management.repository.PasswordResetTokenRepository;
 import com.lullabyhomestay.homestay_management.repository.RoleRepository;
 import com.lullabyhomestay.homestay_management.repository.UserRepository;
@@ -31,6 +34,7 @@ public class UserService {
     private final EmailService emailService;
 
     private final PasswordResetTokenRepository tokenRepository;
+    private final EmailVerificationTokenRepository verificationTokenRepository;
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -56,7 +60,43 @@ public class UserService {
         user.setPassword(encodePasswordOrDefault(password));
         updateUserInfoFromDTO(user, userDTO);
         user.setRole(resolveRole(roleID));
+        user.setIsEnabled(true);
         return handleSaveUser(user);
+    }
+
+    @Transactional
+    public User registerUserWithVerification(RegisterDTO registerDTO) throws Exception {
+        if (checkEmailExist(registerDTO.getEmail())) {
+            throw new Exception("Email đã được sử dụng");
+        }
+
+        User user = new User();
+        user.setEmail(registerDTO.getEmail());
+        user.setPassword(encodePasswordOrDefault(registerDTO.getPassword()));
+        user.setIsEnabled(false);
+        updateUserInfoFromRegisterDTO(user, registerDTO);
+        user.setRole(resolveRole(null));
+        User savedUser = handleSaveUser(user);
+
+        createAndSendVerificationToken(savedUser);
+
+        return savedUser;
+    }
+
+    private void updateUserInfoFromRegisterDTO(User user, RegisterDTO dto) {
+        user.setFullName(dto.getFullName());
+        user.setPhone(dto.getPhone());
+    }
+
+    private void createAndSendVerificationToken(User user) throws Exception {
+        verificationTokenRepository.deleteByUser(user);
+        String token = UUID.randomUUID().toString();
+        EmailVerificationToken verificationToken = new EmailVerificationToken(
+                token,
+                user,
+                LocalDateTime.now().plusHours(24));
+        verificationTokenRepository.save(verificationToken);
+        emailService.sendEmailVerificationEmail(user, token);
     }
 
     public UserDTO updateProfile(Long id, UserDTO requestDTO) {
@@ -123,5 +163,20 @@ public class UserService {
 
         resetToken.setIsUsed(true);
         tokenRepository.save(resetToken);
+    }
+
+    @Transactional
+    public void verifyEmail(String token) throws Exception {
+        EmailVerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+        if (verificationToken == null || verificationToken.isExpired() || verificationToken.getIsUsed()) {
+            throw new Exception("Token không hợp lệ hoặc đã hết hạn");
+        }
+
+        User user = verificationToken.getUser();
+        user.setIsEnabled(true);
+        userRepository.save(user);
+
+        verificationToken.setIsUsed(true);
+        verificationTokenRepository.save(verificationToken);
     }
 }

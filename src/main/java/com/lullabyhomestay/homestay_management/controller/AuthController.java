@@ -34,19 +34,58 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String getRegisterPage(Model model) {
+    public String getRegisterPage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session.getAttribute("id") != null) {
+            return "redirect:/";
+        }
         model.addAttribute("registerUser", new RegisterDTO());
         return "shared/auth/register";
     }
 
     @PostMapping("/register")
     public String handleRegister(@ModelAttribute("registerUser") @Valid RegisterDTO registerDTO,
-            BindingResult result) {
+            BindingResult result, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session.getAttribute("id") != null) {
+            return "redirect:/";
+        }
         if (result.hasErrors()) {
             return "shared/auth/register";
         }
-        this.customerService.handleRegisterAccount(registerDTO);
-        return "redirect:/login";
+        try {
+            customerService.handleRegisterAccount(registerDTO);
+            model.addAttribute("message", "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận.");
+            return "shared/auth/register";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "shared/auth/register";
+        }
+    }
+
+    @GetMapping("/verify-email")
+    public String verifyEmail(@RequestParam("token") String token, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session.getAttribute("id") != null) {
+            return "redirect:/";
+        }
+        try {
+            userService.verifyEmail(token);
+            model.addAttribute("message", "Email đã được xác nhận! Bạn có thể đăng nhập.");
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "shared/auth/verify-email";
+    }
+
+    @GetMapping("/verify-email-pending")
+    public String showVerifyEmailPending(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session.getAttribute("id") != null) {
+            return "redirect:/";
+        }
+        model.addAttribute("error", "Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để xác nhận.");
+        return "shared/auth/verify-email-pending";
     }
 
     @GetMapping("/access-deny")

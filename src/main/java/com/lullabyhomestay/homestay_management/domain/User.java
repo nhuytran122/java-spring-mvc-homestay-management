@@ -51,6 +51,9 @@ public class User {
     @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "IsEnabled")
+    private Boolean isEnabled = false;
+
     @ManyToOne
     @JoinColumn(name = "RoleID")
     private Role role;
@@ -63,4 +66,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<PasswordResetToken> passwordResetTokens;
+
+    @OneToMany(mappedBy = "user")
+    List<EmailVerificationToken> emailVerificationTokens;
 }

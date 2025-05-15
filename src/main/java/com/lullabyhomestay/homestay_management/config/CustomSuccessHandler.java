@@ -27,6 +27,9 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
+    @Autowired
+    private UserService userService;
+
     protected String determineTargetUrl(final Authentication authentication) {
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_" + SystemRole.CUSTOMER, "/");
@@ -45,29 +48,29 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         return "/";
     }
 
-    @Autowired
-    private UserService userService;
-
-    protected void clearAuthenticationAttributes(HttpServletRequest request, Authentication authentication) {
+    protected void clearAuthenticationAttributes(HttpServletRequest request, Authentication authentication)
+            throws ServletException {
         HttpSession session = request.getSession(false);
         if (session == null) {
             return;
         }
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+
         String email = authentication.getName();
-        User user = this.userService.getUserByEmail(email);
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            throw new ServletException("Không tìm thấy người dùng với email: " + email);
+        }
+        if (!user.getIsEnabled()) {
+            throw new ServletException("Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để xác nhận.");
+        }
+
         Role role = user.getRole();
-        if (role != null) {
-            session.setAttribute("role", role.getRoleName().name());
-        }
-        if (user != null) {
-            session.setAttribute("fullName", user.getFullName());
-            session.setAttribute("avatar", user.getAvatar());
-            session.setAttribute("id", user.getUserID());
-            session.setAttribute("email", user.getEmail());
-            session.setAttribute("role", role);
-            return;
-        }
+        session.setAttribute("fullName", user.getFullName());
+        session.setAttribute("avatar", user.getAvatar());
+        session.setAttribute("id", user.getUserID());
+        session.setAttribute("email", user.getEmail());
+        session.setAttribute("role", role != null ? role.getRoleName().name() : SystemRole.CUSTOMER.name());
     }
 
     @Override
@@ -79,8 +82,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
-        redirectStrategy.sendRedirect(request, response, targetUrl);
         clearAuthenticationAttributes(request, authentication);
+        redirectStrategy.sendRedirect(request, response, targetUrl);
     }
-
 }

@@ -72,7 +72,8 @@ uri="http://www.springframework.org/tags/form" %>
                     class="alert alert-success alert-dismissible fade show"
                     role="alert"
                   >
-                    ${message} Bạn sẽ được chuyển hướng đến trang đăng nhập.
+                    ${message} Bạn sẽ được chuyển hướng đến trang đăng nhập
+                    trong vòng 3 giây.
                     <button
                       type="button"
                       class="btn-close"

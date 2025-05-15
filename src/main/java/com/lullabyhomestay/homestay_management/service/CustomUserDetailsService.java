@@ -22,17 +22,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.lullabyhomestay.homestay_management.domain.User user = userService.getUserByEmail(username);
-        if (user != null) {
-            Role role = user.getRole();
-            if (role == null || role.getRoleName() == null) {
-                throw new UsernameNotFoundException("Người dùng không có vai trò hợp lệ.");
-            }
-            String roleName = "ROLE_" + role.getRoleName().name();
-            return new User(
-                    user.getEmail(),
-                    user.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority(roleName)));
+        if (user == null) {
+            throw new UsernameNotFoundException("Không tìm thấy người dùng với email: " + username);
         }
-        throw new UsernameNotFoundException("Không tìm thấy người dùng với email: " + username);
+        if (!user.getIsEnabled()) {
+            throw new UsernameNotFoundException("Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để xác nhận.");
+        }
+        Role role = user.getRole();
+        if (role == null || role.getRoleName() == null) {
+            throw new UsernameNotFoundException("Người dùng không có vai trò hợp lệ.");
+        }
+        String roleName = "ROLE_" + role.getRoleName().name();
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(roleName)));
     }
 }

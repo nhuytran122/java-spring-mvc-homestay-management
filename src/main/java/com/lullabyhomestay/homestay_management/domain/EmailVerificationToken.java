@@ -15,11 +15,11 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PasswordResetTokens")
+@Table(name = "EmailVerificationTokens")
 @Getter
 @Setter
 @NoArgsConstructor
-public class PasswordResetToken {
+public class EmailVerificationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TokenID")
@@ -42,7 +42,7 @@ public class PasswordResetToken {
         return LocalDateTime.now().isAfter(expiryDate);
     }
 
-    public PasswordResetToken(String token, User user, LocalDateTime expiryDate) {
+    public EmailVerificationToken(String token, User user, LocalDateTime expiryDate) {
         this.token = token;
         this.user = user;
         this.expiryDate = expiryDate;
