@@ -19,7 +19,7 @@
             <h1 class="error-code mb-4">404</h1>
             <h2 class="error-title mb-4">Không tìm thấy trang bạn yêu cầu.</h2>
             <div class="error-actions">
-                <a href="/admin" class="btn btn-primary my-4">
+                <a href="/admin/dashboard" class="btn btn-primary my-4">
                     <i class="bi bi-house-door me-2"></i>Về trang chủ
                 </a>
             </div>

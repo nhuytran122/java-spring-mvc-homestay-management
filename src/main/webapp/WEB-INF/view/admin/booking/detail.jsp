@@ -159,6 +159,22 @@ uri="http://lullabyhomestay.com/functions" %>
                             />đ
                           </div>
                         </div>
+                        <div class="row mb-3 d-flex align-items-center">
+                          <div class="col-md-4 fw-bold text-md-start">
+                            Đã gửi email thông tin?:
+                          </div>
+                          <div class="col-md-8">
+                            <c:choose>
+                              <c:when test="${booking.hasSentReminder}">
+                                <span class="badge bg-success">Đã gửi</span>
+                              </c:when>
+                              <c:otherwise>
+                                <span class="badge bg-secondary">Chưa gửi</span>
+                              </c:otherwise>
+                            </c:choose>
+                          </div>
+
+                        </div>
                       </div>
                     </div>
 

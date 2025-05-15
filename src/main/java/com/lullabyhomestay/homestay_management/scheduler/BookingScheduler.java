@@ -9,15 +9,14 @@ import org.springframework.stereotype.Component;
 
 import com.lullabyhomestay.homestay_management.domain.ActionLog;
 import com.lullabyhomestay.homestay_management.domain.Booking;
-import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 import com.lullabyhomestay.homestay_management.service.ActionLogService;
 import com.lullabyhomestay.homestay_management.service.BookingExtensionService;
 import com.lullabyhomestay.homestay_management.service.BookingService;
 import com.lullabyhomestay.homestay_management.service.CustomerService;
+import com.lullabyhomestay.homestay_management.service.EmailService;
 import com.lullabyhomestay.homestay_management.service.RoomStatusHistoryService;
 import com.lullabyhomestay.homestay_management.utils.ActionType;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
-import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.ObjectType;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,7 @@ public class BookingScheduler {
     private final BookingExtensionService bookingExtensionService;
     private final CustomerService customerService;
     private final ActionLogService actionLogService;
+    private final EmailService emailService;
 
     @Value("${booking.pending.timeout.minutes}")
     private int timeoutMinutes;
@@ -100,6 +100,28 @@ public class BookingScheduler {
 
         if (count > 0) {
             bookingExtensionService.deleteAllByPaymentDetailIsNull();
+        }
+    }
+
+    // @Scheduled(fixedDelay = 3000)
+    @Scheduled(fixedDelay = 900000)
+    public void sendReminderEmails() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thirtyMinutesLater = now.plusMinutes(30);
+
+        // Lấy all các booking đã CONFIRMED và check-in sắp đến trong vòng 30
+        // phút
+        List<Booking> bookings = bookingService.findBookingsToSendReminder(now, thirtyMinutesLater);
+
+        for (Booking booking : bookings) {
+            try {
+                emailService.sendCheckInReminderEmail(booking);
+                booking.setHasSentReminder(true);
+                bookingService.handleSaveBooking(booking);
+            } catch (Exception e) {
+                e.getMessage();
+            }
+
         }
     }
 }

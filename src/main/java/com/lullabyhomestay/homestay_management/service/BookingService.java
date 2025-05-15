@@ -441,4 +441,9 @@ public class BookingService {
         return pricing.getExtraHourPrice() * hours;
     }
 
+    public List<Booking> findBookingsToSendReminder(LocalDateTime start, LocalDateTime end) {
+        return bookingRepository.findByCheckInBetweenAndHasSentReminderFalseAndStatus(start, end,
+                BookingStatus.CONFIRMED);
+    }
+
 }

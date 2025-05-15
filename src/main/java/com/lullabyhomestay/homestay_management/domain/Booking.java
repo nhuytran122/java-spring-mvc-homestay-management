@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.domain;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -74,6 +73,9 @@ public class Booking {
 
     @Column(name = "PaidAmount")
     private Double paidAmount;
+
+    @Column(name = "HasSentReminder")
+    private Boolean hasSentReminder = false;
 
     @OneToMany(mappedBy = "booking")
     List<BookingExtension> bookingExtensions;

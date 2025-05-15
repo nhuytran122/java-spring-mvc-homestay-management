@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Nhắc nhở check-in & mật khẩu cổng - Đơn đặt phòng lúc ${checkIn}
+    </title>
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+        color: #212529;
+        font-size: 15px;
+        line-height: 1.5;
+        padding: 0;
+        margin: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+      }
+
+      .title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        display: block;
+        margin: 0 auto 20px auto;
+        max-width: 150px;
+      }
+
+      .section-title {
+        color: #198754;
+        font-size: 16px;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .info-list {
+        padding-left: 0;
+        list-style: none;
+        margin: 0;
+      }
+
+      .info-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .info-label {
+        font-weight: bold;
+      }
+
+      .gate-password-box {
+        background-color: #fff3cd;
+        border: 2px solid #ffeeba;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 25px;
+      }
+
+      .gate-password-box h5 {
+        margin-top: 0;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #856404;
+      }
+
+      .gate-password-value {
+        display: inline-block;
+        background-color: #fff;
+        border: 1px dashed #856404;
+        font-weight: bold;
+        font-size: 1.5rem;
+        padding: 10px 20px;
+        margin: 10px 0;
+        color: #212529;
+        border-radius: 6px;
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: #198754;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-top: 25px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .footer {
+        font-size: 13px;
+        color: #6c757d;
+        text-align: center;
+        margin-top: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img src="cid:logo.jpg" alt="Lullaby Homestay Logo" class="logo" />
+
+      <h2 class="title">
+        Nhắc nhở check-in & mật khẩu cổng - Đơn đặt phòng lúc ${checkIn}
+      </h2>
+
+      <p>Xin chào <strong>${customerName}</strong>!</p>
+      <p>
+        Đơn đặt phòng của bạn sẽ bắt đầu trong vòng 30 phút nữa. Chúng tôi rất
+        mong được đón tiếp bạn tại Lullaby Homestay. Hãy đến khi bạn sẵn sàng và
+        tận hưởng kỳ nghỉ của mình nhé!
+      </p>
+
+      <h4 class="section-title">Thông tin đặt phòng</h4>
+      <ul class="info-list">
+        <li><span class="info-label">Thời gian đặt:</span> ${createdAt}</li>
+        <li><span class="info-label">Check-in:</span> ${checkIn}</li>
+        <li><span class="info-label">Check-out:</span> ${checkOut}</li>
+        <li><span class="info-label">Số khách:</span> ${guestCount}</li>
+        <li><span class="info-label">Tổng tiền:</span> ${totalAmount}đ</li>
+        <li><span class="info-label">Đã thanh toán:</span> ${paidAmount}đ</li>
+      </ul>
+
+      <h4 class="section-title">Thông tin phòng</h4>
+      <p><span class="info-label">Phòng:</span> ${roomNumber} - ${roomType}</p>
+
+      <h4 class="section-title">Thông tin chi nhánh</h4>
+      <ul class="info-list">
+        <li><span class="info-label">Chi nhánh:</span> ${branchName}</li>
+        <li><span class="info-label">Địa chỉ:</span> ${branchAddress}</li>
+        <li><span class="info-label">Điện thoại:</span> ${branchPhone}</li>
+      </ul>
+
+      <div class="gate-password-box">
+        <h5>Mật Khẩu Cổng Điện Tử</h5>
+        <p>Đây là "chìa khóa" để vào chi nhánh:</p>
+        <div class="gate-password-value">${branchPassword}</div>
+        <p>
+          Nhập mật khẩu này tại cổng để vào chi nhánh nhé. Sau đó đừng quên ghé
+          sảnh nhận thẻ phòng tương ứng để vào được phòng nghỉ của bạn
+        </p>
+      </div>
+
+      <a href="${bookingHistoryLink}" class="btn"> Xem chi tiết đặt phòng </a>
+
+      <div class="footer">
+        <p>
+          Nếu có bất kỳ câu hỏi nào, bạn có thể liên hệ với chúng tôi qua
+          <a href="mailto:lullabyhomestay@gmail.com"
+            >lullabyhomestay@gmail.com</a
+          >
+          hoặc gọi tới ${branchPhone}.
+        </p>
+        <p>
+          Chúc bạn có một kỳ nghỉ tuyệt vời!<br />
+          Trân trọng,<br />
+          <strong>Lullaby Homestay</strong>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -3,7 +3,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <nav class="sidebar sidebar-offcanvas" id="sidebar" style="margin-left: -1%">
   <ul class="nav">
     <li class="nav-item">
-      <a class="nav-link" href="/admin">
+      <a class="nav-link" href="/admin/dashboard">
         <i class="icon-grid menu-icon"></i>
         <span class="menu-title">Dashboard</span>
       </a>

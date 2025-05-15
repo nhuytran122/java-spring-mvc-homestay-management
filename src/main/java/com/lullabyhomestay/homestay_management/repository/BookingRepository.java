@@ -52,4 +52,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
         Long countBookingsByDateRange(@Param("startDate") LocalDateTime startDate,
                         @Param("endDate") LocalDateTime endDate);
 
+        List<Booking> findByCheckInBetweenAndHasSentReminderFalseAndStatus(
+                        LocalDateTime start, LocalDateTime end, BookingStatus status);
+
 }

@@ -49,7 +49,7 @@ public class ClientRoomController {
     public String getDetailRoomPage(Model model,
             @PathVariable long id,
             HttpServletRequest request,
-            @RequestParam(value = "fromConfirmPage", required = false) boolean fromConfirmPage) {
+            @RequestParam(value = "fromBookingService", required = false) boolean fromBookingService) {
         Room room = roomService.getRoomByID(id);
         Optional<RoomPricing> roomPricingOpt = roomPricingService
                 .getDefaultRoomPricing(room.getRoomType().getRoomTypeID());
@@ -65,7 +65,7 @@ public class ClientRoomController {
         // Đối với trường hợp user back từ confirm -> detail room
         HttpSession session = request.getSession(false);
         BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
-        if (bookingRequest != null && bookingRequest.getBookingID() != null && fromConfirmPage) {
+        if (bookingRequest != null && bookingRequest.getBookingID() != null && fromBookingService) {
             bookingService.deleteByBookingID(bookingRequest.getBookingID());
             session.setAttribute("bookingRequest", null);
         }

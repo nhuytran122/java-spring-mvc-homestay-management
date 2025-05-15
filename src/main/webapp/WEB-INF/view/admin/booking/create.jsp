@@ -200,31 +200,26 @@
                                 break;
                             case 'MIXED':
                                 pricingDetailsHtml = "<span>Giá kết hợp: ";
-                                if (totalDays > 0) {
-                                    pricingDetailsHtml += totalDays + " ngày";
-                                }
-                                if (totalNights > 0) {
-                                    if (totalDays > 0) {
-                                        pricingDetailsHtml += " + ";
-                                    }
-                                    pricingDetailsHtml += totalNights + " đêm";
-                                }
-                                if (totalHours > 0) {
-                                    if (totalDays > 0 || totalNights > 0) {
-                                        pricingDetailsHtml += " + ";
-                                    }
-                                    pricingDetailsHtml += totalHours + " giờ";
-                                }
+                                if (totalDays > 0) pricingDetailsHtml += totalDays + " ngày";
+                                if (totalNights > 0) pricingDetailsHtml += (totalDays > 0 ? " + " : "") + totalNights + " đêm";
+                                if (totalHours > 0) pricingDetailsHtml += (totalDays > 0 || totalNights > 0 ? " + " : "") + totalHours.toFixed(1) + " giờ";
                                 pricingDetailsHtml += "</span>";
                                 break;
                             case 'HOURLY':
-                                pricingDetailsHtml = "<span>Giá theo giờ: " + totalHours + " giờ</span>";
+                                pricingDetailsHtml = "<span>Giá theo giờ: " + totalHours.toFixed(1) + " giờ</span>";
                                 break;
                             default:
                                 pricingDetailsHtml = "<span>Không xác định được loại giá.</span>";
                         }
 
+                        if (isDorm) {
+                            pricingDetailsHtml += "<div class='text-muted small'>(" +
+                                price.toLocaleString('vi-VN') + "đ x " + totalHours.toFixed(1) + " giờ x " + guestCount + " người)</div>";
+                        }
+
                         $('#pricing-details').html(pricingDetailsHtml);
+                        $('#total').text(total.toLocaleString('vi-VN') + "đ");
+
                     },
                     error: function () {
                         alert("Không thể tính giá phòng.");
@@ -247,7 +242,6 @@
             for (let i = 1; i <= maxGuest; i++) {
                 $guestCount.append('<option value="' + i + '">' + i + ' người</option>');
             }
-
             updatePrice();
         });
 
