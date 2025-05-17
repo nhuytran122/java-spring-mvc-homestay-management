@@ -1,6 +1,7 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.RoleService;
 import com.lullabyhomestay.homestay_management.service.UploadService;
 import com.lullabyhomestay.homestay_management.service.validator.AdminValidation;
+import com.lullabyhomestay.homestay_management.utils.SystemRole;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -43,8 +45,7 @@ public class EmployeeController {
         Page<EmployeeDTO> employees = employeeService.searchEmployees(criteria, page);
         List<EmployeeDTO> listEmployees = employees.getContent();
 
-        List<Role> roleOptions = roleService.getAllRoles();
-        model.addAttribute("listRoles", roleOptions);
+        model.addAttribute("listRoles", getAllNonCustomerRoles());
         model.addAttribute("criteria", criteria);
         model.addAttribute("extraParams", criteria.convertToExtraParams());
 
@@ -63,8 +64,7 @@ public class EmployeeController {
 
     @GetMapping("/admin/employee/create")
     public String getCreateEmployeePage(Model model) {
-        List<Role> roleOptions = roleService.getAllRoles();
-        model.addAttribute("listRoles", roleOptions);
+        model.addAttribute("listRoles", getAllNonCustomerRoles());
         model.addAttribute("newEmployee", new EmployeeDTO());
         return "admin/employee/create";
     }
@@ -78,8 +78,7 @@ public class EmployeeController {
 
         // HttpSession session = request.getSession(false);
         if (newEmployeeBindingResult.hasErrors()) {
-            List<Role> roleOptions = roleService.getAllRoles();
-            model.addAttribute("listRoles", roleOptions);
+            model.addAttribute("listRoles", getAllNonCustomerRoles());
             return "admin/employee/create";
         }
         String img;
@@ -94,8 +93,7 @@ public class EmployeeController {
     @GetMapping("/admin/employee/update/{id}")
     public String getUpdateEmployeePage(Model model, @PathVariable long id) {
         EmployeeDTO employee = employeeService.getEmployeeDTOByID(id);
-        List<Role> roleOptions = roleService.getAllRoles();
-        model.addAttribute("listRoles", roleOptions);
+        model.addAttribute("listRoles", getAllNonCustomerRoles());
 
         model.addAttribute("employee", employee);
         return "admin/employee/update";
@@ -111,8 +109,7 @@ public class EmployeeController {
         // HttpSession session = request.getSession(false);
         EmployeeDTO currentEmployee = (employeeService.getEmployeeDTOByID(employee.getEmployeeID()));
         if (newEmployeeBindingResult.hasErrors()) {
-            List<Role> roleOptions = roleService.getAllRoles();
-            model.addAttribute("listRoles", roleOptions);
+            model.addAttribute("listRoles", getAllNonCustomerRoles());
             return "admin/employee/update";
         }
         if (!file.isEmpty()) {
@@ -141,4 +138,12 @@ public class EmployeeController {
         this.employeeService.deleteByEmployeeID(employeeID);
         return "redirect:/admin/employee";
     }
+
+    public List<Role> getAllNonCustomerRoles() {
+        return roleService.getAllRoles()
+                .stream()
+                .filter(role -> role.getRoleName() != SystemRole.CUSTOMER)
+                .collect(Collectors.toList());
+    }
+
 }

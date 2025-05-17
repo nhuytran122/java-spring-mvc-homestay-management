@@ -228,8 +228,6 @@ public class ClientBookingController {
             throw new AccessDeniedException("Vui lòng đăng nhập để sử dụng chức năng này");
         }
         int validPage = Math.max(1, page);
-        String sort = (criteria.getSort() != null && !criteria.getSort().isEmpty()) ? criteria.getSort() : "desc";
-        criteria.setSort(sort);
 
         if (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty()) {
             LocalDateTime startDefault = LocalDateTime.now();

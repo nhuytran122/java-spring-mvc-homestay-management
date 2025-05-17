@@ -46,9 +46,9 @@ public class Branch {
     @Column(name = "Image")
     private String image;
 
-    @NotBlank(message = "Vui lòng nhập mật khẩu chi nhánh")
-    @Column(name = "BranchPassword")
-    private String branchPassword;
+    @NotBlank(message = "Vui lòng nhập mật khẩu cổng của chi nhánh")
+    @Column(name = "GatePassword")
+    private String gatePassword;
 
     @OneToMany(mappedBy = "branch")
     List<InventoryStock> inventoryStocks;

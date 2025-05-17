@@ -74,7 +74,7 @@
                                             </div> 
                                             <div class="row mb-3 d-flex align-items-center">
                                                 <div class="col-md-4 fw-bold text-md-start">Mật khẩu cổng:</div>
-                                                <div class="col-md-8">${branch.branchPassword}</div>
+                                                <div class="col-md-8">${branch.gatePassword}</div>
                                             </div>                                             
                                         </div>
                                     </div>
@@ -85,6 +85,7 @@
                         </div>
                     </div>
                 </div>
+                <jsp:include page="../layout/footer.jsp" />
             </div>
         </div>
     </div>

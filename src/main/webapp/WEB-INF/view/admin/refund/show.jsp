@@ -56,9 +56,6 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="card-title">Danh sách yêu cầu hoàn tiền</h4>
-                                        <!-- <a href="/admin/refund/create" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-plus-circle"></i> Thêm mới
-                                        </a> -->
                                     </div>
 
                                     <div class="table-responsive">
@@ -132,6 +129,7 @@
                         <jsp:param name="extraParams" value="${extraParams}" />
                     </jsp:include>
                 </div>
+                <jsp:include page="../layout/footer.jsp" />
             </div>
         </div>
     </div>

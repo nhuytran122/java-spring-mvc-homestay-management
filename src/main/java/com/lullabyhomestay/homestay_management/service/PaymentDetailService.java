@@ -41,8 +41,7 @@ public class PaymentDetailService {
         paymentDetail.setPayment(payment);
         paymentDetail.setPaymentPurpose(PaymentPurpose.ROOM_BOOKING);
         paymentDetail.setBaseAmount(bookingService.calculateRawTotalAmountBookingRoom(payment.getBooking()));
-        paymentDetail.setFinalAmount(bookingService.calculateTotalAmountBookingRoom(payment.getBooking(),
-                payment.getBooking().getCustomer()));
+        paymentDetail.setFinalAmount(bookingService.calculateTotalAmountBookingRoom(payment.getBooking()));
         paymentDetailRepo.save(paymentDetail);
 
         if (bookingServiceRepo.existsByBooking_BookingID(bookingID)) {

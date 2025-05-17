@@ -43,7 +43,4 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<InventoryTransaction> inventoryTransactions;
-
-    @OneToMany(mappedBy = "employee")
-    private List<ActionLog> actionLogs;
 }

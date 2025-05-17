@@ -37,35 +37,48 @@ uri="http://lullabyhomestay.com/functions" %>
                       </div>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
-                          <c:if
-                            test="${booking.status != 'CANCELLED' and booking.status != 'COMPLETED'}"
-                          >
-                            <button
-                              class="btn btn-danger btn-sm"
-                              title="Hủy đặt phòng"
-                              onclick="checkBeforeCancel(this)"
-                              data-entity-id="${booking.bookingID}"
-                              data-id-name="bookingID"
-                              data-role="admin"
-                            >
-                              <i class="bi bi-x-circle"></i>
-                              Hủy đặt phòng
-                            </button>
+                          <c:if test="${booking.status != 'CANCELLED' and booking.status != 'COMPLETED'}">
+                              <button
+                                  class="btn btn-danger btn-sm"
+                                  title="Hủy đặt phòng"
+                                  onclick="checkBeforeCancel(this)"
+                                  data-entity-id="${booking.bookingID}"
+                                  data-id-name="bookingID"
+                                  data-role="admin"
+                              >
+                                  <i class="bi bi-x-circle"></i>
+                                  Hủy đặt phòng
+                              </button>
                           </c:if>
 
-                          <a
-                            href="/admin/booking"
+                          <c:if test="${booking.status == 'PENDING'}">
+                              <a href="/admin/booking/booking-confirmation?bookingID=${booking.bookingID}"
+                                class="btn btn-success btn-sm"
+                                title="Xác nhận thanh toán">
+                                  <i class="bi bi-check-circle"></i>
+                                  Xác nhận thanh toán
+                              </a>
+                          </c:if>
+
+                          <a href="/admin/booking"
                             class="btn btn-secondary btn-sm"
-                            title="Trở về"
-                          >
-                            <i class="bi bi-arrow-left"></i>
-                            Trở về
+                            title="Trở về">
+                              <i class="bi bi-arrow-left"></i>
+                              Trở về
                           </a>
-                        </div>
                       </div>
+
                     </div>
-                    <div class="row">
+                    <div class="row mt-3">
                       <div class="col-md-12">
+                        <div class="row mb-3 d-flex align-items-center">
+                          <div class="col-md-4 fw-bold text-md-start">
+                            Mã đơn đặt phòng:
+                          </div>
+                          <div class="col-md-8">
+                              ${booking.bookingID}
+                          </div>
+                        </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Khách hàng:
@@ -457,6 +470,7 @@ uri="http://lullabyhomestay.com/functions" %>
             </div>
           </div>
         </div>
+        <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>
 

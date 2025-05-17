@@ -10,6 +10,7 @@ import com.lullabyhomestay.homestay_management.service.validator.AdminValidation
 import com.lullabyhomestay.homestay_management.service.validator.ValidBooking;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -102,6 +103,7 @@ public class Booking {
     @OneToMany(mappedBy = "booking")
     List<RoomStatusHistory> roomStatusHistories;
 
-    @OneToOne(mappedBy = "booking")
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private BookingPricingSnapshot pricingSnapshot;
+
 }

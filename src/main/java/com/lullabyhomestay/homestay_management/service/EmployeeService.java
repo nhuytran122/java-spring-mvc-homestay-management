@@ -47,6 +47,25 @@ public class EmployeeService {
         return mapper.map(savedEmployee, EmployeeDTO.class);
     }
 
+    public EmployeeDTO mapToEmployeeDTO(Employee employee) {
+        if (employee == null || employee.getUser() == null) {
+            return null;
+        }
+        User user = employee.getUser();
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setEmployeeID(employee.getEmployeeID());
+        dto.setSalary(employee.getSalary());
+
+        dto.setUserID(user.getUserID());
+        dto.setFullName(user.getFullName());
+        dto.setPhone(user.getPhone());
+        dto.setEmail(user.getEmail());
+        dto.setAddress(user.getAddress());
+        dto.setAvatar(user.getAvatar());
+        dto.setRole(user.getRole());
+        return dto;
+    }
+
     public void handleUpdateEmployee(EmployeeDTO employeeDTO) {
         Employee employee = mapper.map(employeeDTO, Employee.class);
         User user = userService.getUserByUserID(employee.getUser().getUserID());
@@ -76,7 +95,7 @@ public class EmployeeService {
 
     public Page<EmployeeDTO> getAllEmployees(Pageable pageable) {
         Page<Employee> employeePage = employeeRepository.findAll(pageable);
-        return employeePage.map(employee -> mapper.map(employee, EmployeeDTO.class));
+        return employeePage.map(this::mapToEmployeeDTO);
     }
 
     public Page<EmployeeDTO> searchEmployees(SearchEmployeeCriterialDTO criteria, int page) {
@@ -92,45 +111,22 @@ public class EmployeeService {
         if (criteria.getRoleID() != null) {
             spec = spec.and(EmployeeSpecifications.hasRole(criteria.getRoleID()));
         }
-        return employeeRepository.findAll(spec, pageable).map(employee -> mapper.map(employee, EmployeeDTO.class));
+        return employeeRepository.findAll(spec, pageable)
+                .map(this::mapToEmployeeDTO);
     }
 
     public EmployeeDTO getEmployeeDTOByID(long employeeID) {
-        Optional<Employee> employeeOpt = employeeRepository.findByEmployeeID(employeeID);
-        if (!employeeOpt.isPresent()) {
-            throw new NotFoundException("Nhân viên");
-        }
+        Employee employee = employeeRepository.findByEmployeeID(employeeID)
+                .orElseThrow(() -> new NotFoundException("Nhân viên"));
 
-        Employee employee = employeeOpt.get();
-        User user = employee.getUser();
-        EmployeeDTO employeeDTO = mapper.map(employeeOpt.get(), EmployeeDTO.class);
-        employeeDTO.setFullName(user.getFullName());
-        employeeDTO.setEmail(user.getEmail());
-        employeeDTO.setPhone(user.getPhone());
-        employeeDTO.setAddress(user.getAddress());
-        employeeDTO.setAvatar(user.getAvatar());
-        // employeeDTO.setSalary(employee.getSalary());
-        employeeDTO.setRole(user.getRole());
-        return employeeDTO;
+        return mapToEmployeeDTO(employee);
     }
 
     public EmployeeDTO getEmployeeDTOByUserID(long userID) {
-        Optional<Employee> employeeOpt = employeeRepository.findByUser_UserID(userID);
-        if (!employeeOpt.isPresent()) {
-            throw new NotFoundException("Nhân viên");
-        }
+        Employee employee = employeeRepository.findByUser_UserID(userID)
+                .orElseThrow(() -> new NotFoundException("Nhân viên"));
 
-        Employee employee = employeeOpt.get();
-        User user = employee.getUser();
-        EmployeeDTO employeeDTO = mapper.map(employeeOpt.get(), EmployeeDTO.class);
-        employeeDTO.setFullName(user.getFullName());
-        employeeDTO.setEmail(user.getEmail());
-        employeeDTO.setPhone(user.getPhone());
-        employeeDTO.setAddress(user.getAddress());
-        employeeDTO.setAvatar(user.getAvatar());
-        // employeeDTO.setSalary(employee.getSalary());
-        employeeDTO.setRole(user.getRole());
-        return employeeDTO;
+        return mapToEmployeeDTO(employee);
     }
 
     public boolean canDeleteEmployee(long employeeID) {

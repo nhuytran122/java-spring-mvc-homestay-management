@@ -47,11 +47,6 @@ public class InventoryItem {
     @Column(name = "Price")
     private Double price;
 
-    @Min(value = 1, message = "Số lượng tối thiểu phải lớn hơn 0")
-    @NotNull(message = "Vui lòng nhập số lượng tối thiểu")
-    @Column(name = "MinQuantity")
-    private Integer minQuantity;
-
     @OneToMany(mappedBy = "inventoryItem")
     private List<InventoryStock> inventoryStocks;
 

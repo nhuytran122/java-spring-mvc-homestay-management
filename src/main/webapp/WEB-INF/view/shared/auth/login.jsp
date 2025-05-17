@@ -50,16 +50,13 @@ uri="http://www.springframework.org/tags/form" %>
                     placeholder="Mật khẩu"
                   />
                 </div>
-                <div class="form-group">
-                  <a href="/forgot-password" class="text-primary"
-                    >Quên mật khẩu?</a
-                  >
-                </div>
+
                 <input
                   type="hidden"
                   name="${_csrf.parameterName}"
                   value="${_csrf.token}"
                 />
+
                 <c:if test="${param.error != null}">
                   <div class="my-2" style="color: red">
                     Thông tin đăng nhập không chính xác.
@@ -70,24 +67,41 @@ uri="http://www.springframework.org/tags/form" %>
                     Đăng xuất thành công.
                   </div>
                 </c:if>
+
                 <button
                   type="submit"
                   name="btn-login"
-                  class="btn btn-default mt-3"
+                  class="btn btn-default mt-3 w-100"
                 >
                   Đăng nhập
                 </button>
+
+                <div class="text-center mt-3">
+                  <a
+                    href="/forgot-password"
+                    class="text-primary fw-bold"
+                    style="text-decoration: none"
+                  >
+                    Quên mật khẩu?
+                  </a>
+                </div>
               </form>
 
               <p class="mt-4 text-center">
                 Bạn chưa có tài khoản?
-                <a href="/register" class="text-primary fw-bold">Đăng ký</a>
+                <a
+                  href="/register"
+                  class="text-primary fw-bold"
+                  style="text-decoration: none"
+                  >Đăng ký</a
+                >
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <jsp:include page="../../client/layout/footer.jsp" />
     <jsp:include page="../../client/layout/import-js.jsp" />
   </body>

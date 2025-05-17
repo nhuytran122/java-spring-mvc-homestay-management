@@ -67,7 +67,6 @@
                           <th>Phân loại</th>
                           <th>Chi nhánh</th>
                           <th>Số lượng hiện có</th>
-                          <th>Số lượng tối thiểu</th>
                           <th>Thao tác</th>
                         </tr>
                       </thead>
@@ -85,7 +84,6 @@
                                 <td>${item.inventoryItem.inventoryCategory.categoryName}</td>
                                 <td>${item.branch.branchName}</td>
                                 <td><fmt:formatNumber type="number" value="${item.quantity}" /></td>
-                                <td>${item.inventoryItem.minQuantity}</td>
                                 <td>
                                   <div class="btn-group" role="group">
                                     <form action="/admin/warehouse/import" method="get" class="d-inline">
@@ -123,6 +121,7 @@
             <jsp:param name="extraParams" value="${extraParams}" />
           </jsp:include>
         </div>
+        <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>
   </div>

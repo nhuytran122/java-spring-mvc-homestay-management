@@ -117,7 +117,8 @@
                 </div>
                 <%@ include file="room-photo/_show.jsp" %>
                 <%@ include file="room-amenity/_show.jsp" %>
-            </div> 
+            </div>
+            <jsp:include page="../layout/footer.jsp" /> 
         </div>
     </div>   
   </div>

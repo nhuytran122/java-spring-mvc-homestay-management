@@ -51,10 +51,14 @@ uri="http://lullabyhomestay.com/functions" %>
                             Trạng thái:
                           </div>
                           <div class="col-md-8">
+                            <c:set
+                              var="status"
+                              value="${payment.status}"
+                            ></c:set>
                             <span
-                              class="badge ${payment.status == 'COMPLETED' ? 'bg-success' : payment.status == 'FAILED' ? 'bg-danger' : payment.status == 'PENDING' ? 'bg-primary' : 'bg-info'}"
+                              class="badge ${status == 'COMPLETED' ? 'bg-success' : status == 'FAILED' ? 'bg-danger' : status == 'PENDING' ? 'bg-primary' : 'bg-info'}"
                             >
-                              ${payment.status.displayName}
+                              ${status.displayName}
                             </span>
                           </div>
                         </div>
@@ -96,10 +100,12 @@ uri="http://lullabyhomestay.com/functions" %>
                             Đặt phòng:
                           </div>
                           <div class="col-md-8">
-                            <a
-                              href="/admin/booking/${payment.booking.bookingID}"
-                            >
-                              Đặt phòng #${payment.booking.bookingID}
+                            <c:set
+                              var="bookingID"
+                              value="${payment.booking.bookingID}"
+                            ></c:set>
+                            <a href="/admin/booking/${bookingID}">
+                              Đơn đặt phòng #${bookingID}
                             </a>
                           </div>
                         </div>
@@ -108,10 +114,14 @@ uri="http://lullabyhomestay.com/functions" %>
                             Loại thanh toán:
                           </div>
                           <div class="col-md-8">
+                            <c:set
+                              var="type"
+                              value="${payment.paymentType}"
+                            ></c:set>
                             <span
-                              class="badge ${payment.paymentType == 'TRANSFER' ? 'bg-success' : payment.paymentType == 'CASH'}"
+                              class="badge ${type == 'TRANSFER' ? 'bg-success' : type == 'CASH'}"
                             >
-                              ${payment.paymentType.displayName}
+                              ${type.displayName}
                             </span>
                           </div>
                         </div>
@@ -172,11 +182,11 @@ uri="http://lullabyhomestay.com/functions" %>
               </div>
             </div>
           </div>
+          <jsp:include page="../layout/footer.jsp" />
         </div>
       </div>
     </div>
 
-    <jsp:include page="../layout/partial/_modals-delete.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
   </body>
 </html>

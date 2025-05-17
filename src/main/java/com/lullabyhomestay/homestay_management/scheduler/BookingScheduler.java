@@ -7,17 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.lullabyhomestay.homestay_management.domain.ActionLog;
 import com.lullabyhomestay.homestay_management.domain.Booking;
-import com.lullabyhomestay.homestay_management.service.ActionLogService;
 import com.lullabyhomestay.homestay_management.service.BookingExtensionService;
 import com.lullabyhomestay.homestay_management.service.BookingService;
 import com.lullabyhomestay.homestay_management.service.CustomerService;
 import com.lullabyhomestay.homestay_management.service.EmailService;
 import com.lullabyhomestay.homestay_management.service.RoomStatusHistoryService;
-import com.lullabyhomestay.homestay_management.utils.ActionType;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
-import com.lullabyhomestay.homestay_management.utils.ObjectType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +25,6 @@ public class BookingScheduler {
     private final RoomStatusHistoryService roomStatusHistoryService;
     private final BookingExtensionService bookingExtensionService;
     private final CustomerService customerService;
-    private final ActionLogService actionLogService;
     private final EmailService emailService;
 
     @Value("${booking.pending.timeout.minutes}")
@@ -48,12 +43,6 @@ public class BookingScheduler {
 
             // Xóa các dữ liệu liên quan đến Booking: lịch trình
             roomStatusHistoryService.deleteByBookingID(bookingID);
-
-            ActionLog actionLog = new ActionLog();
-            actionLog.setActionType(ActionType.CANCEL_BOOKING);
-            actionLog.setObjectID(bookingID);
-            actionLog.setObjectType(ObjectType.BOOKING);
-            actionLogService.handleSaveLog(actionLog);
         }
     }
 
@@ -82,20 +71,6 @@ public class BookingScheduler {
 
     @Scheduled(fixedDelayString = "${booking.pending.timeout.milliseconds}")
     public void deleteBookingExtensionWithoutPayment() {
-        // List<BookingExtension> extensionsToDelete =
-        // bookingExtensionService.findAllByPaymentDetailIsNull();
-
-        // for (BookingExtension extension : extensionsToDelete) {
-        // // Xóa BookingExtension
-        // bookingExtensionService.deleteByExtensionID(extension.getExtensionID());
-
-        // ActionLog actionLog = new ActionLog();
-        // actionLog.setActionType(ActionType.DELETE_BOOKING_EXTENSION);
-        // actionLog.setObjectID(extension.getExtensionID());
-        // actionLog.setObjectType(ObjectType.BOOKING_EXTENSION);
-        // actionLogService.handleSaveLog(actionLog);
-        // }
-
         Long count = bookingExtensionService.countAllByPaymentDetailIsNull();
 
         if (count > 0) {
@@ -104,7 +79,7 @@ public class BookingScheduler {
     }
 
     // @Scheduled(fixedDelay = 3000)
-    @Scheduled(fixedDelay = 900000)
+    @Scheduled(fixedDelay = 300000)
     public void sendReminderEmails() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime thirtyMinutesLater = now.plusMinutes(30);

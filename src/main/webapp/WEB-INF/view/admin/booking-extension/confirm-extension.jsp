@@ -169,6 +169,7 @@ uri="http://lullabyhomestay.com/functions" %>
             </div>
           </div>
         </div>
+        <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>
 

@@ -57,7 +57,7 @@ public class AmenityController {
         return "admin/amenity/show";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @GetMapping("/admin/amenity/create")
     public String getCreateAmenityPage(Model model) {
         model.addAttribute("newAmenity", new Amenity());
@@ -65,7 +65,7 @@ public class AmenityController {
         return "admin/amenity/create";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @PostMapping("/admin/amenity/create")
     public String postCreateAmenity(Model model,
             @ModelAttribute("newAmenity") @Valid Amenity amenity,

@@ -20,7 +20,7 @@
       
         <div class="main-panel">
             <div class="content-wrapper">
-            <div class="row">
+                <div class="row">
                 <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
@@ -40,9 +40,6 @@
                             </c:set>
                             <c:set var="errorUnit">
                                 <form:errors path="unit" cssClass="invalid-feedback" />
-                            </c:set>
-                            <c:set var="errorMinQuantity">
-                                <form:errors path="minQuantity" cssClass="invalid-feedback" />
                             </c:set>
                             <div class="form-group row">
                                 <label class="control-label col-sm-2">Tên đồ dùng <span class="text-danger">*</span></label>
@@ -83,15 +80,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <label class="control-label col-sm-2">Số lượng tối thiểu <span class="text-danger">*</span></label>
-                                <div class="col-sm-10">
-                                    <form:input type="text" class="form-control number-separator 
-                                    ${not empty errorMinQuantity ? 'is-invalid' : ''}" 
-                                    path="minQuantity" /> 
-                                    ${errorMinQuantity}
-                                </div>
-                            </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-offset-2 col-sm-10 text-center">
@@ -104,8 +92,8 @@
                 </div>
                 </div>
             </div>
-            </div>
-            
+            <jsp:include page="../layout/footer.jsp" />
+        </div>
         </div>
     </div>   
   </div>

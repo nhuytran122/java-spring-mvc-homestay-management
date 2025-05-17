@@ -72,12 +72,12 @@
                                         <table class="table table-hover">
                                             <thead class="table-light">
                                                 <tr>
+                                                    <th>Mã đặt phòng</th>
                                                     <th>Tên khách hàng</th>
                                                     <th>Chi nhánh</th>
                                                     <th>Phòng</th>
                                                     <th>Dịch vụ</th>
                                                     <th>Số lượng</th>
-                                                    <th>Mô tả</th>
                                                     <th>Tình trạng</th>
                                                     <th>Ngày đặt</th>
                                                     <th>Tình trạng thanh toán</th>
@@ -98,14 +98,16 @@
                                                                 value="${bookingService.status}"
                                                                 />
                                                             <tr style="height: 70px;">
-                                                                <td>${bookingService.booking.customer.user.fullName}</td>
-                                                                <td>${bookingService.booking.room.branch.branchName}</td>
-                                                                <td>${bookingService.booking.room.roomNumber}</td>
+                                                                <c:set var="booking" value="${bookingService.booking}"></c:set>
+                                                                <c:set var="bookingServiceID" value="${bookingService.bookingServiceID}"></c:set>
+                                                                <td>${booking.bookingID}</td>
+                                                                <td>${booking.customer.user.fullName}</td>
+                                                                <td>${booking.room.branch.branchName}</td>
+                                                                <td>${booking.room.roomNumber}</td>
                                                                 <td>${bookingService.service.serviceName}</td>
                                                                 <td>
                                                                     <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
                                                                 </td>
-                                                                <td>${bookingService.description}</td>
                                                                 <td>
                                                                 <span class="badge ${status == 'COMPLETED' ? 'bg-success' : 
                                                                                     status == 'PENDING' ? 'bg-secondary' : 
@@ -117,12 +119,15 @@
                                                                 <td>${f:formatLocalDateTime(bookingService.createdAt)}</td>
                                                                 <td>
                                                                     <c:choose>
+                                                                        <c:when test="${booking.status == 'CANCELLED'}">
+                                                                        <span class="badge bg-danger">Đã hủy</span>
+                                                                        </c:when>
                                                                         <c:when test="${not empty bookingService.paymentDetail}">
                                                                             <c:set var="paymentStatus" value="${bookingService.paymentDetail.payment.status}" />
                                                                             <span class="badge 
                                                                                 ${paymentStatus == 'COMPLETED' ? 'bg-success' : 
-                                                                                  paymentStatus == 'FAILED' ? 'bg-danger' : 
-                                                                                  paymentStatus == 'PENDING' ? 'bg-primary' : 'bg-info'}">
+                                                                                    paymentStatus == 'FAILED' ? 'bg-danger' : 
+                                                                                    paymentStatus == 'PENDING' ? 'bg-primary' : 'bg-info'}">
                                                                                 ${paymentStatus.displayName}
                                                                             </span>
                                                                         </c:when>
@@ -130,22 +135,23 @@
                                                                             <span class="badge bg-secondary">Đang chờ</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
-                                                                </td>
+                                                                    </td>
+
                                                                 
                                                                 <td>
                                                                     <div class="btn-group" role="group">
-                                                                        <a href="/admin/booking/${bookingService.booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">
+                                                                        <a href="/admin/booking/${booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
                                                                         <button class="btn btn-warning btn-sm" title="Sửa"
                                                                             onclick="checkBeforeUpdate(this)" 
-                                                                                data-booking-service-id="${bookingService.bookingServiceID}"
+                                                                                data-booking-service-id="${bookingServiceID}"
                                                                                 data-entity-type="Đơn đặt dịch vụ"
                                                                                 data-check-url="/admin/booking-service/can-handle/" >
                                                                             <i class="bi bi-pencil"></i>
                                                                         </button>
                                                                         <button class="btn btn-info btn-sm status-update-btn" 
-                                                                            data-booking-service-id="${bookingService.bookingServiceID}" 
+                                                                            data-booking-service-id="${bookingServiceID}" 
                                                                             data-current-status="${bookingService.status}"
                                                                             title="Cập nhật trạng thái">
                                                                             <i class="bi bi-gear"></i>
@@ -154,7 +160,7 @@
                                                                             class="btn btn-danger btn-sm"
                                                                             title="Xóa"
                                                                             onclick="checkBeforeDelete(this)"
-                                                                            data-entity-id="${bookingService.bookingServiceID}"
+                                                                            data-entity-id="${bookingServiceID}"
                                                                             data-entity-name="${bookingService.service.serviceName}"
                                                                             data-entity-type="Đơn đặt dịch vụ"
                                                                             data-delete-url="/admin/booking-service/delete"
@@ -184,6 +190,7 @@
                         <jsp:param name="extraParams" value="${extraParams}" />
                     </jsp:include>
                 </div>
+                <jsp:include page="../layout/footer.jsp" />
             </div>
         </div>
     </div>

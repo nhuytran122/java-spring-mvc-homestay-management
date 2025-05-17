@@ -44,7 +44,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                             title="Xóa"
                             onclick="checkBeforeDelete(this)"
                             data-entity-id="${employee.employeeID}"
-                            data-entity-name="${employee.user.fullName}"
+                            data-entity-name="${employee.fullName}"
                             data-entity-type="Nhân viên"
                             data-delete-url="/admin/employee/delete"
                             data-check-url="/admin/employee/can-delete/"
@@ -64,7 +64,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                     <div class="row">
                       <div class="col-md-3">
                         <img
-                          src="${not empty employee.user.avatar ? '/images/avatar/' + employee.user.avatar : '/images/avatar/default-img.jpg'}"
+                          src="${not empty employee.avatar ? '/images/avatar/' + employee.avatar : '/images/avatar/default-img.jpg'}"
                           class="img-fluid rounded"
                           style="width: 100%; height: auto; object-fit: cover"
                         />
@@ -75,21 +75,21 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                           <div class="col-md-4 fw-bold text-md-start">
                             Tên nhân viên:
                           </div>
-                          <div class="col-md-8">${employee.user.fullName}</div>
+                          <div class="col-md-8">${employee.fullName}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Số điện thoại:
                           </div>
-                          <div class="col-md-8">${employee.user.phone}</div>
+                          <div class="col-md-8">${employee.phone}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Chức vụ :
                           </div>
                           <div class="col-md-8">
-                            ${employee.user.role.roleName} -
-                            ${employee.user.role.description}
+                            ${employee.role.roleName} -
+                            ${employee.role.description}
                           </div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
@@ -108,13 +108,13 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                           <div class="col-md-4 fw-bold text-md-start">
                             Email:
                           </div>
-                          <div class="col-md-8">${employee.user.email}</div>
+                          <div class="col-md-8">${employee.email}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Địa chỉ:
                           </div>
-                          <div class="col-md-8">${employee.user.address}</div>
+                          <div class="col-md-8">${employee.address}</div>
                         </div>
                       </div>
                     </div>
@@ -123,6 +123,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
               </div>
             </div>
           </div>
+          <jsp:include page="../layout/footer.jsp" />
         </div>
       </div>
     </div>

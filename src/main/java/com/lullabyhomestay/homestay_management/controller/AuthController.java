@@ -100,6 +100,10 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam("email") String email, Model model) {
+        if (email == null || email.isEmpty()) {
+            model.addAttribute("error", "Vui lòng nhập email tài khoản của bạn");
+            return "shared/auth/forgot-password";
+        }
         try {
             userService.requestPasswordReset(email);
             model.addAttribute("message",

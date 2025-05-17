@@ -108,7 +108,7 @@ public class BranchController {
         currentBranch.setBranchName(branch.getBranchName());
         currentBranch.setAddress(branch.getAddress());
         currentBranch.setPhone(branch.getPhone());
-        currentBranch.setBranchPassword(branch.getBranchPassword());
+        currentBranch.setGatePassword(branch.getGatePassword());
 
         this.branchService.handleSaveBranch(currentBranch);
 

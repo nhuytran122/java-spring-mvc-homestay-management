@@ -10,14 +10,12 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 import com.lullabyhomestay.homestay_management.domain.BookingPricingSnapshot;
-import com.lullabyhomestay.homestay_management.domain.Customer;
 import com.lullabyhomestay.homestay_management.domain.Payment;
 import com.lullabyhomestay.homestay_management.domain.Refund;
 import com.lullabyhomestay.homestay_management.domain.RoomPricing;
@@ -25,7 +23,6 @@ import com.lullabyhomestay.homestay_management.domain.RoomType;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingPriceDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchBookingCriteriaDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
-import com.lullabyhomestay.homestay_management.repository.BookingPricingSnapshotRepository;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.BookingServiceRepository;
 import com.lullabyhomestay.homestay_management.repository.PaymentRepository;
@@ -33,6 +30,7 @@ import com.lullabyhomestay.homestay_management.repository.RefundRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomPricingRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomStatusHistoryRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.BookingSpecifications;
+import com.lullabyhomestay.homestay_management.utils.BookingServiceStatus;
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.Cancelability;
 import com.lullabyhomestay.homestay_management.utils.Constants;
@@ -57,12 +55,9 @@ public class BookingService {
     private final RoomPricingRepository roomPricingRepository;
     private final BookingExtensionService bookingExtensionService;
     private final RoomPricingService roomPricingService;
-    private final BookingPricingSnapshotRepository bookingPricingSnapshotRepo;
 
     public Page<Booking> searchBookings(SearchBookingCriteriaDTO criteria, int page) {
-        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
-                "asc".equals(criteria.getSort()) ? Sort.by("CheckIn").ascending()
-                        : "desc".equals(criteria.getSort()) ? Sort.by("CheckIn").descending() : Sort.unsorted());
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
         boolean isAllCriteriaEmpty = (criteria.getKeyword() == null || criteria.getKeyword().isEmpty())
                 && criteria.getBranchID() == null
                 && criteria.getRoomTypeID() == null
@@ -92,26 +87,32 @@ public class BookingService {
 
     @Transactional
     public Booking handleBooking(Booking booking) {
-        booking.setTotalAmount(calculateTotalAmountBookingRoom(booking, booking.getCustomer()));
+        booking.setTotalAmount(calculateTotalAmountBookingRoom(booking));
         booking.setUpdatedAt(LocalDateTime.now());
+
         Booking savedBooking = bookingRepository.save(booking);
 
-        BookingPriceDTO dto = getRoomPriceDetail(booking.getRoom().getRoomType().getRoomTypeID(), booking.getCheckIn(),
+        BookingPriceDTO dto = getRoomPriceDetail(
+                booking.getRoom().getRoomType().getRoomTypeID(),
+                booking.getCheckIn(),
                 booking.getCheckOut());
         RoomPricing roomPricing = roomPricingService.getRoomPricingByID(dto.getRoomPricingID());
 
-        // Tạo snapshot
-        BookingPricingSnapshot snapshot = new BookingPricingSnapshot();
-        snapshot.setBooking(savedBooking);
+        BookingPricingSnapshot snapshot = savedBooking.getPricingSnapshot();
+        if (snapshot == null) {
+            snapshot = new BookingPricingSnapshot();
+            snapshot.setBooking(savedBooking);
+        }
+
         snapshot.setBaseDuration(roomPricing.getBaseDuration());
         snapshot.setBasePrice(roomPricing.getBasePrice());
         snapshot.setExtraHourPrice(roomPricing.getExtraHourPrice());
         snapshot.setOvernightPrice(roomPricing.getOvernightPrice());
         snapshot.setDailyPrice(roomPricing.getDailyPrice());
-        BookingPricingSnapshot bookingPricingSnapshot = bookingPricingSnapshotRepo.save(snapshot);
 
-        savedBooking.setPricingSnapshot(bookingPricingSnapshot);
+        savedBooking.setPricingSnapshot(snapshot);
 
+        // Cascade sẽ lưu snapshot
         bookingRepository.save(savedBooking);
 
         roomStatusHistoryService.handleStatusWhenBooking(savedBooking);
@@ -175,7 +176,7 @@ public class BookingService {
             // Xóa dữ liệu liên quan
             // Không xóa bookingServices để truy vết paymentDetails
             roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
-            bookingServiceRepository.bulkCancelServicesByBookingID(bookingID);
+            bookingServiceRepository.bulkUpdateServiceStatusByBookingID(bookingID, BookingServiceStatus.CANCELLED);
 
             if (currentBooking.getStatus() == BookingStatus.PENDING) {
                 // Cập nhật trạng thái đơn là CANCELLED
@@ -190,15 +191,6 @@ public class BookingService {
             updateBookingAfterCancellation(currentBooking);
         }
     }
-
-    // public boolean canCancelBooking(Long bookingID) {
-    // Booking booking = getBookingByID(bookingID);
-    // BookingStatus bookingStatus = booking.getStatus();
-    // LocalDateTime now = LocalDateTime.now();
-    // return bookingStatus != BookingStatus.CANCELLED
-    // && bookingStatus != BookingStatus.COMPLETED
-    // && now.isBefore(booking.getCheckIn());
-    // }
 
     public Cancelability checkCancelability(Long bookingID) {
         Booking booking = getBookingByID(bookingID);
@@ -285,9 +277,9 @@ public class BookingService {
         return totalPrice;
     }
 
-    public Double calculateTotalAmountBookingRoom(Booking booking, Customer customer) {
+    public Double calculateTotalAmountBookingRoom(Booking booking) {
         Double rawTotal = calculateRawTotalAmountBookingRoom(booking);
-        Double discountAmount = DiscountUtil.calculateDiscountAmount(rawTotal, customer);
+        Double discountAmount = DiscountUtil.calculateDiscountAmount(rawTotal, booking.getCustomer());
         return rawTotal - discountAmount;
     }
 
@@ -301,9 +293,10 @@ public class BookingService {
 
     @Transactional
     public void deleteByBookingID(Long id) {
-        bookingServiceRepository.deleteByBooking_BookingID(id);
+        // bookingServiceRepository.deleteByBooking_BookingID(id);
+        // roomStatusHistoryRepo.deleteByBooking_BookingID(id);
+        // bookingPricingSnapshotRepo.deleteByBooking_BookingID(id);
         bookingRepository.deleteByBookingID(id);
-        roomStatusHistoryRepo.deleteByBooking_BookingID(id);
     }
 
     public Double calculateRoomPrice(Long roomTypeID, LocalDateTime checkIn, LocalDateTime checkOut) {

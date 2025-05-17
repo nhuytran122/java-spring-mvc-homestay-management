@@ -1,40 +1,40 @@
-.imagePreview{
-    margin-left: 190px;
-    max-height: 250px
+.imagePreview {
+  margin-left: 190px;
+  max-height: 250px;
 }
 
 .search-form-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding: 10px;
-  }
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+}
 
+.search-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.search-form .form-control,
+.search-form .form-select {
+  height: 41px;
+}
+
+.search-form .btn {
+  padding: 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
   .search-form {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 600px;
+    flex-direction: column;
+    gap: 15px;
   }
-
-  .search-form .form-control,
-  .search-form .form-select {
-    height: 41px;
-  }
-
   .search-form .btn {
-    padding: 10px;
-    font-size: 14px;
+    width: 100%;
   }
-
-  @media (max-width: 768px) {
-    .search-form {
-      flex-direction: column;
-      gap: 15px;
-    }
-    .search-form .btn {
-      width: 100%;
-    }
-  }
+}

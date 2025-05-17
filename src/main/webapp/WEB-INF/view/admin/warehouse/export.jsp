@@ -16,32 +16,7 @@ uri="http://www.springframework.org/tags/form" %>
       href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
       rel="stylesheet"
     />
-    <style>
-      .select2-container .select2-selection--single {
-        height: 46px;
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        font-size: 16px;
-        padding-left: 12px;
-      }
-
-      .select2-container--default
-        .select2-selection--single
-        .select2-selection__rendered {
-        line-height: 46px;
-        padding-left: 0;
-        color: #c9c8c8;
-      }
-
-      .select2-container--default
-        .select2-selection--single
-        .select2-selection__arrow {
-        height: 100%;
-        right: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="/admin/css/style-select2.css" />
   </head>
   <body>
     <div class="container-scroller">
@@ -89,7 +64,7 @@ uri="http://www.springframework.org/tags/form" %>
                         >
                         <div class="col-sm-10">
                           <form:select
-                            class="form-select form-control ${not empty errorItem ? 'is-invalid' : ''}"
+                            class="form-select select2 form-control ${not empty errorItem ? 'is-invalid' : ''}"
                             path="inventoryItem"
                           >
                             <form:option value="">Chọn đồ dùng</form:option>
@@ -163,6 +138,7 @@ uri="http://www.springframework.org/tags/form" %>
               </div>
             </div>
           </div>
+          <jsp:include page="../layout/footer.jsp" />
         </div>
       </div>
     </div>

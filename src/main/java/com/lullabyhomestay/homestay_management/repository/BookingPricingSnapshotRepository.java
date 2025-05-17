@@ -7,5 +7,5 @@ import com.lullabyhomestay.homestay_management.domain.BookingPricingSnapshot;
 
 @Repository
 public interface BookingPricingSnapshotRepository extends JpaRepository<BookingPricingSnapshot, Long> {
-
+    void deleteByBooking_BookingID(Long bookingID);
 }

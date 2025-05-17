@@ -48,7 +48,6 @@ import com.lullabyhomestay.homestay_management.service.validator.AdminValidation
 import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 import com.lullabyhomestay.homestay_management.utils.Cancelability;
 import com.lullabyhomestay.homestay_management.utils.Constants;
-import com.lullabyhomestay.homestay_management.utils.DiscountUtil;
 import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
 import com.lullabyhomestay.homestay_management.utils.RefundType;
 
@@ -77,8 +76,6 @@ public class BookingController {
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchBookingCriteriaDTO criteria) {
         int validPage = Math.max(1, page);
-        String sort = (criteria.getSort() != null && !criteria.getSort().isEmpty()) ? criteria.getSort() : "desc";
-        criteria.setSort(sort);
 
         if (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty()) {
             LocalDateTime startDefault = LocalDateTime.now();
@@ -162,11 +159,14 @@ public class BookingController {
 
     @GetMapping("/admin/booking/booking-service")
     public String selectService(Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
         BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
-        if (bookingRequest == null)
+        if (bookingRequest == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Phiên làm việc đã hết. Vui lòng thực hiện lại.");
             return "redirect:/admin/booking";
+        }
         model.addAttribute("listServices", service.getServiceByIsPrepaid(true));
         return "admin/booking/booking-service";
     }
@@ -223,23 +223,36 @@ public class BookingController {
     public String getBookingConfirmationPage(
             @RequestParam("bookingID") Long bookingID,
             HttpServletRequest request,
+            RedirectAttributes redirectAttributes,
             Model model) {
+
+        Booking booking = bookingService.getBookingByID(bookingID);
+
+        if (booking.getStatus() != BookingStatus.PENDING) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Chỉ có thể xác nhận các đơn đang chờ thanh toán.");
+            return "redirect:/admin/booking";
+        }
+
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("bookingRequest") == null) {
-            return "redirect:/";
+            redirectAttributes.addFlashAttribute("errorMessage", "Phiên làm việc đã hết. Vui lòng thực hiện lại.");
+            return "redirect:/admin/booking";
         }
+
         BookingRequestDTO sessionDTO = (BookingRequestDTO) session.getAttribute("bookingRequest");
 
         if (!bookingID.equals(sessionDTO.getBookingID())) {
-            return "redirect:/";
+            redirectAttributes.addFlashAttribute("errorMessage", "Thông tin đặt phòng không hợp lệ.");
+            return "redirect:/admin/booking";
         }
 
-        Booking booking = bookingService.getBookingByID(bookingID);
         model.addAttribute("booking", booking);
+
         double originalAmount = booking.getTotalAmount()
                 / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
         double discountAmount = originalAmount * (booking.getCustomer().getCustomerType().getDiscountRate() / 100);
         model.addAttribute("discountAmount", discountAmount);
+
         return "admin/booking/booking-confirmation";
     }
 

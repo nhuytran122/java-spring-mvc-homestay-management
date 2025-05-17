@@ -89,6 +89,7 @@
               <canvas id="revenueChart" height="100"></canvas>
             </div>
           </div>
+          <jsp:include page="../layout/footer.jsp" />
         </div>
       </div>
     </div>

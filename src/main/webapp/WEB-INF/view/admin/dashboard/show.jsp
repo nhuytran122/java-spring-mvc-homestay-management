@@ -392,6 +392,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
               </div>
             </div>
           </div>
+          <jsp:include page="../layout/footer.jsp" />
         </div>
       </div>
     </div>

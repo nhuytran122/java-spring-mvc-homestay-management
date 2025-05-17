@@ -20,13 +20,13 @@
     <div class="container mb-4">
         <div class="search-bar p-3 bg-white rounded shadow-sm">
             <form class="row g-3">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">Khoảng thời gian checkin</label>
                     <input type="text" id="timeRange" name="timeRange" class="form-control daterange-picker" 
                                value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian...">
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Chi nhánh</label>
                     <select name="branchID" class="form-select">
                         <option value="">Chọn chi nhánh</option>
@@ -59,17 +59,6 @@
                                 ${type.displayName} 
                             </option>
                         </c:forEach>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Sắp xếp</label>
-                    <select name="sort" class="form-select">
-                        <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
-                            Check-in sớm nhất
-                        </option>
-                        <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
-                            Check-in muộn nhất
-                        </option>
                     </select>
                 </div>
                 <div class="col-md-1 d-flex align-items-end">

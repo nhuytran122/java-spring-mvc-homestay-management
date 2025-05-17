@@ -12,7 +12,6 @@ import com.lullabyhomestay.homestay_management.domain.EmailVerificationToken;
 import com.lullabyhomestay.homestay_management.domain.PasswordResetToken;
 import com.lullabyhomestay.homestay_management.domain.Role;
 import com.lullabyhomestay.homestay_management.domain.User;
-import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.RegisterDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
@@ -20,6 +19,7 @@ import com.lullabyhomestay.homestay_management.repository.EmailVerificationToken
 import com.lullabyhomestay.homestay_management.repository.PasswordResetTokenRepository;
 import com.lullabyhomestay.homestay_management.repository.RoleRepository;
 import com.lullabyhomestay.homestay_management.repository.UserRepository;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 import com.lullabyhomestay.homestay_management.utils.SystemRole;
 
 import lombok.AllArgsConstructor;
@@ -46,7 +46,7 @@ public class UserService {
     }
 
     public UserDTO getUserDTOByEmail(String email) {
-        return mapper.map(getUserByEmail(email), CustomerDTO.class);
+        return mapper.map(getUserByEmail(email), UserDTO.class);
     }
 
     public boolean checkEmailExist(String email) {
@@ -105,10 +105,11 @@ public class UserService {
         return mapper.map(handleSaveUser(user), UserDTO.class);
     }
 
-    public void changePassword(Long userID, String newPassword) {
+    public void changePassword(Long userID, String newPassword) throws Exception {
         User user = getUserByUserID(userID);
         user.setPassword(passwordEncoder.encode(newPassword));
         handleSaveUser(user);
+        emailService.sendPasswordChangedNotification(user);
     }
 
     public User handleSaveUser(User user) {
@@ -116,7 +117,7 @@ public class UserService {
     }
 
     private String encodePasswordOrDefault(String password) {
-        return passwordEncoder.encode(password != null ? password : "lullabyhomestay");
+        return passwordEncoder.encode(password != null ? password : Constants.DEFAULT_PASSWORD);
     }
 
     private Role resolveRole(Long roleID) {
@@ -152,6 +153,7 @@ public class UserService {
         emailService.sendPasswordResetEmail(user, token);
     }
 
+    @Transactional
     public void resetPassword(String token, String newPassword) throws Exception {
         PasswordResetToken resetToken = tokenRepository.findByToken(token);
         if (resetToken == null || resetToken.isExpired() || resetToken.getIsUsed()) {
@@ -163,6 +165,7 @@ public class UserService {
 
         resetToken.setIsUsed(true);
         tokenRepository.save(resetToken);
+        emailService.sendPasswordChangedNotification(user);
     }
 
     @Transactional

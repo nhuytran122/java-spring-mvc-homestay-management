@@ -128,6 +128,7 @@ uri="http://www.springframework.org/tags/form" %>
               </div>
             </div>
           </div>
+          <jsp:include page="../layout/footer.jsp" />
         </div>
       </div>
     </div>

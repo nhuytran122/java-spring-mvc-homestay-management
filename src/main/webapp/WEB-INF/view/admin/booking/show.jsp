@@ -20,13 +20,15 @@
             <jsp:include page="../layout/theme-settings.jsp" />
             <jsp:include page="../layout/sidebar.jsp" />
             <div class="main-panel">
-                <div class="search-form-container my-4">
-                    <form action="/admin/booking" method="get" class="search-form">
+                <div class="search-form-container my-4" style="max-width:900px; width:100%; margin:0 auto; padding:10px 15px; box-sizing:border-box;">
+                    <form action="/admin/booking" method="get" class="search-form" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px 15px; width:100%; align-items:center;">
                         <input type="text" class="form-control form-control-sm"
-                               name="keyword" 
-                               placeholder="Tìm kiếm booking (tên khách hàng)..." 
-                               value="${criteria.keyword}"/>
-                        <select name="branchID" class="form-select form-control form-select-sm">
+                            name="keyword" 
+                            placeholder="Tìm kiếm booking (tên khách hàng)..."
+                            value="${criteria.keyword}"
+                            style="width:100%; height:38px; box-sizing:border-box;"/>
+                        <select name="branchID" class="form-select form-control form-select-sm" 
+                                style="width:100%; height:38px; box-sizing:border-box;">
                             <option value="">Chọn chi nhánh</option>
                             <c:forEach var="branch" items="${listBranches}">
                                 <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
@@ -35,7 +37,8 @@
                             </c:forEach>
                         </select>
 
-                        <select name="roomTypeID" class="form-select form-control form-select-sm">
+                        <select name="roomTypeID" class="form-select form-control form-select-sm" 
+                                style="width:100%; height:38px; box-sizing:border-box;">
                             <option value="">Chọn loại phòng</option>
                             <c:forEach var="roomType" items="${listRoomTypes}">
                                 <option value="${roomType.roomTypeID}" ${roomType.roomTypeID == criteria.roomTypeID ? 'selected' : ''}>
@@ -43,7 +46,9 @@
                                 </option>
                             </c:forEach>
                         </select>
-                        <select name="status" class="form-select form-control form-select-sm">
+                        
+                        <select name="status" class="form-select form-control form-select-sm"
+                                style="width:100%; height:38px; box-sizing:border-box;">
                             <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
                                 Tất cả tình trạng
                             </option>
@@ -53,23 +58,26 @@
                                 </option>
                             </c:forEach>
                         </select>
+
                         <input type="text" id="timeRange" name="timeRange" class="form-control daterange-picker" 
-                               value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian...">
-                        <select name="sort" class="form-select form-control form-select-sm">
-                            <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
-                                Check-in sớm nhất
-                            </option>
-                            <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
-                                Check-in muộn nhất
-                            </option>
-                        </select>
-                        <button type="submit" class="btn btn-primary btn-sm p-2">
+                            value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian..."
+                            style="width:100%; height:38px; box-sizing:border-box;"/>
+
+
+                        <button type="submit" class="btn btn-primary btn-sm p-2" 
+                                style="height:38px; padding:0 20px; font-size:14px; cursor:pointer; justify-self:start;">
                             <i class="bi bi-search"></i>
                         </button>
                     </form>
                 </div>
+
                 
                 <div class="content-wrapper">
+                    <c:if test="${not empty errorMessage}">
+                        <div id="error-alert" class="alert alert-danger mt-2" role="alert">
+                            ${errorMessage}
+                        </div>
+                    </c:if>
                     <div class="row">
                         <div class="col-md-12 grid-margin stretch-card">
                             <div class="card position-relative">
@@ -85,8 +93,8 @@
                                         <table class="table table-hover">
                                             <thead class="table-light">
                                                 <tr>
+                                                    <th>ID</th>
                                                     <th>Tên khách hàng</th>
-                                                    <th>Số điện thoại</th>
                                                     <th>Chi nhánh</th>
                                                     <th>Phòng</th>
                                                     <th>Checkin</th>
@@ -108,6 +116,7 @@
                                                     <c:otherwise>
                                                         <c:forEach var="booking" items="${listBookings}">
                                                             <tr style="height: 70px;">
+                                                                <td>${booking.bookingID}</td>
                                                                 <td>
                                                                     <a href="/admin/customer/${booking.customer.customerID}" 
                                                                        class="text-dark text-decoration-none" 
@@ -116,7 +125,6 @@
                                                                     </a>
                                                                 </td>
                                                                 
-                                                                <td>${booking.customer.user.phone}</td>
                                                                 <td>
                                                                     <a href="/admin/branch/${booking.room.branch.branchID}" 
                                                                        class="text-dark text-decoration-none" 
@@ -174,6 +182,7 @@
                         <jsp:param name="extraParams" value="${extraParams}" />
                     </jsp:include>
                 </div>
+                <jsp:include page="../layout/footer.jsp" />
             </div>
         </div>
     </div>
@@ -187,7 +196,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
     <script>
         $(document).ready(function () {
-            
+            window.onload = function() {
+                var alertBox = document.getElementById('error-alert');
+                if(alertBox) {
+                    setTimeout(function() {
+                        alertBox.style.display = 'none';
+                    }, 5000);
+                }
+            };
             $('.daterange-picker').daterangepicker({
                 locale: {
                     format: 'DD/MM/YYYY',

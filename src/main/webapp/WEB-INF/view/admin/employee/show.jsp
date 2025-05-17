@@ -23,8 +23,8 @@
                     <input type="text" class="form-control form-control-sm"
                         name="keyword" 
                         placeholder="Tìm kiếm nhân viên..." 
-                        value="${keyword}"/>
-                    <select name="roleId" class="form-select form-select-sm" >
+                        value="${criteria.keyword}"/>
+                    <select name="roleID" class="form-select form-select-sm" >
                         <option value="">Chọn vai trò</option>
                         <c:forEach var="role" items="${listRoles}">
                             <option value="${role.roleID}" ${role.roleID == criteria.roleID ? 'selected' : ''}>
@@ -74,12 +74,12 @@
                                                     <c:forEach var="employee" items="${listEmployees}">
                                                         <tr>
                                                             <td>
-                                                                <img src="${not empty employee.user.avatar ? '/images/avatar/' + employee.user.avatar : '/images/avatar/default-img.jpg'}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
+                                                                <img src="${not empty employee.avatar ? '/images/avatar/' + employee.avatar : '/images/avatar/default-img.jpg'}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
                                                             </td>
-                                                            <td>${employee.user.fullName}</td>
-                                                            <td>${employee.user.phone}</td>
-                                                            <td>${employee.user.email}</td>
-                                                            <td>${employee.user.role.description}</td>
+                                                            <td>${employee.fullName}</td>
+                                                            <td>${employee.phone}</td>
+                                                            <td>${employee.email}</td>
+                                                            <td>${employee.role.description}</td>
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${employee.salary}" /> đ</td>
                                                             <td>
@@ -94,7 +94,7 @@
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
                                                                             data-entity-id="${employee.employeeID}" 
-                                                                            data-entity-name="${employee.user.fullName}" 
+                                                                            data-entity-name="${employee.fullName}" 
                                                                             data-entity-type="Nhân viên" 
                                                                             data-delete-url="/admin/employee/delete" 
                                                                             data-check-url="/admin/employee/can-delete/" 
@@ -122,6 +122,7 @@
                     <jsp:param name="extraParams" value="${extraParams}" />
                 </jsp:include>
             </div>
+            <jsp:include page="../layout/footer.jsp" />
         </div>
     </div>
   </div>

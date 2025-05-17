@@ -23,7 +23,7 @@
                     <input type="text" class="form-control form-control-sm"
                         name="keyword" 
                         placeholder="Tìm kiếm khách hàng..." 
-                        value="${keyword}"/>
+                        value="${criteria.keyword}"/>
                     <select name="customerTypeID" class="form-select form-select-sm" >
                         <option value="">Chọn phân loại</option>
                         <c:forEach var="type" items="${listTypes}">
@@ -84,10 +84,10 @@
                                                 <c:otherwise>
                                                     <c:forEach var="customer" items="${listCustomers}">
                                                         <tr style="height: 70px;">
-                                                            <td>${customer.user.fullName}</td>
-                                                            <td>${customer.user.phone}</td>
-                                                            <td>${customer.user.email}</td>
-                                                            <td>${customer.user.address}</td>
+                                                            <td>${customer.fullName}</td>
+                                                            <td>${customer.phone}</td>
+                                                            <td>${customer.email}</td>
+                                                            <td>${customer.address}</td>
                                                             <td><fmt:formatNumber type="number"
                                                                 value="${customer.rewardPoints}" />
                                                             </td>
@@ -104,7 +104,7 @@
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
                                                                             data-entity-id="${customer.customerID}" 
-                                                                            data-entity-name="${customer.user.fullName}" 
+                                                                            data-entity-name="${customer.fullName}" 
                                                                             data-entity-type="Khách hàng" 
                                                                             data-delete-url="/admin/customer/delete" 
                                                                             data-check-url="/admin/customer/can-delete/" 
@@ -132,6 +132,7 @@
                     <jsp:param name="extraParams" value="${extraParams}" />
                 </jsp:include>
             </div>
+            <jsp:include page="../layout/footer.jsp" />
         </div>
     </div>
   </div>

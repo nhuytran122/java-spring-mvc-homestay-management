@@ -69,7 +69,12 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
               <p class="mt-4 text-center">
                 Bạn đã nhớ mật khẩu?
-                <a href="/login" class="text-primary fw-bold">Đăng nhập</a>
+                <a
+                  href="/login"
+                  class="text-primary fw-bold"
+                  style="text-decoration: none"
+                  >Đăng nhập</a
+                >
               </p>
             </div>
           </div>

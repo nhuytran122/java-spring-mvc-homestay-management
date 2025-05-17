@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
-import com.lullabyhomestay.homestay_management.utils.RefundType;
 import com.lullabyhomestay.homestay_management.utils.VNPayUtil;
 
 import lombok.Getter;

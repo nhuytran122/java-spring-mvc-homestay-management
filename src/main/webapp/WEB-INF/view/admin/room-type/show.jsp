@@ -115,6 +115,7 @@
                     <jsp:param name="keyword" value="${keyword}" />
                 </jsp:include>
             </div>
+            <jsp:include page="../layout/footer.jsp" />
         </div>
     </div>
   </div>

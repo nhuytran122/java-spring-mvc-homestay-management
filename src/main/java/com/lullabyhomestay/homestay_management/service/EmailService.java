@@ -66,7 +66,7 @@ public class EmailService {
                         placeholders.put("branchName", booking.getRoom().getBranch().getBranchName());
                         placeholders.put("branchAddress", booking.getRoom().getBranch().getAddress());
                         placeholders.put("branchPhone", booking.getRoom().getBranch().getPhone());
-                        placeholders.put("branchPassword", booking.getRoom().getBranch().getBranchPassword());
+                        placeholders.put("branchPassword", booking.getRoom().getBranch().getGatePassword());
                         placeholders.put("bookingHistoryLink",
                                         baseUrl + "/booking/booking-history/" + booking.getBookingID());
 
@@ -108,6 +108,20 @@ public class EmailService {
                 String content = renderTemplate(template, placeholders);
 
                 sendHtmlEmail(user.getEmail(), "Xác nhận Email Đăng ký - Lullaby Homestay", content);
+        }
+
+        @Async
+        public void sendPasswordChangedNotification(User user) throws MessagingException, IOException {
+                String template = loadTemplate("/template-emails/password-changed-notification.html");
+
+                Map<String, String> placeholders = Map.of(
+                                "userName", user.getFullName()
+
+                );
+
+                String content = renderTemplate(template, placeholders);
+
+                sendHtmlEmail(user.getEmail(), "Thông báo thay đổi mật khẩu - Lullaby Homestay", content);
         }
 
         private String loadTemplate(String path) throws IOException {

@@ -1,0 +1,30 @@
+.select2-container--default .select2-selection--single {
+  height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: #495057;
+  padding-left: 0;
+  padding-right: 0;
+  line-height: normal;
+}
+
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow {
+  height: 46px;
+  top: 0;
+  right: 10px;
+}
+
+.select2-container {
+  width: 100% !important;
+}

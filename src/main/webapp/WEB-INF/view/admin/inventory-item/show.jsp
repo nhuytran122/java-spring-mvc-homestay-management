@@ -68,7 +68,6 @@
                                                 <th>Phân loại</th>
                                                 <th>Giá tiền</th>
                                                 <th>Đơn vị tính</th>
-                                                <th>Số lượng tối thiểu</th>
                                                 <th>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -91,10 +90,6 @@
                                                                     value="${item.price}" />đ
                                                             </td>
                                                             <td>${item.unit}</td>
-                                                            <td>
-                                                                <fmt:formatNumber type="number"
-                                                                    value="${item.minQuantity}" />
-                                                            </td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
                                                                     <a href="/admin/inventory-item/update/${item.itemID}" class="btn btn-warning btn-sm" title="Sửa">
@@ -131,6 +126,7 @@
                     <jsp:param name="extraParams" value="${extraParams}" />
                 </jsp:include>
             </div>
+            <jsp:include page="../layout/footer.jsp" />
         </div>
     </div>
   </div>

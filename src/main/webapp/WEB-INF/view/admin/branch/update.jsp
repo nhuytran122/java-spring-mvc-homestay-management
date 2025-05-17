@@ -38,7 +38,7 @@
                                         <form:errors path="phone" cssClass="invalid-feedback" />
                                     </c:set>
                                     <c:set var="errorPassword">
-                                        <form:errors path="branchPassword" cssClass="invalid-feedback" />
+                                        <form:errors path="gatePassword" cssClass="invalid-feedback" />
                                     </c:set>
 
                                     <div class="form-group row">
@@ -72,7 +72,7 @@
                                         <label class="control-label col-sm-2">Mật khẩu cổng <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
                                             <form:input type="number" class="form-control ${not empty errorPassword ? 'is-invalid' : ''}" 
-                                            path="branchPassword" />
+                                            path="gatePassword" />
                                             ${errorPassword}
                                         </div>
                                     </div>
@@ -106,6 +106,7 @@
                     </div>
                 </div>
             </div>
+            <jsp:include page="../layout/footer.jsp" />
         </div>
     </div>   
   </div>

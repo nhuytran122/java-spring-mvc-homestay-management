@@ -1,7 +1,6 @@
 package com.lullabyhomestay.homestay_management.domain.dto;
 
 import com.lullabyhomestay.homestay_management.domain.CustomerType;
-import com.lullabyhomestay.homestay_management.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +18,4 @@ public class CustomerDTO extends UserDTO {
     private Double rewardPoints;
 
     private CustomerType customerType;
-
-    private User user;
 }

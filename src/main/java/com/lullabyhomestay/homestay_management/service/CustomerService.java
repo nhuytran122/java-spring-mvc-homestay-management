@@ -24,6 +24,7 @@ import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.CustomerRepository;
 import com.lullabyhomestay.homestay_management.service.specifications.CustomerSpecifications;
+import com.lullabyhomestay.homestay_management.utils.Constants;
 
 import lombok.AllArgsConstructor;
 
@@ -67,34 +68,9 @@ public class CustomerService {
         return mapper.map(savedCustomer, CustomerDTO.class);
     }
 
-    // public void handleUpdateCustomer(CustomerDTO customerDTO) {
-    // Customer customer = mapper.map(customerDTO, Customer.class);
-    // User user = userService.getUserByUserID(customer.getUser().getUserID());
-
-    // user.setFullName(customerDTO.getFullName());
-    // user.setAddress(customerDTO.getAddress());
-    // user.setPhone(customerDTO.getPhone());
-    // user.setAvatar(customerDTO.getAvatar() != null ? customerDTO.getAvatar() :
-    // user.getAvatar());
-    // userService.handleSaveUser(user);
-
-    // this.handleSaveCustomer(customer);
-    // }
-
     public Customer handleSaveCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
-
-    // private Customer updateCustomerInfo(Customer customer, CustomerDTO
-    // requestDTO) {
-    // customer.setFullName(requestDTO.getFullName());
-    // customer.setAddress(requestDTO.getAddress());
-    // customer.setPhone(requestDTO.getPhone());
-    // customer.setEmail(requestDTO.getEmail());
-    // customer.setAvatar(requestDTO.getAvatar());
-    // customer.setRewardPoints(requestDTO.getRewardPoints());
-    // return customer;
-    // }
 
     @Transactional
     public void updateRewardPointsAndCustomerType(Long customerID, double amount) {
@@ -120,20 +96,21 @@ public class CustomerService {
 
     public Page<CustomerDTO> getAllCustomers(Pageable pageable) {
         Page<Customer> customerPage = customerRepository.findAll(pageable);
-        return customerPage.map(customer -> mapper.map(customer, CustomerDTO.class));
+        return customerPage.map(this::mapToCustomerDTO);
     }
 
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
         return customers.stream()
-                .map(customer -> mapper.map(customer, CustomerDTO.class))
+                .map(this::mapToCustomerDTO)
                 .collect(Collectors.toList());
     }
 
     public Page<CustomerDTO> searchCustomers(SearchCustomerCriterialDTO criteria, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 1,
+        Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
                 "asc".equals(criteria.getSort()) ? Sort.by("RewardPoints").ascending()
                         : "desc".equals(criteria.getSort()) ? Sort.by("RewardPoints").descending() : Sort.unsorted());
+
         Specification<Customer> spec = Specification.where(null);
 
         if (criteria.getKeyword() != null && !criteria.getKeyword().trim().isEmpty()) {
@@ -144,25 +121,15 @@ public class CustomerService {
         if (criteria.getCustomerTypeID() != null) {
             spec = spec.and(CustomerSpecifications.hasType(criteria.getCustomerTypeID()));
         }
-        return customerRepository.findAll(spec, pageable).map(customer -> mapper.map(customer, CustomerDTO.class));
+
+        return customerRepository.findAll(spec, pageable).map(this::mapToCustomerDTO);
     }
 
     public CustomerDTO getCustomerDTOByID(Long customerID) {
-        Optional<Customer> customerOpt = customerRepository.findByCustomerID(customerID);
-        if (!customerOpt.isPresent()) {
-            throw new NotFoundException("Khách hàng");
-        }
+        Customer customer = customerRepository.findByCustomerID(customerID)
+                .orElseThrow(() -> new NotFoundException("Khách hàng"));
 
-        Customer customer = customerOpt.get();
-        User user = customer.getUser();
-        CustomerDTO customerDTO = mapper.map(customerOpt.get(), CustomerDTO.class);
-        customerDTO.setFullName(user.getFullName());
-        customerDTO.setEmail(user.getEmail());
-        customerDTO.setPhone(user.getPhone());
-        customerDTO.setAddress(user.getAddress());
-        customerDTO.setAvatar(user.getAvatar());
-        customerDTO.setRole(user.getRole());
-        return customerDTO;
+        return mapToCustomerDTO(customer);
     }
 
     public Customer getCustomerByID(Long customerID) {
@@ -183,4 +150,28 @@ public class CustomerService {
             customerRepository.deleteByCustomerID(customerID);
         }
     }
+
+    public CustomerDTO mapToCustomerDTO(Customer customer) {
+        if (customer == null || customer.getUser() == null) {
+            return null;
+        }
+
+        User user = customer.getUser();
+
+        CustomerDTO dto = new CustomerDTO();
+        dto.setCustomerID(customer.getCustomerID());
+        dto.setRewardPoints(customer.getRewardPoints());
+        dto.setCustomerType(customer.getCustomerType());
+
+        dto.setUserID(user.getUserID());
+        dto.setFullName(user.getFullName());
+        dto.setPhone(user.getPhone());
+        dto.setEmail(user.getEmail());
+        dto.setAddress(user.getAddress());
+        dto.setAvatar(user.getAvatar());
+        dto.setRole(user.getRole());
+
+        return dto;
+    }
+
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lullabyhomestay.homestay_management.domain.Employee;
 import com.lullabyhomestay.homestay_management.domain.InventoryStock;
 import com.lullabyhomestay.homestay_management.domain.InventoryTransaction;
+import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchTransactionCriterialDTO;
 import com.lullabyhomestay.homestay_management.service.BranchService;
@@ -28,6 +29,7 @@ import com.lullabyhomestay.homestay_management.service.EmployeeService;
 import com.lullabyhomestay.homestay_management.service.InventoryItemService;
 import com.lullabyhomestay.homestay_management.service.InventoryStockService;
 import com.lullabyhomestay.homestay_management.service.InventoryTransactionService;
+import com.lullabyhomestay.homestay_management.service.UserService;
 import com.lullabyhomestay.homestay_management.utils.TransactionType;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +46,7 @@ public class WarehouseController {
     private final InventoryItemService itemService;
     private final EmployeeService employeeService;
     private final ModelMapper mapper;
+    private final UserService userService;
 
     @GetMapping("/admin/warehouse")
     public String getInventoryStockPage(Model model,
@@ -106,22 +109,35 @@ public class WarehouseController {
             @ModelAttribute("newExport") @Valid InventoryTransaction transaction,
             BindingResult bindingResult,
             HttpServletRequest request) {
-        if (transaction.getTransactionType() == TransactionType.EXPORT) {
-            Optional<InventoryStock> currentStock = stockService.findStockByItemIDAndBranchID(
-                    transaction.getInventoryItem().getItemID(), transaction.getBranch().getBranchID());
-            if (!currentStock.isPresent()) {
-                model.addAttribute("error", "Không tìm thấy đồ dùng trong chi nhánh này");
-            }
-            if (currentStock.get().getQuantity() < transaction.getQuantity()) {
-                model.addAttribute("error",
-                        "Số lượng xuất vượt quá tồn kho. Chỉ còn " + currentStock.get().getQuantity()
-                                + " " + currentStock.get().getInventoryItem().getItemName() + " trong kho");
-                model.addAttribute("newExport", transaction);
-                return "admin/warehouse/transaction/export";
-            }
+
+        if (bindingResult.hasErrors()) {
+            prepareTransactionModel(model, transaction, "newExport");
+            return "admin/warehouse/export";
         }
-        return handleTransaction(model, transaction, bindingResult, TransactionType.EXPORT, "newExport",
-                "admin/warehouse/export", request);
+
+        Optional<InventoryStock> currentStock = stockService.findStockByItemIDAndBranchID(
+                transaction.getInventoryItem().getItemID(), transaction.getBranch().getBranchID());
+
+        if (!currentStock.isPresent()) {
+            model.addAttribute("error", "Không tìm thấy đồ dùng trong chi nhánh này");
+            prepareTransactionModel(model, transaction, "newExport");
+            return "admin/warehouse/export";
+        }
+
+        if (currentStock.get().getQuantity() < transaction.getQuantity()) {
+            model.addAttribute("error",
+                    "Số lượng xuất vượt quá tồn kho. Chỉ còn " + currentStock.get().getQuantity()
+                            + " " + currentStock.get().getInventoryItem().getItemName() + " trong kho");
+            prepareTransactionModel(model, transaction, "newExport");
+            return "admin/warehouse/export";
+        }
+
+        EmployeeDTO employeeDTO = getLoggedInEmployeeDTO(request);
+        mapAndSetEmployeeToTransaction(transaction, employeeDTO);
+        transaction.setTransactionType(TransactionType.EXPORT);
+        transactionService.handleSaveTransaction(transaction);
+
+        return "redirect:/admin/warehouse";
     }
 
     @GetMapping("/admin/warehouse/transaction")
@@ -207,11 +223,11 @@ public class WarehouseController {
 
     private String handleTransaction(Model model, @Valid InventoryTransaction transaction, BindingResult bindingResult,
             TransactionType transactionType, String modelAttributeName, String viewName, HttpServletRequest request) {
-        EmployeeDTO employeeDTO = getLoggedInEmployeeDTO(request);
         if (bindingResult.hasErrors()) {
             prepareTransactionModel(model, transaction, modelAttributeName);
             return viewName;
         }
+        EmployeeDTO employeeDTO = getLoggedInEmployeeDTO(request);
         mapAndSetEmployeeToTransaction(transaction, employeeDTO);
         transaction.setTransactionType(transactionType);
         transactionService.handleSaveTransaction(transaction);
@@ -221,7 +237,8 @@ public class WarehouseController {
     private EmployeeDTO getLoggedInEmployeeDTO(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         Long userId = (Long) session.getAttribute("id");
-        EmployeeDTO employeeDTO = employeeService.getEmployeeDTOByID(userId);
+        User user = userService.getUserByUserID(userId);
+        EmployeeDTO employeeDTO = employeeService.getEmployeeDTOByID(user.getEmployee().getEmployeeID());
         return employeeDTO;
     }
 

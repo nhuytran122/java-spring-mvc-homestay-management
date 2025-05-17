@@ -99,7 +99,12 @@ public class UserProfileController {
                 if (result.hasErrors()) {
                         return "client/auth/change-password";
                 }
-                userService.changePassword(userID, passwordForm.getNewPassword());
+                try {
+                        userService.changePassword(userID, passwordForm.getNewPassword());
+                } catch (Exception e) {
+                        e.getStackTrace();
+                }
+
                 model.addAttribute("message", "Đổi mật khẩu thành công! Bạn sẽ được chuyển hướng sau 3 giây.");
                 model.addAttribute("redirect", "/profile");
 

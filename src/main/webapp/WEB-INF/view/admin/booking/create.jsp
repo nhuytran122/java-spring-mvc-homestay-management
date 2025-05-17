@@ -11,6 +11,8 @@
   <title>Thêm đơn đặt phòng</title>
   <jsp:include page="../layout/import-css.jsp" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/admin/css/style-select2.css" />
 </head>
 <body>
   <div class="container-scroller">
@@ -46,7 +48,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Khách hàng <span class="text-danger">*</span></label>
                                         <div class="col-sm-10">
-                                            <form:select class="form-select form-control ${not empty errorCustomer ? 'is-invalid' : ''}" path="customer">
+                                            <form:select id="customerSelect" class="form-select select2 form-control ${not empty errorCustomer ? 'is-invalid' : ''}" path="customer">
                                                 <form:option value="">Chọn khách hàng</form:option>
                                                 <form:options items="${listCustomers}" itemValue="customerID" itemLabel="user.fullName"/>
                                             </form:select>
@@ -115,7 +117,7 @@
 
                                     <div class="form-group row">
                                         <div class="col-sm-12 text-center">
-                                            <a href="/admin/booking" class="btn btn-light">Hủy</a>
+                                            <a href="/admin/booking" class="btn btn-secondary">Hủy</a>
                                             <button type="submit" class="btn btn-primary">Tạo</button>
                                         </div>
                                     </div>
@@ -126,6 +128,7 @@
                     </div>
                 </div>
             </div> 
+            <jsp:include page="../layout/footer.jsp" />
         </div>
     </div>   
   </div>
@@ -133,6 +136,8 @@
   <jsp:include page="../layout/import-js.jsp" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
     $(document).ready(function () {
         let now = moment();
@@ -246,6 +251,7 @@
         });
 
         initPickers();
+        $('.select2').select2();
     });
 </script>
 

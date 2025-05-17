@@ -20,52 +20,50 @@
       margin-bottom: 15px;
       background-color: #fff;
     }
+
     .service-details {
       display: none;
       opacity: 0;
       transition: opacity 0.3s ease;
       margin-top: 10px;
     }
+
     .service-item.selected .service-details {
       display: block;
       opacity: 1;
     }
-    .invalid-feedback {
-      display: none;
-      color: #dc3545;
-      font-size: 0.875rem;
-    }
-    .is-invalid + .invalid-feedback {
-      display: block;
-    }
-    .total-section {
-      font-size: 1.25rem;
-      font-weight: bold;
-      margin-top: 20px;
-      text-align: right;
-    }
-    .error-message {
-      display: none;
-      color: #dc3545;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    .d-flex.align-items-center {
+
+    .service-checkbox-wrapper {
+      display: flex;
       align-items: center;
+      justify-content: center;
+      width: 40px;
+      min-width: 40px;
+      height: 100%;
+      padding-right: 10px;
     }
-    .form-check-input {
-      margin-top: 0;
-      margin-bottom: 0;
-      vertical-align: middle;
-      align-self: center;
+
+    .service-checkbox {
+      margin: 0;
+      transform: scale(1.2);
     }
+
     .flex-grow-1 {
       line-height: 1.5;
     }
+
     .iconify {
       vertical-align: middle;
       align-self: center;
     }
+
+    @media (max-width: 576px) {
+      .service-checkbox-wrapper {
+        justify-content: flex-start;
+        padding-right: 0;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -93,36 +91,48 @@
                       <div class="col-12">
                         <c:forEach var="service" items="${listServices}" varStatus="loop">
                           <div class="service-item" id="service-${service.serviceID}">
-                            <div class="d-flex align-items-center">
-                              <input type="checkbox" class="form-check-input me-3 service-checkbox"
-                                name="services[${loop.index}].selected" value="true"
-                                data-service-id="${service.serviceID}" data-price="${service.price}">
-                              <div class="flex-grow-1">
-                                <h5 class="mb-1">${service.serviceName}</h5>
-                                <p class="mb-1 text-muted">${service.description}</p>
-                                <p class="mb-0 text-danger">
-                                  <b><fmt:formatNumber type="number" value="${service.price}" /> VNĐ / ${service.unit}</b>
-                                </p>
-                              </div>
-                              <span class="iconify ms-3" data-icon="${service.icon}" data-width="24" data-height="24"></span>
-                            </div>
-                            <div class="service-details">
-                              <div class="form-group">
-                                <label for="quantity-${service.serviceID}" class="form-label">Số lượng <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control quantity-input"
-                                  id="quantity-${service.serviceID}" name="services[${loop.index}].quantity"
-                                  min="1" value="1"/>
-                                <div class="invalid-feedback" id="quantity-error-${service.serviceID}"></div>
-                              </div>
-                              <div class="form-group mt-2">
-                                <label for="note-${service.serviceID}" class="form-label">Mô tả yêu cầu</label>
-                                <textarea class="form-control note-input"
-                                  id="note-${service.serviceID}" name="services[${loop.index}].description"
-                                  rows="2" placeholder="Nhập mô tả yêu cầu (ví dụ: thời gian phục vụ, yêu cầu đặc biệt,...)"></textarea>
-                              </div>
-                              <input type="hidden" name="services[${loop.index}].serviceID" value="${service.serviceID}"/>
-                            </div>
-                          </div>
+  <div class="d-flex">
+    <div class="form-check d-flex align-items-center justify-content-center me-3" style="width: 46px; height: 46px;">
+  <input class="form-check-input service-checkbox" type="checkbox"
+    name="services[${loop.index}].selected"
+    value="true"
+    data-service-id="${service.serviceID}" data-price="${service.price}">
+</div>
+
+
+    <div class="flex-grow-1">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">${service.serviceName}</h5>
+          <p class="mb-1 text-muted">${service.description}</p>
+          <p class="mb-0 text-danger">
+            <b><fmt:formatNumber type="number" value="${service.price}" /> VNĐ / ${service.unit}</b>
+          </p>
+        </div>
+        <span class="iconify ms-3" data-icon="${service.icon}" data-width="24" data-height="24"></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- service details -->
+  <div class="service-details">
+    <div class="form-group">
+      <label for="quantity-${service.serviceID}" class="form-label">Số lượng <span class="text-danger">*</span></label>
+      <input type="number" class="form-control quantity-input"
+        id="quantity-${service.serviceID}" name="services[${loop.index}].quantity"
+        min="1" value="1"/>
+      <div class="invalid-feedback" id="quantity-error-${service.serviceID}"></div>
+    </div>
+    <div class="form-group mt-2">
+      <label for="note-${service.serviceID}" class="form-label">Mô tả yêu cầu</label>
+      <textarea class="form-control note-input"
+        id="note-${service.serviceID}" name="services[${loop.index}].description"
+        rows="2" placeholder="Nhập mô tả yêu cầu (ví dụ: thời gian phục vụ, yêu cầu đặc biệt,...)"></textarea>
+    </div>
+    <input type="hidden" name="services[${loop.index}].serviceID" value="${service.serviceID}"/>
+  </div>
+</div>
+
                         </c:forEach>
                       </div>
                     </div>
@@ -149,6 +159,7 @@
             </div>
           </div>
         </div> 
+        <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>   
   </div>

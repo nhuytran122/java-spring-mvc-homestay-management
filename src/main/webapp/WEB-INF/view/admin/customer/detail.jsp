@@ -43,7 +43,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                             title="Xóa"
                             onclick="checkBeforeDelete(this)"
                             data-entity-id="${customer.customerID}"
-                            data-entity-name="${customer.user.fullName}"
+                            data-entity-name="${customer.fullName}"
                             data-entity-type="Khách hàng"
                             data-delete-url="/admin/customer/delete"
                             data-check-url="/admin/customer/can-delete/"
@@ -63,9 +63,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     <div class="row">
                       <div class="col-md-3">
                         <c:choose>
-                          <c:when test="${not empty customer.user.avatar}">
+                          <c:when test="${not empty customer.avatar}">
                             <img
-                              src="/images/avatar/${customer.user.avatar}"
+                              src="/images/avatar/${customer.avatar}"
                               class="img-fluid rounded"
                               style="
                                 width: 100%;
@@ -93,25 +93,25 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                           <div class="col-md-4 fw-bold text-md-start">
                             Tên khách hàng:
                           </div>
-                          <div class="col-md-8">${customer.user.fullName}</div>
+                          <div class="col-md-8">${customer.fullName}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Số điện thoại:
                           </div>
-                          <div class="col-md-8">${customer.user.phone}</div>
+                          <div class="col-md-8">${customer.phone}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Email:
                           </div>
-                          <div class="col-md-8">${customer.user.email}</div>
+                          <div class="col-md-8">${customer.email}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
                             Địa chỉ:
                           </div>
-                          <div class="col-md-8">${customer.user.address}</div>
+                          <div class="col-md-8">${customer.address}</div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
                           <div class="col-md-4 fw-bold text-md-start">
@@ -135,6 +135,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
             </div>
           </div>
+          <jsp:include page="../layout/footer.jsp" />
         </div>
       </div>
     </div>

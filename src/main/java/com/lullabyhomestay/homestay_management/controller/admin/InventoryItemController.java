@@ -108,7 +108,6 @@ public class InventoryItemController {
         currentItem.setItemName(item.getItemName());
         currentItem.setInventoryCategory(item.getInventoryCategory());
         currentItem.setPrice(item.getPrice());
-        currentItem.setMinQuantity(item.getMinQuantity());
         currentItem.setUnit(item.getUnit());
         this.itemService.handleSaveInventoryItem(currentItem);
         return "redirect:/admin/inventory-item";

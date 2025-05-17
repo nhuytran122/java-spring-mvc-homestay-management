@@ -25,17 +25,21 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Chi tiết phòng ${room.roomNumber}</h4>
+                  <h4 class="card-title">Chi tiết phòng ${room.roomNumber} - ${room.branch.branchName}</h4>
                   
                   <div class="row g-4">
                     <div class="d-flex justify-content-end">
                       <div class="btn-group" role="group">
-                          <a href="/admin/room/update/${room.roomID}" class="btn btn-warning btn-sm" title="Sửa">
+                        <c:set
+                              var="roomID"
+                              value="${room.roomID}"
+                            ></c:set>
+                          <a href="/admin/room/update/${roomID}" class="btn btn-warning btn-sm" title="Sửa">
                               <i class="bi bi-pencil"></i> Sửa
                           </a>
                           <button class="btn btn-danger btn-sm" title="Xóa"
                               onclick="checkBeforeDelete(this)" 
-                                  data-entity-id="${room.roomID}" 
+                                  data-entity-id="${roomID}" 
                                   data-entity-name="${room.roomNumber}" 
                                   data-entity-type="Phòng" 
                                   data-delete-url="/admin/room/delete" 
@@ -203,6 +207,7 @@
             </div>
           </div>
         </div>
+        <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>
   </div>

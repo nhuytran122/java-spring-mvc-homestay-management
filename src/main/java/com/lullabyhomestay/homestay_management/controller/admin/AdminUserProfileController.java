@@ -76,7 +76,12 @@ public class AdminUserProfileController {
         if (result.hasErrors()) {
             return "admin/profile/change-password";
         }
-        userService.changePassword(userID, passwordForm.getNewPassword());
+        try {
+            userService.changePassword(userID, passwordForm.getNewPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         model.addAttribute("message", "Đổi mật khẩu thành công! Bạn sẽ được chuyển hướng sau 3 giây.");
         model.addAttribute("redirect", "/admin/profile");
 

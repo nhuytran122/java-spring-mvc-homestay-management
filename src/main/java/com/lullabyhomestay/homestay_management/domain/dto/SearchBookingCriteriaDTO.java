@@ -21,7 +21,6 @@ public class SearchBookingCriteriaDTO {
     private Long branchID;
     private Long roomTypeID;
     private String status;
-    private String sort;
     private Long customerID;
 
     public String convertToExtraParams() {
@@ -43,9 +42,6 @@ public class SearchBookingCriteriaDTO {
         }
         if (keyword != null && !keyword.isEmpty()) {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
-        }
-        if (sort != null) {
-            extraParams.append("&sort=").append(sort);
         }
         return extraParams.toString();
     }

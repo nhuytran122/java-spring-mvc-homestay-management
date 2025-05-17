@@ -133,6 +133,7 @@
                         <jsp:param name="extraParams" value="${extraParams}" />
                     </jsp:include>
                 </div>
+                <jsp:include page="../layout/footer.jsp" />
             </div>
         </div>
     </div>
