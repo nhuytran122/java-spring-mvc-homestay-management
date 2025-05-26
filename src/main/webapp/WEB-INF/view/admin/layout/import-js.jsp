@@ -2,13 +2,10 @@
 <script src="/admin/js/vendors/chart.js/Chart.min.js"></script>
 <script src="/admin/js/vendors/datatables.net/jquery.dataTables.js"></script>
 <script src="/admin/js/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-<script src="/admin/js/dataTables.select.min.js"></script>
 <script src="/admin/js/off-canvas.js"></script>
 <script src="/admin/js/hoverable-collapse.js"></script>
 <script src="/admin/js/template.js"></script>
 <script src="/admin/js/settings.js"></script>
-<script src="/admin/js/todolist.js"></script>
 <script src="/admin/js/dashboard.js"></script>
-<script src="/admin/js/Chart.roundedBarCharts.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
