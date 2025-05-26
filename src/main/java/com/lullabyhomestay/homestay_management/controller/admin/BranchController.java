@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +26,15 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasRole('MANAGER')")
+@RequestMapping("/admin/branch")
 public class BranchController {
 
     private final BranchService branchService;
     private final UploadService uploadService;
 
-    @GetMapping("/admin/branch")
+    @PreAuthorize("permitAll()")
+    @GetMapping("")
     public String getBranchPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword) {
@@ -46,27 +51,25 @@ public class BranchController {
         return "admin/branch/show";
     }
 
-    @GetMapping("/admin/branch/{id}")
+    @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public String getDetailBranchPage(Model model, @PathVariable long id) {
         Branch branch = branchService.getBranchByID(id);
         model.addAttribute("branch", branch);
         return "admin/branch/detail";
     }
 
-    @GetMapping("/admin/branch/create")
+    @GetMapping("/create")
     public String getCreateBranchPage(Model model) {
         model.addAttribute("newBranch", new Branch());
         return "admin/branch/create";
     }
 
-    @PostMapping("/admin/branch/create")
+    @PostMapping("/create")
     public String postCreateBranch(Model model,
             @ModelAttribute("newBranch") @Valid Branch branch,
             BindingResult newBranchBindingResult,
-            @RequestParam("fileImg") MultipartFile file,
-            HttpServletRequest request) {
-
-        // HttpSession session = request.getSession(false);
+            @RequestParam("fileImg") MultipartFile file) {
 
         if (newBranchBindingResult.hasErrors()) {
             return "admin/branch/create";
@@ -82,7 +85,7 @@ public class BranchController {
         return "redirect:/admin/branch";
     }
 
-    @GetMapping("/admin/branch/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateBranchPage(Model model, @PathVariable long id) {
         Branch branch = branchService.getBranchByID(id);
 
@@ -90,7 +93,7 @@ public class BranchController {
         return "admin/branch/update";
     }
 
-    @PostMapping("/admin/branch/update")
+    @PostMapping("/update")
     public String postUpdateBranch(Model model,
             @ModelAttribute("branch") @Valid Branch branch,
             BindingResult newBranchBindingResult,
@@ -115,13 +118,13 @@ public class BranchController {
         return "redirect:/admin/branch";
     }
 
-    @GetMapping("/admin/branch/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteBranch(@PathVariable long id) {
         boolean canDelete = branchService.canDeleteBranch(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/branch/delete")
+    @PostMapping("/delete")
     public String postDeleteBranch(@RequestParam("branchID") long branchID) {
         this.branchService.deleteByBranchID(branchID);
         return "redirect:/admin/branch";

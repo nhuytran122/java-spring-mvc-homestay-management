@@ -32,23 +32,25 @@ uri="http://lullabyhomestay.com/functions" %>
                     <h5 class="mb-3">Thông tin phòng</h5>
                     <p>
                       <strong>Phòng:</strong>
-                      ${extension.booking.room.roomNumber} -
-                      ${extension.booking.room.roomType.name}
+                      <c:set var="booking" value="${extension.booking}" />
+                      <c:set var="room" value="${booking.room}" />
+                      <c:set var="branch" value="${room.branch}" />
+                      ${room.roomNumber} - ${room.roomType.name}
                     </p>
                     <p>
                       <strong>Chi nhánh:</strong>
-                      ${extension.booking.room.branch.branchName}
+                      ${branch.branchName}
                     </p>
                     <p>
                       <strong>Địa chỉ:</strong>
-                      ${extension.booking.room.branch.address}
+                      ${branch.address}
                     </p>
                   </div>
                   <div class="col-md-6">
                     <h5 class="mb-3">Thông tin đặt phòng</h5>
                     <p>
                       <strong>Check-in:</strong>
-                      ${f:formatLocalDateTime(extension.booking.checkIn)}
+                      ${f:formatLocalDateTime(booking.checkIn)}
                     </p>
                     <p>
                       <strong>Check-out mới:</strong>
@@ -56,7 +58,7 @@ uri="http://lullabyhomestay.com/functions" %>
                     </p>
                     <p>
                       <strong>Số lượng khách:</strong>
-                      ${extension.booking.guestCount} người
+                      ${booking.guestCount} người
                     </p>
                   </div>
                 </div>
@@ -72,15 +74,16 @@ uri="http://lullabyhomestay.com/functions" %>
                 />đ
               </h3>
 
-              <c:if
-                test="${extension.booking.customer.customerType.discountRate > 0}"
-              >
+              <c:set
+                var="customerType"
+                value="${booking.customer.customerType}"
+              />
+              <c:if test="${customerType.discountRate > 0}">
                 <div class="mt-2">
                   <small class="text-muted">
-                    Áp dụng giảm giá dành cho thành viên
-                    ${extension.booking.customer.customerType.name}
+                    Áp dụng giảm giá dành cho thành viên ${customerType.name}
                     (<fmt:formatNumber
-                      value="${extension.booking.customer.customerType.discountRate}"
+                      value="${customerType.discountRate}"
                       pattern="#'%'"
                     />):
                     <span class="text-success fw-bold">
@@ -114,7 +117,7 @@ uri="http://lullabyhomestay.com/functions" %>
                 </form>
 
                 <a
-                  onclick="handlePayment('${extension.booking.bookingID}', 'EXTENDED_HOURS', true)"
+                  onclick="handlePayment('${booking.bookingID}', 'EXTENDED_HOURS', true)"
                   class="btn btn-success btn-lg"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán

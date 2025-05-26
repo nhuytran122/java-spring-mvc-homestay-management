@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryCategory;
@@ -22,10 +24,12 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+@RequestMapping("/admin/inventory-category")
 public class InventoryCategoryController {
     private final InventoryCategoryService inventoryCategoryService;
 
-    @GetMapping("/admin/inventory-category")
+    @GetMapping("")
     public String getInventoryCategoryPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword) {
@@ -42,13 +46,13 @@ public class InventoryCategoryController {
         return "admin/inventory-category/show";
     }
 
-    @GetMapping("/admin/inventory-category/create")
+    @GetMapping("/create")
     public String getCreateInventoryCategoryPage(Model model) {
         model.addAttribute("newCategory", new InventoryCategory());
         return "admin/inventory-category/create";
     }
 
-    @PostMapping("/admin/inventory-category/create")
+    @PostMapping("/create")
     public String postCreateInventoryCategory(Model model,
             @ModelAttribute("newCategory") @Valid InventoryCategory inventoryCategory,
             BindingResult newCategoryBindingResult,
@@ -66,7 +70,7 @@ public class InventoryCategoryController {
         return "redirect:/admin/inventory-category";
     }
 
-    @GetMapping("/admin/inventory-category/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateCategoryPage(Model model, @PathVariable long id) {
         InventoryCategory category = inventoryCategoryService.getInventoryCategoryByID(id);
 
@@ -74,7 +78,7 @@ public class InventoryCategoryController {
         return "admin/inventory-category/update";
     }
 
-    @PostMapping("/admin/inventory-category/update")
+    @PostMapping("/update")
     public String postUpdateBranch(Model model,
             @ModelAttribute("category") @Valid InventoryCategory category,
             BindingResult newCategoryBindingResult,
@@ -99,13 +103,13 @@ public class InventoryCategoryController {
         return "redirect:/admin/inventory-category";
     }
 
-    @GetMapping("/admin/inventory-category/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteCategory(@PathVariable long id) {
         boolean canDelete = inventoryCategoryService.canDeleteCategory(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/inventory-category/delete")
+    @PostMapping("/delete")
     public String postDeleteBranch(@RequestParam("categoryID") long categoryID) {
         this.inventoryCategoryService.deleteByCategoryID(categoryID);
         return "redirect:/admin/inventory-category";

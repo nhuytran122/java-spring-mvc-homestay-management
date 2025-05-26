@@ -117,17 +117,18 @@ public class InventoryTransactionService {
 
     @Transactional
     public void updateTransaction(InventoryTransaction updatedTransaction, int oldQuantity) {
-        if (this.canUpdateTransaction(updatedTransaction.getTransactionID())) {
-            InventoryTransaction existingTransaction = transactionRepository
-                    .findById(updatedTransaction.getTransactionID())
-                    .get();
-            int newQuantity = updatedTransaction.getQuantity();
-
-            existingTransaction.setQuantity(newQuantity);
-
-            transactionRepository.save(existingTransaction);
-            updateStockWithDifference(existingTransaction, newQuantity - oldQuantity);
+        if (!this.canUpdateTransaction(updatedTransaction.getTransactionID())) {
+            throw new IllegalStateException("Không thể cập nhật giao dịch vì đã quá thời gian cho phép");
         }
+        InventoryTransaction existingTransaction = transactionRepository.findById(updatedTransaction.getTransactionID())
+                .orElseThrow(() -> new NotFoundException("Giao dịch kho", "Giao dịch không tồn tại"));
+        int newQuantity = updatedTransaction.getQuantity();
+
+        existingTransaction.setQuantity(newQuantity);
+
+        transactionRepository.save(existingTransaction);
+        updateStockWithDifference(existingTransaction, newQuantity - oldQuantity);
+
     }
 
     private void updateStockWithDifference(InventoryTransaction transaction, int quantityDifference) {

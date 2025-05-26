@@ -27,6 +27,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title text-center">Gia hạn giờ thuê phòng</h4>
+                <c:set var="bookingID" value="${booking.bookingID}"/>
+                <c:set var="roomTypeName" value="${booking.room.roomType.name}"/>
 
                 <p><strong>Phòng:</strong> ${booking.room.roomNumber}</p>
                 <p>
@@ -48,7 +50,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   <input
                     type="hidden"
                     name="bookingID"
-                    value="${booking.bookingID}"
+                    value="${bookingID}"
                   />
 
                   <div class="form-group">
@@ -74,14 +76,14 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                       value="${booking.pricingSnapshot.extraHourPrice}"
                     />đ /
                     <c:if
-                      test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"
+                      test="${fn:containsIgnoreCase(roomTypeName, 'dorm')}"
                     >
                       người / </c:if
                     >giờ)
                     <small class="text-muted d-block my-1">
                       <c:choose>
                         <c:when
-                          test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"
+                          test="${fn:containsIgnoreCase(roomTypeName, 'dorm')}"
                         >
                           * Phòng Dorm: phí được tính theo số lượng khách và số
                           giờ gia hạn.
@@ -105,7 +107,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 
                   <div class="text-center mt-4">
                     <a
-                      href="/admin/booking/${booking.bookingID}"
+                      href="/admin/booking/${bookingID}"
                       class="btn btn-secondary"
                       >Hủy</a
                     >

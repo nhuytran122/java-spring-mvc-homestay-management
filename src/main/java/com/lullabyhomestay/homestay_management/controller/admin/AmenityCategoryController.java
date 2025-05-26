@@ -2,6 +2,7 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,11 +20,14 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
+@PreAuthorize("hasRole('MANAGER')")
+@RequestMapping("/admin/amenity-category")
 public class AmenityCategoryController {
     private final AmenityCategoryService amenityCategoryService;
     private final IconService iconService;
 
-    @GetMapping("/admin/amenity-category")
+    @PreAuthorize("permitAll()")
+    @GetMapping("")
     public String getAmenityCategoryPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword) {
@@ -40,19 +44,17 @@ public class AmenityCategoryController {
         return "admin/amenity-category/show";
     }
 
-    @GetMapping("/admin/amenity-category/create")
+    @GetMapping("/create")
     public String getCreateAmenityCategoryPage(Model model) {
         model.addAttribute("newCategory", new AmenityCategory());
         model.addAttribute("iconList", iconService.getCachedIconList());
         return "admin/amenity-category/create";
     }
 
-    @PostMapping("/admin/amenity-category/create")
+    @PostMapping("/create")
     public String postCreateAmenityCategory(Model model,
             @ModelAttribute("newCategory") @Valid AmenityCategory amenityCategory,
-            BindingResult newCategoryBindingResult,
-            HttpServletRequest request) {
-        // HttpSession session = request.getSession(false);
+            BindingResult newCategoryBindingResult) {
         if (amenityCategoryService.existsByName(amenityCategory.getCategoryName())) {
             newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
                     "Tên phân loại tiện nghi đã tồn tại!");
@@ -66,7 +68,7 @@ public class AmenityCategoryController {
         return "redirect:/admin/amenity-category";
     }
 
-    @GetMapping("/admin/amenity-category/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateCategoryPage(Model model, @PathVariable long id) {
         AmenityCategory category = amenityCategoryService.getAmenityCategoryByID(id);
 
@@ -75,7 +77,7 @@ public class AmenityCategoryController {
         return "admin/amenity-category/update";
     }
 
-    @PostMapping("/admin/amenity-category/update")
+    @PostMapping("/update")
     public String postUpdateCategory(Model model,
             @ModelAttribute("category") @Valid AmenityCategory category,
             BindingResult newCategoryBindingResult,
@@ -102,13 +104,13 @@ public class AmenityCategoryController {
         return "redirect:/admin/amenity-category";
     }
 
-    @GetMapping("/admin/amenity-category/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteCategory(@PathVariable long id) {
         boolean canDelete = amenityCategoryService.canDeleteCategory(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/amenity-category/delete")
+    @PostMapping("/delete")
     public String postDeleteBranch(@RequestParam("categoryID") long categoryID) {
         this.amenityCategoryService.deleteByCategoryID(categoryID);
         return "redirect:/admin/amenity-category";

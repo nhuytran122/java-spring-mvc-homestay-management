@@ -74,6 +74,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="room" items="${rooms}">
+                                                        <c:set var="roomID" value="${room.roomID}"/>
                                                         <tr>
                                                             <td>
                                                                 <c:choose>
@@ -95,15 +96,15 @@
                                                             </td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/room/${room.roomID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <a href="/admin/room/${roomID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
-                                                                    <a href="/admin/room/update/${room.roomID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/room/update/${roomID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${room.roomID}" 
+                                                                            data-entity-id="${roomID}" 
                                                                             data-entity-name="${room.roomNumber}" 
                                                                             data-entity-type="Phòng" 
                                                                             data-delete-url="/admin/room/delete" 

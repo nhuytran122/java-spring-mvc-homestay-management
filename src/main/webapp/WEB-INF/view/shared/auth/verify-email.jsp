@@ -37,6 +37,36 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 <div class="alert alert-danger text-center">${error}</div>
               </c:if>
 
+              <c:if test="${resend}">
+                <form
+                  action="/resend-verification-email"
+                  method="post"
+                  class="mt-4"
+                >
+                  <input
+                    type="hidden"
+                    name="${_csrf.parameterName}"
+                    value="${_csrf.token}"
+                  />
+                  <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold"
+                      >Email của bạn</label
+                    >
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      class="form-control"
+                      placeholder="Nhập email đã dùng để đăng ký"
+                      required
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100">
+                    Gửi lại email xác nhận
+                  </button>
+                </form>
+              </c:if>
+
               <c:if test="${not empty message and empty error}">
                 <div
                   class="alert alert-success alert-dismissible fade show text-center d-flex align-items-center justify-content-center gap-2"

@@ -28,10 +28,12 @@
 
                 <div class="col-md-3">
                     <label class="form-label">Chi nhánh</label>
+                    <c:set var="cBranchID" value="${criteria.branchID}" />
                     <select name="branchID" class="form-select">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">
-                            <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
+                            <c:set var="fBranchID" value="${branch.branchID}" />
+                            <option value="${fBranchID}" ${fBranchID == cBranchID ? 'selected' : ''}>
                                 ${branch.branchName}
                             </option>
                         </c:forEach>
@@ -39,10 +41,12 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Loại phòng</label>
+                    <c:set var="cRoomTypeID" value="${criteria.roomTypeID}" />
                     <select name="roomTypeID" class="form-select">
                         <option value="">Chọn loại phòng</option>
                         <c:forEach var="roomType" items="${listRoomTypes}">
-                            <option value="${roomType.roomTypeID}" ${roomType.roomTypeID == criteria.roomTypeID ? 'selected' : ''}>
+                            <c:set var="rTypeID" value="${roomType.roomTypeID}"/>
+                            <option value="${rTypeID}" ${rTypeID == cRoomTypeID ? 'selected' : ''}>
                                 ${roomType.name}
                             </option>
                         </c:forEach>
@@ -50,12 +54,13 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Tình trạng</label>
+                    <c:set var="cStatus" value="${criteria.status}" />
                     <select name="status" class="form-select">
-                        <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
+                        <option value="" ${cStatus == null || cStatus == '' ? 'selected' : ''}>
                             Tất cả tình trạng
                         </option>
                         <c:forEach var="type" items="${bookingStatuses}">
-                            <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
+                            <option value="${type}" ${cStatus == type ? 'selected' : ''}>
                                 ${type.displayName} 
                             </option>
                         </c:forEach>
@@ -158,12 +163,16 @@
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach var="booking" items="${listBookings}">            
+                    <c:forEach var="booking" items="${listBookings}">   
+                        <c:set var="bookingID" value="${booking.bookingID}"/>         
+                        <c:set var="bRoom" value="${booking.room}"/>  
+                        <c:set var="totalAmount" value="${booking.totalAmount}"/>
+                        <c:set var="paidAmount" value="${booking.paidAmount}"/>       
                         <div class="card-body">
                             <div class="upcoming-booking">
                                 <c:choose>
-                                    <c:when test="${not empty booking.room.thumbnail}">
-                                        <img src="/images/room/${booking.room.thumbnail}" class="booking-image">
+                                    <c:when test="${not empty bRoom.thumbnail}">
+                                        <img src="/images/room/${bRoom.thumbnail}" class="booking-image">
                                     </c:when>
                                     <c:otherwise>
                                         <img src="/images/room/default-img.jpg" class="booking-image">
@@ -172,29 +181,31 @@
                                 <div class="booking-details">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="badge ${booking.status == 'COMPLETED' ? 'bg-success' : 
-                                                                booking.status == 'CANCELLED' ? 'bg-danger' : 
-                                                                booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
-                                                ${booking.status.displayName}
+                                            <c:set var="bStatus" value="${booking.status}"/>
+                                            <span class="badge ${bStatus == 'COMPLETED' ? 'bg-success' : 
+                                                                bStatus == 'CANCELLED' ? 'bg-danger' : 
+                                                                bStatus == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
+                                                ${bStatus.displayName}
                                             </span>   
                                             <c:if test="${not empty booking.payments}">
-                                                <c:if test="${booking.status == 'CANCELLED'}">
-                                                    <span class="badge ${booking.totalAmount == booking.paidAmount ? 'bg-danger' : 'bg-warning'}">
-                                                        ${booking.totalAmount == booking.paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
+                                                <c:if test="${bStatus == 'CANCELLED'}">
+                                                    <span class="badge ${totalAmount == paidAmount ? 'bg-danger' : 'bg-warning'}">
+                                                        ${totalAmount == paidAmount ? 'Đang chờ hoàn tiền' : 'Đã hoàn tiền'}
                                                     </span>                 
                                                 </c:if>
                                             </c:if>
                                         </div>
                                     
-                                        <h3>Phòng ${booking.room.roomNumber} - ${booking.room.roomType.name}</h3>
+                                        <h3>Phòng ${bRoom.roomNumber} - ${bRoom.roomType.name}</h3>
                                     </div>
+                                    <c:set var="branch" value="${bRoom.branch}"/>
+                                    <p class="location"><i class="bi bi-geo-alt"></i> ${branch.branchName} - ${branch.address}</p>
                                     
-                                    <p class="location"><i class="bi bi-geo-alt"></i> ${booking.room.branch.branchName} - ${booking.room.branch.address}</p>
                                     <div class="booking-info">
                                         <span><i class="bi bi-calendar3"></i> Check-in: ${f:formatLocalDateTime(booking.checkIn)}</span>
                                         <span><i class="bi bi-calendar3"></i> Check-out: ${f:formatLocalDateTime(booking.checkOut)}</span>
-                                        <span><i class="bi bi-credit-card"></i> Tổng tiền: <fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</span>
-                                        <span><i class="bi bi-credit-card"></i> Số tiền đã trả: <fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ</span>
+                                        <span><i class="bi bi-credit-card"></i> Tổng tiền: <fmt:formatNumber type="number" value="${totalAmount}" />đ</span>
+                                        <span><i class="bi bi-credit-card"></i> Số tiền đã trả: <fmt:formatNumber type="number" value="${paidAmount != null ? paidAmount : 0}" />đ</span>
                                     </div>
 
                                     <c:if test="${not empty booking.bookingServices}">
@@ -202,34 +213,28 @@
                                             <h5 class="mb-2">Dịch vụ đi kèm:</h5>
                                             <ul class="list-group">
                                                 <c:forEach var="serviceItem" items="${booking.bookingServices}">
+                                                    <c:set var="serviceOfBService" value="${serviceItem.service}"/>
                                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                                         <div>
                                                             <strong>${serviceItem.service.serviceName}</strong> 
                                                             (<c:choose>
                                                                 <c:when test="${serviceItem.quantity != null}">
-                                                                    x<fmt:formatNumber type="number" value="${serviceItem.quantity}" pattern="#"/> / ${serviceItem.service.unit}
+                                                                    x<fmt:formatNumber type="number" value="${serviceItem.quantity}" pattern="#"/> / ${serviceOfBService.unit}
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">đang chờ cập nhật</span>
                                                                 </c:otherwise>
                                                             </c:choose> )
                                                         </div>
-
                                                     </li>
                                                 </c:forEach>
                                             </ul>
                                         </div>
                                     </c:if>
-
-                                    <div class="amenities mt-3">
-                                        <c:forEach var="amenity" items="${booking.room.roomAmenities}">
-                                            <span class="badge bg-light text-dark me-2"><i class="bi bi-check2"></i> ${amenity.amenity.amenityName}</span>
-                                        </c:forEach>
-                                    </div>
                                     <div class="booking-actions mt-3">
-                                        <a href="/booking/booking-history/${booking.bookingID}" class="btn btn-outline-primary"><i class="bi bi-arrow-up-right-square"></i> Xem chi tiết</a>
-                                        <c:if test="${booking.status == 'PENDING'}">
-                                            <a onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING', true)" class="btn btn-primary ms-2">
+                                        <a href="/booking/booking-history/${bookingID}" class="btn btn-outline-primary"><i class="bi bi-arrow-up-right-square"></i> Xem chi tiết</a>
+                                        <c:if test="${bStatus == 'PENDING'}">
+                                            <a onclick="handlePayment('${bookingID}', 'ROOM_BOOKING', true)" class="btn btn-primary ms-2">
                                                 <i class="bi bi-credit-card"></i> Thanh toán
                                             </a>
                                         </c:if>
@@ -241,14 +246,15 @@
                 </c:otherwise>
             </c:choose>
         </div>
-        <c:if test="${customer.customerType.discountRate > 0}">
+        <c:set var="customerType" value="${customer.customerType}"/>         
+        <c:if test="${customerType.discountRate > 0}">
             <div class="special-offers mb-5">
                 <h2 class="section-title mb-4">Ưu đãi đặc biệt</h2>
                 <div class="alert alert-info d-flex align-items-center" role="alert">
                     <i class="bi bi-gift-fill me-2"></i>
                     <div>
                         Bạn đang là thành viên hạng <strong>${customer.customerType.name}</strong>, được giảm <strong>
-                        <fmt:formatNumber value="${customer.customerType.discountRate}" pattern="#"/>%</strong> cho mỗi lần đặt phòng!
+                        <fmt:formatNumber value="${discountRate}" pattern="#"/>%</strong> cho mỗi lần đặt phòng!
                     </div>
                 </div>
             </div> 

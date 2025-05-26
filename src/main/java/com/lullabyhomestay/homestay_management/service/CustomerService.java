@@ -20,6 +20,7 @@ import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.RegisterDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchCustomerCriterialDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.CustomerRepository;
@@ -146,9 +147,10 @@ public class CustomerService {
 
     @Transactional
     public void deleteByCustomerID(Long customerID) {
-        if (canDeleteCustomer(customerID)) {
-            customerRepository.deleteByCustomerID(customerID);
+        if (!canDeleteCustomer(customerID)) {
+            throw new CannotDeleteException("Khách hàng");
         }
+        customerRepository.deleteByCustomerID(customerID);
     }
 
     public CustomerDTO mapToCustomerDTO(Customer customer) {
@@ -170,6 +172,7 @@ public class CustomerService {
         dto.setAddress(user.getAddress());
         dto.setAvatar(user.getAvatar());
         dto.setRole(user.getRole());
+        dto.setIsEnabled(user.getIsEnabled());
 
         return dto;
     }

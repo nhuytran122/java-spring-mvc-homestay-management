@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.CustomerType;
@@ -22,10 +24,13 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasRole('MANAGER')")
+@RequestMapping("/admin/customer/customer-type")
 public class CustomerTypeController {
     private final CustomerTypeService customerTypeService;
 
-    @GetMapping("/admin/customer/customer-type")
+    @GetMapping("")
+    @PreAuthorize("permitAll()")
     public String getAmenityCategoryPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword) {
@@ -42,13 +47,13 @@ public class CustomerTypeController {
         return "admin/customer-type/show";
     }
 
-    @GetMapping("/admin/customer/customer-type/create")
+    @GetMapping("/create")
     public String getCreateCustomerType(Model model) {
         model.addAttribute("newType", new CustomerType());
         return "admin/customer-type/create";
     }
 
-    @PostMapping("/admin/customer/customer-type/create")
+    @PostMapping("/create")
     public String postCreateCustomerType(Model model,
             @ModelAttribute("newType") @Valid CustomerType customerType,
             BindingResult result,
@@ -64,7 +69,7 @@ public class CustomerTypeController {
         return "redirect:/admin/customer/customer-type";
     }
 
-    @GetMapping("/admin/customer/customer-type/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateTypePage(Model model, @PathVariable long id) {
         CustomerType type = customerTypeService.getCustomerTypeByID(id);
 
@@ -72,7 +77,7 @@ public class CustomerTypeController {
         return "admin/customer-type/update";
     }
 
-    @PostMapping("/admin/customer/customer-type/update")
+    @PostMapping("/update")
     public String postUpdateType(Model model,
             @ModelAttribute("type") @Valid CustomerType type,
             BindingResult result,
@@ -95,13 +100,13 @@ public class CustomerTypeController {
         return "redirect:/admin/customer/customer-type";
     }
 
-    @GetMapping("/admin/customer/customer-type/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteType(@PathVariable Long id) {
         boolean canDelete = customerTypeService.canDeleteType(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/customer/customer-type/delete")
+    @PostMapping("/delete")
     public String postDeleteType(@RequestParam("customerTypeID") Long typeID) {
         this.customerTypeService.deleteByCustomerTypeID(typeID);
         return "redirect:/admin/customer/customer-type";

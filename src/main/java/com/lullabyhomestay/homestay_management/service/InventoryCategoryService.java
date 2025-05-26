@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryCategory;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryCategoryRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
@@ -53,9 +54,10 @@ public class InventoryCategoryService {
 
     @Transactional
     public void deleteByCategoryID(long categoryID) {
-        if (canDeleteCategory(categoryID)) {
-            this.inventoryCategoryRepository.deleteByCategoryID(categoryID);
+        if (!canDeleteCategory(categoryID)) {
+            throw new CannotDeleteException("Phân loại đồ dùng");
         }
+        inventoryCategoryRepository.deleteByCategoryID(categoryID);
     }
 
     public boolean existsByName(String name) {

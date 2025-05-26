@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.CustomerType;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.CustomerRepository;
 import com.lullabyhomestay.homestay_management.repository.CustomerTypeRepository;
@@ -59,8 +60,10 @@ public class CustomerTypeService {
 
     @Transactional
     public void deleteByCustomerTypeID(Long id) {
-        if (canDeleteType(id))
-            typeRepository.deleteByCustomerTypeID(id);
+        if (!canDeleteType(id)) {
+            throw new CannotDeleteException("Loại khách hàng đang được sử dụng, không thể xóa.");
+        }
+        typeRepository.deleteByCustomerTypeID(id);
     }
 
     public boolean existsByName(String name) {

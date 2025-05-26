@@ -50,7 +50,7 @@
                                         <div class="col-sm-10">
                                             <form:select id="customerSelect" class="form-select select2 form-control ${not empty errorCustomer ? 'is-invalid' : ''}" path="customer">
                                                 <form:option value="">Chọn khách hàng</form:option>
-                                                <form:options items="${listCustomers}" itemValue="customerID" itemLabel="user.fullName"/>
+                                                <form:options items="${listCustomers}" itemValue="customerID" itemLabel="fullName"/>
                                             </form:select>
                                             ${errorCustomer}
                                         </div>
@@ -62,12 +62,14 @@
                                             <select id="roomSelect" name="room" class="form-control ${not empty errorRoom ? 'is-invalid' : ''}">
                                                 <option value="">Chọn phòng</option>
                                                 <c:forEach var="room" items="${listRooms}">
+                                                    <c:set var="roomType" value="${room.roomType}"/>
                                                     <option 
                                                         value="${room.roomID}"
-                                                        data-roomtypeid="${room.roomType.roomTypeID}"
-                                                        data-maxguest="${room.roomType.maxGuest}"
-                                                        data-roomtype="${room.roomType.name}">
-                                                     ${room.branch.branchName} - ${room.roomType.name} - #${room.roomNumber}
+                                                        data-roomtypeid="${roomType.roomTypeID}"
+                                                        data-maxguest="${roomType.maxGuest}"
+                                                        data-roomtype="${roomType.name}"
+                                                        ${newBooking.room.roomID == room.roomID ? 'selected' : ''}>
+                                                        ${room.branch.branchName} - ${roomType.name} - #${room.roomNumber}
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -144,6 +146,57 @@
         let isDorm = false;
         let roomTypeId = null;
 
+        let selectedCustomerId = '${not empty newBooking.customer ? newBooking.customer.customerID : ""}';
+        let selectedRoomId = '${not empty newBooking.room ? newBooking.room.roomID : ""}';
+        let selectedGuestCount = '${not empty newBooking.guestCount ? newBooking.guestCount : ""}';
+        let selectedCheckIn = '${not empty newBooking.checkIn ? newBooking.checkIn : ""}';
+        let selectedCheckOut = '${not empty newBooking.checkOut ? newBooking.checkOut : ""}';
+
+        function initSelect2() {
+            $('#customerSelect').select2({
+                placeholder: 'Chọn khách hàng',
+                allowClear: true
+            });
+        }
+
+        function restoreSelectedValues() {
+            if (selectedCustomerId && selectedCustomerId !== '') {
+                $('#customerSelect').val(selectedCustomerId).trigger('change');
+            }
+
+            if (selectedRoomId && selectedRoomId !== '') {
+                $('#roomSelect').val(selectedRoomId).trigger('change');
+                
+                let selectedRoom = $('#roomSelect').find(':selected');
+                roomTypeId = selectedRoom.data('roomtypeid');
+                let maxGuest = parseInt(selectedRoom.data('maxguest')) || 1;
+                isDorm = (selectedRoom.data('roomtype') || '').toLowerCase().includes('dorm');
+                
+                updateGuestCountOptions(maxGuest);
+            }
+
+            if (selectedGuestCount && selectedGuestCount !== '') {
+                $('#guestCount').val(selectedGuestCount);
+            }
+
+        }
+
+        function updateGuestCountOptions(maxGuest) {
+            let $guestCount = $('#guestCount');
+            let currentValue = $guestCount.val();
+            $guestCount.empty();
+            
+            for (let i = 1; i <= maxGuest; i++) {
+                $guestCount.append('<option value="' + i + '">' + i + ' người</option>');
+            }
+            
+            if (currentValue && currentValue <= maxGuest) {
+                $guestCount.val(currentValue);
+            } else if (selectedGuestCount && selectedGuestCount <= maxGuest) {
+                $guestCount.val(selectedGuestCount);
+            }
+        }
+
         function initPickers() {
             $('#checkin, #checkout').daterangepicker({
                 singleDatePicker: true,
@@ -167,7 +220,7 @@
 
             if (!roomTypeId) {
                 $('#total').text("0đ");
-                $('#hours-text').text("Chưa chọn phòng");
+                $('#pricing-details').html('<span class="text-muted">Chưa chọn phòng</span>');
                 return;
             }
 
@@ -187,13 +240,6 @@
                         let totalHours = response.data.totalHours;
                         let totalDays = response.data.totalDays;
                         let totalNights = response.data.totalNights;
-                        console.log(totalDays)
-                        console.log(totalNights)
-                        console.log(totalHours)
-
-                        $('#hours-text').text(price.toLocaleString('vi-VN') + "đ x " + totalHours.toFixed(2) + " giờ" + (isDorm ? " x " + guestCount + " người" : ""));
-                        $('#subtotal').text(total.toLocaleString('vi-VN') + "đ");
-                        $('#total').text(total.toLocaleString('vi-VN') + "đ");
 
                         let pricingDetailsHtml = '';
                         switch (pricingType) {
@@ -224,7 +270,6 @@
 
                         $('#pricing-details').html(pricingDetailsHtml);
                         $('#total').text(total.toLocaleString('vi-VN') + "đ");
-
                     },
                     error: function () {
                         alert("Không thể tính giá phòng.");
@@ -232,26 +277,27 @@
                 });
             } else {
                 $('#total').text("0đ");
-                $('#hours-text').text("Vui lòng chọn thời gian hợp lệ");
+                $('#pricing-details').html('<span class="text-muted">Vui lòng chọn thời gian hợp lệ</span>');
             }
         }
 
         $('#roomSelect').on('change', function () {
-            const selected = $(this).find(':selected');
+            let selected = $(this).find(':selected');
             roomTypeId = selected.data('roomtypeid');
             let maxGuest = parseInt(selected.data('maxguest')) || 1;
             isDorm = (selected.data('roomtype') || '').toLowerCase().includes('dorm');
 
-            let $guestCount = $('#guestCount');
-            $guestCount.empty();
-            for (let i = 1; i <= maxGuest; i++) {
-                $guestCount.append('<option value="' + i + '">' + i + ' người</option>');
-            }
+            updateGuestCountOptions(maxGuest);
             updatePrice();
         });
 
+        initSelect2();
         initPickers();
-        $('.select2').select2();
+        restoreSelectedValues();
+        
+        if (roomTypeId) {
+            updatePrice();
+        }
     });
 </script>
 

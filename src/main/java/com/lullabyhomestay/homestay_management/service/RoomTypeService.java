@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.RoomPricing;
 import com.lullabyhomestay.homestay_management.domain.RoomType;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RoomPricingRepository;
 import com.lullabyhomestay.homestay_management.repository.RoomRepository;
@@ -106,8 +107,9 @@ public class RoomTypeService {
     @Transactional
     public void deleteByRoomTypeID(long id) {
         if (canDeleteRoomType(id)) {
-            roomTypeRepository.deleteByRoomTypeID(id);
+            throw new CannotDeleteException("Loại phòng");
         }
+        roomTypeRepository.deleteByRoomTypeID(id);
     }
 
     public boolean existsByName(String name) {

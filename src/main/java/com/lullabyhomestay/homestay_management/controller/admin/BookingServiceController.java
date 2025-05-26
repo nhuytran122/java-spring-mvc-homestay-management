@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -29,12 +30,13 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/admin/booking-service")
 public class BookingServiceController {
     private final BookingExtraService bookingExtraService;
     private final HomestayServiceService homestayServiceService;
     private final BookingService bookingService;
 
-    @GetMapping("/admin/booking-service")
+    @GetMapping("")
     public String getBookingServicesPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchBookingServiceCriteriaDTO criteria) {
@@ -57,7 +59,7 @@ public class BookingServiceController {
         return "admin/booking-service/show";
     }
 
-    @GetMapping("/admin/booking-service/create/{id}")
+    @GetMapping("/create/{id}")
     public String getCreateBookingServicePage(Model model, @PathVariable long id) {
         BookingServices newBookingServices = new BookingServices();
         boolean canBook = bookingService.canBookServiceOrBookExtension(id);
@@ -71,7 +73,7 @@ public class BookingServiceController {
         return "admin/booking-service/create";
     }
 
-    @PostMapping("/admin/booking-service/create")
+    @PostMapping("/create")
     public String postCreateBookingService(Model model,
             @ModelAttribute("newBookingService") @Validated(AdminValidation.class) BookingServices bookingService,
             BindingResult result, HttpServletRequest request) {
@@ -83,7 +85,7 @@ public class BookingServiceController {
         return "redirect:/admin/booking/" + bookingService.getBooking().getBookingID();
     }
 
-    @GetMapping("/admin/booking-service/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateBookingServicePage(Model model, @PathVariable long id) {
         BookingServices bookingService = bookingExtraService.getBookingServiceByID(id);
         model.addAttribute("bookingService", bookingService);
@@ -92,7 +94,7 @@ public class BookingServiceController {
         return "admin/booking-service/update";
     }
 
-    @PostMapping("/admin/booking-service/update")
+    @PostMapping("/update")
     public String postUpdateBookingService(Model model,
             @ModelAttribute("bookingService") @Validated(AdminValidation.class) @Valid BookingServices bookingService,
             BindingResult result,
@@ -108,13 +110,13 @@ public class BookingServiceController {
         return "redirect:/admin/booking/" + currentBookingService.getBooking().getBookingID();
     }
 
-    @GetMapping("/admin/booking-service/can-handle/{id}")
+    @GetMapping("/can-handle/{id}")
     public ResponseEntity<Boolean> canHandleBookingService(@PathVariable long id) {
         boolean canHandle = bookingExtraService.canUpdateAndDeleteBookingService(id);
         return ResponseEntity.ok(canHandle);
     }
 
-    @PostMapping("/admin/booking-service/delete")
+    @PostMapping("/delete")
     public String postDeleteBranch(@RequestParam("bookingServiceID") Long bookingServiceID,
             HttpServletRequest request) {
         this.bookingExtraService.deleteBookingServiceByID(bookingServiceID);
@@ -129,7 +131,7 @@ public class BookingServiceController {
         return "redirect:" + referer;
     }
 
-    @PostMapping("/admin/booking-service/update-status")
+    @PostMapping("/update-status")
     @ResponseBody
     public ResponseEntity<?> updateBookingServiceStatus(
             @RequestParam("bookingServiceID") Long bookingServiceID,

@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Employee;
@@ -39,6 +41,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+@RequestMapping("/admin/warehouse")
 public class WarehouseController {
     private final InventoryStockService stockService;
     private final BranchService branchService;
@@ -48,7 +52,7 @@ public class WarehouseController {
     private final ModelMapper mapper;
     private final UserService userService;
 
-    @GetMapping("/admin/warehouse")
+    @GetMapping("")
     public String getInventoryStockPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
@@ -76,7 +80,7 @@ public class WarehouseController {
         return "admin/warehouse/show";
     }
 
-    @GetMapping("/admin/warehouse/import")
+    @GetMapping("/import")
     public String getImportItemPage(Model model,
             @RequestParam(required = false) Long branchID,
             @RequestParam(required = false) Long itemID) {
@@ -85,7 +89,7 @@ public class WarehouseController {
         return "admin/warehouse/import";
     }
 
-    @PostMapping("/admin/warehouse/import")
+    @PostMapping("/import")
     public String postImportItem(Model model,
             @ModelAttribute("newImport") @Valid InventoryTransaction transaction,
             BindingResult bindingResult,
@@ -95,7 +99,7 @@ public class WarehouseController {
                 "admin/warehouse/import", request);
     }
 
-    @GetMapping("/admin/warehouse/export")
+    @GetMapping("/export")
     public String getExportItemPage(Model model,
             @RequestParam(required = false) Long branchID,
             @RequestParam(required = false) Long itemID) {
@@ -104,7 +108,7 @@ public class WarehouseController {
         return "admin/warehouse/export";
     }
 
-    @PostMapping("/admin/warehouse/export")
+    @PostMapping("/export")
     public String postExportItem(Model model,
             @ModelAttribute("newExport") @Valid InventoryTransaction transaction,
             BindingResult bindingResult,
@@ -140,7 +144,7 @@ public class WarehouseController {
         return "redirect:/admin/warehouse";
     }
 
-    @GetMapping("/admin/warehouse/transaction")
+    @GetMapping("/transaction")
     public String getHistoryTransactionPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchTransactionCriterialDTO criteria) {
@@ -160,20 +164,20 @@ public class WarehouseController {
         return "admin/warehouse/transaction/show";
     }
 
-    @GetMapping("/admin/warehouse/transaction/can-update/{id}")
+    @GetMapping("/transaction/can-update/{id}")
     public ResponseEntity<Boolean> canUpdateTransaction(@PathVariable Long id) {
         boolean canUpdate = transactionService.canUpdateTransaction(id);
         return ResponseEntity.ok(canUpdate);
     }
 
-    @GetMapping("/admin/warehouse/transaction/update/{id}")
+    @GetMapping("/transaction/update/{id}")
     public String getUpdateTransactionPage(Model model, @PathVariable Long id) {
         InventoryTransaction transactionOpt = transactionService.getTransactionByID(id);
         model.addAttribute("transaction", transactionOpt);
         return "admin/warehouse/transaction/update";
     }
 
-    @PostMapping("/admin/warehouse/transaction/update")
+    @PostMapping("/transaction/update")
     public String postUpdateTransaction(Model model,
             @ModelAttribute("transaction") @Valid InventoryTransaction transaction,
             BindingResult result,

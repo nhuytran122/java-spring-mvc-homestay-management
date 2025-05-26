@@ -65,7 +65,7 @@ public class SecurityConfiguration {
 
                                                 .requestMatchers("/", "/login", "/room/**", "/register",
                                                                 "/forgot-password", "/reset-password", "/verify-email",
-                                                                "/verify-email-pending",
+                                                                "/resend-verification-email",
                                                                 "/error",
                                                                 "/client/**", "/css/**",
                                                                 "/js/**",

@@ -18,31 +18,33 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/admin/profile")
 public class AdminUserProfileController {
     private final UploadService uploadService;
     private final UserService userService;
     private final EmployeeService employeeService;
 
-    @GetMapping("/admin/profile")
+    @GetMapping("")
     public String getProfilePage(Model model, HttpSession session) {
         Long userID = AuthUtils.getLoggedInUserID(session);
         model.addAttribute("user", employeeService.getEmployeeDTOByUserID(userID));
         return "admin/profile/show";
     }
 
-    @GetMapping("/admin/profile/update")
+    @GetMapping("/update")
     public String getUpdateProfilePage(Model model) {
         UserDTO userDTO = AuthUtils.getLoggedInUser(userService);
         model.addAttribute("user", userDTO);
         return "admin/profile/update";
     }
 
-    @PostMapping("/admin/profile/update")
+    @PostMapping("/update")
     public String postUpdateProfile(@ModelAttribute("user") @Valid UserDTO userDTO,
             BindingResult result,
             @RequestParam("fileImg") MultipartFile file,

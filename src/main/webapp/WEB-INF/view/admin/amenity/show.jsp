@@ -25,7 +25,8 @@
                     <select name="categoryID" class="form-select form-control form-select-sm">
                         <option value="">Chọn phân loại</option>
                         <c:forEach var="category" items="${listCategories}">
-                            <option value="${category.categoryID}" ${category.categoryID == categoryID ? 'selected' : ''}>
+                            <c:set var="cateID" value="${category.categoryID}" />
+                            <option value="${cateID}" ${cateID == categoryID ? 'selected' : ''}>
                                 ${category.categoryName}
                             </option>
                         </c:forEach>
@@ -66,6 +67,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="amenity" items="${amenities}">
+                                                        <c:set var="amenityID" value="${amenity.amenityID}" />
                                                         <tr>
                                                             <td>${amenity.amenityName}</td>
                                                             <td>
@@ -74,13 +76,13 @@
                                                             </td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/amenity/update/${amenity.amenityID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/amenity/update/${amenityID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${amenity.amenityID}" 
+                                                                            data-entity-id="${amenityID}" 
                                                                             data-entity-name="${amenity.amenityName}" 
                                                                             data-entity-type="tiện nghi" 
                                                                             data-delete-url="/admin/amenity/delete" 

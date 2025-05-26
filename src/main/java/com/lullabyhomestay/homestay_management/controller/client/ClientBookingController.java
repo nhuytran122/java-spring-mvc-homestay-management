@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,7 +33,6 @@ import com.lullabyhomestay.homestay_management.domain.Review;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.RoomPricing;
 import com.lullabyhomestay.homestay_management.domain.dto.ApiResponseDTO;
-import com.lullabyhomestay.homestay_management.domain.dto.BookingPriceDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingRequestDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.BookingServiceDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.CustomerDTO;
@@ -53,7 +53,7 @@ import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
-// @PreAuthorize("hasRole('CUSTOMER')")
+@PreAuthorize("hasRole('CUSTOMER')")
 public class ClientBookingController {
 
     private final BookingExtraService bookingExtraService;
@@ -116,21 +116,6 @@ public class ClientBookingController {
 
         // redirectAttributes.addFlashAttribute("bookingID", booking.getBookingID());
         return "redirect:/booking/booking-service";
-    }
-
-    @GetMapping("/booking/calculate-price")
-    @ResponseBody
-    public ResponseEntity<ApiResponseDTO<BookingPriceDTO>> calculatePrice(
-            @RequestParam Long roomTypeId,
-            @RequestParam String checkIn,
-            @RequestParam String checkOut) {
-
-        LocalDateTime checkInTime = LocalDateTime.parse(checkIn);
-        LocalDateTime checkOutTime = LocalDateTime.parse(checkOut);
-
-        BookingPriceDTO price = bookingService.getRoomPriceDetail(roomTypeId, checkInTime, checkOutTime);
-
-        return ResponseEntity.ok(new ApiResponseDTO<>(price, "Tính giá thành công"));
     }
 
     @GetMapping("/booking/booking-service")
@@ -259,8 +244,8 @@ public class ClientBookingController {
         model.addAttribute("booking", booking);
         model.addAttribute("newReview", new Review());
         model.addAttribute("editReview", new Review());
-        model.addAttribute("hasPrepaidBService", bookingExtraService.hasPrepaidService(id));
-        model.addAttribute("hasPostpaidBService", bookingExtraService.hasPostpaidService(id));
+        model.addAttribute("prepaidServices", bookingExtraService.getPrepaidServices(id));
+        model.addAttribute("postpaidServices", bookingExtraService.getPostpaidServices(id));
         model.addAttribute("listServicesPostPay", service.getServiceByIsPrepaid(false));
         model.addAttribute("totalUnpaidPostpaidAmount", bookingExtraService.calculateUnpaidServicesTotalAmount(id));
         model.addAttribute("canPayBServices", bookingExtraService.allPostpaidServicesHaveQuantity(id));

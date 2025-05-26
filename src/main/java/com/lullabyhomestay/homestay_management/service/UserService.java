@@ -88,6 +88,7 @@ public class UserService {
         user.setPhone(dto.getPhone());
     }
 
+    @Transactional
     private void createAndSendVerificationToken(User user) throws Exception {
         verificationTokenRepository.deleteByUser(user);
         String token = UUID.randomUUID().toString();
@@ -171,15 +172,39 @@ public class UserService {
     @Transactional
     public void verifyEmail(String token) throws Exception {
         EmailVerificationToken verificationToken = verificationTokenRepository.findByToken(token);
-        if (verificationToken == null || verificationToken.isExpired() || verificationToken.getIsUsed()) {
-            throw new Exception("Token không hợp lệ hoặc đã hết hạn");
+        if (verificationToken == null) {
+            throw new Exception("Liên kết xác nhận không hợp lệ.");
+        }
+
+        if (verificationToken.isExpired()) {
+            throw new Exception("Liên kết xác nhận đã hết hạn. Vui lòng yêu cầu gửi lại.");
+        }
+
+        if ((verificationToken.getIsUsed())) {
+            throw new Exception("Liên kết xác nhận này đã được sử dụng.");
         }
 
         User user = verificationToken.getUser();
+        if (user.getIsEnabled()) {
+            throw new Exception("Tài khoản đã được xác nhận trước đó.");
+        }
+
         user.setIsEnabled(true);
         userRepository.save(user);
 
         verificationToken.setIsUsed(true);
         verificationTokenRepository.save(verificationToken);
+    }
+
+    @Transactional
+    public void resendVerificationEmail(String email) throws Exception {
+        User user = getUserByEmail(email);
+        if (user == null) {
+            throw new Exception("Không tìm thấy người dùng với email này.");
+        }
+        if (user.getIsEnabled()) {
+            throw new Exception("Tài khoản đã được xác nhận.");
+        }
+        createAndSendVerificationToken(user);
     }
 }

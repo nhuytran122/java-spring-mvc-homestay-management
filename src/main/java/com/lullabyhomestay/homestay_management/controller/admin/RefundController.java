@@ -5,11 +5,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Refund;
@@ -21,10 +23,12 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasRole('MANAGER')")
+@RequestMapping("/admin/refund")
 public class RefundController {
     private final RefundService refundService;
 
-    @GetMapping("/admin/refund")
+    @GetMapping("")
     public String getBookingPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchRefundCriteriaDTO criteria) {
@@ -48,7 +52,7 @@ public class RefundController {
         return prepareModelWithoutSearch(model, criteria, validPage);
     }
 
-    @GetMapping("/admin/refund/{id}")
+    @GetMapping("/{id}")
     public String getDetailRefundPage(Model model, @PathVariable Long id) {
         Refund refund = refundService.getRefundByID(id);
         model.addAttribute("refund", refund);

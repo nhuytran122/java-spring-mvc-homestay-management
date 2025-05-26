@@ -1,5 +1,6 @@
 package com.lullabyhomestay.homestay_management.controller.admin;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,19 +24,21 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+@RequestMapping("/admin/room/photo")
 public class RoomPhotoController {
     private final RoomPhotoService roomPhotoService;
     private final UploadService uploadService;
     private final RoomService roomService;
 
-    @GetMapping("/admin/room/photo/create")
+    @GetMapping("/create")
     public String getCreateRoomPhotoPage(Model model, @RequestParam long roomID) {
         model.addAttribute("newRoomPhoto", new RoomPhoto());
         model.addAttribute("roomID", roomID);
         return "admin/room/room-photo/create";
     }
 
-    @PostMapping("/admin/room/photo/create")
+    @PostMapping("/create")
     public String postCreateRoomPhoto(Model model,
             @ModelAttribute("newRoomPhoto") @Valid RoomPhoto roomPhoto,
             BindingResult newRoomPhotoBindingResult,
@@ -62,14 +66,14 @@ public class RoomPhotoController {
         return "redirect:/admin/room/update/" + roomID;
     }
 
-    @GetMapping("/admin/room/photo/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateRoomPhotoPage(Model model, @PathVariable long id) {
         RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoID(id);
         model.addAttribute("roomPhoto", roomPhoto);
         return "admin/room/room-photo/update";
     }
 
-    @PostMapping("/admin/room/photo/update")
+    @PostMapping("/update")
     public String postUpdateRoomPhoto(Model model,
             @ModelAttribute("roomPhoto") @Valid RoomPhoto roomPhoto,
             @RequestParam("fileImg") MultipartFile file,
@@ -87,7 +91,7 @@ public class RoomPhotoController {
         return "redirect:/admin/room/update/" + currentRoomPhoto.getRoom().getRoomID();
     }
 
-    @PostMapping("/admin/room/photo/delete")
+    @PostMapping("/delete")
     public String postDeleteRoomPhoto(@RequestParam("photoID") long roomPhotoID) {
         RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoID(roomPhotoID);
         this.roomPhotoService.deleteByPhotoID(roomPhotoID);

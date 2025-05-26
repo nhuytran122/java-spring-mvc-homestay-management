@@ -43,12 +43,13 @@
             <div class="row">
                 <div class="col-12">
                     <c:forEach var="service" items="${listServices}" varStatus="loop">
-                        <div class="service-item border rounded p-3 mb-3 bg-white" id="service-${service.serviceID}">
+                        <c:set var="serviceID" value="${service.serviceID}"/>
+                        <div class="service-item border rounded p-3 mb-3 bg-white" id="service-${serviceID}">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="form-check-input me-3 service-checkbox" 
-                                    name="selectedServices" value="${service.serviceID}"
+                                    name="selectedServices" value="${serviceID}"
                                     data-price="${service.price}" 
-                                    data-service-id="${service.serviceID}">
+                                    data-service-id="${serviceID}">
                                 <div class="flex-grow-1">
                                     <h5 class="mb-1">${service.serviceName}</h5>
                                     <p class="mb-1 text-muted">${service.description}</p>
@@ -60,20 +61,20 @@
                             </div>
                             <div class="service-details mt-2">
                                 <div class="form-group">
-                                    <label for="quantity-${service.serviceID}" class="form-label">Số lượng</label>
+                                    <label for="quantity-${serviceID}" class="form-label">Số lượng</label>
                                     <input type="number" class="form-control quantity-input" 
-                                        id="quantity-${service.serviceID}" 
+                                        id="quantity-${serviceID}" 
                                         name="services[${loop.index}].quantity" 
                                         min="1" value="1">
                                 </div>
                                 <div class="form-group mt-2">
-                                    <label for="note-${service.serviceID}" class="form-label">Mô tả yêu cầu</label>
+                                    <label for="note-${serviceID}" class="form-label">Mô tả yêu cầu</label>
                                     <textarea class="form-control note-input" 
-                                        id="note-${service.serviceID}" 
+                                        id="note-${serviceID}" 
                                         name="services[${loop.index}].description" 
                                         rows="2" placeholder="Nhập mô tả yêu cầu (ví dụ: thời gian phục vụ, yêu cầu đặc biệt,...)"></textarea>
                                 </div>
-                                <input type="hidden" name="services[${loop.index}].serviceID" value="${service.serviceID}">
+                                <input type="hidden" name="services[${loop.index}].serviceID" value="${serviceID}">
                             </div>
                         </div>
                     </c:forEach>

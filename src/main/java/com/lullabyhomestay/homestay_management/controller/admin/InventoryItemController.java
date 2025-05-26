@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryItem;
@@ -24,11 +26,13 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+@RequestMapping("/admin/inventory-item")
 public class InventoryItemController {
     private final InventoryItemService itemService;
     private final InventoryCategoryService categoryService;
 
-    @GetMapping("/admin/inventory-item")
+    @GetMapping("")
     public String getInventoryItemPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
@@ -60,14 +64,14 @@ public class InventoryItemController {
         return "admin/inventory-item/show";
     }
 
-    @GetMapping("/admin/inventory-item/create")
+    @GetMapping("/create")
     public String getCreateInventoryItemPage(Model model) {
         model.addAttribute("newItem", new InventoryItem());
         model.addAttribute("listCategories", this.categoryService.getAllInventoryCategories());
         return "admin/inventory-item/create";
     }
 
-    @PostMapping("/admin/inventory-item/create")
+    @PostMapping("/create")
     public String postCreateInventoryItem(Model model,
             @ModelAttribute("newItem") @Valid InventoryItem item,
             BindingResult newInventoryItemBindingResult,
@@ -83,7 +87,7 @@ public class InventoryItemController {
         return "redirect:/admin/inventory-item";
     }
 
-    @GetMapping("/admin/inventory-item/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateInventoryItemPage(Model model, @PathVariable long id) {
         InventoryItem item = itemService.getInventoryItemByID(id);
 
@@ -92,7 +96,7 @@ public class InventoryItemController {
         return "admin/inventory-item/update";
     }
 
-    @PostMapping("/admin/inventory-item/update")
+    @PostMapping("/update")
     public String postUpdateInventoryItem(Model model,
             @ModelAttribute("item") @Valid InventoryItem item,
             BindingResult newInventoryItemBindingResult,
@@ -113,13 +117,13 @@ public class InventoryItemController {
         return "redirect:/admin/inventory-item";
     }
 
-    @GetMapping("/admin/inventory-item/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteItem(@PathVariable long id) {
         boolean canDelete = itemService.canDeleteItem(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/inventory-item/delete")
+    @PostMapping("/delete")
     public String postDeleteInventoryItem(@RequestParam("itemID") long itemID) {
         this.itemService.deleteByInventoryItemID(itemID);
         return "redirect:/admin/inventory-item";

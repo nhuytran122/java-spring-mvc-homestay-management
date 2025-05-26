@@ -36,16 +36,16 @@ uri="http://lullabyhomestay.com/functions" %>
                     <h5>Thông tin phòng</h5>
                     <p>
                       <strong>Phòng:</strong>
-                      ${extension.booking.room.roomNumber} -
-                      ${extension.booking.room.roomType.name}
+                      <c:set var="room" value="${extension.booking.room}" />
+                      ${room.roomNumber} - ${room.roomType.name}
                     </p>
                     <p>
                       <strong>Chi nhánh:</strong>
-                      ${extension.booking.room.branch.branchName}
+                      ${room.branch.branchName}
                     </p>
                     <p>
                       <strong>Địa chỉ:</strong>
-                      ${extension.booking.room.branch.address}
+                      ${room.branch.address}
                     </p>
                   </div>
                   <div class="col-md-6">
@@ -73,14 +73,13 @@ uri="http://lullabyhomestay.com/functions" %>
                       type="number"
                     />đ
                   </h3>
-                  <c:if
-                    test="${extension.booking.customer.customerType.discountRate > 0}"
-                  >
+                  <c:set var="customer" value="${extension.booking.customer}" />
+                  <c:if test="${customer.customerType.discountRate > 0}">
                     <small class="text-muted">
                       Áp dụng giảm giá dành cho thành viên
                       ${extension.booking.customer.customerType.name}
                       (<fmt:formatNumber
-                        value="${extension.booking.customer.customerType.discountRate}"
+                        value="${customer.customerType.discountRate}"
                         pattern="#'%'"
                       />):
                       <span class="text-success fw-bold"

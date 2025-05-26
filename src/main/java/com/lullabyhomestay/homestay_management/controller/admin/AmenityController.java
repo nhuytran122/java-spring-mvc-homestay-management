@@ -13,23 +13,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Amenity;
 import com.lullabyhomestay.homestay_management.service.AmenityCategoryService;
 import com.lullabyhomestay.homestay_management.service.AmenityService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@RequestMapping("/admin/amenity")
+@PreAuthorize("hasRole('MANAGER')")
 @Controller
 public class AmenityController {
     private final AmenityCategoryService categoryService;
     private final AmenityService amenityService;
 
-    @GetMapping("/admin/amenity")
+    @PreAuthorize("permitAll()")
+    @GetMapping("")
     public String getAmenityPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
@@ -57,22 +60,17 @@ public class AmenityController {
         return "admin/amenity/show";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER')")
-    @GetMapping("/admin/amenity/create")
+    @GetMapping("/create")
     public String getCreateAmenityPage(Model model) {
         model.addAttribute("newAmenity", new Amenity());
         model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
         return "admin/amenity/create";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER')")
-    @PostMapping("/admin/amenity/create")
+    @PostMapping("/create")
     public String postCreateAmenity(Model model,
             @ModelAttribute("newAmenity") @Valid Amenity amenity,
-            BindingResult newAmenityBindingResult,
-            HttpServletRequest request) {
-
-        // HttpSession session = request.getSession(false);
+            BindingResult newAmenityBindingResult) {
 
         if (newAmenityBindingResult.hasErrors()) {
             model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
@@ -82,7 +80,7 @@ public class AmenityController {
         return "redirect:/admin/amenity";
     }
 
-    @GetMapping("/admin/amenity/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateAmenityPage(Model model, @PathVariable long id) {
         Amenity amenity = amenityService.getAmenityByID(id);
 
@@ -91,13 +89,11 @@ public class AmenityController {
         return "admin/amenity/update";
     }
 
-    @PostMapping("/admin/amenity/update")
+    @PostMapping("/update")
     public String postUpdateAmenity(Model model,
             @ModelAttribute("amenity") @Valid Amenity amenity,
-            BindingResult newAmenityBindingResult,
-            HttpServletRequest request) {
+            BindingResult newAmenityBindingResult) {
 
-        // HttpSession session = request.getSession(false);
         Amenity currentAmenity = this.amenityService.getAmenityByID(amenity.getAmenityID());
         if (newAmenityBindingResult.hasErrors()) {
             model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
@@ -110,7 +106,7 @@ public class AmenityController {
         return "redirect:/admin/amenity";
     }
 
-    @PostMapping("/admin/amenity/delete")
+    @PostMapping("/delete")
     public String postDeleteAmenity(@RequestParam("amenityID") long amenityID) {
         this.amenityService.deleteByAmenityID(amenityID);
         return "redirect:/admin/amenity";

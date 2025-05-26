@@ -90,48 +90,55 @@
                     <div class="row">
                       <div class="col-12">
                         <c:forEach var="service" items="${listServices}" varStatus="loop">
-                          <div class="service-item" id="service-${service.serviceID}">
-  <div class="d-flex">
-    <div class="form-check d-flex align-items-center justify-content-center me-3" style="width: 46px; height: 46px;">
-  <input class="form-check-input service-checkbox" type="checkbox"
-    name="services[${loop.index}].selected"
-    value="true"
-    data-service-id="${service.serviceID}" data-price="${service.price}">
-</div>
+                          <c:set
+                            var="serviceID"
+                            value="${service.serviceID}"
+                          />
+                          <c:set
+                            var="index"
+                            value="${loop.index}"
+                          />
+                          <div class="service-item" id="service-${serviceID}">
+                            <div class="d-flex">
+                              <div class="form-check d-flex align-items-center justify-content-center me-3" style="width: 46px; height: 46px;">
+                            <input class="form-check-input service-checkbox" type="checkbox"
+                              name="services[${index}].selected"
+                              value="true"
+                              data-service-id="${serviceID}" data-price="${service.price}">
+                          </div>
 
 
-    <div class="flex-grow-1">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="mb-1">${service.serviceName}</h5>
-          <p class="mb-1 text-muted">${service.description}</p>
-          <p class="mb-0 text-danger">
-            <b><fmt:formatNumber type="number" value="${service.price}" /> VNĐ / ${service.unit}</b>
-          </p>
-        </div>
-        <span class="iconify ms-3" data-icon="${service.icon}" data-width="24" data-height="24"></span>
-      </div>
-    </div>
-  </div>
-  
-  <!-- service details -->
-  <div class="service-details">
-    <div class="form-group">
-      <label for="quantity-${service.serviceID}" class="form-label">Số lượng <span class="text-danger">*</span></label>
-      <input type="number" class="form-control quantity-input"
-        id="quantity-${service.serviceID}" name="services[${loop.index}].quantity"
-        min="1" value="1"/>
-      <div class="invalid-feedback" id="quantity-error-${service.serviceID}"></div>
-    </div>
-    <div class="form-group mt-2">
-      <label for="note-${service.serviceID}" class="form-label">Mô tả yêu cầu</label>
-      <textarea class="form-control note-input"
-        id="note-${service.serviceID}" name="services[${loop.index}].description"
-        rows="2" placeholder="Nhập mô tả yêu cầu (ví dụ: thời gian phục vụ, yêu cầu đặc biệt,...)"></textarea>
-    </div>
-    <input type="hidden" name="services[${loop.index}].serviceID" value="${service.serviceID}"/>
-  </div>
-</div>
+                              <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                  <div>
+                                    <h5 class="mb-1">${service.serviceName}</h5>
+                                    <p class="mb-1 text-muted">${service.description}</p>
+                                    <p class="mb-0 text-danger">
+                                      <b><fmt:formatNumber type="number" value="${service.price}" /> VNĐ / ${service.unit}</b>
+                                    </p>
+                                  </div>
+                                  <span class="iconify ms-3" data-icon="${service.icon}" data-width="24" data-height="24"></span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div class="service-details">
+                              <div class="form-group">
+                                <label for="quantity-${serviceID}" class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control quantity-input"
+                                  id="quantity-${serviceID}" name="services[${index}].quantity"
+                                  min="1" value="1"/>
+                                <div class="invalid-feedback" id="quantity-error-${serviceID}"></div>
+                              </div>
+                              <div class="form-group mt-2">
+                                <label for="note-${serviceID}" class="form-label">Mô tả yêu cầu</label>
+                                <textarea class="form-control note-input"
+                                  id="note-${serviceID}" name="services[${index}].description"
+                                  rows="2" placeholder="Nhập mô tả yêu cầu (ví dụ: thời gian phục vụ, yêu cầu đặc biệt,...)"></textarea>
+                              </div>
+                              <input type="hidden" name="services[${index}].serviceID" value="${serviceID}"/>
+                            </div>
+                          </div>
 
                         </c:forEach>
                       </div>
@@ -145,9 +152,14 @@
                         <i class="bi bi-check-circle"></i> Đặt dịch vụ
                       </button>
                       <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <button type="button" class="btn btn-outline-dark btn-lg px-5 py-2" onclick="window.history.back()">
+                        <!-- <button type="button" class="btn btn-outline-dark btn-lg px-5 py-2" onclick="window.history.back()">
                           <i class="bi bi-arrow-left"></i> Quay lại
-                        </button>
+                        </button> -->
+                        <a href="/admin/booking/create"
+                            class="btn btn-outline-dark btn-lg px-5 py-2">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                        
                         <button type="button" class="btn btn-secondary btn-lg px-5 py-2" id="skipServicesBtn">
                           <i class="bi bi-slash-circle"></i> Bỏ qua dịch vụ
                         </button>

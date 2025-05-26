@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +35,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/admin/maintenance")
 public class MaintenanceController {
     private final MaintenanceRequestService maintenanceService;
     private final BranchService branchService;
@@ -41,7 +43,7 @@ public class MaintenanceController {
     private final RoomService roomService;
     private final UserService userService;
 
-    @GetMapping("/admin/maintenance")
+    @GetMapping("")
     public String getMaintenancePage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchMaintenanceCriteriaDTO criteria) {
@@ -61,28 +63,28 @@ public class MaintenanceController {
         return "admin/maintenance/show";
     }
 
-    @GetMapping("/admin/maintenance/{id}")
+    @GetMapping("/{id}")
     public String getDetailRequest(Model model, @PathVariable("id") Long id) {
         MaintenanceRequest request = maintenanceService.getMaintenanceRequestByID(id);
         model.addAttribute("request", request);
         return "admin/maintenance/detail";
     }
 
-    @GetMapping("/admin/maintenance/create")
+    @GetMapping("/create")
     public String getCreateMaintenancePage(Model model) {
         model.addAttribute("newRequest", new MaintenanceRequest());
         model.addAttribute("listBranches", this.branchService.getAllBranches());
         return "admin/maintenance/create";
     }
 
-    @GetMapping("/admin/maintenance/rooms-by-branch")
+    @GetMapping("/rooms-by-branch")
     @ResponseBody
     public List<RoomDTO> getRoomsByBranch(@RequestParam("branchID") Long branchID) {
         List<RoomDTO> roomDTOs = roomService.getRoomDTOsByBranchID(branchID);
         return roomDTOs;
     }
 
-    @PostMapping("/admin/maintenance/create")
+    @PostMapping("/create")
     public String postCreateMaintenance(Model model,
             @ModelAttribute("newRequest") @Valid MaintenanceRequest maintenance,
             BindingResult result,
@@ -111,13 +113,13 @@ public class MaintenanceController {
         return "redirect:/admin/maintenance";
     }
 
-    @GetMapping("/admin/maintenance/can-update/{id}")
+    @GetMapping("/can-update/{id}")
     public ResponseEntity<Boolean> canUpdateRequest(@PathVariable Long id) {
         boolean canUpdate = maintenanceService.canUpdateAndDeleteRequest(id);
         return ResponseEntity.ok(canUpdate);
     }
 
-    @GetMapping("/admin/maintenance/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateMaintenancePage(Model model, @PathVariable Long id) {
         MaintenanceRequest request = maintenanceService.getMaintenanceRequestByID(id);
         boolean canUpdate = maintenanceService.canUpdateAndDeleteRequest(id);
@@ -132,7 +134,7 @@ public class MaintenanceController {
         return "admin/maintenance/update";
     }
 
-    @PostMapping("/admin/maintenance/update")
+    @PostMapping("/update")
     public String postUpdateBranch(Model model,
             @ModelAttribute("request") @Valid MaintenanceRequest maintenanceRequest,
             BindingResult result,
@@ -160,7 +162,7 @@ public class MaintenanceController {
         return "redirect:/admin/maintenance";
     }
 
-    @PostMapping("/admin/maintenance/update-status")
+    @PostMapping("/update-status")
     @ResponseBody
     public ResponseEntity<?> updateMaintenanceStatus(
             @RequestParam("requestID") Long requestID,
@@ -188,13 +190,13 @@ public class MaintenanceController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/admin/maintenance/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteRequest(@PathVariable long id) {
         boolean canDelete = maintenanceService.canUpdateAndDeleteRequest(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/maintenance/delete")
+    @PostMapping("/delete")
     public String postDeleteRequest(@RequestParam("requestID") Long requestID) {
         this.maintenanceService.deleteByMaintenanceRequestID(requestID);
         return "redirect:/admin/maintenance";

@@ -22,6 +22,15 @@
             <div class="main-panel">
                 <div class="search-form-container my-4" style="max-width:900px; width:100%; margin:0 auto; padding:10px 15px; box-sizing:border-box;">
                     <form action="/admin/booking" method="get" class="search-form" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px 15px; width:100%; align-items:center;">
+                        
+                        <c:set
+                            var="cBranchID"
+                            value="${criteria.branchID}"
+                        />
+                        <c:set
+                            var="roomTypeID"
+                            value="${criteria.roomTypeID}"
+                        />
                         <input type="text" class="form-control form-control-sm"
                             name="keyword" 
                             placeholder="Tìm kiếm booking (tên khách hàng)..."
@@ -31,7 +40,11 @@
                                 style="width:100%; height:38px; box-sizing:border-box;">
                             <option value="">Chọn chi nhánh</option>
                             <c:forEach var="branch" items="${listBranches}">
-                                <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
+                                <c:set
+                                    var="branchID"
+                                    value="${branch.branchID}"
+                                />
+                                <option value="${branchID}" ${branchID == cBranchID ? 'selected' : ''}>
                                     ${branch.branchName}
                                 </option>
                             </c:forEach>
@@ -41,7 +54,11 @@
                                 style="width:100%; height:38px; box-sizing:border-box;">
                             <option value="">Chọn loại phòng</option>
                             <c:forEach var="roomType" items="${listRoomTypes}">
-                                <option value="${roomType.roomTypeID}" ${roomType.roomTypeID == criteria.roomTypeID ? 'selected' : ''}>
+                                <c:set
+                                    var="roomTypeID"
+                                    value="${roomType.roomTypeID}"
+                                />
+                                <option value="${roomTypeID}" ${roomTypeID == roomTypeID ? 'selected' : ''}>
                                     ${roomType.name}
                                 </option>
                             </c:forEach>
@@ -49,21 +66,23 @@
                         
                         <select name="status" class="form-select form-control form-select-sm"
                                 style="width:100%; height:38px; box-sizing:border-box;">
-                            <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
+                                <c:set
+                                    var="status"
+                                    value="${criteria.status}"
+                                />
+                            <option value="" ${status == null || status == '' ? 'selected' : ''}>
                                 Tất cả tình trạng
                             </option>
                             <c:forEach var="type" items="${bookingStatuses}">
-                                <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
+                                <option value="${type}" ${status == type ? 'selected' : ''}>
                                     ${type.displayName} 
                                 </option>
                             </c:forEach>
                         </select>
 
-                        <input type="text" id="timeRange" name="timeRange" class="form-control daterange-picker" 
+                        <input type="text" id="timeRange" name="timeRange" class="form-control dateRange-picker" 
                             value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian..."
                             style="width:100%; height:38px; box-sizing:border-box;"/>
-
-
                         <button type="submit" class="btn btn-primary btn-sm p-2" 
                                 style="height:38px; padding:0 20px; font-size:14px; cursor:pointer; justify-self:start;">
                             <i class="bi bi-search"></i>
@@ -115,46 +134,74 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="booking" items="${listBookings}">
+                                                            <c:set
+                                                                var="bookingID"
+                                                                value="${booking.bookingID}"
+                                                            />
                                                             <tr style="height: 70px;">
-                                                                <td>${booking.bookingID}</td>
+                                                                <td>${bookingID}</td>
                                                                 <td>
-                                                                    <a href="/admin/customer/${booking.customer.customerID}" 
+                                                                    <c:set
+                                                                        var="customer"
+                                                                        value="${booking.customer}"
+                                                                    />
+                                                                    <a href="/admin/customer/${customer.customerID}" 
                                                                        class="text-dark text-decoration-none" 
                                                                        title="Xem chi tiết">
-                                                                        ${booking.customer.user.fullName}
+                                                                        ${customer.user.fullName}
                                                                     </a>
                                                                 </td>
                                                                 
                                                                 <td>
-                                                                    <a href="/admin/branch/${booking.room.branch.branchID}" 
+                                                                    <c:set
+                                                                        var="room"
+                                                                        value="${booking.room}"
+                                                                    />
+                                                                    <c:set
+                                                                        var="branch"
+                                                                        value="${room.branch}"
+                                                                    />
+                                                                    <a href="/admin/branch/${branch.branchID}" 
                                                                        class="text-dark text-decoration-none" 
                                                                        title="Xem chi tiết">
-                                                                        ${booking.room.branch.branchName}
+                                                                        ${branch.branchName}
                                                                     </a>
                                                                 </td>
-                                                                <td>${booking.room.roomNumber}</td>
+                                                                <td>${room.roomNumber}</td>
                                                                 <td>${f:formatLocalDateTime(booking.checkIn)}</td>
                                                                 <td>${f:formatLocalDateTime(booking.checkOut)}</td>
                                                                 <td>
-                                                                    <span class="badge ${booking.status == 'COMPLETED' ? 'bg-success' : 
-                                                                                        booking.status == 'CANCELLED' ? 'bg-danger' : 
-                                                                                        booking.status == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
-                                                                        ${booking.status.displayName}
+                                                                    <c:set
+                                                                        var="bStatus"
+                                                                        value="${booking.status}"
+                                                                    />
+                                                                    <span class="badge ${bStatus == 'COMPLETED' ? 'bg-success' : 
+                                                                                        bStatus == 'CANCELLED' ? 'bg-danger' : 
+                                                                                        bStatus == 'CONFIRMED' ? 'bg-primary' : 'bg-info'}">
+                                                                        ${bStatus.displayName}
                                                                     </span>
                                                                 </td>
-                                                                <td><fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</td>
-                                                                <td><fmt:formatNumber type="number" value="${booking.paidAmount != null ? booking.paidAmount : 0}" />đ</td>
+                                                                <c:set
+                                                                    var="paidAmount"
+                                                                    value="${booking.paidAmount}"
+                                                                />
+                                                                <c:set
+                                                                    var="totalAmount"
+                                                                    value="${booking.totalAmount}"
+                                                                />
+                                                                <td><fmt:formatNumber type="number" value="${totalAmount}" />đ</td>
+                                                                <td><fmt:formatNumber type="number" value="${paidAmount != null ? paidAmount : 0}" />đ</td>
                                                                 <td>${f:formatLocalDateTime(booking.createdAt)}</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
-                                                                        <a href="/admin/booking/${booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <a href="/admin/booking/${bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
                                                                         <button
                                                                             class="btn btn-danger btn-sm"
                                                                             title="Hủy đặt phòng"
                                                                             onclick="checkBeforeCancel(this)"
-                                                                            data-entity-id="${booking.bookingID}"
+                                                                            data-entity-id="${bookingID}"
                                                                             data-id-name="bookingID"
                                                                             data-role="admin"
                                                                             >
@@ -204,7 +251,7 @@
                     }, 5000);
                 }
             };
-            $('.daterange-picker').daterangepicker({
+            $('.dateRange-picker').daterangepicker({
                 locale: {
                     format: 'DD/MM/YYYY',
                     daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],

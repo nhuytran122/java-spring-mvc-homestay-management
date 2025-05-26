@@ -26,30 +26,33 @@
                                placeholder="Tìm kiếm đặt dịch vụ (tên dịch vụ)..." 
                                value="${criteria.keyword}"/>
                         <select name="isPrepaid" class="form-select form-control form-select-sm">
+                            <c:set var="cIsPrepaid" value="${criteria.isPrepaid}"/>
                             <option value="">Chọn phân loại</option>
-                            <option value="true" ${true == criteria.isPrepaid ? 'selected' : ''}>
+                            <option value="true" ${true == isPrepaid ? 'selected' : ''}>
                                 Đặt trước
                             </option>
-                            <option value="false" ${true == criteria.isPrepaid ? 'selected' : ''}>
+                            <option value="false" ${true == isPrepaid ? 'selected' : ''}>
                                 Đặt tại homestay
                             </option>
                         </select>
 
                         <select name="status" class="form-select form-control form-select-sm">
-                            <option value="" ${criteria.status == null || criteria.status == '' ? 'selected' : ''}>
+                            <c:set var="cStatus" value="${criteria.status}"/>
+                            <option value="" ${cStatus == null || cStatus == '' ? 'selected' : ''}>
                                 Tất cả tình trạng
                             </option>
                             <c:forEach var="type" items="${statuses}">
-                                <option value="${type}" ${criteria.status == type ? 'selected' : ''}>
+                                <option value="${type}" ${cStatus == type ? 'selected' : ''}>
                                     ${type.displayName} 
                                 </option>
                             </c:forEach>
                         </select>
                         <select name="sort" class="form-select form-control form-select-sm">
-                            <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
+                            <c:set var="cSort" value="${criteria.sort}"/>
+                            <option value="asc" ${cSort == 'asc' ? 'selected' : ''}>
                                 Cũ nhất
                             </option>
-                            <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
+                            <option value="desc" ${cSort == 'desc' ? 'selected' : ''}>
                                 Mới nhất
                             </option>
                         </select>
@@ -99,12 +102,14 @@
                                                                 />
                                                             <tr style="height: 70px;">
                                                                 <c:set var="booking" value="${bookingService.booking}"></c:set>
+                                                                <c:set var="room" value="${booking.room}"></c:set>
+                                                                <c:set var="bServiceName" value="${bookingService.service.serviceName}"></c:set>
                                                                 <c:set var="bookingServiceID" value="${bookingService.bookingServiceID}"></c:set>
                                                                 <td>${booking.bookingID}</td>
                                                                 <td>${booking.customer.user.fullName}</td>
-                                                                <td>${booking.room.branch.branchName}</td>
-                                                                <td>${booking.room.roomNumber}</td>
-                                                                <td>${bookingService.service.serviceName}</td>
+                                                                <td>${room.branch.branchName}</td>
+                                                                <td>${room.roomNumber}</td>
+                                                                <td>${bServiceName}</td>
                                                                 <td>
                                                                     <fmt:formatNumber type="number" value="${bookingService.quantity}" pattern="#"/>
                                                                 </td>
@@ -152,7 +157,7 @@
                                                                         </button>
                                                                         <button class="btn btn-info btn-sm status-update-btn" 
                                                                             data-booking-service-id="${bookingServiceID}" 
-                                                                            data-current-status="${bookingService.status}"
+                                                                            data-current-status="${status}"
                                                                             title="Cập nhật trạng thái">
                                                                             <i class="bi bi-gear"></i>
                                                                         </button>
@@ -161,7 +166,7 @@
                                                                             title="Xóa"
                                                                             onclick="checkBeforeDelete(this)"
                                                                             data-entity-id="${bookingServiceID}"
-                                                                            data-entity-name="${bookingService.service.serviceName}"
+                                                                            data-entity-name="${bServiceName}"
                                                                             data-entity-type="Đơn đặt dịch vụ"
                                                                             data-delete-url="/admin/booking-service/delete"
                                                                             data-check-url="/admin/booking-service/can-handle/"

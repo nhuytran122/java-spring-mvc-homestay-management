@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lullabyhomestay.homestay_management.domain.Service;
@@ -25,11 +27,14 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER')")
+@RequestMapping("/admin/service")
 public class ServiceController {
     private final HomestayServiceService service;
     private final IconService iconService;
 
-    @GetMapping("/admin/service")
+    @GetMapping("")
+    @PreAuthorize("permitAll()")
     public String getServicePage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
@@ -56,14 +61,14 @@ public class ServiceController {
         return "admin/service/show";
     }
 
-    @GetMapping("/admin/service/create")
+    @GetMapping("/create")
     public String getCreateServicePage(Model model) {
         model.addAttribute("newService", new Service());
         model.addAttribute("iconList", iconService.getCachedIconList());
         return "admin/service/create";
     }
 
-    @PostMapping("/admin/service/create")
+    @PostMapping("/create")
     public String postCreateService(Model model,
             @ModelAttribute("newService") @Valid Service service,
             BindingResult newServiceBindingResult,
@@ -79,7 +84,7 @@ public class ServiceController {
         return "redirect:/admin/service";
     }
 
-    @GetMapping("/admin/service/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateServicePage(Model model, @PathVariable long id) {
         Service currentService = service.getServiceByID(id);
         model.addAttribute("iconList", iconService.getCachedIconList());
@@ -87,7 +92,7 @@ public class ServiceController {
         return "admin/service/update";
     }
 
-    @PostMapping("/admin/service/update")
+    @PostMapping("/update")
     public String postUpdateService(Model model,
             @ModelAttribute("service") @Valid Service service,
             BindingResult newServiceBindingResult,
@@ -110,13 +115,13 @@ public class ServiceController {
         return "redirect:/admin/service";
     }
 
-    @GetMapping("/admin/service/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteService(@PathVariable long id) {
         boolean canDelete = service.canDeleteService(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/service/delete")
+    @PostMapping("/delete")
     public String postDeleteService(@RequestParam("serviceID") long serviceID) {
         this.service.deleteByServiceID(serviceID);
         return "redirect:/admin/service";

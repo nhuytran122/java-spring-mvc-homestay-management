@@ -66,7 +66,7 @@ public class AuthController {
     @GetMapping("/verify-email")
     public String verifyEmail(@RequestParam("token") String token, Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session.getAttribute("id") != null) {
+        if (session != null && session.getAttribute("id") != null) {
             return "redirect:/";
         }
         try {
@@ -74,18 +74,21 @@ public class AuthController {
             model.addAttribute("message", "Email đã được xác nhận! Bạn có thể đăng nhập.");
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("resend", true);
         }
         return "shared/auth/verify-email";
     }
 
-    @GetMapping("/verify-email-pending")
-    public String showVerifyEmailPending(Model model, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session.getAttribute("id") != null) {
-            return "redirect:/";
+    @PostMapping("/resend-verification-email")
+    public String resendVerification(@RequestParam("email") String email, Model model) {
+        try {
+            userService.resendVerificationEmail(email);
+            model.addAttribute("message",
+                    "Email xác nhận mới đã được gửi. Vui lòng kiểm tra email để hoàn tất đăng ký.");
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
         }
-        model.addAttribute("error", "Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để xác nhận.");
-        return "shared/auth/verify-email-pending";
+        return "shared/auth/verify-email";
     }
 
     @GetMapping("/access-deny")

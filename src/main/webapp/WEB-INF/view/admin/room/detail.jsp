@@ -64,10 +64,10 @@
                                   </c:choose>
                                 </div>
                                 <c:forEach var="photo" items="${room.roomPhotos}">
-                                  <div class="carousel-item">
-                                      <img src="/images/room/${photo.photo}" class="d-block w-100" alt="Meeting Room" style="height: 400px; object-fit: cover">
-                                  </div>
-                              </c:forEach>
+                                    <div class="carousel-item">
+                                        <img src="/images/room/${photo.photo}" class="d-block w-100" alt="Meeting Room" style="height: 400px; object-fit: cover">
+                                    </div>
+                                </c:forEach>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

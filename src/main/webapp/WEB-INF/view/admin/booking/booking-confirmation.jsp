@@ -61,17 +61,29 @@
 
                   <div class="booking-details mb-4">
                     <div class="row">
-                      <div class="col-md-6">
+                      <div class="col-md-4">
                         <h5 class="mb-3">Thông tin phòng</h5>
-                        <p><strong>Phòng:</strong> ${booking.room.roomNumber} - ${booking.room.roomType.name}</p>
-                        <p><strong>Chi nhánh:</strong> ${booking.room.branch.branchName}</p>
-                        <p><strong>Địa chỉ:</strong> ${booking.room.branch.address}</p>
+                        <c:set var="room" value="${booking.room}"/>
+                        <c:set var="branch" value="${room.branch}"/>
+                        <c:set var="customer" value="${booking.customer}"/>
+                        <c:set var="customerType" value="${customer.customerType}"/>
+                        <c:set var="user" value="${customer.user}"/>
+                        <p><strong>Phòng:</strong> ${room.roomNumber} - ${room.roomType.name}</p>
+                        <p><strong>Chi nhánh:</strong> ${branch.branchName}</p>
+                        <p><strong>Địa chỉ:</strong> ${branch.address}</p>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-4">
                         <h5 class="mb-3">Thông tin đặt phòng</h5>
                         <p><strong>Check-in:</strong> ${f:formatLocalDateTime(booking.checkIn)}</p>
                         <p><strong>Check-out:</strong> ${f:formatLocalDateTime(booking.checkOut)}</p>
                         <p><strong>Số lượng khách:</strong> ${booking.guestCount} người</p>
+                      </div>
+                      <div class="col-md-4">
+                        <h5 class="mb-3">Thông tin khách hàng</h5>
+                        <p><strong>Họ và tên:</strong> ${user.fullName}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Số điện thoại:</strong> ${user.phone}</p>
+                        <p><strong>Phân loại khách hàng:</strong> ${customerType.name}</p>
                       </div>
                     </div>
 
@@ -94,14 +106,15 @@
                                   </thead>
                                   <tbody>
                                     <c:forEach var="bookingService" items="${booking.bookingServices}">
+                                      <c:set var="serviceOfBService" value="${bookingService.service}"/>
                                       <tr>
                                         <td class="text-start">
-                                          <i class="${bookingService.service.icon} me-2"></i>
-                                          ${bookingService.service.serviceName}
+                                          <i class="${serviceOfBService.icon} me-2"></i>
+                                          ${serviceOfBService.serviceName}
                                         </td>
-                                        <td>${bookingService.service.unit}</td>
+                                        <td>${serviceOfBService.unit}</td>
                                         <td>${bookingService.quantity}</td>
-                                        <td><fmt:formatNumber type="number" value="${bookingService.quantity * bookingService.service.price}" />đ</td>
+                                        <td><fmt:formatNumber type="number" value="${bookingService.quantity * serviceOfBService.price}" />đ</td>
                                         <td>${bookingService.description}</td>
                                       </tr>
                                     </c:forEach>
@@ -121,11 +134,11 @@
                   <div class="total-section bg-light p-3 border rounded mb-4">
                     <h5 class="mb-2">Tổng tiền (bao gồm phòng và dịch vụ):</h5>
                     <h3 class="text-primary"><fmt:formatNumber type="number" value="${booking.totalAmount}" />đ</h3>
-                    <c:if test="${booking.customer.customerType.discountRate > 0}">
+                    <c:if test="${customerType.discountRate > 0}">
                       <div class="mt-2">
                         <small class="text-muted">
-                          Đã áp dụng giảm giá dành cho thành viên ${booking.customer.customerType.name}
-                          (<fmt:formatNumber value="${booking.customer.customerType.discountRate}" pattern="#'%'" />):
+                          Đã áp dụng giảm giá dành cho thành viên ${customerType.name}
+                          (<fmt:formatNumber value="${customerType.discountRate}" pattern="#'%'" />):
                           <span class="text-success fw-bold">
                             - <fmt:formatNumber value="${discountAmount}" pattern="#,##0" />đ
                           </span>

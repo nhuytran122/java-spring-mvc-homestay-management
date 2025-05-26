@@ -28292,26 +28292,6 @@ div.tagsinput span.tag a {
 /*-------------------------------------------------------------------*/
 /* === Landing screens === */
 /* Auth */
-.auth .login-half-bg {
-  background: url("../../images/auth/login-bg.jpg");
-  background-size: cover;
-}
-
-.auth .register-half-bg {
-  background: url("../../images/auth/register-bg.jpg");
-  background-size: cover;
-}
-
-.auth.lock-full-bg {
-  background: url("../../images/auth/lockscreen-bg.jpg");
-  background-size: cover;
-}
-
-.auth .lock-profile-img {
-  width: 90px;
-  height: 90px;
-  border-radius: 100%;
-}
 
 .auth .auth-form-light {
   background: #ffffff;
@@ -30592,4 +30572,3 @@ div.tagsinput span.tag a {
   }
 }
 
-/*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */

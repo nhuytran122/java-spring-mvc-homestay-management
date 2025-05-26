@@ -3,11 +3,13 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lullabyhomestay.homestay_management.domain.Amenity;
@@ -22,12 +24,14 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+@RequestMapping("/admin/room/room-amenity")
 public class RoomAmenityController {
     private final RoomAmenityService roomAmenityService;
     private final RoomService roomService;
     private final AmenityService amenityService;
 
-    @PostMapping("/admin/room/room-amenity/create")
+    @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<?> postCreateRoomAmenities(@RequestBody List<RoomAmenity> listRoomAmenities) {
         for (RoomAmenity request : listRoomAmenities) {
@@ -48,7 +52,7 @@ public class RoomAmenityController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/admin/room/room-amenity/update")
+    @PostMapping("/update")
     @ResponseBody
     public ResponseEntity<?> postUpdateRoomAmenity(@RequestBody RoomAmenity roomAmenity) {
         long roomID = roomAmenity.getRoomAmenityID().getRoomID();
@@ -65,7 +69,7 @@ public class RoomAmenityController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/admin/room/room-amenity/delete")
+    @PostMapping("/delete")
     public String postDeleteRoomAmenity(Model model,
             @ModelAttribute("roomAmenity") RoomAmenity roomAmenity) {
         long roomID = roomAmenity.getRoomAmenityID().getRoomID();

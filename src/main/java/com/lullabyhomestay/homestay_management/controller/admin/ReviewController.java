@@ -11,15 +11,17 @@ import com.lullabyhomestay.homestay_management.service.ReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @AllArgsConstructor
+@RequestMapping("/admin/review")
 public class ReviewController {
     private final ReviewService reviewService;
     private final BranchService branchService;
 
-    @GetMapping("/admin/review")
+    @GetMapping("")
     public String getReviewsPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String sort,
@@ -46,7 +48,7 @@ public class ReviewController {
         return "admin/review/show";
     }
 
-    @PostMapping("/admin/review/delete")
+    @PostMapping("/delete")
     public String postDeleteReview(@RequestParam("reviewID") Long reviewID) {
         this.reviewService.deleteByReviewID(reviewID);
         return "redirect:/admin/review";

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.dto.RoomDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchRoomCriteriaDTO;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.BookingRepository;
 import com.lullabyhomestay.homestay_management.repository.MaintenanceRequestRepository;
@@ -91,11 +92,12 @@ public class RoomService {
 
     @Transactional
     public void deleteByRoomID(long roomID) {
-        if (canDeleteRoom(roomID)) {
-            this.roomRepository.deleteByRoomID(roomID);
-            this.roomAmenityRepository.deleteByRoom_RoomID(roomID);
-            this.roomStatusRepository.deleteByRoom_RoomID(roomID);
-            this.roomPhotoRepository.deleteByRoom_RoomID(roomID);
+        if (!canDeleteRoom(roomID)) {
+            throw new CannotDeleteException("Phòng");
         }
+        this.roomRepository.deleteByRoomID(roomID);
+        this.roomAmenityRepository.deleteByRoom_RoomID(roomID);
+        this.roomStatusRepository.deleteByRoom_RoomID(roomID);
+        this.roomPhotoRepository.deleteByRoom_RoomID(roomID);
     }
 }

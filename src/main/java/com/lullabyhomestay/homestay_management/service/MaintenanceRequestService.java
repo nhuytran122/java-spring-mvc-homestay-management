@@ -97,17 +97,19 @@ public class MaintenanceRequestService {
 
     @Transactional
     public void deleteByMaintenanceRequestID(long requestID) {
-        if (canUpdateAndDeleteRequest(requestID)) {
-            MaintenanceRequest request = getMaintenanceRequestByID(requestID);
-            Long roomID = request.getRoom().getRoomID();
-            Room room = new Room();
-            if (roomID != null) {
-                room = roomService.getRoomByID(roomID);
-            }
-            room.setIsActive(false);
-            roomService.handleSaveRoom(room);
-
-            this.maintenanceRepository.deleteByRequestID(requestID);
+        if (!canUpdateAndDeleteRequest(requestID)) {
+            throw new IllegalStateException("Yêu cầu bảo trì không ở trạng thái cho phép xóa.");
         }
+        MaintenanceRequest request = getMaintenanceRequestByID(requestID);
+        Long roomID = request.getRoom().getRoomID();
+        Room room = new Room();
+        if (roomID != null) {
+            room = roomService.getRoomByID(roomID);
+        }
+        room.setIsActive(false);
+        roomService.handleSaveRoom(room);
+
+        this.maintenanceRepository.deleteByRequestID(requestID);
+
     }
 }

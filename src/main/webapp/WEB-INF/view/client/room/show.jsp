@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách phòng - Lullaby Homestay</title>
     <jsp:include page="../layout/import-css.jsp" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.css" />
 </head>
 <body>
     <jsp:include page="../layout/header.jsp" />
@@ -20,6 +19,8 @@
                     <div class="card-header bg-white">
                         <h5 class="mb-0">Tìm kiếm phòng</h5>
                     </div>
+                    <c:set var="cRoomTypeID" value="${criteria.roomTypeID}" />
+                    <c:set var="cBranchID" value="${criteria.branchID}" />
                     <form action="/room" method="get" class="search-form">
                         <div class="card-body">
                             <div class="mb-4">
@@ -27,7 +28,7 @@
                                 <select name="roomTypeID" class="form-select">
                                     <option value="">Chọn loại phòng</option>
                                     <c:forEach var="type" items="${listRoomTypes}">
-                                        <option value="${type.roomTypeID}" ${type.roomTypeID == criteria.roomTypeID ? 'selected' : ''}>
+                                        <option value="${type.roomTypeID}" ${type.roomTypeID == cRoomTypeID ? 'selected' : ''}>
                                             ${type.name}
                                         </option>
                                     </c:forEach>
@@ -40,7 +41,7 @@
                                 <select name="branchID" class="form-select">
                                     <option value="">Chọn chi nhánh</option>
                                     <c:forEach var="branch" items="${listBranches}">
-                                        <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
+                                        <option value="${branch.branchID}" ${branch.branchID == cBranchID ? 'selected' : ''}>
                                             ${branch.branchName}
                                         </option>
                                     </c:forEach>
@@ -106,20 +107,5 @@
     </div>
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('.daterange-picker').daterangepicker({
-                timePicker: true, 
-                timePicker24Hour: true, 
-                timePickerIncrement: 30,
-                locale: {
-                    format: 'DD/MM/YYYY HH:mm'
-                }
-            });
-        });
-    </script>
 </body>
 </html>

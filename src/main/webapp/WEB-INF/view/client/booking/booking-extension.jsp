@@ -31,6 +31,12 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
               </h2>
               <div class="booking-details mb-4">
                 <h5 class="text-muted">Thông tin đặt phòng hiện tại</h5>
+                <c:set var="bookingID" value="${booking.bookingID}" />
+                <c:set var="roomType" value="${booking.room.roomType}" />
+                <c:set
+                  var="pricingSnapshot"
+                  value="${booking.pricingSnapshot}"
+                />
                 <div class="row">
                   <div class="col-md-12">
                     <p><strong>Phòng:</strong> ${booking.room.roomNumber}</p>
@@ -60,11 +66,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   name="${_csrf.parameterName}"
                   value="${_csrf.token}"
                 />
-                <input
-                  type="hidden"
-                  name="bookingID"
-                  value="${booking.bookingID}"
-                />
+                <input type="hidden" name="bookingID" value="${bookingID}" />
                 <div class="mb-4">
                   <label class="form-label" for="newCheckoutTime"
                     >Chọn thời gian check-out mới</label
@@ -86,17 +88,17 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   <label class="form-label" for="extensionFee">
                     Phí gia hạn (<fmt:formatNumber
                       type="number"
-                      value="${booking.pricingSnapshot.extraHourPrice}"
+                      value="${pricingSnapshot.extraHourPrice}"
                     />đ /
                     <c:if
-                      test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"
+                      test="${fn:containsIgnoreCase(roomType.name, 'dorm')}"
                     >
                       người / </c:if
                     >giờ)
                     <small class="text-muted d-block my-1">
                       <c:choose>
                         <c:when
-                          test="${fn:containsIgnoreCase(booking.room.roomType.name, 'dorm')}"
+                          test="${fn:containsIgnoreCase(roomType.name, 'dorm')}"
                         >
                           * Phòng Dorm: phí được tính theo số lượng khách và số
                           giờ gia hạn.
@@ -112,7 +114,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                     type="text"
                     class="form-control"
                     id="extensionFee"
-                    data-extra-hours-fee="${booking.pricingSnapshot.extraHourPrice}"
+                    data-extra-hours-fee="${pricingSnapshot.extraHourPrice}"
                     value="0"
                     readonly
                     placeholder="0đ"
@@ -124,7 +126,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                     Xác nhận
                   </button>
                   <a
-                    href="/booking/booking-history/${booking.bookingID}"
+                    href="/booking/booking-history/${bookingID}"
                     type="button"
                     class="btn btn-outline-secondary btn-lg"
                   >

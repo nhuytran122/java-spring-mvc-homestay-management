@@ -17,13 +17,16 @@
     <jsp:include page="../layout/header.jsp" />
 
     <div class="room-details-section mt-5 pt-5">
+        <c:set var="thumbnail" value="${room.thumbnail}" />
+        <c:set var="roomType" value="${room.roomType}" />
+        <c:set var="branch" value="${room.branch}" />
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
                     <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner rounded-4">
                             <div class="carousel-item active">
-                                <img src="/images/room/${not empty room.thumbnail ? room.thumbnail : 'default-img.jpg'}" class="d-block w-100" alt="Ảnh phòng" style="height: 400px; object-fit: cover">
+                                <img src="/images/room/${not empty thumbnail ? thumbnail : 'default-img.jpg'}" class="d-block w-100" alt="Ảnh phòng" style="height: 400px; object-fit: cover">
                             </div>
                             <c:forEach var="photo" items="${room.roomPhotos}">
                               <div class="carousel-item">
@@ -42,15 +45,15 @@
                     </div>
                     
                     <div class="room-info my-4">
-                        <h1 class="mb-3">Phòng ${room.roomNumber} - ${room.roomType.name}</h1>
-                        <input type="hidden" id="roomTypeID" value="${room.roomType.roomTypeID}" />
+                        <h1 class="mb-3">Phòng ${room.roomNumber} - ${roomType.name}</h1>
+                        <input type="hidden" id="roomTypeID" value="${roomType.roomTypeID}" />
                         <div class="d-flex align-items-center mb-3 ">
-                            <span class="badge bg-primary me-2">${room.branch.branchName}</span>
-                            <span class="text-muted">${room.branch.address}</span>
+                            <span class="badge bg-primary me-2">${branch.branchName}</span>
+                            <span class="text-muted">${branch.address}</span>
                         </div>
                         <hr>
                         <h4>Thông tin về loại phòng</h4>
-                        <p>${room.roomType.description}</p>
+                        <p>${roomType.description}</p>
                         <div class="pricing-policy mt-4">
                             <div class="policy-description bg-light">
                                 <div style="white-space: pre-line;">
@@ -108,7 +111,7 @@
                                     <form:errors path="guestCount" cssClass="invalid-feedback" />
                                 </c:set>
                                 <form:input type="hidden" path="room.roomID" value="${room.roomID}" />
-                                <form:input type="hidden" path="room.roomType.maxGuest" value="${room.roomType.maxGuest}" />
+                                <form:input type="hidden" path="room.roomType.maxGuest" value="${roomType.maxGuest}" />
                                 <div class="row g-3 mb-4">
                                     <div class="col-6">
                                         <label class="form-label">Check-in</label>
@@ -171,16 +174,17 @@
                             </p>
                         </c:if>
                         <c:forEach var="review" items="${listReviews}">
+                            <c:set var="customer" value="${review.booking.customer}" />
                             <div class="review-card mb-4">
                                 <div class="d-flex">
                                     <div class="me-3">
                                         <div class="d-inline-block rounded-circle p-1">
-                                            <img src="/images/avatar/${not empty review.booking.customer.avatar ? review.booking.customer.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
+                                            <img src="/images/avatar/${not empty customer.avatar ? customer.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">${review.booking.customer.fullName}</h6>
+                                            <h6 class="mb-0">${customer.fullName}</h6>
                                             <div class="d-flex align-items-center">
                                                 <small class="text-muted me-3">Đăng vào: ${f:formatLocalDateTime(review.createdAt)}</small>
                                             </div>
@@ -217,7 +221,7 @@
         $(document).ready(function () {
             let now = moment();
             
-            let roomTypeName = "${room.roomType.name}".toLowerCase();
+            let roomTypeName = "${roomType.name}".toLowerCase();
             let isDorm = roomTypeName.includes("dorm");
             let roomTypeId = $('#roomTypeID').val();
 

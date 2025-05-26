@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.groups.Default;
 import com.lullabyhomestay.homestay_management.domain.Role;
 import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchEmployeeCriterialDTO;
@@ -31,12 +34,14 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasRole('MANAGER')")
+@RequestMapping("/admin/employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
     private final RoleService roleService;
     private final UploadService uploadService;
 
-    @GetMapping("/admin/employee")
+    @GetMapping("")
     public String getEmployeePage(
             Model model,
             @RequestParam(defaultValue = "1") int page,
@@ -55,23 +60,23 @@ public class EmployeeController {
         return "admin/employee/show";
     }
 
-    @GetMapping("/admin/employee/{id}")
+    @GetMapping("/{id}")
     public String getDetailEmployeePage(Model model, @PathVariable long id) {
         EmployeeDTO employee = employeeService.getEmployeeDTOByID(id);
         model.addAttribute("employee", employee);
         return "admin/employee/detail";
     }
 
-    @GetMapping("/admin/employee/create")
+    @GetMapping("/create")
     public String getCreateEmployeePage(Model model) {
         model.addAttribute("listRoles", getAllNonCustomerRoles());
         model.addAttribute("newEmployee", new EmployeeDTO());
         return "admin/employee/create";
     }
 
-    @PostMapping("/admin/employee/create")
+    @PostMapping("/create")
     public String postCreateEmployee(Model model,
-            @ModelAttribute("newEmployee") @Valid EmployeeDTO employee,
+            @Validated({ Default.class, AdminValidation.class }) @ModelAttribute("newEmployee") EmployeeDTO employee,
             BindingResult newEmployeeBindingResult,
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
@@ -90,7 +95,7 @@ public class EmployeeController {
         return "redirect:/admin/employee";
     }
 
-    @GetMapping("/admin/employee/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateEmployeePage(Model model, @PathVariable long id) {
         EmployeeDTO employee = employeeService.getEmployeeDTOByID(id);
         model.addAttribute("listRoles", getAllNonCustomerRoles());
@@ -99,7 +104,7 @@ public class EmployeeController {
         return "admin/employee/update";
     }
 
-    @PostMapping("/admin/employee/update")
+    @PostMapping("/update")
     public String postUpdateEmployee(Model model,
             @ModelAttribute("employee") @Validated(AdminValidation.class) @Valid EmployeeDTO employee,
             BindingResult newEmployeeBindingResult,
@@ -127,13 +132,13 @@ public class EmployeeController {
         return "redirect:/admin/employee";
     }
 
-    @GetMapping("/admin/employee/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteEmployee(@PathVariable long id) {
         boolean canDelete = employeeService.canDeleteEmployee(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/employee/delete")
+    @PostMapping("/delete")
     public String postDeleteEmployee(@RequestParam("employeeID") long employeeID) {
         this.employeeService.deleteByEmployeeID(employeeID);
         return "redirect:/admin/employee";

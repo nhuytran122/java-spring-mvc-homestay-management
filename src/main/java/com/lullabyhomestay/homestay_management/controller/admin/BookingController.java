@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -57,6 +58,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@RequestMapping("/admin/booking")
 @Controller
 public class BookingController {
     private final BookingService bookingService;
@@ -71,10 +73,16 @@ public class BookingController {
     private final PaymentService paymentService;
     private final RefundService refundService;
 
-    @GetMapping("/admin/booking")
+    @GetMapping("")
     public String getBookingPage(Model model,
             @RequestParam(defaultValue = "1") int page,
-            @ModelAttribute SearchBookingCriteriaDTO criteria) {
+            @ModelAttribute SearchBookingCriteriaDTO criteria, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
+        if (bookingRequest != null && bookingRequest.getBookingID() != null) {
+            session.setAttribute("bookingRequest", null);
+        }
+
         int validPage = Math.max(1, page);
 
         if (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty()) {
@@ -89,13 +97,16 @@ public class BookingController {
         }
 
         Page<Booking> bookings = bookingService.searchBookings(criteria, validPage);
-        List<Booking> listBookings = bookings.getContent();
+        List<Booking> listBookings = bookings
+                .getContent();
         model.addAttribute("totalPages", bookings.getTotalPages());
         model.addAttribute("listBookings", listBookings);
-        return prepareModelWithoutSearch(model, criteria, validPage);
+        return
+
+        prepareModelWithoutSearch(model, criteria, validPage);
     }
 
-    @GetMapping("/admin/booking/{id}")
+    @GetMapping("/{id}")
     public String getDetailBookingPage(Model model, @PathVariable long id) {
         Booking booking = bookingService.getBookingByID(id);
         model.addAttribute("booking", booking);
@@ -105,15 +116,30 @@ public class BookingController {
         return "admin/booking/detail";
     }
 
-    @GetMapping("/admin/booking/create")
-    public String getCreateBookingPage(Model model) {
-        model.addAttribute("newBooking", new Booking());
+    @GetMapping("/create")
+    public String getCreateBookingPage(Model model, HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
+        Booking newBooking = new Booking();
+        if (bookingRequest != null) {
+            newBooking.setCheckIn(bookingRequest.getCheckin());
+            newBooking.setCheckOut(bookingRequest.getCheckout());
+            newBooking.setGuestCount(bookingRequest.getGuestCount());
+            newBooking.setRoom(roomService.getRoomByID(bookingRequest.getRoomID()));
+            newBooking.setCustomer(customerService.getCustomerByID(bookingRequest.getCustomerID()));
+            if (bookingRequest.getBookingID() != null) {
+                session.setAttribute("bookingRequest", null);
+                bookingService.deleteByBookingID(bookingRequest.getBookingID());
+            }
+        }
+        model.addAttribute("newBooking", newBooking);
         model.addAttribute("listCustomers", customerService.getAllCustomers());
         model.addAttribute("listRooms", roomService.getAllRooms());
         return "admin/booking/create";
     }
 
-    @PostMapping("/admin/booking/create")
+    @PostMapping("/create")
     public String postCreateBooking(
             @ModelAttribute("newBooking") @Validated(AdminValidation.class) @Valid Booking booking,
             BindingResult result,
@@ -157,7 +183,7 @@ public class BookingController {
         return "redirect:/admin/booking/booking-service";
     }
 
-    @GetMapping("/admin/booking/booking-service")
+    @GetMapping("/booking-service")
     public String selectService(Model model,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
@@ -171,7 +197,7 @@ public class BookingController {
         return "admin/booking/booking-service";
     }
 
-    @PostMapping("/admin/booking/confirm-service")
+    @PostMapping("/confirm-service")
     @ResponseBody
     public ResponseEntity<ApiResponseDTO<Long>> postConfirmBookingService(
             @RequestBody BookingRequestDTO requestServiceDTO,
@@ -219,7 +245,7 @@ public class BookingController {
         return ResponseEntity.ok(new ApiResponseDTO<>(booking.getBookingID(), "Xác nhận dịch vụ thành công"));
     }
 
-    @GetMapping("/admin/booking/booking-confirmation")
+    @GetMapping("/booking-confirmation")
     public String getBookingConfirmationPage(
             @RequestParam("bookingID") Long bookingID,
             HttpServletRequest request,
@@ -256,7 +282,7 @@ public class BookingController {
         return "admin/booking/booking-confirmation";
     }
 
-    @PostMapping("/admin/booking/confirm-payment")
+    @PostMapping("/confirm-payment")
     public ResponseEntity<ApiResponseDTO<Long>> confirmPayment(
             @RequestBody PaymentConfirmationRequestDTO request,
             HttpSession session) {
@@ -278,7 +304,7 @@ public class BookingController {
         }
     }
 
-    @GetMapping("/admin/booking/check-refund/{bookingID}")
+    @GetMapping("/check-refund/{bookingID}")
     public ResponseEntity<?> checkRefundForBooking(@PathVariable Long bookingID) {
         Booking booking = bookingService.getBookingByID(bookingID);
 
@@ -315,7 +341,7 @@ public class BookingController {
         return ResponseEntity.ok(new ApiResponseDTO<>(response, "Tính toán hoàn tiền thành công"));
     }
 
-    @PostMapping("/admin/booking/cancel")
+    @PostMapping("/cancel")
     public String postCancelBooking(@RequestParam("bookingID") long bookingID) {
         if (bookingService.checkCancelability(bookingID) == Cancelability.ALLOWED) {
             this.bookingService.cancelBooking(bookingID);
@@ -323,7 +349,7 @@ public class BookingController {
         return "redirect:/admin/booking/" + bookingID;
     }
 
-    @GetMapping("/admin/booking/schedule")
+    @GetMapping("/schedule")
     public String getBookingSchedulePage(
             Model model,
             @RequestParam(value = "date", required = false) String dateStr,
@@ -351,21 +377,21 @@ public class BookingController {
         return "admin/booking/show";
     }
 
-    @GetMapping("/admin/booking/can-add-service-or-extend/{bookingID}")
+    @GetMapping("/can-add-service-or-extend/{bookingID}")
     @ResponseBody
     public ResponseEntity<Boolean> canAddServiceOrExtend(@PathVariable Long bookingID) {
         boolean result = bookingService.canBookServiceOrBookExtension(bookingID);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/admin/booking/booking-extension/create/{id}")
+    @GetMapping("/booking-extension/create/{id}")
     public String getCreateBookingExtensionPage(Model model, @PathVariable Long id) {
         Booking booking = bookingService.getBookingByID(id);
         model.addAttribute("booking", booking);
         return "admin/booking-extension/create";
     }
 
-    @PostMapping("/admin/booking/booking-extension/create")
+    @PostMapping("/booking-extension/create")
     public String postBookingExtension(@RequestParam("bookingID") Long bookingID,
             @RequestParam("newCheckoutTime") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime newCheckout,
             Model model) {
@@ -413,7 +439,7 @@ public class BookingController {
         return "admin/booking-extension/confirm-extension";
     }
 
-    @PostMapping("/admin/booking/booking-extension/confirm-payment")
+    @PostMapping("/booking-extension/confirm-payment")
     public ResponseEntity<ApiResponseDTO<Long>> confirmPaymentExtension(
             @RequestBody PaymentConfirmationRequestDTO request) {
         try {
@@ -430,7 +456,7 @@ public class BookingController {
         }
     }
 
-    @PostMapping("/admin/booking/booking-extension/cancel")
+    @PostMapping("/booking-extension/cancel")
     public String postCancelBookingExtension(@RequestParam("id") Long id, Model model) {
         Booking booking = bookingService
                 .getBookingByID(bookingExtensionService.getBookingExtensionByID(id).getBooking().getBookingID());

@@ -34,8 +34,10 @@ public class UserDTO {
 
     private String avatar;
 
-    @NotNull(message = "Vui lòng chọn vai trò")
+    @NotNull(message = "Vui lòng chọn vai trò", groups = AdminValidation.class)
     private Role role;
+
+    private Boolean isEnabled;
 
     private Employee employee;
     private Customer customer;

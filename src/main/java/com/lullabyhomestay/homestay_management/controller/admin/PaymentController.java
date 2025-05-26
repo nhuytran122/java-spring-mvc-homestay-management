@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +22,16 @@ import com.lullabyhomestay.homestay_management.utils.PaymentType;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+@RequestMapping("/admin/payment")
 public class PaymentController {
     private final PaymentService paymentService;
 
-    @GetMapping("/admin/payment")
+    @GetMapping("")
     public String getBookingPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute SearchPaymentCriteriaDTO criteria) {
@@ -60,21 +64,18 @@ public class PaymentController {
         return "admin/payment/show";
     }
 
-    @GetMapping("/admin/payment/{id}")
+    @GetMapping("/{id}")
     public String getDetailPaymentPage(Model model, @PathVariable long id) {
         Payment payment = paymentService.getPaymentByID(id);
         model.addAttribute("payment", payment);
         return "admin/payment/detail";
     }
 
-    @PostMapping("/admin/payment/handle")
+    @PostMapping("/handle")
     public String handlePayment(
             @RequestParam("bookingID") Long bookingID,
             @RequestParam("purpose") PaymentPurpose purpose,
             @RequestParam("paymentType") PaymentType paymentType) {
-        System.out.println("Booking ID: " + bookingID);
-        System.out.println("Purpose: " + purpose);
-        System.out.println("Payment Type: " + paymentType);
         paymentService.handleSavePaymentWithAdmin(bookingID, paymentType, purpose);
         return "redirect:/admin/booking/" + bookingID;
     }

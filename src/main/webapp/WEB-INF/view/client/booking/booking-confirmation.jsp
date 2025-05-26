@@ -35,16 +35,18 @@ uri="http://lullabyhomestay.com/functions" %>
                   <div class="col-md-6">
                     <h5 class="mb-3">Thông tin phòng</h5>
                     <p>
-                      <strong>Phòng:</strong> ${booking.room.roomNumber} -
-                      ${booking.room.roomType.name}
+                      <c:set var="bookingID" value="${booking.bookingID}" />
+                      <c:set var="totalAmount" value="${booking.totalAmount}" />
+                      <c:set var="room" value="${booking.room}" />
+                      <c:set var="branch" value="${room.branch}" />
+                      <strong>Phòng:</strong> ${room.roomNumber} -
+                      ${room.roomType.name}
                     </p>
                     <p>
                       <strong>Chi nhánh:</strong>
-                      ${booking.room.branch.branchName}
+                      ${branch.branchName}
                     </p>
-                    <p>
-                      <strong>Địa chỉ:</strong> ${booking.room.branch.address}
-                    </p>
+                    <p><strong>Địa chỉ:</strong> ${branch.address}</p>
                   </div>
                   <div class="col-md-6">
                     <h5 class="mb-3">Thông tin đặt phòng</h5>
@@ -85,19 +87,23 @@ uri="http://lullabyhomestay.com/functions" %>
                                   var="bookingService"
                                   items="${booking.bookingServices}"
                                 >
+                                  <c:set
+                                    var="serviceOfBService"
+                                    value="${bookingService.service}"
+                                  />
                                   <tr>
                                     <td class="text-start">
                                       <i
-                                        class="${bookingService.service.icon} me-2"
+                                        class="${serviceOfBService.icon} me-2"
                                       ></i>
-                                      ${bookingService.service.serviceName}
+                                      ${serviceOfBService.serviceName}
                                     </td>
-                                    <td>${bookingService.service.unit}</td>
+                                    <td>${serviceOfBService.unit}</td>
                                     <td>${bookingService.quantity}</td>
                                     <td>
                                       <fmt:formatNumber
                                         type="number"
-                                        value="${bookingService.quantity * bookingService.service.price}"
+                                        value="${bookingService.quantity * serviceOfBService.price}"
                                       />đ
                                     </td>
                                     <td>${bookingService.description}</td>
@@ -122,18 +128,19 @@ uri="http://lullabyhomestay.com/functions" %>
             <div class="total-amount-section mt-4 p-3 bg-light border rounded">
               <h5 class="mb-2">Tổng tiền (bao gồm phòng và dịch vụ):</h5>
               <h3 class="text-primary">
-                <fmt:formatNumber
-                  type="number"
-                  value="${booking.totalAmount}"
-                />đ
+                <fmt:formatNumber type="number" value="${totalAmount}" />đ
               </h3>
 
-              <c:if test="${booking.customer.customerType.discountRate > 0}">
+              <c:set
+                var="customerType"
+                value="${booking.customer.customerType}"
+              />
+              <c:if test="${customerType.discountRate > 0}">
                 <div class="mt-2">
                   <small class="text-muted">
-                    Đã áp dụng giảm giá dành cho thành viên
-                    ${booking.customer.customerType.name} (<fmt:formatNumber
-                      value="${booking.customer.customerType.discountRate}"
+                    Đã áp dụng giảm giá dành cho thành viên ${customerType.name}
+                    (<fmt:formatNumber
+                      value="${customerType.discountRate}"
                       pattern="#'%'"
                     />):
                     <span class="text-success fw-bold">
@@ -151,14 +158,11 @@ uri="http://lullabyhomestay.com/functions" %>
             <div class="action-buttons my-4">
               <div class="text-center">
                 <a
-                  onclick="handlePayment('${booking.bookingID}', 'ROOM_BOOKING', true)"
+                  onclick="handlePayment('${bookingID}', 'ROOM_BOOKING', true)"
                   class="btn btn-success btn-lg shadow px-5"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán
-                  (<fmt:formatNumber
-                    type="number"
-                    value="${booking.totalAmount}"
-                  />đ)
+                  (<fmt:formatNumber type="number" value="${totalAmount}" />đ)
                 </a>
               </div>
               <div
@@ -178,11 +182,7 @@ uri="http://lullabyhomestay.com/functions" %>
                     name="${_csrf.parameterName}"
                     value="${_csrf.token}"
                   />
-                  <input
-                    type="hidden"
-                    name="bookingID"
-                    value="${booking.bookingID}"
-                  />
+                  <input type="hidden" name="bookingID" value="${bookingID}" />
                   <button type="submit" class="btn btn-outline-danger btn-lg">
                     <i class="bi bi-x-circle"></i> Hủy đặt phòng
                   </button>

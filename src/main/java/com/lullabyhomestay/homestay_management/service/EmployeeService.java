@@ -1,7 +1,5 @@
 package com.lullabyhomestay.homestay_management.service;
 
-import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +13,7 @@ import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.domain.dto.EmployeeDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.SearchEmployeeCriterialDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.EmployeeRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryTransactionRepository;
@@ -137,8 +136,9 @@ public class EmployeeService {
 
     @Transactional
     public void deleteByEmployeeID(long employeeID) {
-        if (canDeleteEmployee(employeeID)) {
-            employeeRepository.deleteByEmployeeID(employeeID);
+        if (!canDeleteEmployee(employeeID)) {
+            throw new CannotDeleteException("Nhân viên");
         }
+        employeeRepository.deleteByEmployeeID(employeeID);
     }
 }

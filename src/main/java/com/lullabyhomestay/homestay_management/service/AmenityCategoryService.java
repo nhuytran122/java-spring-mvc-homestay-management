@@ -3,6 +3,7 @@ package com.lullabyhomestay.homestay_management.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.AmenityCategory;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.AmenityCategoryRepository;
 import com.lullabyhomestay.homestay_management.repository.AmenityRepository;
@@ -53,9 +55,10 @@ public class AmenityCategoryService {
 
     @Transactional
     public void deleteByCategoryID(long categoryID) {
-        if (canDeleteCategory(categoryID)) {
-            this.amenityCategoryRepository.deleteByCategoryID(categoryID);
+        if (!canDeleteCategory(categoryID)) {
+            throw new CannotDeleteException("Phân loại tiện nghi");
         }
+        this.amenityCategoryRepository.deleteByCategoryID(categoryID);
     }
 
     public boolean existsByName(String name) {

@@ -33,13 +33,14 @@
                         </c:forEach>
                     </select>
                     <select name="sort" class="form-select form-control form-select-sm">
-                        <option value="" ${criteria.sort == '' ? 'selected' : ''}>
+                        <c:set var="cSort" value="${criteria.sort}"/>
+                        <option value="" ${cSort == '' ? 'selected' : ''}>
                             Không sắp xếp
                         </option>
-                        <option value="asc" ${criteria.sort == 'asc' ? 'selected' : ''}>
+                        <option value="asc" ${cSort == 'asc' ? 'selected' : ''}>
                             Điểm tăng dần
                         </option>
-                        <option value="desc" ${criteria.sort == 'desc' ? 'selected' : ''}>
+                        <option value="desc" ${cSort == 'desc' ? 'selected' : ''}>
                             Điểm giảm dần
                         </option>
                     </select>
@@ -71,6 +72,7 @@
                                                 <th>Địa chỉ</th>
                                                 <th>Điểm tích lũy</th>
                                                 <th>Phân loại</th>
+                                                <th>Trạng thái</th>
                                                 <th>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -93,17 +95,29 @@
                                                             </td>
                                                             <td>${customer.customerType.name}</td>
                                                             <td>
+                                                                <c:choose>
+                                                                    <c:when test="${customer.isEnabled}">
+                                                                        <span class="badge bg-success">Đã kích hoạt</span>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <span class="badge bg-secondary">Chưa kích hoạt</span>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+
+                                                            <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/customer/${customer.customerID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <c:set var="customerID" value="${customer.customerID}"/>
+                                                                    <a href="/admin/customer/${customerID}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
-                                                                    <a href="/admin/customer/update/${customer.customerID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/customer/update/${customerID}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${customer.customerID}" 
+                                                                            data-entity-id="${customerID}" 
                                                                             data-entity-name="${customer.fullName}" 
                                                                             data-entity-type="Khách hàng" 
                                                                             data-delete-url="/admin/customer/delete" 

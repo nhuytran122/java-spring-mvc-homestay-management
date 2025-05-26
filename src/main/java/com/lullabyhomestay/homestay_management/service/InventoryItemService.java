@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.InventoryItem;
+import com.lullabyhomestay.homestay_management.exception.CannotDeleteException;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.InventoryItemRepository;
 import com.lullabyhomestay.homestay_management.repository.InventoryStockRepository;
@@ -74,8 +75,10 @@ public class InventoryItemService {
 
     @Transactional
     public void deleteByItemID(long itemID) {
-        if (canDeleteItem(itemID)) {
-            this.itemRepository.deleteByItemID(itemID);
+        if (!canDeleteItem(itemID)) {
+            throw new CannotDeleteException("Đồ dùng");
         }
+        this.itemRepository.deleteByItemID(itemID);
+
     }
 }

@@ -10,8 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 // @SpringBootApplication(exclude =
 // org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class)
-
-// @SpringBootApplication
 public class HomestayManagementApplication {
 
 	public static void main(String[] args) {

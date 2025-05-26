@@ -128,6 +128,25 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                             ${customer.customerType.name}
                           </div>
                         </div>
+                        <div class="row mb-3 d-flex align-items-center">
+                          <div class="col-md-4 fw-bold text-md-start">
+                            Trạng thái tài khoản:
+                          </div>
+                          <div class="col-md-8">
+                            <c:choose>
+                              <c:when test="${customer.isEnabled}">
+                                <span class="badge bg-success"
+                                  >Đã kích hoạt</span
+                                >
+                              </c:when>
+                              <c:otherwise>
+                                <span class="badge bg-secondary"
+                                  >Chưa kích hoạt</span
+                                >
+                              </c:otherwise>
+                            </c:choose>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

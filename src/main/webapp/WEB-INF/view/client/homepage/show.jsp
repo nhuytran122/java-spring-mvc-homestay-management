@@ -272,16 +272,17 @@
                             <h4 class="mb-4">Câu hỏi thường gặp</h4>
                             <div class="accordion" id="faqAccordion">
                                 <c:forEach var="faq" items="${listFaqs}" varStatus="status">
+                                    <c:set var="index" value="${status.index}" />
                                     <div class="accordion-item">
-                                        <h2 class="accordion-header" id="heading${status.index}">
+                                        <h2 class="accordion-header" id="heading${index}">
                                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                                                    data-bs-target="#collapse${status.index}" aria-expanded="false" 
-                                                    aria-controls="collapse${status.index}">
+                                                    data-bs-target="#collapse${index}" aria-expanded="false" 
+                                                    aria-controls="collapse${index}">
                                                 ${faq.question}
                                             </button>
                                         </h2>
-                                        <div id="collapse${status.index}" class="accordion-collapse collapse" 
-                                             aria-labelledby="heading${status.index}" data-bs-parent="#faqAccordion">
+                                        <div id="collapse${index}" class="accordion-collapse collapse" 
+                                             aria-labelledby="heading${index}" data-bs-parent="#faqAccordion">
                                             <div class="accordion-body">
                                                 ${faq.answer}
                                             </div>
@@ -303,18 +304,20 @@
                 <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <c:forEach var="review" items="${listReviews}" varStatus="status">
-                            <c:if test="${status.index % 3 == 0}">
-                                <div class="carousel-item ${status.index == 0 ? 'active' : ''}">
+                            <c:set var="index" value="${status.index}" />
+                            <c:set var="customer" value="${review.booking.customer}" />
+                            <c:if test="${index % 3 == 0}">
+                                <div class="carousel-item ${index == 0 ? 'active' : ''}">
                                     <div class="row g-4 justify-content-center">
                             </c:if>
                             <div class="col-md-4">
                                 <div class="card h-100 border-0">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-3">
-                                            <img src="/images/avatar/${review.booking.customer.avatar}" class="rounded-circle me-3" 
+                                            <img src="/images/avatar/${customer.avatar}" class="rounded-circle me-3" 
                                                  alt="Avatar" style="width: 50px; height: 50px;">
                                             <div>
-                                                <h6 class="mb-0">${review.booking.customer.fullName}</h6>
+                                                <h6 class="mb-0">${customer.fullName}</h6>
                                                 <small class="text-muted">${f:formatLocalDateTime(review.createdAt)}</small>
                                             </div>
                                         </div>
@@ -330,7 +333,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <c:if test="${status.index % 3 == 2 or status.last}">
+                            <c:if test="${index % 3 == 2 or status.last}">
                                     </div>
                                 </div>
                             </c:if>

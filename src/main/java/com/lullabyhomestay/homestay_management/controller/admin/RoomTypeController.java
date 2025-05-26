@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,17 +23,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @Controller
+@PreAuthorize("hasAnyRole('MANAGER')")
+@RequestMapping("/admin/room-type")
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
     private final UploadService uploadService;
     private final RoomPricingService roomPricingService;
 
-    @GetMapping("/admin/room-type")
+    @GetMapping("")
+    @PreAuthorize("permitAll()")
     public String getRoomTypePage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword) {
@@ -48,20 +53,21 @@ public class RoomTypeController {
         return "admin/room-type/show";
     }
 
-    @GetMapping("/admin/room-type/{id}")
+    @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public String getDetailRoomType(Model model, @PathVariable long id) {
         RoomType roomType = roomTypeService.getRoomTypeById(id);
         model.addAttribute("roomType", roomType);
         return "admin/room-type/detail";
     }
 
-    @GetMapping("/admin/room-type/create")
+    @GetMapping("/create")
     public String getCreateRoomTypePage(Model model) {
         model.addAttribute("newRoomType", new RoomType());
         return "admin/room-type/create";
     }
 
-    @PostMapping("/admin/room-type/create")
+    @PostMapping("/create")
     public String postCreateRoomType(Model model,
             @ModelAttribute("newRoomType") @Valid RoomType roomType,
             BindingResult newRoomTypeBindingResult,
@@ -87,7 +93,7 @@ public class RoomTypeController {
         return "redirect:/admin/room-type";
     }
 
-    @GetMapping("/admin/room-type/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateRoomTypePage(Model model, @PathVariable long id) {
         RoomType roomType = roomTypeService.getRoomTypeById(id);
         Optional<RoomPricing> defaultPricingOpt = roomPricingService
@@ -103,7 +109,7 @@ public class RoomTypeController {
         return "admin/room-type/update";
     }
 
-    @PostMapping("/admin/room-type/update")
+    @PostMapping("/update")
     public String postUpdateRoomType(Model model,
             @ModelAttribute("roomType") @Valid RoomType roomType,
             BindingResult roomTypeBindingResult,
@@ -131,13 +137,13 @@ public class RoomTypeController {
         return "redirect:/admin/room-type";
     }
 
-    @GetMapping("/admin/room-type/can-delete/{id}")
+    @GetMapping("/can-delete/{id}")
     public ResponseEntity<Boolean> canDeleteRoomType(@PathVariable long id) {
         boolean canDelete = roomTypeService.canDeleteRoomType(id);
         return ResponseEntity.ok(canDelete);
     }
 
-    @PostMapping("/admin/room-type/delete")
+    @PostMapping("/delete")
     public String postDeleteRoomType(@RequestParam("roomTypeID") long roomTypeID) {
         roomTypeService.deleteByRoomTypeID(roomTypeID);
         return "redirect:/admin/room-type";

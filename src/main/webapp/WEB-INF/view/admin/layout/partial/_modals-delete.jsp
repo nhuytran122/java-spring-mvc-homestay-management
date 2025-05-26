@@ -104,7 +104,15 @@
         }
       },
       error: function (xhr, status, error) {
-        console.error("Lỗi kiểm tra xóa:", error);
+        if (xhr.status === 403) {
+          $("#warningTitle").text("Không đủ quyền");
+          $("#warningMessage").html(
+            "Bạn không có quyền thực hiện hành động này."
+          );
+          $("#deleteWarningModal").modal("show");
+        } else {
+          console.error("Lỗi kiểm tra xóa:", error);
+        }
       },
     });
   }
