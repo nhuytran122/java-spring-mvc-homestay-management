@@ -38,7 +38,7 @@ public class Payment {
 
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    private PaymentStatus status = PaymentStatus.PENDING;
 
     @Column(name = "VnpTransactionNo")
     private String vnpTransactionNo;

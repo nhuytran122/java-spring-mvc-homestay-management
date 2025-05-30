@@ -63,13 +63,13 @@ public class AdminUserProfileController {
         return "redirect:/admin/profile";
     }
 
-    @GetMapping("/admin/change-password")
+    @GetMapping("/change-password")
     public String getChangePasswordPage(Model model) {
         model.addAttribute("passwordForm", new PasswordChangeDTO());
         return "admin/profile/change-password";
     }
 
-    @PostMapping("/admin/change-password")
+    @PostMapping("/change-password")
     public String changePassword(@ModelAttribute("passwordForm") @Valid PasswordChangeDTO passwordForm,
             BindingResult result,
             HttpSession session,

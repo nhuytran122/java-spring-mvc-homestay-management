@@ -21,7 +21,7 @@
         <div class="search-bar p-3 bg-white rounded shadow-sm">
             <form class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Khoảng thời gian checkin</label>
+                    <label class="form-label">Khoảng thời gian check-in</label>
                     <input type="text" id="timeRange" name="timeRange" class="form-control daterange-picker" 
                                value="${criteria.timeRange}" placeholder="Chọn khoảng thời gian...">
                 </div>
@@ -158,9 +158,7 @@
             </div>
             <c:choose>
                 <c:when test="${empty listBookings}">
-                    <tr>
-                        <td colspan="12" class="text-center text-danger">Không tìm thấy lịch đặt phòng nào.</td>
-                    </tr>
+                   <div class="text-center text-danger p-4">Không tìm thấy lịch đặt phòng nào.</div>
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="booking" items="${listBookings}">   
@@ -216,7 +214,7 @@
                                                     <c:set var="serviceOfBService" value="${serviceItem.service}"/>
                                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                                         <div>
-                                                            <strong>${serviceItem.service.serviceName}</strong> 
+                                                            <strong>${serviceOfBService.serviceName}</strong> 
                                                             (<c:choose>
                                                                 <c:when test="${serviceItem.quantity != null}">
                                                                     x<fmt:formatNumber type="number" value="${serviceItem.quantity}" pattern="#"/> / ${serviceOfBService.unit}
@@ -253,13 +251,19 @@
                 <div class="alert alert-info d-flex align-items-center" role="alert">
                     <i class="bi bi-gift-fill me-2"></i>
                     <div>
-                        Bạn đang là thành viên hạng <strong>${customer.customerType.name}</strong>, được giảm <strong>
+                        Bạn đang là thành viên hạng <strong>${customerType.name}</strong>, được giảm <strong>
                         <fmt:formatNumber value="${discountRate}" pattern="#"/>%</strong> cho mỗi lần đặt phòng!
                     </div>
                 </div>
             </div> 
         </c:if>       
     </div>
+
+    <jsp:include page="../../admin/layout/partial/_pagination-with-param.jsp">
+        <jsp:param name="url" value="/booking/booking-history" />
+        <jsp:param name="currentPage" value="${currentPage}" />
+        <jsp:param name="totalPages" value="${totalPages}" />
+    </jsp:include>
 
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/import-js.jsp" />

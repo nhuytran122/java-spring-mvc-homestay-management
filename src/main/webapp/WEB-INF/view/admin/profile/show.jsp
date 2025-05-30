@@ -56,7 +56,7 @@
                                                         </a>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <a href="/admin/change-password" 
+                                                        <a href="/admin/profile/change-password" 
                                                            class="btn btn-warning btn-sm w-100">
                                                             <i class="bi bi-lock"></i> Đổi mật khẩu
                                                         </a>

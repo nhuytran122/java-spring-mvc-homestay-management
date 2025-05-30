@@ -213,8 +213,9 @@ public class ClientBookingController {
             throw new AccessDeniedException("Vui lòng đăng nhập để sử dụng chức năng này");
         }
         int validPage = Math.max(1, page);
+        String timeRange = criteria.getTimeRange();
 
-        if (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty()) {
+        if (timeRange == null || timeRange.isEmpty()) {
             LocalDateTime startDefault = LocalDateTime.now();
             LocalDateTime endDefault = LocalDateTime.now().plusMonths(2);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -229,6 +230,7 @@ public class ClientBookingController {
         Page<Booking> bookings = bookingService.searchBookings(criteria, validPage);
         List<Booking> listBookings = bookings.getContent();
         model.addAttribute("totalPages", bookings.getTotalPages());
+        model.addAttribute("currentPage", validPage);
         model.addAttribute("listBookings", listBookings);
         return prepareModelWithoutSearch(model, criteria, validPage);
     }

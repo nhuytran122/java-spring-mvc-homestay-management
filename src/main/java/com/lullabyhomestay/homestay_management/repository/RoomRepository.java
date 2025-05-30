@@ -3,6 +3,7 @@ package com.lullabyhomestay.homestay_management.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -19,8 +20,10 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
 
         Page<Room> findAll(Pageable page);
 
+        @EntityGraph(attributePaths = { "roomType", "roomAmenities", "branch" })
         Page<Room> findAll(Specification<Room> spec, Pageable page);
 
+        @EntityGraph(attributePaths = { "roomType", "roomAmenities", "branch" })
         Optional<Room> findByRoomID(long roomID);
 
         List<Room> findByBranch_BranchID(long branchID);

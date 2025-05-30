@@ -28,7 +28,7 @@
                             value="${criteria.branchID}"
                         />
                         <c:set
-                            var="roomTypeID"
+                            var="cRoomTypeID"
                             value="${criteria.roomTypeID}"
                         />
                         <input type="text" class="form-control form-control-sm"
@@ -58,7 +58,7 @@
                                     var="roomTypeID"
                                     value="${roomType.roomTypeID}"
                                 />
-                                <option value="${roomTypeID}" ${roomTypeID == roomTypeID ? 'selected' : ''}>
+                                <option value="${roomTypeID}" ${roomTypeID == cRoomTypeID ? 'selected' : ''}>
                                     ${roomType.name}
                                 </option>
                             </c:forEach>

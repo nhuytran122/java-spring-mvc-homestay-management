@@ -89,12 +89,15 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                                   <td>
                                     <div class="btn-group" role="group">
                                       <button
-                                        class="btn btn-success btn-sm"
-                                        data-infor-id="${infor.inforID}"
-                                        onclick="showDetail(this)"
+                                        type="button"
+                                        title="Xem chi tiết"
+                                        class="btn btn-success btn-sm btn-show-description"
+                                        data-description="${infor.description}"
+                                        data-title="${infor.title}"
                                       >
                                         <i class="bi bi-eye"></i>
                                       </button>
+
                                       <a
                                         href="/admin/homestay-infor/update/${infor.inforID}"
                                         class="btn btn-warning btn-sm"
@@ -170,26 +173,19 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </div>
     </div>
 
-    <script>
-      function showDetail(button) {
-        let inforID = $(button).data("infor-id");
-        $.ajax({
-          url: "/admin/homestay-infor/" + inforID,
-          type: "GET",
-          success: function (response) {
-            $("#detailTitle").text(response.title);
-            $("#detailDescription").html(
-              response.description.replace(/\n/g, "<br>")
-            );
-            $("#detailModal").modal("show");
-          },
-          error: function (xhr) {
-            alert("Lỗi: " + xhr.responseText);
-          },
-        });
-      }
-    </script>
     <jsp:include page="../layout/import-js.jsp" />
+    <script>
+      $(document).ready(function () {
+        $(".btn-show-description").click(function () {
+          let description = $(this).data("description");
+          let detailTitle = $(this).data("title");
+          $("#detailDescription").html(description.replace(/\n/g, "<br>"));
+          $("#detailTitle").text(detailTitle);
+          $("#detailModal").modal("show");
+        });
+      });
+    </script>
+
     <jsp:include
       page="../layout/partial/_modal-delete-not-check-can-delete.jsp"
     />

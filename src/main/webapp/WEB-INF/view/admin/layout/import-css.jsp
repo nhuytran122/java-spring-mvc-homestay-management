@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="/admin/css/vendors/feather/feather.css" />
 <link
   rel="stylesheet"
   href="/admin/css/vendors/ti-icons/css/themify-icons.css"

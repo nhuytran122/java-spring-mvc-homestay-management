@@ -29,6 +29,7 @@
         <div class="row g-4">
             <c:set var="bookingID" value="${booking.bookingID}"/>
             <c:set var="room" value="${booking.room}"/>
+            <c:set var="branch" value="${room.branch}"/>
             <c:set var="status" value="${booking.status}"/>
             <c:set var="totalAmount" value="${booking.totalAmount}"/>
             <c:set var="paidAmount" value="${booking.paidAmount}"/>
@@ -45,7 +46,7 @@
                     <div class="card-body">
                         <a href="/room/${room.roomID}" style="text-decoration: none;"><h3 class="card-title">Phòng ${room.roomNumber} - ${room.roomType.name}</h3></a>
                         <p class="text-muted">
-                            <i class="bi bi-geo-alt me-1"></i> ${room.branch.branchName} - ${room.branch.address}
+                            <i class="bi bi-geo-alt me-1"></i> ${branch.branchName} - ${branch.address}
                         </p>
                         <hr>
                         <h5 class="mb-3">Tiện nghi trong phòng</h5>
@@ -83,18 +84,23 @@
                             <c:choose>
                                 <c:when test="${not empty booking.review}">
                                     <c:set var="review" value="${booking.review}"/>
-                                    <c:set var="reviewID" value="${booking.review.reviewID}"/>
+                                    <c:set var="reviewID" value="${review.reviewID}"/>
+                                    <c:set var="comment" value="${review.comment}"/>
+                                    <c:set var="rating" value="${review.rating}"/>
+                                    <c:set var="r_image" value="${review.image}"/>
+                                    <c:set var="cAvatar" value="${sessionScope.avatar}"/>
+                                    <c:set var="cFullName" value="${sessionScope.fullName}"/>
                                     <div class="mb-3 review-container" id="review-${reviewID}">
                                         <div class="review-content">
                                             <div class="d-flex">
                                                 <div class="me-3">
                                                     <div class="d-inline-block rounded-circle p-1">
-                                                        <img src="/images/avatar/${not empty sessionScope.avatar ? sessionScope.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
+                                                        <img src="/images/avatar/${not empty cAvatar ? cAvatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <h6 class="mb-0">${sessionScope.fullName}</h6>
+                                                        <h6 class="mb-0">${cFullName}</h6>
                                                         <div class="d-flex align-items-center">
                                                             <small class="text-muted me-3">Đăng vào: ${f:formatLocalDateTime(review.createdAt)}</small>
                                                             <button class="btn btn-warning btn-sm edit-review-btn me-1" data-review-id="${reviewID}">
@@ -104,7 +110,7 @@
                                                                 data-review-id="${reviewID}"
                                                                 onclick="checkBeforeDelete(this)" 
                                                                     data-entity-id="${reviewID}" 
-                                                                    data-entity-name="${review.comment}" 
+                                                                    data-entity-name="${comment}" 
                                                                     data-entity-type="đánh giá" 
                                                                     data-delete-url="/review/delete" 
                                                                     data-id-name="reviewID">
@@ -114,17 +120,17 @@
                                                     </div>
                                                     
                                                     <div class="mb-2">
-                                                        <c:forEach begin="1" end="${review.rating}">
+                                                        <c:forEach begin="1" end="${rating}">
                                                             <i class="bi bi-star-fill text-warning"></i>
                                                         </c:forEach>
-                                                        <c:forEach begin="${review.rating + 1}" end="5">
+                                                        <c:forEach begin="${rating + 1}" end="5">
                                                             <i class="bi bi-star text-warning"></i>
                                                         </c:forEach>
                                                     </div>
                                                     
-                                                    <p class="mb-1 review-text">${review.comment}</p>
-                                                    <c:if test="${not empty review.image}">
-                                                        <img src="/images/review/${review.image}" alt="Review Image" style="max-width: 200px;">
+                                                    <p class="mb-1 review-text">${comment}</p>
+                                                    <c:if test="${not empty r_image}">
+                                                        <img src="/images/review/${r_image}" alt="Review Image" style="max-width: 200px;">
                                                     </c:if>
                                                 </div>
                                             </div>
@@ -138,19 +144,19 @@
                                                 <div class="d-flex">
                                                     <div class="me-3">
                                                         <div class="d-inline-block rounded-circle p-1">
-                                                            <img src="/images/avatar/${not empty sessionScope.avatar ? sessionScope.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
+                                                            <img src="/images/avatar/${not empty cAvatar ? cAvatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                                            <h6 class="mb-0">${sessionScope.fullName}</h6>
+                                                            <h6 class="mb-0">${cFullName}</h6>
                                                             <small class="text-muted">Đăng vào: ${f:formatLocalDateTime(review.createdAt)}</small>
                                                         </div>
 
                                                         <div class="form-group mb-2">
                                                             <label>Đánh giá của bạn:</label>
                                                             <div class="star-rating">
-                                                                <input type="hidden" name="rating" class="rating-input" value="${review.rating}">
+                                                                <input type="hidden" name="rating" class="rating-input" value="${rating}">
                                                                 <span class="star" data-value="1"><i class="bi bi-star"></i></span>
                                                                 <span class="star" data-value="2"><i class="bi bi-star"></i></span>
                                                                 <span class="star" data-value="3"><i class="bi bi-star"></i></span>
@@ -161,14 +167,14 @@
 
                                                         <div class="form-group mb-2">
                                                             <label>Nhận xét:</label>
-                                                            <textarea name="comment" class="form-control">${review.comment}</textarea>
+                                                            <textarea name="comment" class="form-control">${comment}</textarea>
                                                         </div>
 
                                                         <div class="form-group mb-2">
                                                             <label>Hình ảnh cũ:</label>
-                                                            <c:if test="${not empty review.image}">
+                                                            <c:if test="${not empty r_image}">
                                                                 <div class="mb-2">
-                                                                    <img src="/images/review/${review.image}" alt="Review Image" style="max-width: 200px;">
+                                                                    <img src="/images/review/${r_image}" alt="Review Image" style="max-width: 200px;">
                                                                 </div>
                                                             </c:if>
                                                             <input type="file" name="fileImg" class="form-control">

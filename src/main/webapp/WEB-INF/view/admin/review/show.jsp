@@ -75,21 +75,25 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:forEach var="item" items="${items}">
+                                                    <c:forEach var="review" items="${reviews}">
                                                         <tr style="height: 80px;">
                                                             <td>${review.booking.customer.user.fullName}</td>
-                                                            <td>
+                                                            <td style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                                 ${review.comment}
                                                             </td>
                                                             <td>
                                                                 <fmt:formatNumber type="number"
-                                                                    value="${review.rating}" pattern="#"/>đ
+                                                                    value="${review.rating}" pattern="#"/> <i class="bi bi-star-fill text-warning"></i>
                                                             </td>
+                                                            <td>${f:formatLocalDateTime(review.createdAt)}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/booking/${review.booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết booking liên quan">
+                                                                    <button type="button" title="Xem chi tiết"
+                                                                            class="btn btn-success btn-sm btn-show-comment"
+                                                                            data-comment="${review.comment}">
                                                                         <i class="bi bi-eye"></i>
-                                                                    </a>
+                                                                    </button>
+
                                                                     <button class="btn btn-danger btn-sm"
                                                                         onclick="checkBeforeDelete(this)" 
                                                                             data-entity-id="${review.reviewID}" 
@@ -97,7 +101,7 @@
                                                                             data-entity-type="Đánh giá" 
                                                                             data-delete-url="/admin/review/delete" 
                                                                             data-id-name="reviewID">
-                                                                            <i class="bi bi-trash"></i> Xóa
+                                                                            <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>
                                                             </td>
@@ -125,7 +129,35 @@
     </div>
   </div>
 
-  <jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
-<jsp:include page="../layout/import-js.jsp" />
+  <div class="modal fade" id="reviewCommentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog" style="margin-top: 1%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chi tiết đánh giá</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+      </div>
+      <div class="modal-body">
+        <p id="reviewCommentContent" style="white-space: pre-wrap;"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <jsp:include page="../layout/partial/_modal-delete-not-check-can-delete.jsp" />
+    <jsp:include page="../layout/import-js.jsp" />
+    <script>
+        $(document).ready(function () {
+            $(".btn-show-comment").click(function () {
+            let comment = $(this).data("comment");
+            $("#reviewCommentContent").text(comment);
+            $("#reviewCommentModal").modal("show");
+            });
+        });
+    </script>
+
 </body>
 </html>

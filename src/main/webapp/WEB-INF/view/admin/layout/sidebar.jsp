@@ -4,7 +4,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   <ul class="nav">
     <li class="nav-item">
       <a class="nav-link" href="/admin/dashboard">
-        <i class="icon-grid menu-icon"></i>
+        <i class="bi bi-speedometer2 menu-icon"></i>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>

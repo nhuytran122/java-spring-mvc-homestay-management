@@ -40,7 +40,7 @@ public class MaintenanceRequest {
 
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)
-    private MaintenanceStatus status;
+    private MaintenanceStatus status = MaintenanceStatus.PENDING;
 
     @Column(name = "Image")
     private String image;

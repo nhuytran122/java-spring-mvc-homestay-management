@@ -305,7 +305,7 @@
                     <div class="carousel-inner">
                         <c:forEach var="review" items="${listReviews}" varStatus="status">
                             <c:set var="index" value="${status.index}" />
-                            <c:set var="customer" value="${review.booking.customer}" />
+                            <c:set var="customer" value="${review.booking.customer.user}" />
                             <c:if test="${index % 3 == 0}">
                                 <div class="carousel-item ${index == 0 ? 'active' : ''}">
                                     <div class="row g-4 justify-content-center">

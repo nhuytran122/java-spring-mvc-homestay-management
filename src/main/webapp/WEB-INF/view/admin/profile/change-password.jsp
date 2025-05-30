@@ -34,7 +34,7 @@ uri="http://www.springframework.org/tags/form" prefix="form"%>
                     <h4 class="card-title mb-4 text-center">Đổi mật khẩu</h4>
 
                     <form:form
-                      action="/admin/change-password"
+                      action="/admin/profile/change-password"
                       method="post"
                       modelAttribute="passwordForm"
                     >

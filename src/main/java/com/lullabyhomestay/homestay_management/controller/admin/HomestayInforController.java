@@ -3,7 +3,6 @@ package com.lullabyhomestay.homestay_management.controller.admin;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lullabyhomestay.homestay_management.domain.HomestayDetail;
 import com.lullabyhomestay.homestay_management.service.HomestayInforService;
@@ -48,13 +46,6 @@ public class HomestayInforController {
         return "admin/homestay-infor/show";
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<?> getDetailInfor(@PathVariable("id") long id) {
-        HomestayDetail infor = homestayService.getInforHomestayByInforID(id);
-        return ResponseEntity.ok(infor);
-    }
-
     @GetMapping("/create")
     public String getCreateInforPage(Model model) {
         model.addAttribute("newInfor", new HomestayDetail());
@@ -66,8 +57,6 @@ public class HomestayInforController {
             @ModelAttribute("newInfor") @Valid HomestayDetail faq,
             BindingResult newInforBindingResult,
             HttpServletRequest request) {
-
-        // HttpSession session = request.getSession(false);
 
         if (newInforBindingResult.hasErrors()) {
             return "admin/homestay-infor/create";
@@ -90,8 +79,6 @@ public class HomestayInforController {
             @ModelAttribute("infor") @Valid HomestayDetail infor,
             BindingResult newFaqBindingResult,
             HttpServletRequest request) {
-
-        // HttpSession session = request.getSession(false);
 
         HomestayDetail currentInfor = this.homestayService.getInforHomestayByInforID(infor.getInforID());
 

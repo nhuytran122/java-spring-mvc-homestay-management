@@ -61,7 +61,7 @@ public class Booking {
 
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+    private BookingStatus status = BookingStatus.PENDING;
 
     @Column(name = "CreatedAt", insertable = false)
     private LocalDateTime createdAt;

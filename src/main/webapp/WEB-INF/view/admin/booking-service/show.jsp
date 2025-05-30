@@ -31,7 +31,7 @@
                             <option value="true" ${true == isPrepaid ? 'selected' : ''}>
                                 Đặt trước
                             </option>
-                            <option value="false" ${true == isPrepaid ? 'selected' : ''}>
+                            <option value="false" ${false == isPrepaid ? 'selected' : ''}>
                                 Đặt tại homestay
                             </option>
                         </select>

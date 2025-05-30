@@ -81,19 +81,18 @@
                         </div>
 
                         <div class="amenities mt-4">
-                            <h4>Tiện nghi trong phòng</h4>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <c:forEach var="item" items="${room.roomAmenities}">
-                                            <li class="mb-2">
-                                                <i class="bi bi-check2"></i> <span class="ms-2">${item.amenity.amenityName}</span>
-                                            </li>
-                                        </c:forEach>
-                                    </ul>
-                                </div>
+                            <h4 class="mb-3">Tiện nghi trong phòng</h4>
+                            <div class="row mb-3">
+                                <c:forEach var="item" items="${room.roomAmenities}">
+                                    <div class="col-md-4 col-6 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-check2 me-2 text-primary"></i>
+                                            <span>${item.amenity.amenityName}</span>
+                                        </div>
+                                    </div>
+                                </c:forEach>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
                 
@@ -175,26 +174,29 @@
                         </c:if>
                         <c:forEach var="review" items="${listReviews}">
                             <c:set var="customer" value="${review.booking.customer}" />
+                            <c:set var="user" value="${customer.user}" />
+                            <c:set var="avatar" value="${user.avatar}" />
+                            <c:set var="rating" value="${review.rating}" />
                             <div class="review-card mb-4">
                                 <div class="d-flex">
                                     <div class="me-3">
                                         <div class="d-inline-block rounded-circle p-1">
-                                            <img src="/images/avatar/${not empty customer.avatar ? customer.avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
+                                            <img src="/images/avatar/${not empty avatar ? avatar : 'default-img.jpg'}" alt="Avatar" class="rounded-circle border border-white border-2" width="60" height="60">
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">${customer.fullName}</h6>
+                                            <h6 class="mb-0">${user.fullName}</h6>
                                             <div class="d-flex align-items-center">
                                                 <small class="text-muted me-3">Đăng vào: ${f:formatLocalDateTime(review.createdAt)}</small>
                                             </div>
                                         </div>
                                         
                                         <div class="mb-2">
-                                            <c:forEach begin="1" end="${review.rating}">
+                                            <c:forEach begin="1" end="${rating}">
                                                 <i class="bi bi-star-fill text-warning"></i>
                                             </c:forEach>
-                                            <c:forEach begin="${review.rating + 1}" end="5">
+                                            <c:forEach begin="${rating + 1}" end="5">
                                                 <i class="bi bi-star text-warning"></i>
                                             </c:forEach>
                                         </div>
