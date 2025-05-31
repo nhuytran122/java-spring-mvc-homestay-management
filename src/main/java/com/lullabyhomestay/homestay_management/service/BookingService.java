@@ -59,11 +59,11 @@ public class BookingService {
     public Page<Booking> searchBookings(SearchBookingCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
         boolean isAllCriteriaEmpty = (criteria.getKeyword() == null || criteria.getKeyword().isEmpty())
-                && criteria.getBranchID() == null
-                && criteria.getRoomTypeID() == null
+                && criteria.getBranchId() == null
+                && criteria.getRoomTypeId() == null
                 && (criteria.getStatus() == null || criteria.getStatus().isEmpty())
                 && (criteria.getTimeRange() == null || criteria.getTimeRange().isEmpty())
-                && criteria.getCustomerID() == null;
+                && criteria.getCustomerId() == null;
 
         if (isAllCriteriaEmpty) {
             return bookingRepository.findAll(pageable);
@@ -76,12 +76,12 @@ public class BookingService {
                 statusNum = null;
             }
         }
-        Specification<Booking> spec = Specification.where(BookingSpecifications.hasBranch(criteria.getBranchID()))
-                .and(BookingSpecifications.hasRoomType(criteria.getRoomTypeID()))
+        Specification<Booking> spec = Specification.where(BookingSpecifications.hasBranch(criteria.getBranchId()))
+                .and(BookingSpecifications.hasRoomType(criteria.getRoomTypeId()))
                 .and(BookingSpecifications.customerNameLike(criteria.getKeyword())
                         .and(BookingSpecifications.statusEqual(statusNum))
                         .and(BookingSpecifications.checkInBetween(criteria.getFromTime(), criteria.getToTime())))
-                .and(BookingSpecifications.hasCustomer(criteria.getCustomerID()));
+                .and(BookingSpecifications.hasCustomer(criteria.getCustomerId()));
         return bookingRepository.findAll(spec, pageable);
     }
 
@@ -93,10 +93,10 @@ public class BookingService {
         Booking savedBooking = bookingRepository.save(booking);
 
         BookingPriceDTO dto = getRoomPriceDetail(
-                booking.getRoom().getRoomType().getRoomTypeID(),
+                booking.getRoom().getRoomType().getRoomTypeId(),
                 booking.getCheckIn(),
                 booking.getCheckOut());
-        RoomPricing roomPricing = roomPricingService.getRoomPricingByID(dto.getRoomPricingID());
+        RoomPricing roomPricing = roomPricingService.getRoomPricingById(dto.getRoomPricingId());
 
         BookingPricingSnapshot snapshot = savedBooking.getPricingSnapshot();
         if (snapshot == null) {
@@ -119,8 +119,8 @@ public class BookingService {
         return savedBooking;
     }
 
-    public Booking getBookingByID(Long bookingID) {
-        Optional<Booking> bookingOpt = bookingRepository.findByBookingID(bookingID);
+    public Booking getBookingById(Long bookingId) {
+        Optional<Booking> bookingOpt = bookingRepository.findByBookingId(bookingId);
         if (!bookingOpt.isPresent()) {
             throw new NotFoundException("Lịch đặt phòng");
         }
@@ -132,9 +132,9 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
-    public void handleSaveBookingAfterExtend(Long bookingID,
+    public void handleSaveBookingAfterExtend(Long bookingId,
             BookingExtension bookingExtension) {
-        Booking currentBooking = getBookingByID(bookingID);
+        Booking currentBooking = getBookingById(bookingId);
         // Chỉ Update time checkout mới khi đã thanh toán
         LocalDateTime oldCheckout = bookingExtension.getBooking().getCheckOut();
         Float extendedHours = bookingExtension.getExtendedHours();
@@ -150,33 +150,33 @@ public class BookingService {
         handleSaveBooking(currentBooking);
     }
 
-    public Long countByBookingStatusAndCustomerID(BookingStatus bookingStatus, Long customerID) {
-        return bookingRepository.countByStatusAndCustomer_CustomerID(bookingStatus, customerID);
+    public Long countByBookingStatusAndCustomerId(BookingStatus bookingStatus, Long customerId) {
+        return bookingRepository.countByStatusAndCustomer_CustomerId(bookingStatus, customerId);
     }
 
-    public Long countTotalBookingByCustomerID(Long customerID) {
-        return bookingRepository.countByCustomer_CustomerID(customerID);
+    public Long countTotalBookingByCustomerId(Long customerId) {
+        return bookingRepository.countByCustomer_CustomerId(customerId);
     }
 
-    public List<Booking> getListBookingsByCustomerID(Long customerID) {
-        return bookingRepository.findByCustomer_CustomerID(customerID);
+    public List<Booking> getListBookingsByCustomerId(Long customerId) {
+        return bookingRepository.findByCustomer_CustomerId(customerId);
     }
 
-    public Double getTotalAmountByCustomerID(Long customerID) {
-        Double totalAmount = bookingRepository.getTotalAmountByCustomerId(customerID);
+    public Double getTotalAmountByCustomerId(Long customerId) {
+        Double totalAmount = bookingRepository.getTotalAmountByCustomerId(customerId);
         return totalAmount != null ? totalAmount : 0.0;
     }
 
     @Transactional
-    public void cancelBooking(Long bookingID) {
+    public void cancelBooking(Long bookingId) {
         // Lấy và validate booking
-        Booking currentBooking = validateAndGetBooking(bookingID);
+        Booking currentBooking = validateAndGetBooking(bookingId);
 
-        if (checkCancelability(bookingID) == Cancelability.ALLOWED) {
+        if (checkCancelability(bookingId) == Cancelability.ALLOWED) {
             // Xóa dữ liệu liên quan
             // Không xóa bookingServices để truy vết paymentDetails
-            roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
-            bookingServiceRepository.bulkUpdateServiceStatusByBookingID(bookingID, BookingServiceStatus.CANCELLED);
+            roomStatusHistoryRepo.deleteByBooking_BookingId(bookingId);
+            bookingServiceRepository.bulkUpdateServiceStatusByBookingId(bookingId, BookingServiceStatus.CANCELLED);
 
             if (currentBooking.getStatus() == BookingStatus.PENDING) {
                 // Cập nhật trạng thái đơn là CANCELLED
@@ -192,8 +192,8 @@ public class BookingService {
         }
     }
 
-    public Cancelability checkCancelability(Long bookingID) {
-        Booking booking = getBookingByID(bookingID);
+    public Cancelability checkCancelability(Long bookingId) {
+        Booking booking = getBookingById(bookingId);
         if (booking.getStatus() == BookingStatus.CANCELLED)
             return Cancelability.CANCELLED;
         if (booking.getStatus() == BookingStatus.COMPLETED)
@@ -203,13 +203,13 @@ public class BookingService {
         return Cancelability.ALLOWED;
     }
 
-    public boolean canBookServiceOrBookExtension(Long bookingID) {
-        Booking booking = getBookingByID(bookingID);
+    public boolean canBookServiceOrBookExtension(Long bookingId) {
+        Booking booking = getBookingById(bookingId);
         return booking.getStatus() == BookingStatus.CONFIRMED;
     }
 
-    private Booking validateAndGetBooking(Long bookingID) {
-        Booking booking = getBookingByID(bookingID);
+    private Booking validateAndGetBooking(Long bookingId) {
+        Booking booking = getBookingById(bookingId);
         if (booking.getStatus() == BookingStatus.CANCELLED || booking.getStatus() == BookingStatus.COMPLETED) {
             throw new IllegalStateException("Chỉ được hủy khi booking chưa bắt đầu.");
         }
@@ -220,24 +220,24 @@ public class BookingService {
         List<Payment> payments = booking.getPayments();
         if (payments == null || payments.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Không tìm thấy lịch sử thanh toán của booking có ID: " + booking.getBookingID());
+                    "Không tìm thấy lịch sử thanh toán của booking có Id: " + booking.getBookingId());
         }
         if (payments.size() != 1) {
-            throw new IllegalStateException("Booking ID " + booking.getBookingID()
+            throw new IllegalStateException("Booking Id " + booking.getBookingId()
                     + " phải có đúng một Payment tại thời điểm hoàn tiền, nhưng tìm thấy: " + payments.size());
         }
 
         Payment payment = payments.get(0);
         if (payment.getPaymentType() != PaymentType.TRANSFER) {
             throw new IllegalArgumentException(
-                    "Payment ID " + payment.getPaymentID() + " không phải là thanh toán VNPay");
+                    "Payment Id " + payment.getPaymentId() + " không phải là thanh toán VNPay");
         }
         if (payment.getStatus() != PaymentStatus.COMPLETED) {
-            throw new IllegalStateException("Payment ID " + payment.getPaymentID()
+            throw new IllegalStateException("Payment Id " + payment.getPaymentId()
                     + " chưa được thanh toán (status: " + payment.getStatus() + ")");
         }
         if (payment.getStatus() == PaymentStatus.REFUNDED) {
-            throw new IllegalStateException("Payment ID " + payment.getPaymentID()
+            throw new IllegalStateException("Payment Id " + payment.getPaymentId()
                     + " đã được hoàn tiền trước đó (status: " + payment.getStatus() + ")");
         }
         return payment;
@@ -264,10 +264,10 @@ public class BookingService {
 
     public Double calculateRawTotalAmountBookingRoom(Booking booking) {
         RoomType roomType = booking.getRoom().getRoomType();
-        Long roomTypeID = roomType.getRoomTypeID();
+        Long roomTypeId = roomType.getRoomTypeId();
         LocalDateTime checkIn = booking.getCheckIn();
         LocalDateTime checkOut = booking.getCheckOut();
-        BookingPriceDTO dto = getRoomPriceDetail(roomTypeID, checkIn, checkOut);
+        BookingPriceDTO dto = getRoomPriceDetail(roomTypeId, checkIn, checkOut);
 
         Double totalPrice = dto.getTotalPrice();
 
@@ -292,28 +292,28 @@ public class BookingService {
     }
 
     @Transactional
-    public void deleteByBookingID(Long id) {
-        // bookingServiceRepository.deleteByBooking_BookingID(id);
-        // roomStatusHistoryRepo.deleteByBooking_BookingID(id);
-        // bookingPricingSnapshotRepo.deleteByBooking_BookingID(id);
-        bookingRepository.deleteByBookingID(id);
+    public void deleteByBookingId(Long id) {
+        // bookingServiceRepository.deleteByBooking_BookingId(id);
+        // roomStatusHistoryRepo.deleteByBooking_BookingId(id);
+        // bookingPricingSnapshotRepo.deleteByBooking_BookingId(id);
+        bookingRepository.deleteByBookingId(id);
     }
 
-    public Double calculateRoomPrice(Long roomTypeID, LocalDateTime checkIn, LocalDateTime checkOut) {
-        BookingPriceDTO dto = getRoomPriceDetail(roomTypeID, checkIn, checkOut);
+    public Double calculateRoomPrice(Long roomTypeId, LocalDateTime checkIn, LocalDateTime checkOut) {
+        BookingPriceDTO dto = getRoomPriceDetail(roomTypeId, checkIn, checkOut);
         return dto.getTotalPrice();
     }
 
-    public BookingPriceDTO getRoomPriceDetail(Long roomTypeID, LocalDateTime checkIn, LocalDateTime checkOut) {
+    public BookingPriceDTO getRoomPriceDetail(Long roomTypeId, LocalDateTime checkIn, LocalDateTime checkOut) {
         LocalDate checkInDate = checkIn.toLocalDate();
         LocalDate checkOutDate = checkOut.toLocalDate();
 
         Optional<RoomPricing> matchedPricing = roomPricingRepository
-                .findFirstByRoomType_RoomTypeIDAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
-                        roomTypeID, checkInDate, checkOutDate);
+                .findFirstByRoomType_RoomTypeIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+                        roomTypeId, checkInDate, checkOutDate);
 
         if (!matchedPricing.isPresent()) {
-            matchedPricing = roomPricingRepository.findFirstByRoomType_RoomTypeIDAndIsDefaultTrue(roomTypeID);
+            matchedPricing = roomPricingRepository.findFirstByRoomType_RoomTypeIdAndIsDefaultTrue(roomTypeId);
         }
 
         if (!matchedPricing.isPresent()) {
@@ -326,7 +326,7 @@ public class BookingService {
     }
 
     private BookingPriceDTO calculateDetail(RoomPricing pricing, LocalDateTime checkIn, LocalDateTime checkOut) {
-        Long roomPricingID = pricing.getRoomPricingID();
+        Long roomPricingId = pricing.getRoomPricingId();
         double totalPrice = 0;
         double totalMinutes = Duration.between(checkIn, checkOut).toMinutes(); // Sử dụng double thay vì long
         double totalDays = Math.floor(totalMinutes / (60.0 * 24));
@@ -383,7 +383,7 @@ public class BookingService {
             pricingType = RoomPricingType.HOURLY;
         }
         // double finalHours = Math.ceil(extraHours);
-        return new BookingPriceDTO(roomPricingID, totalPrice, pricingType, extraHours, totalDays, totalNights);
+        return new BookingPriceDTO(roomPricingId, totalPrice, pricingType, extraHours, totalDays, totalNights);
     }
 
     private double calculateOvernightDuration(LocalDateTime start, LocalDateTime end,

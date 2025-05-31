@@ -72,7 +72,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="service" items="${listServices}">
-                                                        <c:set var="serviceID" value="${service.serviceID}"/>
+                                                        <c:set var="serviceId" value="${service.serviceId}"/>
                                                         <tr>
                                                             <td><span class="iconify" data-icon="${service.icon}" data-width="24" data-height="24"></span>
                                                                 ${service.serviceName}</td>
@@ -87,18 +87,18 @@
                                                             <td>${service.description}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/service/update/${serviceID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/service/update/${serviceId}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${serviceID}" 
+                                                                            data-entity-id="${serviceId}" 
                                                                             data-entity-name="${service.serviceName}" 
                                                                             data-entity-type="Dịch vụ" 
                                                                             data-delete-url="/admin/service/delete" 
                                                                             data-check-url="/admin/service/can-delete/" 
-                                                                            data-id-name="serviceID">
+                                                                            data-id-name="serviceId">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

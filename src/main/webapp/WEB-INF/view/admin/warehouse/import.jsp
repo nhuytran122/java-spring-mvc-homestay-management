@@ -70,7 +70,7 @@ uri="http://www.springframework.org/tags/form" %>
                             <form:option value="">Chọn đồ dùng</form:option>
                             <form:options
                               items="${listItems}"
-                              itemValue="itemID"
+                              itemValue="itemId"
                               itemLabel="itemName"
                             />
                           </form:select>
@@ -90,7 +90,7 @@ uri="http://www.springframework.org/tags/form" %>
                             <form:option value="">Chọn chi nhánh</form:option>
                             <form:options
                               items="${listBranches}"
-                              itemValue="branchID"
+                              itemValue="branchId"
                               itemLabel="branchName"
                             />
                           </form:select>

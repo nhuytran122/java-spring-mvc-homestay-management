@@ -35,7 +35,7 @@ uri="http://lullabyhomestay.com/functions" %>
                   <div class="col-md-6">
                     <h5 class="mb-3">Thông tin phòng</h5>
                     <p>
-                      <c:set var="bookingID" value="${booking.bookingID}" />
+                      <c:set var="bookingId" value="${booking.bookingId}" />
                       <c:set var="totalAmount" value="${booking.totalAmount}" />
                       <c:set var="room" value="${booking.room}" />
                       <c:set var="branch" value="${room.branch}" />
@@ -158,7 +158,7 @@ uri="http://lullabyhomestay.com/functions" %>
             <div class="action-buttons my-4">
               <div class="text-center">
                 <a
-                  onclick="handlePayment('${bookingID}', 'ROOM_BOOKING', true)"
+                  onclick="handlePayment('${bookingId}', 'ROOM_BOOKING', true)"
                   class="btn btn-success btn-lg shadow px-5"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán
@@ -182,7 +182,7 @@ uri="http://lullabyhomestay.com/functions" %>
                     name="${_csrf.parameterName}"
                     value="${_csrf.token}"
                   />
-                  <input type="hidden" name="bookingID" value="${bookingID}" />
+                  <input type="hidden" name="bookingId" value="${bookingId}" />
                   <button type="submit" class="btn btn-outline-danger btn-lg">
                     <i class="bi bi-x-circle"></i> Hủy đặt phòng
                   </button>

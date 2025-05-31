@@ -27,8 +27,8 @@
                                 <h4 class="card-title mb-4 text-center">Sửa ảnh phòng</h4>
                                 <form:form class="form-horizontal" action="/admin/room/photo/update" method="post"
                                     modelAttribute="roomPhoto" enctype="multipart/form-data">
-                                    <input type="hidden" name="roomID" value="${roomID}">
-                                    <form:input type="hidden" path="photoID" />
+                                    <input type="hidden" name="roomId" value="${roomId}">
+                                    <form:input type="hidden" path="photoId" />
                                     <form:input type="hidden" path="room" />
                                     <div class="form-group row">
                                         <label class="control-label col-sm-2">Hình ảnh</label>
@@ -57,7 +57,7 @@
                                     
                                     <div class="form-group row">
                                         <div class="col-sm-offset-2 col-sm-10 text-center">
-                                            <a href="/admin/room/update/${roomPhoto.room.roomID}" class="btn btn-secondary">Hủy</a>
+                                            <a href="/admin/room/update/${roomPhoto.room.roomId}" class="btn btn-secondary">Hủy</a>
                                             <button type="submit" class="btn btn-warning">Sửa</button>
                                         </div>
                                     </div>

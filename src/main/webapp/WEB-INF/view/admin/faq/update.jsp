@@ -27,7 +27,7 @@
                         <h4 class="card-title mb-4 text-center">Sửa FAQ</h4>
                         <form:form class="form-horizontal" action="/admin/homestay-infor/faq/update" method="post"
                             modelAttribute="faq">
-                            <form:input type="hidden" path="faqID" />
+                            <form:input type="hidden" path="faqId" />
                             <c:set var="errorQuestion">
                                 <form:errors path="question" cssClass="invalid-feedback" />
                             </c:set>

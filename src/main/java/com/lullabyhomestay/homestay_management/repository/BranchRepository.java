@@ -20,9 +20,9 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     Page<Branch> findByBranchNameContainingIgnoreCaseOrAddressContainingIgnoreCase(
             String name, String address, Pageable pageable);
 
-    Optional<Branch> findByBranchID(long branchID);
+    Optional<Branch> findByBranchId(long branchId);
 
     Branch save(Branch branch);
 
-    void deleteByBranchID(long id);
+    void deleteByBranchId(long id);
 }

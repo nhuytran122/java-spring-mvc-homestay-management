@@ -18,21 +18,21 @@ import lombok.Setter;
 public class SearchBookingCriteriaDTO {
     private String keyword;
     private String timeRange = "";
-    private Long branchID;
-    private Long roomTypeID;
+    private Long branchId;
+    private Long roomTypeId;
     private String status;
-    private Long customerID;
+    private Long customerId;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
+        if (branchId != null) {
+            extraParams.append("&branchId=").append(branchId);
         }
-        if (roomTypeID != null) {
-            extraParams.append("&roomTypeID=").append(roomTypeID);
+        if (roomTypeId != null) {
+            extraParams.append("&roomTypeId=").append(roomTypeId);
         }
-        if (customerID != null) {
-            extraParams.append("&customerID=").append(customerID);
+        if (customerId != null) {
+            extraParams.append("&customerId=").append(customerId);
         }
         if (status != null) {
             extraParams.append("&status=").append(status);

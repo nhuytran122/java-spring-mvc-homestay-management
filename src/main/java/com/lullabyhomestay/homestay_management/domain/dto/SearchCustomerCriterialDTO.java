@@ -10,13 +10,13 @@ import lombok.Getter;
 @Getter
 public class SearchCustomerCriterialDTO {
     private String keyword;
-    private Long customerTypeID;
+    private Long customerTypeId;
     private String sort;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (customerTypeID != null) {
-            extraParams.append("&customerTypeID=").append(customerTypeID);
+        if (customerTypeId != null) {
+            extraParams.append("&customerTypeId=").append(customerTypeId);
         }
         if (sort != null) {
             extraParams.append("&sort=").append(sort);

@@ -6,7 +6,6 @@ import java.util.List;
 import com.lullabyhomestay.homestay_management.utils.PaymentStatus;
 import com.lullabyhomestay.homestay_management.utils.PaymentType;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,35 +27,28 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Payments")
+@Table(name = "payments")
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PaymentID")
-    private Long paymentID;
+    private Long paymentId;
 
-    @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus status = PaymentStatus.PENDING;
 
-    @Column(name = "VnpTransactionNo")
     private String vnpTransactionNo;
 
-    @Column(name = "VnpTxnRef")
     private String vnpTxnRef;
 
-    @Column(name = "PaymentDate")
     private LocalDateTime paymentDate;
 
-    @Column(name = "TotalAmount")
     private Double totalAmount;
 
     @ManyToOne
-    @JoinColumn(name = "BookingID")
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @Column(name = "PaymentType")
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 

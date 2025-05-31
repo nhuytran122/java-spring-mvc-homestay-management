@@ -19,7 +19,7 @@
       </div>
       <div class="modal-body">
         <form id="statusForm">
-          <input type="hidden" id="statusRequestID" />
+          <input type="hidden" id="statusRequestId" />
           <input type="hidden" id="currentStatus" />
           <div class="mb-3">
             <label for="statusSelect" class="form-label">Trạng thái mới</label>
@@ -76,9 +76,9 @@
     });
 
     $(".status-update-btn").click(function () {
-      var requestID = $(this).data("request-id");
+      var requestId = $(this).data("request-id");
       var currentStatus = $(this).data("current-status");
-      $("#statusRequestID").val(requestID);
+      $("#statusRequestId").val(requestId);
       $("#currentStatus").val(currentStatus);
 
       var $select = $("#statusSelect");
@@ -124,13 +124,13 @@
     });
 
     $("#saveStatus").click(function () {
-      var requestID = $("#statusRequestID").val();
+      var requestId = $("#statusRequestId").val();
       var newStatus = $("#statusSelect").val();
       $.ajax({
         url: "/admin/maintenance/update-status",
         type: "POST",
         data: {
-          requestID: requestID,
+          requestId: requestId,
           status: newStatus,
         },
         success: function (response) {

@@ -25,12 +25,12 @@
           />
           <input
             type="hidden"
-            name="roomAmenityID.roomID"
+            name="roomAmenityId.roomId"
             id="roomAmenityIdInput"
           />
           <input
             type="hidden"
-            name="roomAmenityID.amenityID"
+            name="roomAmenityId.amenityId"
             id="amenityIdInput"
           />
           <button

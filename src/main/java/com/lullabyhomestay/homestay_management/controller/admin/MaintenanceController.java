@@ -65,7 +65,7 @@ public class MaintenanceController {
 
     @GetMapping("/{id}")
     public String getDetailRequest(Model model, @PathVariable("id") Long id) {
-        MaintenanceRequest request = maintenanceService.getMaintenanceRequestByID(id);
+        MaintenanceRequest request = maintenanceService.getMaintenanceRequestById(id);
         model.addAttribute("request", request);
         return "admin/maintenance/detail";
     }
@@ -79,8 +79,8 @@ public class MaintenanceController {
 
     @GetMapping("/rooms-by-branch")
     @ResponseBody
-    public List<RoomDTO> getRoomsByBranch(@RequestParam("branchID") Long branchID) {
-        List<RoomDTO> roomDTOs = roomService.getRoomDTOsByBranchID(branchID);
+    public List<RoomDTO> getRoomsByBranch(@RequestParam("branchId") Long branchId) {
+        List<RoomDTO> roomDTOs = roomService.getRoomDTOsByBranchId(branchId);
         return roomDTOs;
     }
 
@@ -101,12 +101,12 @@ public class MaintenanceController {
             ;
         }
         if (maintenance.getRoom() != null) {
-            if (maintenance.getRoom().getRoomID() == null)
+            if (maintenance.getRoom().getRoomId() == null)
                 maintenance.setRoom(null);
         }
         HttpSession session = request.getSession(false);
-        Long userID = (Long) session.getAttribute("id");
-        User user = userService.getUserByUserID(userID);
+        Long userId = (Long) session.getAttribute("id");
+        User user = userService.getUserByUserId(userId);
         maintenance.setEmployee(user.getEmployee());
         maintenance.setStatus(MaintenanceStatus.PENDING);
         this.maintenanceService.handleSaveMaintenanceRequest(maintenance);
@@ -121,7 +121,7 @@ public class MaintenanceController {
 
     @GetMapping("/update/{id}")
     public String getUpdateMaintenancePage(Model model, @PathVariable Long id) {
-        MaintenanceRequest request = maintenanceService.getMaintenanceRequestByID(id);
+        MaintenanceRequest request = maintenanceService.getMaintenanceRequestById(id);
         boolean canUpdate = maintenanceService.canUpdateAndDeleteRequest(id);
         model.addAttribute("request", request);
         if (!canUpdate) {
@@ -129,7 +129,7 @@ public class MaintenanceController {
             return "admin/maintenance/update";
         }
         model.addAttribute("listBranches", this.branchService.getAllBranches());
-        List<RoomDTO> listRooms = roomService.getRoomDTOsByBranchID(request.getBranch().getBranchID());
+        List<RoomDTO> listRooms = roomService.getRoomDTOsByBranchId(request.getBranch().getBranchId());
         model.addAttribute("listRooms", listRooms);
         return "admin/maintenance/update";
     }
@@ -143,7 +143,7 @@ public class MaintenanceController {
 
         // HttpSession session = request.getSession(false);
         MaintenanceRequest currentRequest = this.maintenanceService
-                .getMaintenanceRequestByID(maintenanceRequest.getRequestID());
+                .getMaintenanceRequestById(maintenanceRequest.getRequestId());
         if (result.hasErrors()) {
             return "admin/maintenance/update";
         }
@@ -151,7 +151,7 @@ public class MaintenanceController {
             String img = this.uploadService.handleSaveUploadFile(file, "maintenance");
             currentRequest.setImage(img);
         }
-        if (maintenanceRequest.getRoom() != null && maintenanceRequest.getRoom().getRoomID() == null) {
+        if (maintenanceRequest.getRoom() != null && maintenanceRequest.getRoom().getRoomId() == null) {
             currentRequest.setRoom(null);
         }
         currentRequest.setBranch(maintenanceRequest.getBranch());
@@ -165,9 +165,9 @@ public class MaintenanceController {
     @PostMapping("/update-status")
     @ResponseBody
     public ResponseEntity<?> updateMaintenanceStatus(
-            @RequestParam("requestID") Long requestID,
+            @RequestParam("requestId") Long requestId,
             @RequestParam("status") String status) {
-        MaintenanceRequest maintenance = maintenanceService.getMaintenanceRequestByID(requestID);
+        MaintenanceRequest maintenance = maintenanceService.getMaintenanceRequestById(requestId);
         MaintenanceStatus currentStatus = maintenance.getStatus();
         MaintenanceStatus newStatus = MaintenanceStatus.valueOf(status.toUpperCase());
 
@@ -197,8 +197,8 @@ public class MaintenanceController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteRequest(@RequestParam("requestID") Long requestID) {
-        this.maintenanceService.deleteByMaintenanceRequestID(requestID);
+    public String postDeleteRequest(@RequestParam("requestId") Long requestId) {
+        this.maintenanceService.deleteByMaintenanceRequestId(requestId);
         return "redirect:/admin/maintenance";
     }
 }

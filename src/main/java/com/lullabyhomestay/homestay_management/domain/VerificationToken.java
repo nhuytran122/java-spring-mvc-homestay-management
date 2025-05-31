@@ -8,15 +8,15 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "EmailVerificationTokens")
+@Table(name = "verification_tokens")
 @Getter
 @Setter
-public class EmailVerificationToken extends VerificationTokenBase {
-    public EmailVerificationToken() {
+public class VerificationToken extends VerificationTokenBase {
+    public VerificationToken() {
         super();
     }
 
-    public EmailVerificationToken(String token, User user, LocalDateTime expiryDate) {
+    public VerificationToken(String token, User user, LocalDateTime expiryDate) {
         super(token, user, expiryDate);
     }
 }

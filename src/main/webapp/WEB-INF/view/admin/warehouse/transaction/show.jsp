@@ -24,10 +24,10 @@
                     <input type="text" class="form-control form-control-sm" name="keyword" placeholder="Tìm kiếm giao dịch (tên đồ dùng)..." 
                             value="${criteria.keyword}">
                     
-                    <select name="branchID" class="form-select form-control form-select-sm">
+                    <select name="branchId" class="form-select form-control form-select-sm">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">
-                            <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
+                            <option value="${branch.branchId}" ${branch.branchId == criteria.branchId ? 'selected' : ''}>
                                 ${branch.branchName}
                             </option>
                         </c:forEach>
@@ -119,7 +119,7 @@
                                                                 <div class="btn-group" role="group">
                                                                     <button class="btn btn-warning btn-sm" title="Sửa"
                                                                         onclick="checkBeforeUpdate(this)" 
-                                                                            data-transaction-id="${item.transactionID}"
+                                                                            data-transaction-id="${item.transactionId}"
                                                                             data-entity-type="Giao dịch" 
                                                                             data-check-url="/admin/warehouse/transaction/can-update/" >
                                                                         <i class="bi bi-pencil"></i>

@@ -25,34 +25,28 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Refunds")
+@Table(name = "refunds")
 public class Refund {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RefundID")
-    private Long refundID;
+    private Long refundId;
 
     @OneToOne
-    @JoinColumn(name = "paymentID")
+    @JoinColumn(name = "payment_id")
     private Payment payment;
 
-    @Column(name = "CreatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt")
     private LocalDateTime updatedAt;
 
-    @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    @Column(name = "RefundType")
     @Enumerated(EnumType.STRING)
     private RefundType refundType;
 
-    @Column(name = "RefundAmount")
     private Double refundAmount;
 
-    @Column(name = "VnpTransactionNo")
     private String vnpTransactionNo;
 }

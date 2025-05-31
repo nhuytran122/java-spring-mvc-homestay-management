@@ -27,38 +27,33 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "BookingServices")
+@Table(name = "booking_services")
 public class BookingServices {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BookingServiceID")
-    private Long bookingServiceID;
+    private Long bookingServiceId;
 
     @NotNull(message = "Vui lòng nhập số lượng", groups = AdminValidation.class)
-    @Column(name = "Quantity")
     private Float quantity;
 
-    @Column(name = "Description")
     private String description;
 
-    @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private BookingServiceStatus status = BookingServiceStatus.PENDING;
 
-    @Column(name = "CreatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt")
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "ServiceID")
+    @JoinColumn(name = "service_id")
     @NotNull(message = "Vui lòng chọn dịch vụ", groups = AdminValidation.class)
     private Service service;
 
     @ManyToOne
-    @JoinColumn(name = "BookingID")
+    @JoinColumn(name = "booking_id")
     @NotNull(message = "Vui lòng chọn booking")
     private Booking booking;
 

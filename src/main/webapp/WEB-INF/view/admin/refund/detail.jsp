@@ -44,7 +44,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
                       <label class="col-sm-5 fw-bold"
                         >Mã yêu cầu hoàn tiền:</label
                       >
-                      <div class="col-sm-7">${refund.refundID}</div>
+                      <div class="col-sm-7">${refund.refundId}</div>
                     </div>
                     <div class="row mb-3">
                       <label class="col-sm-5 fw-bold">Thời gian yêu cầu:</label>
@@ -90,7 +90,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
                       </div>
                       <div class="col-md-6 text-end">
                         <a
-                          href="/admin/payment/${refund.payment.paymentID}"
+                          href="/admin/payment/${refund.payment.paymentId}"
                           class="btn btn-outline-primary btn-sm"
                         >
                           <i class="bi bi-eye"></i> Xem chi tiết thanh toán
@@ -155,7 +155,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
                       </div>
                       <div class="col-md-6 text-end">
                         <a
-                          href="/admin/booking/${refund.payment.booking.bookingID}"
+                          href="/admin/booking/${refund.payment.booking.bookingId}"
                           class="btn btn-outline-primary btn-sm"
                         >
                           <i class="bi bi-eye"></i> Xem chi tiết đặt phòng

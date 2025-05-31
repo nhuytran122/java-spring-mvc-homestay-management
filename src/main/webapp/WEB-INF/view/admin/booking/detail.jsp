@@ -35,7 +35,7 @@ uri="http://lullabyhomestay.com/functions" %>
                         <h4 class="card-title mb-0">Chi tiết đơn đặt phòng</h4>
                         <c:set var="pricing" value="${booking.pricingSnapshot}" />
                         <c:set var="status" value="${booking.status}" />
-                        <c:set var="bookingID" value="${booking.bookingID}" />
+                        <c:set var="bookingId" value="${booking.bookingId}" />
                       </div>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
@@ -44,8 +44,8 @@ uri="http://lullabyhomestay.com/functions" %>
                                   class="btn btn-danger btn-sm"
                                   title="Hủy đặt phòng"
                                   onclick="checkBeforeCancel(this)"
-                                  data-entity-id="${bookingID}"
-                                  data-id-name="bookingID"
+                                  data-entity-id="${bookingId}"
+                                  data-id-name="bookingId"
                                   data-role="admin"
                               >
                                   <i class="bi bi-x-circle"></i>
@@ -54,7 +54,7 @@ uri="http://lullabyhomestay.com/functions" %>
                           </c:if>
 
                           <c:if test="${status == 'PENDING'}">
-                              <a href="/admin/booking/booking-confirmation?bookingID=${bookingID}"
+                              <a href="/admin/booking/booking-confirmation?bookingId=${bookingId}"
                                 class="btn btn-success btn-sm"
                                 title="Xác nhận thanh toán">
                                   <i class="bi bi-check-circle"></i>
@@ -78,7 +78,7 @@ uri="http://lullabyhomestay.com/functions" %>
                             Mã đơn đặt phòng:
                           </div>
                           <div class="col-md-8">
-                              ${bookingID}
+                              ${bookingId}
                           </div>
                         </div>
                         <div class="row mb-3 d-flex align-items-center">
@@ -88,7 +88,7 @@ uri="http://lullabyhomestay.com/functions" %>
                           </div>
                           <div class="col-md-8">
                             <a
-                              href="/admin/customer/${customer.customerID}"
+                              href="/admin/customer/${customer.customerId}"
                               class="fw-bold text-dark text-decoration-none"
                               title="Xem chi tiết"
                             >
@@ -204,7 +204,7 @@ uri="http://lullabyhomestay.com/functions" %>
                           <h5 class="fw-bold mb-0">Dịch vụ bổ sung</h5>
                           <button
                             class="btn btn-primary btn-sm check-booking-service"
-                            data-booking-id="${bookingID}"
+                            data-booking-id="${bookingId}"
                           >
                             Đặt dịch vụ
                           </button>
@@ -235,8 +235,8 @@ uri="http://lullabyhomestay.com/functions" %>
                                     value="${bService.status}"
                                   />
                                   <c:set
-                                    var="bServiceID"
-                                    value="${bService.bookingServiceID}"
+                                    var="bServiceId"
+                                    value="${bService.bookingServiceId}"
                                   />
                                   <c:set
                                     var="service"
@@ -301,14 +301,14 @@ uri="http://lullabyhomestay.com/functions" %>
                                           class="btn btn-warning btn-sm"
                                           title="Sửa"
                                           onclick="checkBeforeUpdate(this)"
-                                          data-booking-service-id="${bServiceID}"
+                                          data-booking-service-id="${bServiceId}"
                                           data-entity-type="Đơn đặt dịch vụ"
                                           data-check-url="/admin/booking-service/can-handle/"
                                         >
                                           <i class="bi bi-pencil"></i>
                                         </button>
                                         <button class="btn btn-info btn-sm status-update-btn" 
-                                            data-booking-service-id="${bServiceID}" 
+                                            data-booking-service-id="${bServiceId}" 
                                             data-current-status="${status}"
                                             title="Cập nhật trạng thái">
                                             <i class="bi bi-gear"></i>
@@ -317,12 +317,12 @@ uri="http://lullabyhomestay.com/functions" %>
                                           class="btn btn-danger btn-sm"
                                           title="Xóa"
                                           onclick="checkBeforeDelete(this)"
-                                          data-entity-id="${bServiceID}"
+                                          data-entity-id="${bServiceId}"
                                           data-entity-name="${bService.service.serviceName}"
                                           data-entity-type="Đơn đặt dịch vụ"
                                           data-delete-url="/admin/booking-service/delete"
                                           data-check-url="/admin/booking-service/can-handle/"
-                                          data-id-name="bookingServiceID"
+                                          data-id-name="bookingServiceId"
                                           data-custom-message = "Dịch vụ này đã được thanh toán, không thể xóa."
                                         >
                                           <i class="bi bi-trash"></i>
@@ -357,7 +357,7 @@ uri="http://lullabyhomestay.com/functions" %>
                                       <c:when test="${canPayBServices}">
                                         <button
                                           class="btn btn-primary btn-sm px-4"
-                                          onclick="handlePayment('${bookingID}', 'ADDITIONAL_SERVICE', true)"
+                                          onclick="handlePayment('${bookingId}', 'ADDITIONAL_SERVICE', true)"
                                         >
                                           <i class="bi bi-wallet2 me-1"></i>
                                           Xác nhận thanh toán đơn đặt dịch vụ
@@ -395,7 +395,7 @@ uri="http://lullabyhomestay.com/functions" %>
                           <h5 class="mb-3 fw-bold">Gia hạn đặt phòng</h5>
                           <button
                             class="btn btn-primary btn-sm check-booking-extend"
-                            data-booking-id="${bookingID}"
+                            data-booking-id="${bookingId}"
                           >
                             Gia hạn giờ thuê
                           </button>
@@ -503,12 +503,12 @@ uri="http://lullabyhomestay.com/functions" %>
     <%@ include file="./_modal-payment.jsp" %>
     <script>
       function checkBookingEligibility(
-        bookingID,
+        bookingId,
         successRedirectUrl,
         failureMessage
       ) {
         $.ajax({
-          url: "/admin/booking/can-add-service-or-extend/" + bookingID,
+          url: "/admin/booking/can-add-service-or-extend/" + bookingId,
           method: "GET",
           success: function (response) {
             if (response === true) {
@@ -524,19 +524,19 @@ uri="http://lullabyhomestay.com/functions" %>
       }
 
       $(".check-booking-service").click(function () {
-        let bookingID = $(this).data("booking-id");
+        let bookingId = $(this).data("booking-id");
         checkBookingEligibility(
-          bookingID,
-          "/admin/booking-service/create/" + bookingID,
+          bookingId,
+          "/admin/booking-service/create/" + bookingId,
           "Đơn đặt phòng không đủ điều kiện để thêm dịch vụ."
         );
       });
 
       $(".check-booking-extend").click(function () {
-        let bookingID = $(this).data("booking-id");
+        let bookingId = $(this).data("booking-id");
         checkBookingEligibility(
-          bookingID,
-          "/admin/booking/booking-extension/create/" + bookingID,
+          bookingId,
+          "/admin/booking/booking-extension/create/" + bookingId,
           "Đơn đặt phòng không đủ điều kiện để gia hạn."
         );
       });

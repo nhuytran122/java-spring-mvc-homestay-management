@@ -31,20 +31,20 @@
                     <div class="d-flex justify-content-end">
                       <div class="btn-group" role="group">
                         <c:set
-                              var="roomID"
-                              value="${room.roomID}"
+                              var="roomId"
+                              value="${room.roomId}"
                             ></c:set>
-                          <a href="/admin/room/update/${roomID}" class="btn btn-warning btn-sm" title="Sửa">
+                          <a href="/admin/room/update/${roomId}" class="btn btn-warning btn-sm" title="Sửa">
                               <i class="bi bi-pencil"></i> Sửa
                           </a>
                           <button class="btn btn-danger btn-sm" title="Xóa"
                               onclick="checkBeforeDelete(this)" 
-                                  data-entity-id="${roomID}" 
+                                  data-entity-id="${roomId}" 
                                   data-entity-name="${room.roomNumber}" 
                                   data-entity-type="Phòng" 
                                   data-delete-url="/admin/room/delete" 
                                   data-check-url="/admin/room/can-delete/" 
-                                  data-id-name="roomID">
+                                  data-id-name="roomId">
                               <i class="bi bi-trash"></i> Xóa
                           </button>
                       </div>

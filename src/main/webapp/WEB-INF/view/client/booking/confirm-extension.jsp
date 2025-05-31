@@ -109,7 +109,7 @@ uri="http://lullabyhomestay.com/functions" %>
                   <input
                     type="hidden"
                     name="id"
-                    value="${extension.extensionID}"
+                    value="${extension.extensionId}"
                   />
                   <button type="submit" class="btn btn-secondary btn-lg">
                     <i class="bi bi-arrow-left-circle"></i> Quay lại
@@ -117,7 +117,7 @@ uri="http://lullabyhomestay.com/functions" %>
                 </form>
 
                 <a
-                  onclick="handlePayment('${booking.bookingID}', 'EXTENDED_HOURS', true)"
+                  onclick="handlePayment('${booking.bookingId}', 'EXTENDED_HOURS', true)"
                   class="btn btn-success btn-lg"
                 >
                   <i class="bi bi-credit-card"></i> Thanh toán

@@ -50,9 +50,9 @@ public class ClientRoomController {
             @PathVariable long id,
             HttpServletRequest request,
             @RequestParam(value = "fromBookingService", required = false) boolean fromBookingService) {
-        Room room = roomService.getRoomByID(id);
+        Room room = roomService.getRoomById(id);
         Optional<RoomPricing> roomPricingOpt = roomPricingService
-                .getDefaultRoomPricing(room.getRoomType().getRoomTypeID());
+                .getDefaultRoomPricing(room.getRoomType().getRoomTypeId());
         if (!roomPricingOpt.isPresent()) {
             throw new NotFoundException("Giá phòng");
         }
@@ -60,13 +60,13 @@ public class ClientRoomController {
         model.addAttribute("newBooking", new Booking());
         model.addAttribute("room", room);
         model.addAttribute("roomPricing", roomPricingOpt.get());
-        model.addAttribute("listReviews", reviewService.getReviewsByRoomID(id));
+        model.addAttribute("listReviews", reviewService.getReviewsByRoomId(id));
 
         // Đối với trường hợp user back từ confirm -> detail room
         HttpSession session = request.getSession(false);
         BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
-        if (bookingRequest != null && bookingRequest.getBookingID() != null && fromBookingService) {
-            bookingService.deleteByBookingID(bookingRequest.getBookingID());
+        if (bookingRequest != null && bookingRequest.getBookingId() != null && fromBookingService) {
+            bookingService.deleteByBookingId(bookingRequest.getBookingId());
             session.setAttribute("bookingRequest", null);
         }
         return "client/room/detail";

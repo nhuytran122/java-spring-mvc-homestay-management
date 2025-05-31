@@ -11,7 +11,7 @@ import com.lullabyhomestay.homestay_management.domain.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
 
-    Optional<User> findByUserID(Long id);
+    Optional<User> findByUserId(Long id);
 
     boolean existsByEmail(String email);
 

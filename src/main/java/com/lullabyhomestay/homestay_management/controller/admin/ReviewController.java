@@ -25,14 +25,14 @@ public class ReviewController {
     public String getReviewsPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String sort,
-            @RequestParam(required = false) Long branchID) {
+            @RequestParam(required = false) Long branchId) {
         int validPage = Math.max(1, page);
 
-        Page<Review> reviews = reviewService.searchReviews(branchID, sort, validPage);
+        Page<Review> reviews = reviewService.searchReviews(branchId, sort, validPage);
 
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
+        if (branchId != null) {
+            extraParams.append("&branchId=").append(branchId);
         }
         if (sort != null && !sort.isEmpty()) {
             extraParams.append("&sort=").append(sort);
@@ -43,14 +43,14 @@ public class ReviewController {
         model.addAttribute("totalPages", reviews.getTotalPages());
 
         model.addAttribute("listBranches", this.branchService.getAllBranches());
-        model.addAttribute("branchID", branchID);
+        model.addAttribute("branchId", branchId);
         model.addAttribute("sort", sort);
         return "admin/review/show";
     }
 
     @PostMapping("/delete")
-    public String postDeleteReview(@RequestParam("reviewID") Long reviewID) {
-        this.reviewService.deleteByReviewID(reviewID);
+    public String postDeleteReview(@RequestParam("reviewId") Long reviewId) {
+        this.reviewService.deleteByReviewId(reviewId);
         return "redirect:/admin/review";
     }
 

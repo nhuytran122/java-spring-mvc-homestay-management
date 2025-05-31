@@ -34,7 +34,7 @@ uri="http://www.springframework.org/tags/form" %>
                       method="post"
                       modelAttribute="customer"
                     >
-                      <form:input type="hidden" path="customerID" />
+                      <form:input type="hidden" path="customerId" />
 
                       <c:set var="errorName">
                         <form:errors

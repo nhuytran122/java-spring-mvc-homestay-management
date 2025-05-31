@@ -38,7 +38,7 @@ uri="http://www.springframework.org/tags/form" %>
                       modelAttribute="roomPricing"
                     >
                       <form:input type="hidden" path="roomType" />
-                      <form:input type="hidden" path="roomPricingID" />
+                      <form:input type="hidden" path="roomPricingId" />
                       <c:set var="errorBasePrice">
                         <form:errors
                           path="basePrice"

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lullabyhomestay.homestay_management.domain.Amenity;
 import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
-import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityId;
 import com.lullabyhomestay.homestay_management.service.AmenityService;
 import com.lullabyhomestay.homestay_management.service.RoomAmenityService;
 import com.lullabyhomestay.homestay_management.service.RoomService;
@@ -36,14 +36,14 @@ public class RoomAmenityController {
     public ResponseEntity<?> postCreateRoomAmenities(@RequestBody List<RoomAmenity> listRoomAmenities) {
         for (RoomAmenity request : listRoomAmenities) {
             RoomAmenity roomAmenity = new RoomAmenity();
-            long roomId = request.getRoomAmenityID().getRoomID();
-            long amenityID = request.getRoomAmenityID().getAmenityID();
-            RoomAmenityID id = new RoomAmenityID(roomId, amenityID);
+            long roomId = request.getRoomAmenityId().getAmenityId();
+            long amenityId = request.getRoomAmenityId().getAmenityId();
+            RoomAmenityId id = new RoomAmenityId(roomId, amenityId);
 
-            Room room = roomService.getRoomByID(roomId);
-            Amenity amenity = amenityService.getAmenityByID(amenityID);
+            Room room = roomService.getRoomById(roomId);
+            Amenity amenity = amenityService.getAmenityById(amenityId);
 
-            roomAmenity.setRoomAmenityID(id);
+            roomAmenity.setRoomAmenityId(id);
             roomAmenity.setQuantity(request.getQuantity());
             roomAmenity.setRoom(room);
             roomAmenity.setAmenity(amenity);
@@ -55,27 +55,27 @@ public class RoomAmenityController {
     @PostMapping("/update")
     @ResponseBody
     public ResponseEntity<?> postUpdateRoomAmenity(@RequestBody RoomAmenity roomAmenity) {
-        long roomID = roomAmenity.getRoomAmenityID().getRoomID();
-        RoomAmenity currentRoomAmenity = (this.roomAmenityService.getRoomAmenityByID(
-                roomID, roomAmenity.getRoomAmenityID().getAmenityID()));
-        Room room = roomService.getRoomByID(roomID);
-        Amenity amenity = amenityService.getAmenityByID(roomAmenity.getRoomAmenityID().getAmenityID());
+        long roomId = roomAmenity.getRoomAmenityId().getRoomId();
+        RoomAmenity currentRoomAmenity = (this.roomAmenityService.getRoomAmenityById(
+                roomId, roomAmenity.getRoomAmenityId().getAmenityId()));
+        Room room = roomService.getRoomById(roomId);
+        Amenity amenity = amenityService.getAmenityById(roomAmenity.getRoomAmenityId().getAmenityId());
 
         currentRoomAmenity.setQuantity(roomAmenity.getQuantity());
         roomAmenity.setRoom(room);
         roomAmenity.setAmenity(amenity);
         this.roomAmenityService.handleSaveRoomAmenity(currentRoomAmenity);
-        // return "redirect:/admin/room/update/room-amenity/" + roomID;
+        // return "redirect:/admin/room/update/room-amenity/" + roomId;
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/delete")
     public String postDeleteRoomAmenity(Model model,
             @ModelAttribute("roomAmenity") RoomAmenity roomAmenity) {
-        long roomID = roomAmenity.getRoomAmenityID().getRoomID();
-        RoomAmenity currentRoomAmenity = (this.roomAmenityService.getRoomAmenityByID(
-                roomID, roomAmenity.getRoomAmenityID().getAmenityID()));
-        this.roomAmenityService.deleteByRoomAmenityID(roomID, currentRoomAmenity.getRoomAmenityID().getAmenityID());
-        return "redirect:/admin/room/update/" + roomID;
+        long roomId = roomAmenity.getRoomAmenityId().getRoomId();
+        RoomAmenity currentRoomAmenity = (this.roomAmenityService.getRoomAmenityById(
+                roomId, roomAmenity.getRoomAmenityId().getAmenityId()));
+        this.roomAmenityService.deleteByRoomAmenityId(roomId, currentRoomAmenity.getRoomAmenityId().getAmenityId());
+        return "redirect:/admin/room/update/" + roomId;
     }
 }

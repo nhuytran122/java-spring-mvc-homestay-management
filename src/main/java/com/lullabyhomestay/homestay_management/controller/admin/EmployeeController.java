@@ -62,7 +62,7 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public String getDetailEmployeePage(Model model, @PathVariable long id) {
-        EmployeeDTO employee = employeeService.getEmployeeDTOByID(id);
+        EmployeeDTO employee = employeeService.getEmployeeDTOById(id);
         model.addAttribute("employee", employee);
         return "admin/employee/detail";
     }
@@ -97,7 +97,7 @@ public class EmployeeController {
 
     @GetMapping("/update/{id}")
     public String getUpdateEmployeePage(Model model, @PathVariable long id) {
-        EmployeeDTO employee = employeeService.getEmployeeDTOByID(id);
+        EmployeeDTO employee = employeeService.getEmployeeDTOById(id);
         model.addAttribute("listRoles", getAllNonCustomerRoles());
 
         model.addAttribute("employee", employee);
@@ -112,7 +112,7 @@ public class EmployeeController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        EmployeeDTO currentEmployee = (employeeService.getEmployeeDTOByID(employee.getEmployeeID()));
+        EmployeeDTO currentEmployee = (employeeService.getEmployeeDTOById(employee.getEmployeeId()));
         if (newEmployeeBindingResult.hasErrors()) {
             model.addAttribute("listRoles", getAllNonCustomerRoles());
             return "admin/employee/update";
@@ -139,8 +139,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteEmployee(@RequestParam("employeeID") long employeeID) {
-        this.employeeService.deleteByEmployeeID(employeeID);
+    public String postDeleteEmployee(@RequestParam("employeeId") long employeeId) {
+        this.employeeService.deleteByEmployeeId(employeeId);
         return "redirect:/admin/employee";
     }
 

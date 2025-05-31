@@ -68,7 +68,7 @@ public class HomestayInforController {
 
     @GetMapping("/update/{id}")
     public String getUpdateInforPage(Model model, @PathVariable long id) {
-        HomestayDetail infor = homestayService.getInforHomestayByInforID(id);
+        HomestayDetail infor = homestayService.getInforHomestayByInforId(id);
 
         model.addAttribute("infor", infor);
         return "admin/homestay-infor/update";
@@ -80,7 +80,7 @@ public class HomestayInforController {
             BindingResult newFaqBindingResult,
             HttpServletRequest request) {
 
-        HomestayDetail currentInfor = this.homestayService.getInforHomestayByInforID(infor.getInforID());
+        HomestayDetail currentInfor = this.homestayService.getInforHomestayByInforId(infor.getInforId());
 
         if (newFaqBindingResult.hasErrors()) {
             return "admin/homestay-infor/update";
@@ -92,8 +92,8 @@ public class HomestayInforController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteInfor(@RequestParam("inforID") long inforID) {
-        this.homestayService.deleteByInforID(inforID);
+    public String postDeleteInfor(@RequestParam("inforId") long inforId) {
+        this.homestayService.deleteByInforId(inforId);
         return "redirect:/admin/homestay-infor";
     }
 }

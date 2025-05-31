@@ -50,7 +50,7 @@
                                         <div class="col-sm-10">
                                             <form:select id="customerSelect" class="form-select select2 form-control ${not empty errorCustomer ? 'is-invalid' : ''}" path="customer">
                                                 <form:option value="">Chọn khách hàng</form:option>
-                                                <form:options items="${listCustomers}" itemValue="customerID" itemLabel="fullName"/>
+                                                <form:options items="${listCustomers}" itemValue="customerId" itemLabel="fullName"/>
                                             </form:select>
                                             ${errorCustomer}
                                         </div>
@@ -64,11 +64,11 @@
                                                 <c:forEach var="room" items="${listRooms}">
                                                     <c:set var="roomType" value="${room.roomType}"/>
                                                     <option 
-                                                        value="${room.roomID}"
-                                                        data-roomtypeid="${roomType.roomTypeID}"
+                                                        value="${room.roomId}"
+                                                        data-roomtypeid="${roomType.roomTypeId}"
                                                         data-maxguest="${roomType.maxGuest}"
                                                         data-roomtype="${roomType.name}"
-                                                        ${newBooking.room.roomID == room.roomID ? 'selected' : ''}>
+                                                        ${newBooking.room.roomId == room.roomId ? 'selected' : ''}>
                                                         ${room.branch.branchName} - ${roomType.name} - #${room.roomNumber}
                                                     </option>
                                                 </c:forEach>
@@ -146,8 +146,8 @@
         let isDorm = false;
         let roomTypeId = null;
 
-        let selectedCustomerId = '${not empty newBooking.customer ? newBooking.customer.customerID : ""}';
-        let selectedRoomId = '${not empty newBooking.room ? newBooking.room.roomID : ""}';
+        let selectedCustomerId = '${not empty newBooking.customer ? newBooking.customer.customerId : ""}';
+        let selectedRoomId = '${not empty newBooking.room ? newBooking.room.roomId : ""}';
         let selectedGuestCount = '${not empty newBooking.guestCount ? newBooking.guestCount : ""}';
         let selectedCheckIn = '${not empty newBooking.checkIn ? newBooking.checkIn : ""}';
         let selectedCheckOut = '${not empty newBooking.checkOut ? newBooking.checkOut : ""}';

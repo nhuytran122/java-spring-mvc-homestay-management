@@ -56,15 +56,15 @@ public class WarehouseController {
     public String getInventoryStockPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(required = false) Long branchID) {
+            @RequestParam(required = false) Long branchId) {
         int validPage = Math.max(1, page);
 
-        Page<InventoryStock> stocks = stockService.searchStocks(keyword, branchID, validPage);
+        Page<InventoryStock> stocks = stockService.searchStocks(keyword, branchId, validPage);
         List<InventoryStock> listStocks = stocks.getContent();
 
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
+        if (branchId != null) {
+            extraParams.append("&branchId=").append(branchId);
         }
         if (keyword != null && !keyword.isEmpty()) {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
@@ -76,15 +76,15 @@ public class WarehouseController {
 
         model.addAttribute("listBranches", this.branchService.getAllBranches());
         model.addAttribute("keyword", keyword);
-        model.addAttribute("branchID", branchID);
+        model.addAttribute("branchId", branchId);
         return "admin/warehouse/show";
     }
 
     @GetMapping("/import")
     public String getImportItemPage(Model model,
-            @RequestParam(required = false) Long branchID,
-            @RequestParam(required = false) Long itemID) {
-        InventoryTransaction transaction = createTransactionFromParams(branchID, itemID);
+            @RequestParam(required = false) Long branchId,
+            @RequestParam(required = false) Long itemId) {
+        InventoryTransaction transaction = createTransactionFromParams(branchId, itemId);
         prepareTransactionModel(model, transaction, "newImport");
         return "admin/warehouse/import";
     }
@@ -101,9 +101,9 @@ public class WarehouseController {
 
     @GetMapping("/export")
     public String getExportItemPage(Model model,
-            @RequestParam(required = false) Long branchID,
-            @RequestParam(required = false) Long itemID) {
-        InventoryTransaction transaction = createTransactionFromParams(branchID, itemID);
+            @RequestParam(required = false) Long branchId,
+            @RequestParam(required = false) Long itemId) {
+        InventoryTransaction transaction = createTransactionFromParams(branchId, itemId);
         prepareTransactionModel(model, transaction, "newExport");
         return "admin/warehouse/export";
     }
@@ -119,8 +119,8 @@ public class WarehouseController {
             return "admin/warehouse/export";
         }
 
-        Optional<InventoryStock> currentStock = stockService.findStockByItemIDAndBranchID(
-                transaction.getInventoryItem().getItemID(), transaction.getBranch().getBranchID());
+        Optional<InventoryStock> currentStock = stockService.findStockByItemIdAndBranchId(
+                transaction.getInventoryItem().getItemId(), transaction.getBranch().getBranchId());
 
         if (!currentStock.isPresent()) {
             model.addAttribute("error", "Không tìm thấy đồ dùng trong chi nhánh này");
@@ -172,7 +172,7 @@ public class WarehouseController {
 
     @GetMapping("/transaction/update/{id}")
     public String getUpdateTransactionPage(Model model, @PathVariable Long id) {
-        InventoryTransaction transactionOpt = transactionService.getTransactionByID(id);
+        InventoryTransaction transactionOpt = transactionService.getTransactionById(id);
         model.addAttribute("transaction", transactionOpt);
         return "admin/warehouse/transaction/update";
     }
@@ -183,13 +183,13 @@ public class WarehouseController {
             BindingResult result,
             HttpServletRequest request) {
 
-        Long transactionId = transaction.getTransactionID();
-        InventoryTransaction currentTransaction = this.transactionService.getTransactionByID(transactionId);
+        Long transactionId = transaction.getTransactionId();
+        InventoryTransaction currentTransaction = this.transactionService.getTransactionById(transactionId);
         if (result.hasErrors()) {
             return "admin/warehouse/transaction/update";
         }
-        Optional<InventoryStock> currentStock = stockService.findStockByItemIDAndBranchID(
-                currentTransaction.getInventoryItem().getItemID(), currentTransaction.getBranch().getBranchID());
+        Optional<InventoryStock> currentStock = stockService.findStockByItemIdAndBranchId(
+                currentTransaction.getInventoryItem().getItemId(), currentTransaction.getBranch().getBranchId());
         if (transaction.getTransactionType() == TransactionType.EXPORT) {
             if (!currentStock.isPresent()) {
                 model.addAttribute("error", "Không tìm thấy đồ dùng trong chi nhánh này");
@@ -215,10 +215,10 @@ public class WarehouseController {
         model.addAttribute("listBranches", branchService.getAllBranches());
     }
 
-    private InventoryTransaction createTransactionFromParams(Long branchID, Long itemID) {
+    private InventoryTransaction createTransactionFromParams(Long branchId, Long itemId) {
         InventoryTransaction transaction = new InventoryTransaction();
-        if (branchID != null && itemID != null) {
-            InventoryStock stock = stockService.findStockByItemIDAndBranchID(itemID, branchID).get();
+        if (branchId != null && itemId != null) {
+            InventoryStock stock = stockService.findStockByItemIdAndBranchId(itemId, branchId).get();
             transaction.setInventoryItem(stock.getInventoryItem());
             transaction.setBranch(stock.getBranch());
         }
@@ -241,8 +241,8 @@ public class WarehouseController {
     private EmployeeDTO getLoggedInEmployeeDTO(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         Long userId = (Long) session.getAttribute("id");
-        User user = userService.getUserByUserID(userId);
-        EmployeeDTO employeeDTO = employeeService.getEmployeeDTOByID(user.getEmployee().getEmployeeID());
+        User user = userService.getUserByUserId(userId);
+        EmployeeDTO employeeDTO = employeeService.getEmployeeDTOById(user.getEmployee().getEmployeeId());
         return employeeDTO;
     }
 

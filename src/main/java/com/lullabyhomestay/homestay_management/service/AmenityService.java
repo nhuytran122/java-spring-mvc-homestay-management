@@ -31,14 +31,14 @@ public class AmenityService {
         return this.amenityRepository.findAll(pageable);
     }
 
-    public Page<Amenity> searchAmenities(String keyword, Long categoryID,
+    public Page<Amenity> searchAmenities(String keyword, Long categoryId,
             int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
 
-        if ((keyword == null || keyword.isEmpty()) && categoryID == null)
+        if ((keyword == null || keyword.isEmpty()) && categoryId == null)
             return amenityRepository
                     .findAll(pageable);
-        Specification<Amenity> spec = Specification.where(AmenitySpecifications.hasCategory(categoryID))
+        Specification<Amenity> spec = Specification.where(AmenitySpecifications.hasCategory(categoryId))
                 .and(AmenitySpecifications.nameLike(keyword));
         return amenityRepository.findAll(spec, pageable);
     }
@@ -47,8 +47,8 @@ public class AmenityService {
         this.amenityRepository.save(amenity);
     }
 
-    public Amenity getAmenityByID(long amenityID) {
-        Optional<Amenity> amenityOpt = amenityRepository.findByAmenityID(amenityID);
+    public Amenity getAmenityById(long amenityId) {
+        Optional<Amenity> amenityOpt = amenityRepository.findByAmenityId(amenityId);
         if (!amenityOpt.isPresent()) {
             throw new NotFoundException("Tiện nghi");
         }
@@ -56,8 +56,8 @@ public class AmenityService {
     }
 
     @Transactional
-    public void deleteByAmenityID(long amenityID) {
-        this.amenityRepository.deleteByAmenityID(amenityID);
+    public void deleteByAmenityId(long amenityId) {
+        this.amenityRepository.deleteByAmenityId(amenityId);
     }
 
     public List<Amenity> getAmenitiesNotInRoom(long roomId) {

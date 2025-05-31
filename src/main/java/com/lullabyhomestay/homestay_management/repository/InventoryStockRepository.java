@@ -15,9 +15,9 @@ import com.lullabyhomestay.homestay_management.domain.InventoryStock;
 public interface InventoryStockRepository
         extends JpaRepository<InventoryStock, Long>, JpaSpecificationExecutor<InventoryStock> {
 
-    boolean existsByBranch_BranchID(long branchID);
+    boolean existsByBranch_BranchId(long branchId);
 
-    boolean existsByInventoryItem_ItemID(long itemID);
+    boolean existsByInventoryItem_ItemId(long itemId);
 
     Page<InventoryStock> findAll(Pageable page);
 
@@ -25,5 +25,5 @@ public interface InventoryStockRepository
 
     Page<InventoryStock> findAll(Specification<InventoryStock> spec, Pageable page);
 
-    Optional<InventoryStock> findByInventoryItem_ItemIDAndBranch_BranchID(long itemID, long branchID);
+    Optional<InventoryStock> findByInventoryItem_ItemIdAndBranch_BranchId(long itemId, long branchId);
 }

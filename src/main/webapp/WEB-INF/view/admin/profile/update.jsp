@@ -28,7 +28,7 @@
                   <h4 class="card-title mb-4 text-center">Chỉnh sửa thông tin</h4>
                   
                   <form:form action="/admin/profile/update" method="post" modelAttribute="user" enctype="multipart/form-data">                   
-                    <form:input type="hidden" path="userID" />
+                    <form:input type="hidden" path="userId" />
                     <form:input type="hidden" path="avatar" id="oldImage"/>
                     <c:set var="errorName">
                       <form:errors path="fullName" cssClass="invalid-feedback" />

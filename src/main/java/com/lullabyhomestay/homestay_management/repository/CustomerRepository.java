@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -18,15 +19,16 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
 
     Page<Customer> findAll(Pageable page);
 
-    Optional<Customer> findByCustomerID(long customerID);
+    @EntityGraph(attributePaths = { "user" })
+    Optional<Customer> findByCustomerId(long customerId);
 
     Customer save(Customer customer);
 
-    void deleteByCustomerID(Long customerID);
+    void deleteByCustomerId(Long customerId);
 
     Page<Customer> findAll(Specification<Customer> spec, Pageable page);
 
-    boolean existsByCustomerType_CustomerTypeID(long typeID);
+    boolean existsByCustomerType_CustomerTypeId(long typeId);
 
     // @Query("SELECT COUNT(c) FROM Customer c WHERE c.user.createdAt BETWEEN
     // :startDate AND :endDate")
@@ -34,11 +36,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
     // @Param("endDate") LocalDateTime endDate);
 
     @Query("""
-            SELECT c
-            FROM Customer c
-            JOIN c.user u
-            ORDER BY c.rewardPoints DESC
+                SELECT c
+                FROM Customer c
+                JOIN c.user u
+                ORDER BY c.rewardPoints DESC
             """)
-    List<Customer> findTop5CustomersByRewardPoints();
+    List<Customer> findTopCustomersByRewardPoints(Pageable pageable);
 
 }

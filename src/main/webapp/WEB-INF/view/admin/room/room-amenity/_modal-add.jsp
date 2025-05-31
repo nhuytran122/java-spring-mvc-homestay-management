@@ -21,8 +21,8 @@
                                 <tr>
                                     <td>
                                         <input type="checkbox" class="item-checkbox" 
-                                            data-amenity-id="${item.amenityID}"
-                                            data-room-id="${room.roomID}">
+                                            data-amenity-id="${item.amenityId}"
+                                            data-room-id="${room.roomId}">
                                     </td>
                                     <td>
                                         <i class="fas ${item.amenityCategory.icon} rule-icon me-2"></i> 
@@ -30,7 +30,7 @@
                                     </td>
                                     <td>
                                         <input type="number" class="form-control amenity-quantity"
-                                               data-amenity-id="${item.amenityID}">
+                                               data-amenity-id="${item.amenityId}">
                                                <div class="invalid-feedback">
                                                 Số lượng phải là số nguyên dương!
                                             </div>

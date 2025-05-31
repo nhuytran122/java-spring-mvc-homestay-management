@@ -38,27 +38,27 @@ public class UserProfileController {
         @GetMapping("/profile")
         public String getProfilePage(Model model) {
                 UserDTO currentUserDTO = AuthUtils.getLoggedInUser(userService);
-                Long customerID = currentUserDTO.getCustomer().getCustomerID();
+                Long customerId = currentUserDTO.getCustomer().getCustomerId();
                 model.addAttribute("customer",
-                                customerService.getCustomerDTOByID(customerID));
+                                customerService.getCustomerDTOById(customerId));
                 model.addAttribute("user", currentUserDTO);
 
                 model.addAttribute("countTotalBooked",
-                                bookingService.countTotalBookingByCustomerID(customerID));
+                                bookingService.countTotalBookingByCustomerId(customerId));
                 model.addAttribute("countCancelled",
-                                bookingService.countByBookingStatusAndCustomerID(BookingStatus.CANCELLED, customerID));
+                                bookingService.countByBookingStatusAndCustomerId(BookingStatus.CANCELLED, customerId));
                 model.addAttribute("countCompleted",
-                                bookingService.countByBookingStatusAndCustomerID(BookingStatus.COMPLETED, customerID));
-                model.addAttribute("paidTotal", bookingService.getTotalAmountByCustomerID(customerID));
+                                bookingService.countByBookingStatusAndCustomerId(BookingStatus.COMPLETED, customerId));
+                model.addAttribute("paidTotal", bookingService.getTotalAmountByCustomerId(customerId));
                 return "client/user/profile";
         }
 
         @GetMapping("/profile/update")
         public String getUpdateProfilePage(Model model) {
                 UserDTO currentUserDTO = AuthUtils.getLoggedInUser(userService);
-                Long customerID = currentUserDTO.getCustomer().getCustomerID();
+                Long customerId = currentUserDTO.getCustomer().getCustomerId();
                 model.addAttribute("customer",
-                                customerService.getCustomerDTOByID(customerID));
+                                customerService.getCustomerDTOById(customerId));
                 model.addAttribute("user", currentUserDTO);
                 return "client/user/update";
         }
@@ -69,7 +69,7 @@ public class UserProfileController {
                         @RequestParam("fileImg") MultipartFile file,
                         HttpServletRequest request) {
                 HttpSession session = request.getSession(false);
-                Long userID = AuthUtils.getLoggedInUserID(session);
+                Long userId = AuthUtils.getLoggedInUserID(session);
 
                 if (result.hasErrors())
                         return "client/user/update";
@@ -78,7 +78,7 @@ public class UserProfileController {
                         img = this.uploadService.handleSaveUploadFile(file, "avatar");
                         userDTO.setAvatar(img);
                 }
-                userDTO = userService.updateProfile(userID, userDTO);
+                userDTO = userService.updateProfile(userId, userDTO);
                 AuthUtils.handleUpdateUserSession(userDTO, session);
                 return "redirect:/profile";
         }
@@ -95,12 +95,12 @@ public class UserProfileController {
                         BindingResult result,
                         HttpSession session,
                         Model model) {
-                Long userID = AuthUtils.getLoggedInUserID(session);
+                Long userId = AuthUtils.getLoggedInUserID(session);
                 if (result.hasErrors()) {
                         return "client/auth/change-password";
                 }
                 try {
-                        userService.changePassword(userID, passwordForm.getNewPassword());
+                        userService.changePassword(userId, passwordForm.getNewPassword());
                 } catch (Exception e) {
                         e.getStackTrace();
                 }

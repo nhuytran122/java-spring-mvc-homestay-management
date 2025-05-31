@@ -23,39 +23,31 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserID")
-    private Long userID;
+    private Long userId;
 
-    @Column(name = "Email")
     private String email;
 
-    @Column(name = "FullName")
     private String fullName;
 
-    @Column(name = "Phone")
     private String phone;
 
-    @Column(name = "Address")
     private String address;
 
-    @Column(name = "Avatar")
     private String avatar;
 
-    @Column(name = "Password")
     private String password;
 
-    @Column(name = "CreatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "IsEnabled")
     private Boolean isEnabled = false;
 
     @ManyToOne
-    @JoinColumn(name = "RoleID")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToOne(mappedBy = "user")
@@ -68,5 +60,5 @@ public class User {
     List<PasswordResetToken> passwordResetTokens;
 
     @OneToMany(mappedBy = "user")
-    List<EmailVerificationToken> emailVerificationTokens;
+    List<VerificationToken> emailVerificationTokens;
 }

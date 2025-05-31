@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="col-12 col-md-2 action-buttons">
                                     <button class="btn btn-warning btn-sm me-2" onclick="openEditModal(this)" 
-                                        data-rule-id="${rule.ruleID}" 
+                                        data-rule-id="${rule.ruleId}" 
                                         data-rule-title="${rule.ruleTitle}" 
                                         data-rule-description="${rule.description}">
                                         <i class="bi bi-pencil"></i> Sửa
@@ -57,11 +57,11 @@
 
                                     <button class="btn btn-danger btn-sm"
                                         onclick="checkBeforeDelete(this)" 
-                                            data-entity-id="${rule.ruleID}" 
+                                            data-entity-id="${rule.ruleId}" 
                                             data-entity-name="${rule.ruleTitle}" 
                                             data-entity-type="Quy tắc" 
                                             data-delete-url="/admin/homestay-infor/rule/delete" 
-                                            data-id-name="ruleID">
+                                            data-id-name="ruleId">
                                             <i class="bi bi-trash"></i> Xóa
                                     </button>
                                 </div>

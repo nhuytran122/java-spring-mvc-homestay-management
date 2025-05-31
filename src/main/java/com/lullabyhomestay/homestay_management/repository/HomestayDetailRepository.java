@@ -15,12 +15,12 @@ public interface HomestayDetailRepository extends JpaRepository<HomestayDetail, 
     Page<HomestayDetail> findAll(Pageable page);
 
     Page<HomestayDetail> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-    String title, String description, Pageable pageable);
+            String title, String description, Pageable pageable);
 
-    Optional<HomestayDetail> findByInforID(long inforID);
+    Optional<HomestayDetail> findByInforId(long inforId);
 
     HomestayDetail save(HomestayDetail infor);
 
-    void deleteByInforID(long id);
-    
-} 
+    void deleteByInforId(long id);
+
+}

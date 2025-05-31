@@ -271,19 +271,19 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                               <c:forEach var="roomData" items="${topRooms}">
                                 <c:set
                                   var="roomNumber"
-                                  value="${roomData[1]}"
+                                  value="${roomData[0]}"
                                 />
                                 <c:set
                                   var="branchName"
-                                  value="${roomData[2]}"
+                                  value="${roomData[1]}"
                                 />
                                 <c:set
                                   var="roomTypeName"
-                                  value="${roomData[3]}"
+                                  value="${roomData[2]}"
                                 />
                                 <c:set
                                   var="bookingCount"
-                                  value="${roomData[4]}"
+                                  value="${roomData[3]}"
                                 />
                                 <tr>
                                   <td class="pl-0">
@@ -330,11 +330,11 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                               >
                                 <c:set
                                   var="serviceName"
-                                  value="${serviceData[1]}"
+                                  value="${serviceData[0]}"
                                 />
                                 <c:set
                                   var="usageCount"
-                                  value="${serviceData[2]}"
+                                  value="${serviceData[1]}"
                                 />
                                 <tr>
                                   <td class="pl-0">${serviceName}</td>

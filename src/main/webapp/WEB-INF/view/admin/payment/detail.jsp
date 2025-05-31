@@ -101,11 +101,11 @@ uri="http://lullabyhomestay.com/functions" %>
                           </div>
                           <div class="col-md-8">
                             <c:set
-                              var="bookingID"
-                              value="${payment.booking.bookingID}"
+                              var="bookingId"
+                              value="${payment.booking.bookingId}"
                             ></c:set>
-                            <a href="/admin/booking/${bookingID}">
-                              Đơn đặt phòng #${bookingID}
+                            <a href="/admin/booking/${bookingId}">
+                              Đơn đặt phòng #${bookingId}
                             </a>
                           </div>
                         </div>

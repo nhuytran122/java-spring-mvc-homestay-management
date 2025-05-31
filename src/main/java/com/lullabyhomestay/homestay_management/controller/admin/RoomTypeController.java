@@ -116,10 +116,10 @@ public class RoomTypeController {
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
 
-        if (roomTypeService.existsByNameAndNotId(roomType.getName(), roomType.getRoomTypeID())) {
+        if (roomTypeService.existsByNameAndNotId(roomType.getName(), roomType.getRoomTypeId())) {
             roomTypeBindingResult.rejectValue("name", "error.name", "Tên loại phòng đã tồn tại!");
         }
-        RoomType currentRoomType = roomTypeService.getRoomTypeById(roomType.getRoomTypeID());
+        RoomType currentRoomType = roomTypeService.getRoomTypeById(roomType.getRoomTypeId());
         if (roomTypeBindingResult.hasErrors()) {
             return "admin/room-type/update";
         }
@@ -144,8 +144,8 @@ public class RoomTypeController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteRoomType(@RequestParam("roomTypeID") long roomTypeID) {
-        roomTypeService.deleteByRoomTypeID(roomTypeID);
+    public String postDeleteRoomType(@RequestParam("roomTypeId") long roomTypeId) {
+        roomTypeService.deleteByRoomTypeId(roomTypeId);
         return "redirect:/admin/room-type";
     }
 

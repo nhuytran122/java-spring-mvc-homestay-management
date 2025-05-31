@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,22 +17,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "InventoryStocks")
+@Table(name = "inventory_stocks")
 public class InventoryStock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "StockID")
-    private Long stockID;
+    private Long stockId;
 
-    @Column(name = "Quantity")
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "ItemID")
+    @JoinColumn(name = "item_id")
     private InventoryItem inventoryItem;
 
     @ManyToOne
-    @JoinColumn(name = "BranchID")
+    @JoinColumn(name = "branch_id")
     private Branch branch;
 }

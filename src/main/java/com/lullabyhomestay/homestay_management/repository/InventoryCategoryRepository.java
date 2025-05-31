@@ -18,14 +18,14 @@ public interface InventoryCategoryRepository extends JpaRepository<InventoryCate
 
     Page<InventoryCategory> findByCategoryNameContainingIgnoreCase(String keyword, Pageable page);
 
-    Optional<InventoryCategory> findByCategoryID(long categoryID);
+    Optional<InventoryCategory> findByCategoryId(long categoryId);
 
     InventoryCategory save(InventoryCategory category);
 
-    void deleteByCategoryID(long id);
+    void deleteByCategoryId(long id);
 
     boolean existsByCategoryNameIgnoreCase(String name);
 
-    boolean existsByCategoryNameIgnoreCaseAndCategoryIDNot(String name, Long categoryID);
+    boolean existsByCategoryNameIgnoreCaseAndCategoryIdNot(String name, Long categoryId);
 
 }

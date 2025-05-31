@@ -55,9 +55,6 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="card-title">Danh sách thanh toán</h4>
-                                        <a href="/admin/payment/create" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-plus-circle"></i> Thêm mới
-                                        </a>
                                     </div>
 
                                     <div class="table-responsive">
@@ -85,7 +82,7 @@
                                                     <c:otherwise>
                                                         <c:forEach var="payment" items="${listPayments}">
                                                             <tr style="height: 70px;">
-                                                                <td>${payment.booking.bookingID}</td>
+                                                                <td>${payment.booking.bookingId}</td>
                                                                 <td>${payment.booking.customer.user.fullName}</td>
                                                                 <td>
                                                                     <span class="badge ${payment.paymentType == 'TRANSFER' ? 'bg-success' : 
@@ -109,7 +106,7 @@
                                                                 <td>${payment.vnpTxnRef}</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
-                                                                        <a href="/admin/payment/${payment.paymentID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <a href="/admin/payment/${payment.paymentId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
                                                                     </div>

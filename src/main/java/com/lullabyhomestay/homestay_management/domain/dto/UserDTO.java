@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDTO {
-    private Long userID;
+    private Long userId;
 
     @NotBlank(message = "Vui lòng nhập họ tên")
     @Size(max = 255, message = "Tên không được vượt quá 255 ký tự")

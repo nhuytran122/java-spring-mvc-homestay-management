@@ -20,14 +20,14 @@ import lombok.AllArgsConstructor;
 public class InventoryStockService {
     private final InventoryStockRepository stockRepository;
 
-    public Page<InventoryStock> searchStocks(String keyword, Long branchID,
+    public Page<InventoryStock> searchStocks(String keyword, Long branchId,
             int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
 
-        if ((keyword == null || keyword.isEmpty()) && branchID == null)
+        if ((keyword == null || keyword.isEmpty()) && branchId == null)
             return stockRepository
                     .findAll(pageable);
-        Specification<InventoryStock> spec = Specification.where(InventoryStockSpecifications.hasBranch(branchID))
+        Specification<InventoryStock> spec = Specification.where(InventoryStockSpecifications.hasBranch(branchId))
                 .and(InventoryStockSpecifications.nameItemLike(keyword));
         return stockRepository.findAll(spec, pageable);
     }
@@ -36,9 +36,9 @@ public class InventoryStockService {
         this.stockRepository.save(stock);
     }
 
-    public Optional<InventoryStock> findStockByItemIDAndBranchID(long itemID, long branchID) {
-        Optional<InventoryStock> stockOpt = stockRepository.findByInventoryItem_ItemIDAndBranch_BranchID(itemID,
-                branchID);
+    public Optional<InventoryStock> findStockByItemIdAndBranchId(long itemId, long branchId) {
+        Optional<InventoryStock> stockOpt = stockRepository.findByInventoryItem_ItemIdAndBranch_BranchId(itemId,
+                branchId);
         return stockOpt;
     }
 }

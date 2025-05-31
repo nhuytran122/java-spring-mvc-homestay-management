@@ -66,18 +66,18 @@ public class PaymentController {
 
     @GetMapping("/{id}")
     public String getDetailPaymentPage(Model model, @PathVariable long id) {
-        Payment payment = paymentService.getPaymentByID(id);
+        Payment payment = paymentService.getPaymentById(id);
         model.addAttribute("payment", payment);
         return "admin/payment/detail";
     }
 
     @PostMapping("/handle")
     public String handlePayment(
-            @RequestParam("bookingID") Long bookingID,
+            @RequestParam("bookingId") Long bookingId,
             @RequestParam("purpose") PaymentPurpose purpose,
             @RequestParam("paymentType") PaymentType paymentType) {
-        paymentService.handleSavePaymentWithAdmin(bookingID, paymentType, purpose);
-        return "redirect:/admin/booking/" + bookingID;
+        paymentService.handleSavePaymentWithAdmin(bookingId, paymentType, purpose);
+        return "redirect:/admin/booking/" + bookingId;
     }
 
 }

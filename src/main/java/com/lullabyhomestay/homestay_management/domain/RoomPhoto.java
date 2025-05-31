@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,21 +17,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "RoomPhotos")
+@Table(name = "room_photos")
 public class RoomPhoto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PhotoID")
-    private Long photoID;
+    private Long photoId;
 
-    @Column(name = "Photo")
     private String photo;
 
-    @Column(name = "IsHidden")
-    private boolean hidden;
+    private Boolean isHidden;
 
     @ManyToOne
-    @JoinColumn(name = "RoomID")
+    @JoinColumn(name = "room_id")
     private Room room;
 }

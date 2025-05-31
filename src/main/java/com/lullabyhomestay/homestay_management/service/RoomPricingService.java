@@ -18,11 +18,11 @@ public class RoomPricingService {
     private final RoomPricingRepository roomPricingRepository;
 
     public Optional<RoomPricing> getDefaultRoomPricing(Long id) {
-        Optional<RoomPricing> roomPricingOpt = roomPricingRepository.findFirstByRoomType_RoomTypeIDAndIsDefaultTrue(id);
+        Optional<RoomPricing> roomPricingOpt = roomPricingRepository.findFirstByRoomType_RoomTypeIdAndIsDefaultTrue(id);
         return roomPricingOpt;
     }
 
-    public RoomPricing getRoomPricingByID(Long id) {
+    public RoomPricing getRoomPricingById(Long id) {
         Optional<RoomPricing> roomPricingOpt = roomPricingRepository.findById(id);
         if (!roomPricingOpt.isPresent()) {
             throw new NotFoundException("Giá phòng");
@@ -34,17 +34,17 @@ public class RoomPricingService {
     public void handleSaveRoomPricing(RoomPricing roomPricing) {
         if (roomPricing.getIsDefault()) {
             roomPricingRepository.clearDefaultForRoomType(
-                    roomPricing.getRoomType().getRoomTypeID(),
-                    roomPricing.getRoomPricingID());
+                    roomPricing.getRoomType().getRoomTypeId(),
+                    roomPricing.getRoomPricingId());
         }
         roomPricingRepository.save(roomPricing);
     }
 
-    public boolean isOverlapping(LocalDate startDate, LocalDate endDate, Long roomTypeID, Long currentId) {
-        return roomPricingRepository.isOverlapping(roomTypeID, startDate, endDate, currentId);
+    public boolean isOverlapping(LocalDate startDate, LocalDate endDate, Long roomTypeId, Long currentId) {
+        return roomPricingRepository.isOverlapping(roomTypeId, startDate, endDate, currentId);
     }
 
-    public void deleteRoomPricingByID(Long id) {
+    public void deleteRoomPricingById(Long id) {
         if (this.canDeleteRoomPricing(id)) {
             roomPricingRepository.deleteById(id);
             return;
@@ -53,7 +53,7 @@ public class RoomPricingService {
     }
 
     public boolean canDeleteRoomPricing(Long id) {
-        RoomPricing roomPricing = getRoomPricingByID(id);
+        RoomPricing roomPricing = getRoomPricingById(id);
         return !roomPricing.getIsDefault();
     }
 

@@ -23,18 +23,14 @@ public class BookingExtensionService {
     private final BookingExtensionRepository bookingExtensionRepository;
     private final RoomPricingRepository roomPricingRepository;
 
-    public List<BookingExtension> getListBookingExtensionByBookingID(Long bookingID) {
-        return bookingExtensionRepository.findByBooking_BookingID(bookingID);
-    }
-
     @Transactional
     public BookingExtension handleBookingExtensions(BookingExtension bookingExtension) {
         return bookingExtensionRepository.save(bookingExtension);
     }
 
-    public BookingExtension getLatestBookingExtensionByBookingID(Long bookingID) {
+    public BookingExtension getLatestBookingExtensionByBookingId(Long bookingId) {
         return bookingExtensionRepository
-                .findFirstByBooking_BookingIDOrderByCreatedAtDesc(bookingID)
+                .findFirstByBooking_BookingIdOrderByCreatedAtDesc(bookingId)
                 .orElseThrow(() -> new NotFoundException("Gia hạn thuê phòng"));
     }
 
@@ -43,17 +39,17 @@ public class BookingExtensionService {
     }
 
     @Transactional
-    public void deleteByExtensionID(Long extensionID) {
-        bookingExtensionRepository.deleteByExtensionID(extensionID);
+    public void deleteByExtensionId(Long extensionId) {
+        bookingExtensionRepository.deleteByExtensionId(extensionId);
     }
 
-    public void deleteLatestExtensionByBookingID(Long bookingID) {
-        bookingExtensionRepository.findFirstByBooking_BookingIDOrderByCreatedAtDesc(bookingID)
-                .ifPresent(latest -> bookingExtensionRepository.deleteByExtensionID(latest.getExtensionID()));
+    public void deleteLatestExtensionByBookingId(Long bookingId) {
+        bookingExtensionRepository.findFirstByBooking_BookingIdOrderByCreatedAtDesc(bookingId)
+                .ifPresent(latest -> bookingExtensionRepository.deleteByExtensionId(latest.getExtensionId()));
     }
 
-    public BookingExtension getBookingExtensionByID(Long id) {
-        return bookingExtensionRepository.findByExtensionID(id)
+    public BookingExtension getBookingExtensionById(Long id) {
+        return bookingExtensionRepository.findByExtensionId(id)
                 .orElseThrow(() -> new NotFoundException("Gia hạn thuê phòng"));
     }
 
@@ -70,7 +66,7 @@ public class BookingExtensionService {
         Booking booking = bookingExtension.getBooking();
         RoomType roomType = booking.getRoom().getRoomType();
         Optional<RoomPricing> roomPricingOpt = roomPricingRepository
-                .findFirstByRoomType_RoomTypeIDAndIsDefaultTrue(roomType.getRoomTypeID());
+                .findFirstByRoomType_RoomTypeIdAndIsDefaultTrue(roomType.getRoomTypeId());
         ;
         if (!roomPricingOpt.isPresent()) {
             throw new NotFoundException("Chính sách giá phòng");

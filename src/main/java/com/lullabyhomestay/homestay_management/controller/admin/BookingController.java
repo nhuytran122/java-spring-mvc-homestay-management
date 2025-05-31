@@ -79,7 +79,7 @@ public class BookingController {
             @ModelAttribute SearchBookingCriteriaDTO criteria, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
-        if (bookingRequest != null && bookingRequest.getBookingID() != null) {
+        if (bookingRequest != null && bookingRequest.getBookingId() != null) {
             session.setAttribute("bookingRequest", null);
         }
 
@@ -108,7 +108,7 @@ public class BookingController {
 
     @GetMapping("/{id}")
     public String getDetailBookingPage(Model model, @PathVariable long id) {
-        Booking booking = bookingService.getBookingByID(id);
+        Booking booking = bookingService.getBookingById(id);
         model.addAttribute("booking", booking);
 
         model.addAttribute("totalUnpaidPostpaidAmount", bookingExtraService.calculateUnpaidServicesTotalAmount(id));
@@ -126,11 +126,11 @@ public class BookingController {
             newBooking.setCheckIn(bookingRequest.getCheckin());
             newBooking.setCheckOut(bookingRequest.getCheckout());
             newBooking.setGuestCount(bookingRequest.getGuestCount());
-            newBooking.setRoom(roomService.getRoomByID(bookingRequest.getRoomID()));
-            newBooking.setCustomer(customerService.getCustomerByID(bookingRequest.getCustomerID()));
-            if (bookingRequest.getBookingID() != null) {
+            newBooking.setRoom(roomService.getRoomById(bookingRequest.getRoomId()));
+            newBooking.setCustomer(customerService.getCustomerById(bookingRequest.getCustomerId()));
+            if (bookingRequest.getBookingId() != null) {
                 session.setAttribute("bookingRequest", null);
-                bookingService.deleteByBookingID(bookingRequest.getBookingID());
+                bookingService.deleteByBookingId(bookingRequest.getBookingId());
             }
         }
         model.addAttribute("newBooking", newBooking);
@@ -155,9 +155,9 @@ public class BookingController {
             model.addAttribute("listRooms", roomService.getAllRooms());
             return "admin/booking/create";
         }
-        Long roomID = booking.getRoom().getRoomID();
-        Room room = roomService.getRoomByID(booking.getRoom().getRoomID());
-        boolean hasOverlap = roomStatusHistoryService.existsOverlappingStatuses(roomID, booking.getCheckIn(),
+        Long roomId = booking.getRoom().getRoomId();
+        Room room = roomService.getRoomById(roomId);
+        boolean hasOverlap = roomStatusHistoryService.existsOverlappingStatuses(roomId, booking.getCheckIn(),
                 booking.getCheckOut());
         if (hasOverlap) {
             model.addAttribute("errorMessage",
@@ -168,7 +168,7 @@ public class BookingController {
         }
         booking.setStatus(BookingStatus.PENDING);
         booking.setRoom(room);
-        booking.setCustomer(customerService.getCustomerByID(booking.getCustomer().getCustomerID()));
+        booking.setCustomer(customerService.getCustomerById(booking.getCustomer().getCustomerId()));
 
         HttpSession session = request.getSession(false);
         BookingRequestDTO bookingRequest = new BookingRequestDTO();
@@ -176,8 +176,8 @@ public class BookingController {
         bookingRequest.setCheckin(booking.getCheckIn());
         bookingRequest.setCheckout(booking.getCheckOut());
         bookingRequest.setGuestCount(booking.getGuestCount());
-        bookingRequest.setCustomerID(booking.getCustomer().getCustomerID());
-        bookingRequest.setRoomID(roomID);
+        bookingRequest.setCustomerId(booking.getCustomer().getCustomerId());
+        bookingRequest.setRoomId(roomId);
         session.setAttribute("bookingRequest", bookingRequest);
 
         return "redirect:/admin/booking/booking-service";
@@ -210,16 +210,16 @@ public class BookingController {
                     .body(new ApiResponseDTO<>(null, "Không tìm thấy booking"));
         Booking booking = new Booking();
         if (bookingRequest.isCreatedFlag()) {
-            booking = bookingService.getBookingByID(bookingRequest.getBookingID());
-            bookingExtraService.deleteByBookingID(bookingRequest.getBookingID());
+            booking = bookingService.getBookingById(bookingRequest.getBookingId());
+            bookingExtraService.deleteByBookingId(bookingRequest.getBookingId());
         } else {
             bookingRequest.setCreatedFlag(true);
             booking.setCheckIn(bookingRequest.getCheckin());
             booking.setCheckOut(bookingRequest.getCheckout());
             booking.setGuestCount(bookingRequest.getGuestCount());
-            booking.setRoom(roomService.getRoomByID(bookingRequest.getRoomID()));
+            booking.setRoom(roomService.getRoomById(bookingRequest.getRoomId()));
             booking.setStatus(BookingStatus.PENDING);
-            booking.setCustomer(customerService.getCustomerByID(bookingRequest.getCustomerID()));
+            booking.setCustomer(customerService.getCustomerById(bookingRequest.getCustomerId()));
             booking = bookingService.handleBooking(booking);
         }
         List<BookingServiceDTO> listBookingServices = requestServiceDTO.getServices();
@@ -227,11 +227,11 @@ public class BookingController {
             for (BookingServiceDTO bService : listBookingServices) {
                 BookingServices newBookingService = new BookingServices();
 
-                Long serviceID = bService.getServiceID();
+                Long serviceId = bService.getServiceId();
                 Float quantity = bService.getQuantity();
                 String description = bService.getDescription();
 
-                newBookingService.setService(this.service.getServiceByID(serviceID));
+                newBookingService.setService(this.service.getServiceById(serviceId));
                 newBookingService.setQuantity(quantity);
 
                 newBookingService.setDescription(description);
@@ -239,20 +239,20 @@ public class BookingController {
                 this.bookingExtraService.handleSaveBookingServiceExtra(newBookingService);
             }
         }
-        bookingRequest.setBookingID(booking.getBookingID());
+        bookingRequest.setBookingId(booking.getBookingId());
         bookingRequest.setServices(listBookingServices);
         session.setAttribute("bookingRequest", bookingRequest);
-        return ResponseEntity.ok(new ApiResponseDTO<>(booking.getBookingID(), "Xác nhận dịch vụ thành công"));
+        return ResponseEntity.ok(new ApiResponseDTO<>(booking.getBookingId(), "Xác nhận dịch vụ thành công"));
     }
 
     @GetMapping("/booking-confirmation")
     public String getBookingConfirmationPage(
-            @RequestParam("bookingID") Long bookingID,
+            @RequestParam("bookingId") Long bookingId,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        Booking booking = bookingService.getBookingByID(bookingID);
+        Booking booking = bookingService.getBookingById(bookingId);
 
         if (booking.getStatus() != BookingStatus.PENDING) {
             redirectAttributes.addFlashAttribute("errorMessage", "Chỉ có thể xác nhận các đơn đang chờ thanh toán.");
@@ -267,7 +267,7 @@ public class BookingController {
 
         BookingRequestDTO sessionDTO = (BookingRequestDTO) session.getAttribute("bookingRequest");
 
-        if (!bookingID.equals(sessionDTO.getBookingID())) {
+        if (!bookingId.equals(sessionDTO.getBookingId())) {
             redirectAttributes.addFlashAttribute("errorMessage", "Thông tin đặt phòng không hợp lệ.");
             return "redirect:/admin/booking";
         }
@@ -288,27 +288,27 @@ public class BookingController {
             HttpSession session) {
         try {
             BookingRequestDTO bookingRequest = (BookingRequestDTO) session.getAttribute("bookingRequest");
-            Long bookingID = bookingRequest.getBookingID();
-            if (bookingRequest == null || !bookingID.equals(request.getBookingID())) {
+            Long bookingId = bookingRequest.getBookingId();
+            if (bookingRequest == null || !bookingId.equals(request.getBookingId())) {
                 return ResponseEntity.badRequest()
                         .body(new ApiResponseDTO<>(null, "Không tìm thấy booking"));
             }
-            paymentService.handleSavePaymentWithAdmin(bookingID, request.getPaymentMethod(),
+            paymentService.handleSavePaymentWithAdmin(bookingId, request.getPaymentMethod(),
                     PaymentPurpose.ROOM_BOOKING);
             session.removeAttribute("bookingRequest");
             return ResponseEntity
-                    .ok(new ApiResponseDTO<>(bookingID, "Xác nhận thanh toán thành công"));
+                    .ok(new ApiResponseDTO<>(bookingId, "Xác nhận thanh toán thành công"));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(new ApiResponseDTO<>(null, e.getMessage()));
         }
     }
 
-    @GetMapping("/check-refund/{bookingID}")
-    public ResponseEntity<?> checkRefundForBooking(@PathVariable Long bookingID) {
-        Booking booking = bookingService.getBookingByID(bookingID);
+    @GetMapping("/check-refund/{bookingId}")
+    public ResponseEntity<?> checkRefundForBooking(@PathVariable Long bookingId) {
+        Booking booking = bookingService.getBookingById(bookingId);
 
-        Cancelability result = bookingService.checkCancelability(bookingID);
+        Cancelability result = bookingService.checkCancelability(bookingId);
 
         switch (result) {
             case CANCELLED:
@@ -342,20 +342,20 @@ public class BookingController {
     }
 
     @PostMapping("/cancel")
-    public String postCancelBooking(@RequestParam("bookingID") long bookingID) {
-        if (bookingService.checkCancelability(bookingID) == Cancelability.ALLOWED) {
-            this.bookingService.cancelBooking(bookingID);
+    public String postCancelBooking(@RequestParam("bookingId") long bookingId) {
+        if (bookingService.checkCancelability(bookingId) == Cancelability.ALLOWED) {
+            this.bookingService.cancelBooking(bookingId);
         }
-        return "redirect:/admin/booking/" + bookingID;
+        return "redirect:/admin/booking/" + bookingId;
     }
 
     @GetMapping("/schedule")
     public String getBookingSchedulePage(
             Model model,
             @RequestParam(value = "date", required = false) String dateStr,
-            @RequestParam(value = "branchID", required = false) Long branchID) {
+            @RequestParam(value = "branchId", required = false) Long branchId) {
 
-        BookingScheduleData scheduleData = roomStatusHistoryService.getBookingScheduleData(dateStr, branchID);
+        BookingScheduleData scheduleData = roomStatusHistoryService.getBookingScheduleData(dateStr, branchId);
 
         model.addAttribute("listBranches", branchService.getAllBranches());
 
@@ -363,7 +363,7 @@ public class BookingController {
         model.addAttribute("roomSchedules", scheduleData.getRoomSchedules());
         model.addAttribute("date", scheduleData.getDate());
         model.addAttribute("dateFormatted", scheduleData.getDateFormatted());
-        model.addAttribute("branchID", branchID);
+        model.addAttribute("branchId", branchId);
         return "admin/booking/booking-schedule";
     }
 
@@ -377,25 +377,25 @@ public class BookingController {
         return "admin/booking/show";
     }
 
-    @GetMapping("/can-add-service-or-extend/{bookingID}")
+    @GetMapping("/can-add-service-or-extend/{bookingId}")
     @ResponseBody
-    public ResponseEntity<Boolean> canAddServiceOrExtend(@PathVariable Long bookingID) {
-        boolean result = bookingService.canBookServiceOrBookExtension(bookingID);
+    public ResponseEntity<Boolean> canAddServiceOrExtend(@PathVariable Long bookingId) {
+        boolean result = bookingService.canBookServiceOrBookExtension(bookingId);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/booking-extension/create/{id}")
     public String getCreateBookingExtensionPage(Model model, @PathVariable Long id) {
-        Booking booking = bookingService.getBookingByID(id);
+        Booking booking = bookingService.getBookingById(id);
         model.addAttribute("booking", booking);
         return "admin/booking-extension/create";
     }
 
     @PostMapping("/booking-extension/create")
-    public String postBookingExtension(@RequestParam("bookingID") Long bookingID,
+    public String postBookingExtension(@RequestParam("bookingId") Long bookingId,
             @RequestParam("newCheckoutTime") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime newCheckout,
             Model model) {
-        Booking booking = bookingService.getBookingByID(bookingID);
+        Booking booking = bookingService.getBookingById(bookingId);
 
         LocalDateTime currentCheckout = booking.getCheckOut();
         LocalDateTime checkOutWithCleaningBuffer = currentCheckout.plus(Constants.CLEANING_HOURS, ChronoUnit.HOURS);
@@ -406,7 +406,7 @@ public class BookingController {
         // Kiểm tra trùng lịch từ checkOutWithCleaningBuffer đến
         // newCheckoutWithCleaningBuffer
         boolean isOverlapping = roomStatusHistoryService.existsOverlappingStatuses(
-                booking.getRoom().getRoomID(),
+                booking.getRoom().getRoomId(),
                 checkOutWithCleaningBuffer,
                 newCheckoutWithCleaningBuffer);
         if (isOverlapping) {
@@ -443,13 +443,13 @@ public class BookingController {
     public ResponseEntity<ApiResponseDTO<Long>> confirmPaymentExtension(
             @RequestBody PaymentConfirmationRequestDTO request) {
         try {
-            Long extensionID = request.getExtensionID();
-            BookingExtension bExtension = bookingExtensionService.getBookingExtensionByID(extensionID);
-            Long bookingID = bExtension.getBooking().getBookingID();
-            paymentService.handleSavePaymentWithAdmin(bookingID, request.getPaymentMethod(),
+            Long extensionId = request.getExtensionId();
+            BookingExtension bExtension = bookingExtensionService.getBookingExtensionById(extensionId);
+            Long bookingId = bExtension.getBooking().getBookingId();
+            paymentService.handleSavePaymentWithAdmin(bookingId, request.getPaymentMethod(),
                     PaymentPurpose.EXTENDED_HOURS);
             return ResponseEntity
-                    .ok(new ApiResponseDTO<>(bookingID, "Xác nhận thanh toán thành công"));
+                    .ok(new ApiResponseDTO<>(bookingId, "Xác nhận thanh toán thành công"));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(new ApiResponseDTO<>(null, e.getMessage()));
@@ -459,9 +459,9 @@ public class BookingController {
     @PostMapping("/booking-extension/cancel")
     public String postCancelBookingExtension(@RequestParam("id") Long id, Model model) {
         Booking booking = bookingService
-                .getBookingByID(bookingExtensionService.getBookingExtensionByID(id).getBooking().getBookingID());
-        bookingExtensionService.deleteByExtensionID(id);
-        return "redirect:/booking/booking-extension/create/" + booking.getBookingID();
+                .getBookingById(bookingExtensionService.getBookingExtensionById(id).getBooking().getBookingId());
+        bookingExtensionService.deleteByExtensionId(id);
+        return "redirect:/booking/booking-extension/create/" + booking.getBookingId();
     }
 
 }

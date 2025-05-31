@@ -24,10 +24,10 @@
                         name="keyword" 
                         placeholder="Tìm kiếm khách hàng..." 
                         value="${criteria.keyword}"/>
-                    <select name="customerTypeID" class="form-select form-select-sm" >
+                    <select name="customerTypeId" class="form-select form-select-sm" >
                         <option value="">Chọn phân loại</option>
                         <c:forEach var="type" items="${listTypes}">
-                            <option value="${type.customerTypeID}" ${type.customerTypeID == criteria.customerTypeID ? 'selected' : ''}>
+                            <option value="${type.customerTypeId}" ${type.customerTypeId == criteria.customerTypeId ? 'selected' : ''}>
                                 ${type.name}
                             </option>
                         </c:forEach>
@@ -107,22 +107,22 @@
 
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <c:set var="customerID" value="${customer.customerID}"/>
-                                                                    <a href="/admin/customer/${customerID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <c:set var="customerId" value="${customer.customerId}"/>
+                                                                    <a href="/admin/customer/${customerId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
-                                                                    <a href="/admin/customer/update/${customerID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/customer/update/${customerId}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${customerID}" 
+                                                                            data-entity-id="${customerId}" 
                                                                             data-entity-name="${customer.fullName}" 
                                                                             data-entity-type="Khách hàng" 
                                                                             data-delete-url="/admin/customer/delete" 
                                                                             data-check-url="/admin/customer/can-delete/" 
-                                                                            data-id-name="customerID">
+                                                                            data-id-name="customerId">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

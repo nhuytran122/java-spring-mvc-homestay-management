@@ -39,17 +39,17 @@
         <h2 class="my-4">Chọn các dịch vụ bổ sung</h2>
         <div id="errorMessage" class="error-message"></div>
         <form id="bookingServiceForm">
-            <!-- <input type="hidden" name="bookingID" value="${bookingID}"> -->
+            <!-- <input type="hidden" name="bookingId" value="${bookingId}"> -->
             <div class="row">
                 <div class="col-12">
                     <c:forEach var="service" items="${listServices}" varStatus="loop">
-                        <c:set var="serviceID" value="${service.serviceID}"/>
-                        <div class="service-item border rounded p-3 mb-3 bg-white" id="service-${serviceID}">
+                        <c:set var="serviceId" value="${service.serviceId}"/>
+                        <div class="service-item border rounded p-3 mb-3 bg-white" id="service-${serviceId}">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="form-check-input me-3 service-checkbox" 
-                                    name="selectedServices" value="${serviceID}"
+                                    name="selectedServices" value="${serviceId}"
                                     data-price="${service.price}" 
-                                    data-service-id="${serviceID}">
+                                    data-service-id="${serviceId}">
                                 <div class="flex-grow-1">
                                     <h5 class="mb-1">${service.serviceName}</h5>
                                     <p class="mb-1 text-muted">${service.description}</p>
@@ -61,20 +61,20 @@
                             </div>
                             <div class="service-details mt-2">
                                 <div class="form-group">
-                                    <label for="quantity-${serviceID}" class="form-label">Số lượng</label>
+                                    <label for="quantity-${serviceId}" class="form-label">Số lượng</label>
                                     <input type="number" class="form-control quantity-input" 
-                                        id="quantity-${serviceID}" 
+                                        id="quantity-${serviceId}" 
                                         name="services[${loop.index}].quantity" 
                                         min="1" value="1">
                                 </div>
                                 <div class="form-group mt-2">
-                                    <label for="note-${serviceID}" class="form-label">Mô tả yêu cầu</label>
+                                    <label for="note-${serviceId}" class="form-label">Mô tả yêu cầu</label>
                                     <textarea class="form-control note-input" 
-                                        id="note-${serviceID}" 
+                                        id="note-${serviceId}" 
                                         name="services[${loop.index}].description" 
                                         rows="2" placeholder="Nhập mô tả yêu cầu (ví dụ: thời gian phục vụ, yêu cầu đặc biệt,...)"></textarea>
                                 </div>
-                                <input type="hidden" name="services[${loop.index}].serviceID" value="${serviceID}">
+                                <input type="hidden" name="services[${loop.index}].serviceId" value="${serviceId}">
                             </div>
                         </div>
                     </c:forEach>
@@ -101,7 +101,7 @@
                     <i class="bi bi-check-circle"></i> Đặt dịch vụ
                 </button>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="/room/${bookingRequest.roomID}?fromBookingService=true"
+                    <a href="/room/${bookingRequest.roomId}?fromBookingService=true"
                         class="btn btn-outline-dark btn-lg px-5 py-2">
                         <i class="bi bi-arrow-left"></i> Quay lại
                     </a>
@@ -179,7 +179,7 @@
                     }
 
                     selectedServices.push({
-                        serviceID: serviceId,
+                        serviceId: serviceId,
                         quantity: quantity,
                         description: description,
                     });
@@ -201,7 +201,7 @@
                     data: JSON.stringify(requestData),
                     success: function(response) {
                         console.log(response.data);
-                        window.location.href = "/booking/booking-confirmation?bookingID=" + response.data;
+                        window.location.href = "/booking/booking-confirmation?bookingId=" + response.data;
                     },
                     error: function(xhr) {
                         let errorMessage = xhr.responseJSON?.message || "Có lỗi xảy ra khi lưu dịch vụ. Vui lòng thử lại!";
@@ -211,9 +211,9 @@
             }
 
             function skipServices() {
-                // let bookingID = $("input[name='bookingID']").val();
+                // let bookingId = $("input[name='bookingId']").val();
                 let requestData = {
-                    // bookingID: bookingID,
+                    // bookingId: bookingId,
                     services: [] 
                 };
 
@@ -224,7 +224,7 @@
                     data: JSON.stringify(requestData),
                     success: function(response) {
                         console.log(response.data);
-                        window.location.href = "/booking/booking-confirmation?bookingID=" + response.data;
+                        window.location.href = "/booking/booking-confirmation?bookingId=" + response.data;
                     },
                     error: function(xhr) {
                         let errorMessage = xhr.responseJSON?.message || "Có lỗi xảy ra khi lưu dịch vụ. Vui lòng thử lại!";

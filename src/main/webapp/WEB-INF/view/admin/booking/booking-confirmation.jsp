@@ -174,7 +174,7 @@
                       </button>
                       <form action="/admin/booking/cancel" method="post" class="m-0">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                        <input type="hidden" name="bookingID" value="${booking.bookingID}" />
+                        <input type="hidden" name="bookingId" value="${booking.bookingId}" />
                         <button type="submit" class="btn btn-outline-danger btn-lg px-5 py-2">
                           <i class="bi bi-x-circle"></i> Hủy đặt phòng
                         </button>
@@ -210,7 +210,7 @@
           }
 
           let requestData = {
-            bookingID: '${booking.bookingID}',
+            bookingId: '${booking.bookingId}',
             paymentMethod: paymentMethod
           };
 

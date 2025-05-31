@@ -63,7 +63,7 @@ public class RoomController {
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     public String getDetailRoomPage(Model model, @PathVariable long id) {
-        Room room = roomService.getRoomByID(id);
+        Room room = roomService.getRoomById(id);
         model.addAttribute("room", room);
         return "admin/room/detail";
     }
@@ -94,12 +94,12 @@ public class RoomController {
             room.setThumbnail(img);
         }
         Room newRoom = this.roomService.handleSaveRoom(room);
-        return "redirect:/admin/room/update/" + newRoom.getRoomID();
+        return "redirect:/admin/room/update/" + newRoom.getRoomId();
     }
 
     @GetMapping("/update/{id}")
     public String getUpdateRoomPage(Model model, @PathVariable long id) {
-        Room room = roomService.getRoomByID(id);
+        Room room = roomService.getRoomById(id);
         model.addAttribute("room", room);
         model.addAttribute("listBranches", this.branchService.getAllBranches());
         model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
@@ -118,13 +118,13 @@ public class RoomController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        Long roomID = room.getRoomID();
-        Room currentRoom = this.roomService.getRoomByID(roomID);
+        Long roomId = room.getRoomId();
+        Room currentRoom = this.roomService.getRoomById(roomId);
         if (newRoomBindingResult.hasErrors()) {
             model.addAttribute("listBranches", this.branchService.getAllBranches());
             model.addAttribute("listRoomTypes", this.roomTypeService.getAllRoomTypes());
-            Room roomWithDetails = this.roomService.getRoomByID(roomID);
-            model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(roomID));
+            Room roomWithDetails = this.roomService.getRoomById(roomId);
+            model.addAttribute("listAmenitiesNotInRoom", this.amenityService.getAmenitiesNotInRoom(roomId));
 
             model.addAttribute("listPhotos", roomWithDetails.getRoomPhotos());
             model.addAttribute("listAmenities", roomWithDetails.getRoomAmenities());
@@ -150,8 +150,8 @@ public class RoomController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteRoom(@RequestParam("roomID") long roomID) {
-        this.roomService.deleteByRoomID(roomID);
+    public String postDeleteRoom(@RequestParam("roomId") long roomId) {
+        this.roomService.deleteByRoomId(roomId);
         return "redirect:/admin/room";
     }
 

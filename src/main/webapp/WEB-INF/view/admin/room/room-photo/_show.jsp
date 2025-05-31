@@ -6,7 +6,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="card-title">Danh sách ảnh</h4>
                     <form action="/admin/room/photo/create" method="get">
-                        <input type="hidden" name="roomID" value="${room.roomID}">
+                        <input type="hidden" name="roomId" value="${room.roomId}">
                         <button type="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-plus-circle"></i> Thêm mới ảnh
                         </button>
@@ -43,16 +43,16 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="/admin/room/photo/update/${photo.photoID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                    <a href="/admin/room/photo/update/${photo.photoId}" class="btn btn-warning btn-sm" title="Sửa">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
 
                                                     <button class="btn btn-danger btn-sm"
                                                         onclick="checkBeforeDelete(this)" 
-                                                            data-entity-id="${photo.photoID}" 
+                                                            data-entity-id="${photo.photoId}" 
                                                             data-entity-type="ảnh" 
                                                             data-delete-url="/admin/room/photo/delete" 
-                                                            data-id-name="photoID">
+                                                            data-id-name="photoId">
                                                             <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>

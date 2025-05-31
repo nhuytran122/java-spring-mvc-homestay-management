@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentConfirmationRequestDTO {
-    private Long bookingID;
-    private Long extensionID;
+    private Long bookingId;
+    private Long extensionId;
     private PaymentType paymentMethod;
 }

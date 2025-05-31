@@ -26,10 +26,10 @@
                     <input type="text" class="form-control form-control-sm" name="keyword" placeholder="Tìm kiếm bảo trì..." 
                             value="${criteria.keyword}">
                     
-                    <select name="branchID" class="form-select form-control form-select-sm">
+                    <select name="branchId" class="form-select form-control form-select-sm">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">
-                            <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
+                            <option value="${branch.branchId}" ${branch.branchId == criteria.branchId ? 'selected' : ''}>
                                 ${branch.branchName}
                             </option>
                         </c:forEach>
@@ -118,32 +118,32 @@
                                                             <td>${f:formatLocalDateTime(item.updatedAt)}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/maintenance/${item.requestID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <a href="/admin/maintenance/${item.requestId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
                                                                     <button class="btn btn-warning btn-sm" title="Sửa"
                                                                         onclick="checkBeforeUpdate(this)" 
-                                                                            data-request-id="${item.requestID}"
+                                                                            data-request-id="${item.requestId}"
                                                                             data-entity-type="Yêu cầu bảo trì"
                                                                             data-current-status="${item.status}" 
                                                                             data-check-url="/admin/maintenance/can-update/" >
                                                                         <i class="bi bi-pencil"></i>
                                                                     </button>
                                                                     <button class="btn btn-info btn-sm status-update-btn" 
-                                                                            data-request-id="${item.requestID}" 
+                                                                            data-request-id="${item.requestId}" 
                                                                             data-current-status="${item.status}"
                                                                             title="Cập nhật trạng thái">
                                                                     <i class="bi bi-gear"></i>
                                                                     </button>
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                        data-entity-id="${item.requestID}" 
+                                                                        data-entity-id="${item.requestId}" 
                                                                         data-entity-name="${item.description}" 
                                                                         data-entity-type="Yêu cầu bảo trì" 
                                                                         data-delete-url="/admin/maintenance/delete" 
                                                                         data-check-url="/admin/maintenance/can-delete/" 
                                                                         data-warning-message="Yêu cầu đã được xử lý hoặc bị hủy, không thể xóa."
-                                                                        data-id-name="requestID">
+                                                                        data-id-name="requestId">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

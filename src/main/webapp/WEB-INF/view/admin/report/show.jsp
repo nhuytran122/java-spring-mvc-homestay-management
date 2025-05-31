@@ -25,10 +25,10 @@
             <form method="get" action="/admin/report" class="row g-3 mb-4" id="reportFilter">
               <div class="col-md-2">
                 <label class="form-label">Chi nhánh</label>
-                <select name="branchID" class="form-select">
+                <select name="branchId" class="form-select">
                   <option value="">Tất cả</option>
                   <c:forEach var="branch" items="${branches}">
-                    <option value="${branch.branchID}" ${branch.branchID == criteria.branchID ? 'selected' : ''}>
+                    <option value="${branch.branchId}" ${branch.branchId == criteria.branchId ? 'selected' : ''}>
                       ${branch.branchName}
                     </option>
                   </c:forEach>

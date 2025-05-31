@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,23 +16,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Rules")
+@Table(name = "rules")
 public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RuleID")
-    private Long ruleID;
+    private Long ruleId;
 
-    @Column(name = "RuleTitle")
     @NotBlank(message = "Vui lòng nhập tiêu đề quy tắc")
     private String ruleTitle;
 
-    @Column(name = "Description")
     private String description;
 
-    @Column(name = "icon")
     private String icon;
 
-    @Column(name = "IsHidden")
     private Boolean isHidden;
 }

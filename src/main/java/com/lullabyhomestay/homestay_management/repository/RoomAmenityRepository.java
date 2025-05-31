@@ -7,21 +7,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
-import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityId;
 
 @Repository
-public interface RoomAmenityRepository extends JpaRepository<RoomAmenity, RoomAmenityID> {
+public interface RoomAmenityRepository extends JpaRepository<RoomAmenity, RoomAmenityId> {
 
     RoomAmenity save(RoomAmenity amenity);
 
-    List<RoomAmenity> findByRoom_RoomID(long roomID);
+    List<RoomAmenity> findByRoom_RoomId(long roomId);
 
-    void deleteByRoom_RoomID(long roomID);
+    void deleteByRoom_RoomId(long roomId);
 
-    void deleteByAmenity_AmenityID(long amenityID);
+    void deleteByAmenity_AmenityId(long amenityId);
 
-    Optional<RoomAmenity> findByRoomAmenityID(RoomAmenityID id);
+    Optional<RoomAmenity> findByRoomAmenityId(RoomAmenityId id);
 
-    void deleteByRoomAmenityID(RoomAmenityID id);
+    void deleteByRoomAmenityId(RoomAmenityId id);
 
 }

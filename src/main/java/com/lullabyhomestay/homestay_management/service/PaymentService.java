@@ -41,8 +41,8 @@ public class PaymentService {
     private final RoomStatusHistoryService roomStatusHistoryService;
     private final BookingExtraService bookingExtraService;
 
-    public String createVnPayPaymentURL(HttpServletRequest request, Long bookingID, PaymentPurpose paymentPurpose) {
-        Booking booking = bookingService.getBookingByID(bookingID);
+    public String createVnPayPaymentURL(HttpServletRequest request, Long bookingId, PaymentPurpose paymentPurpose) {
+        Booking booking = bookingService.getBookingById(bookingId);
         Long amount = 0L;
         if (paymentPurpose == PaymentPurpose.ROOM_BOOKING) {
             Double totalAmountDouble = booking.getTotalAmount();
@@ -50,16 +50,16 @@ public class PaymentService {
         } else if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
             // Lấy gia hạn thuê mới nhất
             BookingExtension bookingExtension = bookingExtensionService
-                    .getLatestBookingExtensionByBookingID(bookingID);
+                    .getLatestBookingExtensionByBookingId(bookingId);
             Double totalAmountDouble = bookingExtensionService.calculateFinalExtensionAmount(bookingExtension);
             amount = totalAmountDouble.longValue() * 100L;
         } else if (paymentPurpose == PaymentPurpose.ADDITIONAL_SERVICE) {
             // Lấy tổng tiền dịch vụ trả sau mà khách chưa thanh toán
-            Double totalAmountDouble = bookingExtraService.calculateUnpaidServicesTotalAmount(bookingID);
+            Double totalAmountDouble = bookingExtraService.calculateUnpaidServicesTotalAmount(bookingId);
             amount = totalAmountDouble.longValue() * 100L;
         }
         String bankCode = request.getParameter("bankCode");
-        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(bookingID, paymentPurpose);
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(bookingId, paymentPurpose);
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         if (bankCode != null && !bankCode.isEmpty()) {
             vnpParamsMap.put("vnp_BankCode", bankCode);
@@ -87,10 +87,10 @@ public class PaymentService {
 
         if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
             BookingExtension bookingExtension = bookingExtensionService
-                    .getLatestBookingExtensionByBookingID(currentBooking.getBookingID());
+                    .getLatestBookingExtensionByBookingId(currentBooking.getBookingId());
 
             // Cập nhật checkout, giá
-            bookingService.handleSaveBookingAfterExtend(currentBooking.getBookingID(), bookingExtension);
+            bookingService.handleSaveBookingAfterExtend(currentBooking.getBookingId(), bookingExtension);
 
             // Cập nhật lịch trình của phòng
             roomStatusHistoryService.handleBookingExtensions(bookingExtension);
@@ -103,9 +103,9 @@ public class PaymentService {
     }
 
     @Transactional
-    public Payment handleSavePaymentWithAdmin(Long bookingID, PaymentType paymentType,
+    public Payment handleSavePaymentWithAdmin(Long bookingId, PaymentType paymentType,
             PaymentPurpose paymentPurpose) {
-        Booking booking = bookingService.getBookingByID(bookingID);
+        Booking booking = bookingService.getBookingById(bookingId);
         // Payment newPayment = paymentRepository.save(payment);
         Payment newPayment = new Payment();
         newPayment.setPaymentType(paymentType);
@@ -118,18 +118,18 @@ public class PaymentService {
             bookingService.handleSaveBooking(booking);
             totalAmount = booking.getTotalAmount();
         } else if (paymentPurpose == PaymentPurpose.ADDITIONAL_SERVICE) {
-            totalAmount = bookingExtraService.calculateUnpaidServicesTotalAmount(bookingID);
+            totalAmount = bookingExtraService.calculateUnpaidServicesTotalAmount(bookingId);
         } else {
             BookingExtension bookingExtension = bookingExtensionService
-                    .getLatestBookingExtensionByBookingID(bookingID);
+                    .getLatestBookingExtensionByBookingId(bookingId);
             totalAmount = bookingExtensionService.calculateFinalExtensionAmount(bookingExtension);
         }
         if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
             BookingExtension bookingExtension = bookingExtensionService
-                    .getLatestBookingExtensionByBookingID(booking.getBookingID());
+                    .getLatestBookingExtensionByBookingId(booking.getBookingId());
 
             // Cập nhật checkout, giá
-            bookingService.handleSaveBookingAfterExtend(booking.getBookingID(),
+            bookingService.handleSaveBookingAfterExtend(booking.getBookingId(),
                     bookingExtension);
 
             // Cập nhật lịch trình của phòng
@@ -180,16 +180,16 @@ public class PaymentService {
         return paymentRepository.findAll(spec, pageable);
     }
 
-    public Payment getPaymentByID(Long paymentID) {
-        Optional<Payment> paymentOpt = paymentRepository.findByPaymentID(paymentID);
+    public Payment getPaymentById(Long paymentId) {
+        Optional<Payment> paymentOpt = paymentRepository.findByPaymentId(paymentId);
         if (!paymentOpt.isPresent()) {
             throw new NotFoundException("Lịch sử thanh toán");
         }
         return paymentOpt.get();
     }
 
-    public Payment getPaymentByBookingID(Long bookingID) {
-        Optional<Payment> paymentOpt = paymentRepository.findByBooking_BookingID(bookingID);
+    public Payment getPaymentByBookingId(Long bookingId) {
+        Optional<Payment> paymentOpt = paymentRepository.findByBooking_BookingId(bookingId);
         if (!paymentOpt.isPresent())
             return null;
         return paymentOpt.get();

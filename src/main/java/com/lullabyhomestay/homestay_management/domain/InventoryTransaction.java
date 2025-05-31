@@ -26,22 +26,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "InventoryTransactions")
+@Table(name = "inventory_transactions")
 public class InventoryTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TransactionID")
-    private Long transactionID;
+    private Long transactionId;
 
-    @Column(name = "Quantity")
     @Min(value = 1, message = "Số lượng phải lớn hơn 0")
     @NotNull(message = "Vui lòng nhập số lượng")
     private Integer quantity;
 
-    @Column(name = "CreatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "TransactionType")
@@ -49,16 +47,16 @@ public class InventoryTransaction {
     private TransactionType transactionType;
 
     @ManyToOne
-    @JoinColumn(name = "ItemID")
+    @JoinColumn(name = "item_id")
     @NotNull(message = "Vui lòng chọn đồ dùng")
     private InventoryItem inventoryItem;
 
     @ManyToOne
-    @JoinColumn(name = "BranchID")
+    @JoinColumn(name = "branch_id")
     @NotNull(message = "Vui lòng chọn chi nhánh")
     private Branch branch;
 
     @ManyToOne
-    @JoinColumn(name = "EmployeeID")
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 }

@@ -18,16 +18,16 @@ public interface MaintenanceRequestRepository
 
     Page<MaintenanceRequest> findAll(Specification<MaintenanceRequest> spec, Pageable page);
 
-    Optional<MaintenanceRequest> findByRequestID(long requestID);
+    Optional<MaintenanceRequest> findByRequestId(long requestId);
 
     MaintenanceRequest save(MaintenanceRequest request);
 
-    void deleteByRequestID(long id);
+    void deleteByRequestId(long id);
 
-    boolean existsByRoom_RoomID(long roomID);
+    boolean existsByRoom_RoomId(long roomId);
 
-    boolean existsByEmployee_EmployeeID(long employeeID);
+    boolean existsByEmployee_EmployeeId(long employeeId);
 
-    boolean existsByBranch_BranchID(long branchID);
+    boolean existsByBranch_BranchId(long branchId);
 
 }

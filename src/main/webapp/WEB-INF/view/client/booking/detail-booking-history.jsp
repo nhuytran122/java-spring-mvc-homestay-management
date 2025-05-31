@@ -27,7 +27,7 @@
         </div>
 
         <div class="row g-4">
-            <c:set var="bookingID" value="${booking.bookingID}"/>
+            <c:set var="bookingId" value="${booking.bookingId}"/>
             <c:set var="room" value="${booking.room}"/>
             <c:set var="branch" value="${room.branch}"/>
             <c:set var="status" value="${booking.status}"/>
@@ -44,7 +44,7 @@
                         </c:otherwise>
                     </c:choose> 
                     <div class="card-body">
-                        <a href="/room/${room.roomID}" style="text-decoration: none;"><h3 class="card-title">Phòng ${room.roomNumber} - ${room.roomType.name}</h3></a>
+                        <a href="/room/${room.roomId}" style="text-decoration: none;"><h3 class="card-title">Phòng ${room.roomNumber} - ${room.roomType.name}</h3></a>
                         <p class="text-muted">
                             <i class="bi bi-geo-alt me-1"></i> ${branch.branchName} - ${branch.address}
                         </p>
@@ -84,13 +84,13 @@
                             <c:choose>
                                 <c:when test="${not empty booking.review}">
                                     <c:set var="review" value="${booking.review}"/>
-                                    <c:set var="reviewID" value="${review.reviewID}"/>
+                                    <c:set var="reviewId" value="${review.reviewId}"/>
                                     <c:set var="comment" value="${review.comment}"/>
                                     <c:set var="rating" value="${review.rating}"/>
                                     <c:set var="r_image" value="${review.image}"/>
                                     <c:set var="cAvatar" value="${sessionScope.avatar}"/>
                                     <c:set var="cFullName" value="${sessionScope.fullName}"/>
-                                    <div class="mb-3 review-container" id="review-${reviewID}">
+                                    <div class="mb-3 review-container" id="review-${reviewId}">
                                         <div class="review-content">
                                             <div class="d-flex">
                                                 <div class="me-3">
@@ -103,17 +103,17 @@
                                                         <h6 class="mb-0">${cFullName}</h6>
                                                         <div class="d-flex align-items-center">
                                                             <small class="text-muted me-3">Đăng vào: ${f:formatLocalDateTime(review.createdAt)}</small>
-                                                            <button class="btn btn-warning btn-sm edit-review-btn me-1" data-review-id="${reviewID}">
+                                                            <button class="btn btn-warning btn-sm edit-review-btn me-1" data-review-id="${reviewId}">
                                                                 <i class="bi bi-pencil"></i>
                                                             </button>
                                                             <button class="btn btn-danger btn-sm delete-review-btn"
-                                                                data-review-id="${reviewID}"
+                                                                data-review-id="${reviewId}"
                                                                 onclick="checkBeforeDelete(this)" 
-                                                                    data-entity-id="${reviewID}" 
+                                                                    data-entity-id="${reviewId}" 
                                                                     data-entity-name="${comment}" 
                                                                     data-entity-type="đánh giá" 
                                                                     data-delete-url="/review/delete" 
-                                                                    data-id-name="reviewID">
+                                                                    data-id-name="reviewId">
                                                                 <i class="bi bi-trash"></i> 
                                                             </button>
                                                         </div>
@@ -138,8 +138,8 @@
 
                                         <div class="edit-review-form mt-3" style="display: none;">
                                             <form:form modelAttribute="editReview" action="/review/update" method="post" enctype="multipart/form-data">
-                                                <form:hidden path="reviewID" value="${reviewID}"/>
-                                                <form:hidden path="booking.bookingID" value="${bookingID}"/>
+                                                <form:hidden path="reviewId" value="${reviewId}"/>
+                                                <form:hidden path="booking.bookingId" value="${bookingId}"/>
                                                 
                                                 <div class="d-flex">
                                                     <div class="me-3">
@@ -199,7 +199,7 @@
                                         <c:when test="${status == 'COMPLETED'}">
                                             <p>Bạn đã trải nghiệm đặt phòng tại homestay, để lại cảm nhận của bạn ngay!</p>
                                             <form:form id="reviewForm" modelAttribute="newReview" action="/review/create" method="post" enctype="multipart/form-data">
-                                                <form:hidden path="booking" value="${bookingID}"/>
+                                                <form:hidden path="booking" value="${bookingId}"/>
                                                 <c:set var="errorRating">
                                                     <form:errors path="rating" cssClass="invalid-feedback" />
                                                 </c:set>
@@ -254,13 +254,13 @@
                         <div class="d-flex justify-content-between gap-2">
                             <button class="btn btn-primary btn-sm flex-fill"
                                 onclick="checkBeforeBookServices(this)"
-                                data-booking-id="${bookingID}"
+                                data-booking-id="${bookingId}"
                                 data-booking-status="${status}">
                                 <i class="bi bi-plus-circle me-1"></i>Đặt dịch vụ
                             </button>
                             <button class="btn btn-success btn-sm"
                                 onclick="checkBeforeBookingExtension(this)"
-                                data-booking-id="${bookingID}">
+                                data-booking-id="${bookingId}">
                                 <i class="bi bi-clock me-1"></i>Gia hạn giờ thuê
                             </button>
                         </div>
@@ -288,7 +288,7 @@
                                 </c:if>
 
                                 <c:if test="${status == 'PENDING'}">
-                                    <a onclick="handlePayment('${bookingID}', 'ROOM_BOOKING', true)" class="btn btn-sm btn-primary">
+                                    <a onclick="handlePayment('${bookingId}', 'ROOM_BOOKING', true)" class="btn btn-sm btn-primary">
                                         <i class="bi bi-credit-card"></i> Thanh toán
                                     </a>
                                 </c:if>
@@ -421,7 +421,7 @@
                                             <div class="col-auto mt-3 mt-md-0">
                                                 <c:if test="${canPayBServices}">
                                                     <button class="btn btn-primary btn-sm px-4"
-                                                            onclick="handlePayment('${bookingID}', 'ADDITIONAL_SERVICE', true)">
+                                                            onclick="handlePayment('${bookingId}', 'ADDITIONAL_SERVICE', true)">
                                                         <i class="bi bi-wallet2 me-1"></i> Thanh toán <br> (<fmt:formatNumber value="${totalUnpaidPostpaidAmount}" />đ)
                                                     </button>
                                                 </c:if>
@@ -551,7 +551,7 @@
                             <div class="d-grid gap-2">
                                 <button class="btn btn-danger btn-sm"
                                     onclick="checkBeforeCancel(this)"
-                                    data-entity-id="${bookingID}"
+                                    data-entity-id="${bookingId}"
                                     data-role="customer">
                                     Hủy đặt phòng
                                 </button>

@@ -63,7 +63,7 @@ public class BookingServiceController {
     public String getCreateBookingServicePage(Model model, @PathVariable long id) {
         BookingServices newBookingServices = new BookingServices();
         boolean canBook = bookingService.canBookServiceOrBookExtension(id);
-        newBookingServices.setBooking(bookingService.getBookingByID(id));
+        newBookingServices.setBooking(bookingService.getBookingById(id));
         model.addAttribute("newBookingService", newBookingServices);
         if (!canBook) {
             model.addAttribute("canBook", canBook);
@@ -82,12 +82,12 @@ public class BookingServiceController {
             return "admin/booking-service/create";
         }
         bookingExtraService.handleSaveBookingServiceExtra(bookingService);
-        return "redirect:/admin/booking/" + bookingService.getBooking().getBookingID();
+        return "redirect:/admin/booking/" + bookingService.getBooking().getBookingId();
     }
 
     @GetMapping("/update/{id}")
     public String getUpdateBookingServicePage(Model model, @PathVariable long id) {
-        BookingServices bookingService = bookingExtraService.getBookingServiceByID(id);
+        BookingServices bookingService = bookingExtraService.getBookingServiceById(id);
         model.addAttribute("bookingService", bookingService);
         boolean canUpdate = bookingExtraService.canUpdateAndDeleteBookingService(id);
         model.addAttribute("canUpdate", canUpdate);
@@ -100,14 +100,14 @@ public class BookingServiceController {
             BindingResult result,
             HttpServletRequest request) {
 
-        Long bookingServiceID = bookingService.getBookingServiceID();
-        BookingServices currentBookingService = this.bookingExtraService.getBookingServiceByID(bookingServiceID);
+        Long bookingServiceId = bookingService.getBookingServiceId();
+        BookingServices currentBookingService = this.bookingExtraService.getBookingServiceById(bookingServiceId);
         if (result.hasErrors()) {
             return "admin/booking-service/update";
         }
         currentBookingService.setDescription(bookingService.getDescription());
         this.bookingExtraService.updateQuantityBookingServices(currentBookingService, bookingService.getQuantity());
-        return "redirect:/admin/booking/" + currentBookingService.getBooking().getBookingID();
+        return "redirect:/admin/booking/" + currentBookingService.getBooking().getBookingId();
     }
 
     @GetMapping("/can-handle/{id}")
@@ -117,9 +117,9 @@ public class BookingServiceController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteBranch(@RequestParam("bookingServiceID") Long bookingServiceID,
+    public String postDeleteBranch(@RequestParam("bookingServiceId") Long bookingServiceId,
             HttpServletRequest request) {
-        this.bookingExtraService.deleteBookingServiceByID(bookingServiceID);
+        this.bookingExtraService.deleteBookingServiceById(bookingServiceId);
         return redirectToReferer(request, "admin/booking-service");
     }
 
@@ -134,9 +134,9 @@ public class BookingServiceController {
     @PostMapping("/update-status")
     @ResponseBody
     public ResponseEntity<?> updateBookingServiceStatus(
-            @RequestParam("bookingServiceID") Long bookingServiceID,
+            @RequestParam("bookingServiceId") Long bookingServiceId,
             @RequestParam("status") String status) {
-        BookingServices bService = bookingExtraService.getBookingServiceByID(bookingServiceID);
+        BookingServices bService = bookingExtraService.getBookingServiceById(bookingServiceId);
         BookingServiceStatus currentStatus = bService.getStatus();
         BookingServiceStatus newStatus = BookingServiceStatus.valueOf(status.toUpperCase());
 

@@ -38,7 +38,7 @@ public class BookingCompletionScheduler {
                 bookingService.handleSaveBooking(booking);
                 // UPDATE điểm khi booking COMPLETE
                 customerService.updateRewardPointsAndCustomerType(
-                        booking.getCustomer().getCustomerID(),
+                        booking.getCustomer().getCustomerId(),
                         booking.getTotalAmount());
                 bookingService.handleSaveBooking(booking);
             }

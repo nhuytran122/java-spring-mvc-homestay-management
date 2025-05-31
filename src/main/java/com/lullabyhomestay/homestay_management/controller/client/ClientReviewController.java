@@ -42,24 +42,24 @@ public class ClientReviewController {
             HttpServletRequest request) {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         if (result.hasErrors()) {
-            Booking booking = bookingService.getBookingByID(review.getBooking().getBookingID());
+            Booking booking = bookingService.getBookingById(review.getBooking().getBookingId());
             BookingUtils.validateBooking(booking, customerDTO);
             BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
             model.addAttribute("booking", booking);
             return "client/booking/detail-booking-history";
         }
-        Booking booking = bookingService.getBookingByID(review.getBooking().getBookingID());
+        Booking booking = bookingService.getBookingById(review.getBooking().getBookingId());
 
         if (booking != null && booking.getStatus().toString().equals("COMPLETED")
-                && booking.getCustomer().getCustomerID().equals(customerDTO.getCustomerID())) {
+                && booking.getCustomer().getCustomerId().equals(customerDTO.getCustomerId())) {
             if (!file.isEmpty()) {
                 String img = this.uploadService.handleSaveUploadFile(file, "review");
                 review.setImage(img);
             }
             reviewService.handleSaveReview(review);
         }
-        return "redirect:/booking/booking-history/" + review.getBooking().getBookingID();
+        return "redirect:/booking/booking-history/" + review.getBooking().getBookingId();
     }
 
     @PostMapping("/review/update")
@@ -69,11 +69,11 @@ public class ClientReviewController {
             @RequestParam(value = "fileImg") MultipartFile file,
             Model model) {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
-        Long bookingID = review.getBooking().getBookingID();
-        Long reviewID = review.getReviewID();
+        Long bookingId = review.getBooking().getBookingId();
+        Long reviewId = review.getReviewId();
 
         if (result.hasErrors()) {
-            Booking booking = bookingService.getBookingByID(review.getBooking().getBookingID());
+            Booking booking = bookingService.getBookingById(review.getBooking().getBookingId());
             BookingUtils.validateBooking(booking, customerDTO);
             BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
 
@@ -81,11 +81,11 @@ public class ClientReviewController {
             return "client/booking/detail-booking-history";
         }
 
-        Booking booking = bookingService.getBookingByID(bookingID);
-        Review existingReview = reviewService.getReviewByID(reviewID);
+        Booking booking = bookingService.getBookingById(bookingId);
+        Review existingReview = reviewService.getReviewById(reviewId);
 
         if (booking != null && existingReview != null && booking.getStatus().toString().equals("COMPLETED")
-                && booking.getCustomer().getCustomerID().equals(customerDTO.getCustomerID())) {
+                && booking.getCustomer().getCustomerId().equals(customerDTO.getCustomerId())) {
             existingReview.setRating(review.getRating());
             existingReview.setComment(review.getComment());
 
@@ -95,16 +95,16 @@ public class ClientReviewController {
             }
             reviewService.handleSaveReview(existingReview);
         }
-        return "redirect:/booking/booking-history/" + bookingID;
+        return "redirect:/booking/booking-history/" + bookingId;
     }
 
     @PostMapping("/review/delete")
-    public String deleteReview(@RequestParam("reviewID") Long reviewID) {
+    public String deleteReview(@RequestParam("reviewId") Long reviewId) {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
-        Review review = reviewService.getReviewByID(reviewID);
+        Review review = reviewService.getReviewById(reviewId);
         BookingUtils.validateBooking(review.getBooking(), customerDTO);
 
-        reviewService.deleteByReviewID(reviewID);
-        return "redirect:/booking/booking-history/" + review.getBooking().getBookingID();
+        reviewService.deleteByReviewId(reviewId);
+        return "redirect:/booking/booking-history/" + review.getBooking().getBookingId();
     }
 }

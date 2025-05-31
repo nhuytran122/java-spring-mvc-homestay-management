@@ -42,8 +42,8 @@ public class HomestayInforService {
         this.homestayDetailRepository.save(infor);
     }
 
-    public HomestayDetail getInforHomestayByInforID(long inforID) {
-        Optional<HomestayDetail> infOpt = homestayDetailRepository.findByInforID(inforID);
+    public HomestayDetail getInforHomestayByInforId(long inforId) {
+        Optional<HomestayDetail> infOpt = homestayDetailRepository.findByInforId(inforId);
         if (!infOpt.isPresent()) {
             throw new NotFoundException("Thông tin");
         }
@@ -51,7 +51,7 @@ public class HomestayInforService {
     }
 
     @Transactional
-    public void deleteByInforID(long inforID) {
-        this.homestayDetailRepository.deleteByInforID(inforID);
+    public void deleteByInforId(long inforId) {
+        this.homestayDetailRepository.deleteByInforId(inforId);
     }
 }

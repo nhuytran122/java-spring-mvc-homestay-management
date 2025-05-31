@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lullabyhomestay.homestay_management.domain.RoomAmenity;
-import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityId;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
 import com.lullabyhomestay.homestay_management.repository.RoomAmenityRepository;
 
@@ -18,17 +18,17 @@ import lombok.AllArgsConstructor;
 public class RoomAmenityService {
     private final RoomAmenityRepository roomAmenityRepository;
 
-    public List<RoomAmenity> getListRoomAmenitiesByRoomID(long roomID) {
-        return this.roomAmenityRepository.findByRoom_RoomID(roomID);
+    public List<RoomAmenity> getListRoomAmenitiesByRoomId(long roomId) {
+        return this.roomAmenityRepository.findByRoom_RoomId(roomId);
     }
 
     public RoomAmenity handleSaveRoomAmenity(RoomAmenity roomAmenity) {
         return this.roomAmenityRepository.save(roomAmenity);
     }
 
-    public RoomAmenity getRoomAmenityByID(long roomID, long amenityID) {
-        RoomAmenityID id = new RoomAmenityID(roomID, amenityID);
-        Optional<RoomAmenity> roomAmenityOpt = roomAmenityRepository.findByRoomAmenityID(id);
+    public RoomAmenity getRoomAmenityById(long roomId, long amenityId) {
+        RoomAmenityId id = new RoomAmenityId(roomId, amenityId);
+        Optional<RoomAmenity> roomAmenityOpt = roomAmenityRepository.findByRoomAmenityId(id);
         if (!roomAmenityOpt.isPresent()) {
             throw new NotFoundException("Tiện nghi phòng");
         }
@@ -36,9 +36,9 @@ public class RoomAmenityService {
     }
 
     @Transactional
-    public void deleteByRoomAmenityID(long roomID, long amenityID) {
-        RoomAmenityID id = new RoomAmenityID(roomID, amenityID);
-        roomAmenityRepository.deleteByRoomAmenityID(id);
+    public void deleteByRoomAmenityId(long roomId, long amenityId) {
+        RoomAmenityId id = new RoomAmenityId(roomId, amenityId);
+        roomAmenityRepository.deleteByRoomAmenityId(id);
     }
 
 }

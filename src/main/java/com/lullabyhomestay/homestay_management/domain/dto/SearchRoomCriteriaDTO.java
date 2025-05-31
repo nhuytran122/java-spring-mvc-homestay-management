@@ -8,16 +8,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SearchRoomCriteriaDTO {
-    private Long roomTypeID;
-    private Long branchID;
+    private Long roomTypeId;
+    private Long branchId;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
+        if (branchId != null) {
+            extraParams.append("&branchId=").append(branchId);
         }
-        if (roomTypeID != null) {
-            extraParams.append("&roomTypeID=").append(roomTypeID);
+        if (roomTypeId != null) {
+            extraParams.append("&roomTypeId=").append(roomTypeId);
         }
         return extraParams.toString();
     }

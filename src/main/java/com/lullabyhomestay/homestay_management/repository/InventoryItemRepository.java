@@ -13,13 +13,13 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 
     Page<InventoryItem> findAll(Pageable page);
 
-    Optional<InventoryItem> findByItemID(long itemID);
+    Optional<InventoryItem> findByItemId(long itemId);
 
     InventoryItem save(InventoryItem item);
 
-    void deleteByItemID(long itemID);
+    void deleteByItemId(long itemId);
 
     Page<InventoryItem> findAll(Specification<InventoryItem> spec, Pageable page);
 
-    boolean existsByInventoryCategory_CategoryID(long categoryID);
+    boolean existsByInventoryCategory_CategoryId(long categoryId);
 }

@@ -12,12 +12,12 @@ import lombok.Setter;
 @Setter
 public class SearchEmployeeCriterialDTO {
     private String keyword;
-    private Long roleID;
+    private Long roleId;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (roleID != null) {
-            extraParams.append("&roleID=").append(roleID);
+        if (roleId != null) {
+            extraParams.append("&roleId=").append(roleId);
         }
         if (keyword != null && !keyword.isEmpty()) {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));

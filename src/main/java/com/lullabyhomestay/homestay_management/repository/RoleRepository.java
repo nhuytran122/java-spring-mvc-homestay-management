@@ -13,7 +13,7 @@ import com.lullabyhomestay.homestay_management.utils.SystemRole;
 public interface RoleRepository extends JpaRepository<Role, Long> {
     List<Role> findAll();
 
-    Optional<Role> findByRoleID(long roleID);
+    Optional<Role> findByRoleId(long roleId);
 
     Role findByRoleName(SystemRole role);
 }

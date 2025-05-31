@@ -16,18 +16,18 @@ public interface CustomerTypeRepository extends JpaRepository<CustomerType, Long
 
     Page<CustomerType> findAll(Pageable page);
 
-    Optional<CustomerType> findByCustomerTypeID(Long id);
+    Optional<CustomerType> findByCustomerTypeId(Long id);
 
     Page<CustomerType> findByNameContainingIgnoreCase(String name, Pageable page);
 
     CustomerType save(CustomerType type);
 
-    void deleteByCustomerTypeID(Long id);
+    void deleteByCustomerTypeId(Long id);
 
     Optional<CustomerType> findFirstByOrderByMinPointAsc();
 
     boolean existsByNameIgnoreCase(String name);
 
-    boolean existsByNameIgnoreCaseAndCustomerTypeIDNot(String name, Long customerTypeID);
+    boolean existsByNameIgnoreCaseAndCustomerTypeIdNot(String name, Long customerTypeId);
 
 }

@@ -24,9 +24,9 @@
     let hasError = false;
 
     $(".rule-checkbox:checked").each(function () {
-      let ruleID = $(this).data("rule-id");
+      let ruleId = $(this).data("rule-id");
       let descriptionInput = $(
-        ".rule-description[data-rule-id='" + ruleID + "']"
+        ".rule-description[data-rule-id='" + ruleId + "']"
       );
       let description = descriptionInput.val().trim();
 
@@ -38,7 +38,7 @@
         );
       } else {
         selectedRules.push({
-          ruleID: ruleID,
+          ruleId: ruleId,
           description: description,
         });
       }
@@ -72,11 +72,11 @@
   }
 
   function openEditModal(button) {
-    let ruleID = $(button).data("rule-id");
+    let ruleId = $(button).data("rule-id");
     let ruleTitle = $(button).data("rule-title");
     let ruleDescription = $(button).data("rule-description");
 
-    $("#editRuleId").val(ruleID);
+    $("#editRuleId").val(ruleId);
     $("#editRuleTitle").val(ruleTitle);
     $("#editRuleDescription").val(ruleDescription);
 
@@ -84,7 +84,7 @@
   }
 
   function updateRule() {
-    let ruleID = $("#editRuleId").val();
+    let ruleId = $("#editRuleId").val();
     let description = $("#editRuleDescription").val().trim();
 
     if (description === "") {
@@ -99,7 +99,7 @@
       url: "/admin/homestay-infor/rule/update",
       type: "POST",
       contentType: "application/json",
-      data: JSON.stringify({ ruleID: ruleID, description: description }),
+      data: JSON.stringify({ ruleId: ruleId, description: description }),
       success: function () {
         location.reload();
       },

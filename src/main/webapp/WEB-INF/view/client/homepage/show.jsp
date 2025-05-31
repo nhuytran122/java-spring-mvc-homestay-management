@@ -111,7 +111,7 @@
                                     <li><i class="bi bi-people me-2"></i> Số khách tối đa: ${roomType.maxGuest} người</li>
                                 </ul>
                                 <div class="mt-auto">
-                                    <a href="/room?roomTypeID=${roomType.roomTypeID}" class="btn btn-outline-primary w-100">
+                                    <a href="/room?roomTypeId=${roomType.roomTypeId}" class="btn btn-outline-primary w-100">
                                         <i class="bi bi-door-open me-2"></i> Xem các phòng
                                     </a>
                                 </div>

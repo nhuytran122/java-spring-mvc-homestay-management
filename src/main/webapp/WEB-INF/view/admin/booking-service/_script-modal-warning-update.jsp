@@ -2,19 +2,19 @@
 <jsp:include page="../layout/partial/_modal-warning.jsp" />
 <script>
   function checkBeforeUpdate(button) {
-    let bookingServiceID = $(button).data("booking-service-id");
+    let bookingServiceId = $(button).data("booking-service-id");
     let checkUrl = $(button).data("check-url");
-    // console.log(bookingServiceID);
+    // console.log(bookingServiceId);
 
     $.ajax({
-      url: checkUrl + bookingServiceID,
+      url: checkUrl + bookingServiceId,
 
       type: "GET",
-      data: { id: bookingServiceID },
+      data: { id: bookingServiceId },
       success: function (response) {
         if (response === true) {
           window.location.href =
-            "/admin/booking-service/update/" + bookingServiceID;
+            "/admin/booking-service/update/" + bookingServiceId;
         } else {
           console.log(checkUrl),
             showWarningModal(

@@ -37,15 +37,15 @@ public class InventoryItemService {
         return this.itemRepository.findAll(pageable);
     }
 
-    public Page<InventoryItem> searchItems(String keyword, Long categoryID,
+    public Page<InventoryItem> searchItems(String keyword, Long categoryId,
             int page, String sortOrder) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
                 "asc".equals(sortOrder) ? Sort.by("Price").ascending()
                         : "desc".equals(sortOrder) ? Sort.by("Price").descending() : Sort.unsorted());
-        if ((keyword == null || keyword.isEmpty()) && categoryID == null)
+        if ((keyword == null || keyword.isEmpty()) && categoryId == null)
             return itemRepository
                     .findAll(pageable);
-        Specification<InventoryItem> spec = Specification.where(InventoryItemSpecifications.hasCategory(categoryID))
+        Specification<InventoryItem> spec = Specification.where(InventoryItemSpecifications.hasCategory(categoryId))
                 .and(InventoryItemSpecifications.nameLike(keyword));
         return itemRepository.findAll(spec, pageable);
     }
@@ -54,8 +54,8 @@ public class InventoryItemService {
         this.itemRepository.save(amenity);
     }
 
-    public InventoryItem getInventoryItemByID(long itemID) {
-        Optional<InventoryItem> itemOpt = itemRepository.findByItemID(itemID);
+    public InventoryItem getInventoryItemById(long itemId) {
+        Optional<InventoryItem> itemOpt = itemRepository.findByItemId(itemId);
         if (!itemOpt.isPresent()) {
             throw new NotFoundException("Đồ dùng");
         }
@@ -63,22 +63,22 @@ public class InventoryItemService {
     }
 
     @Transactional
-    public void deleteByInventoryItemID(long itemID) {
-        this.itemRepository.deleteByItemID(itemID);
+    public void deleteByInventoryItemId(long itemId) {
+        this.itemRepository.deleteByItemId(itemId);
     }
 
-    public boolean canDeleteItem(long itemID) {
-        boolean hasStock = stockRepository.existsByInventoryItem_ItemID(itemID);
-        boolean hasTransaction = transactionRepository.existsByInventoryItem_ItemID(itemID);
+    public boolean canDeleteItem(long itemId) {
+        boolean hasStock = stockRepository.existsByInventoryItem_ItemId(itemId);
+        boolean hasTransaction = transactionRepository.existsByInventoryItem_ItemId(itemId);
         return !(hasStock || hasTransaction);
     }
 
     @Transactional
-    public void deleteByItemID(long itemID) {
-        if (!canDeleteItem(itemID)) {
+    public void deleteByItemId(long itemId) {
+        if (!canDeleteItem(itemId)) {
             throw new CannotDeleteException("Đồ dùng");
         }
-        this.itemRepository.deleteByItemID(itemID);
+        this.itemRepository.deleteByItemId(itemId);
 
     }
 }

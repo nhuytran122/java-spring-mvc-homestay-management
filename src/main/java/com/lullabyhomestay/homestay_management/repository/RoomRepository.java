@@ -20,21 +20,20 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
 
         Page<Room> findAll(Pageable page);
 
-        @EntityGraph(attributePaths = { "roomType", "roomAmenities", "branch" })
         Page<Room> findAll(Specification<Room> spec, Pageable page);
 
         @EntityGraph(attributePaths = { "roomType", "roomAmenities", "branch" })
-        Optional<Room> findByRoomID(long roomID);
+        Optional<Room> findByRoomId(long roomId);
 
-        List<Room> findByBranch_BranchID(long branchID);
+        List<Room> findByBranch_BranchId(long branchId);
 
         Room save(Room room);
 
-        void deleteByRoomID(long roomID);
+        void deleteByRoomId(long roomId);
 
-        boolean existsByBranch_BranchID(long branchID);
+        boolean existsByBranch_BranchId(long branchId);
 
-        boolean existsByRoomType_RoomTypeID(long roomType);
+        boolean existsByRoomType_RoomTypeId(long roomType);
 
         @Query(value = """
                         SELECT r FROM Room r
@@ -49,16 +48,29 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
                         Pageable pageable);
 
         @Query(value = """
-                        SELECT TOP 5 r.RoomID, r.RoomNumber, br.BranchName, rt.name, COUNT(b.BookingID) AS bookingCount
+                        SELECT TOP 5 r.RoomId, r.RoomNumber, br.BranchName, rt.name, COUNT(b.BookingId) AS bookingCount
                         FROM Rooms r
-                        LEFT JOIN Bookings b ON b.RoomID = r.RoomID
-                        JOIN Branches br ON r.BranchID = br.BranchID
-                        JOIN RoomTypes rt ON r.RoomTypeID = rt.RoomTypeID
+                        LEFT JOIN Bookings b ON b.RoomId = r.RoomId
+                        JOIN Branches br ON r.BranchId = br.BranchId
+                        JOIN RoomTypes rt ON r.RoomTypeId = rt.RoomTypeId
                         WHERE b.CheckIn BETWEEN :startDate AND :endDate
-                        GROUP BY r.RoomID, r.RoomNumber, br.BranchName, rt.name
+                        GROUP BY r.RoomId, r.RoomNumber, br.BranchName, rt.name
                         ORDER BY bookingCount DESC
                         """, nativeQuery = true)
         List<Object[]> findTop5RoomsWithCount(@Param("startDate") LocalDateTime startDate,
                         @Param("endDate") LocalDateTime endDate);
+
+        // JPQL
+        @Query("""
+                            SELECT r.roomNumber, r.branch.branchName, r.roomType.name, COUNT(b) as bookingCount
+                            FROM Room r
+                            LEFT JOIN Booking b ON b.room = r
+                            WHERE b.checkIn BETWEEN :startDate AND :endDate
+                            GROUP BY r.roomNumber, r.branch.branchName, r.roomType.name
+                            ORDER BY bookingCount DESC
+                        """)
+        List<Object[]> findTopRoomsWithCount(@Param("startDate") LocalDateTime startDate,
+                        @Param("endDate") LocalDateTime endDate,
+                        Pageable pageable);
 
 }

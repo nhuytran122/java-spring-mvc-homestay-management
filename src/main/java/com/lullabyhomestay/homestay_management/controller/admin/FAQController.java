@@ -69,7 +69,7 @@ public class FAQController {
 
     @GetMapping("/update/{id}")
     public String getUpdateFaqPage(Model model, @PathVariable long id) {
-        FAQ faq = faqService.getFAQByFAQID(id);
+        FAQ faq = faqService.getFAQByFAQId(id);
 
         model.addAttribute("faq", faq);
         return "admin/faq/update";
@@ -83,7 +83,7 @@ public class FAQController {
 
         // HttpSession session = request.getSession(false);
 
-        FAQ currentFAQ = this.faqService.getFAQByFAQID(faq.getFaqID());
+        FAQ currentFAQ = this.faqService.getFAQByFAQId(faq.getFaqId());
 
         if (newFaqBindingResult.hasErrors()) {
             return "admin/faq/update";
@@ -97,8 +97,8 @@ public class FAQController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteFaq(@RequestParam("faqID") long faqID) {
-        this.faqService.deleteByFAQID(faqID);
+    public String postDeleteFaq(@RequestParam("faqId") long faqId) {
+        this.faqService.deleteByFAQId(faqId);
         return "redirect:/admin/homestay-infor/faq";
     }
 }

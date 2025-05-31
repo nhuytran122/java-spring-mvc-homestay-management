@@ -12,15 +12,15 @@ import lombok.Data;
 
 @Data
 public class RevenueStatisticsCriteriaDTO {
-    private Long branchID;
+    private Long branchId;
     private PaymentPurpose purpose;
     private ReportType type = ReportType.DAILY;
     private String timeRange;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
+        if (branchId != null) {
+            extraParams.append("&branchId=").append(branchId);
         }
         if (purpose != null) {
             extraParams.append("&purpose=").append(purpose);

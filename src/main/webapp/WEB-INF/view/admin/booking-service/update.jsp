@@ -10,7 +10,7 @@ uri="http://www.springframework.org/tags/form" %>
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Sửa việc đặt dịch vụ</title>
+    <title>Sửa đơn đặt dịch vụ</title>
     <jsp:include page="../layout/import-css.jsp" />
   </head>
   <body>
@@ -28,7 +28,7 @@ uri="http://www.springframework.org/tags/form" %>
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title mb-4 text-center">
-                      Sửa việc đặt dịch vụ
+                      Sửa đơn đặt dịch vụ
                     </h4>
                     <form:form
                       class="form-horizontal"
@@ -36,8 +36,8 @@ uri="http://www.springframework.org/tags/form" %>
                       method="post"
                       modelAttribute="bookingService"
                     >
-                      <form:input type="hidden" path="bookingServiceID" />
-                      <form:input type="hidden" path="booking.bookingID" />
+                      <form:input type="hidden" path="bookingServiceId" />
+                      <form:input type="hidden" path="booking.bookingId" />
 
                       <c:set var="errorQuantity">
                         <form:errors
@@ -60,7 +60,7 @@ uri="http://www.springframework.org/tags/form" %>
                           <form:input
                             disabled="true"
                             class="form-control"
-                            path="booking.bookingID"
+                            path="booking.bookingId"
                           />
                         </div>
                       </div>
@@ -139,12 +139,12 @@ uri="http://www.springframework.org/tags/form" %>
     <script>
       $(document).ready(function () {
         let canUpdate = $('.data-check input[type="hidden"]').data("can-update");
-        let bookingID = $('input[name="booking\\.bookingID"]').val();
+        let bookingId = $('input[name="booking\\.bookingId"]').val();
     
         if (canUpdate === false) {
           showWarningModal("Đơn đặt dịch vụ này đã được thanh toán, không thể sửa");
           $("#warningModal").on("hidden.bs.modal", function () {
-            window.location.href = "/admin/booking/" + bookingID;
+            window.location.href = "/admin/booking/" + bookingId;
           });
         }
       });

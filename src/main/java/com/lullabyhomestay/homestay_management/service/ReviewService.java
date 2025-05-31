@@ -30,42 +30,42 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    public Review getReviewByID(Long reviewID) {
-        Optional<Review> reviewOpt = reviewRepository.findByReviewID(reviewID);
+    public Review getReviewById(Long reviewId) {
+        Optional<Review> reviewOpt = reviewRepository.findByReviewId(reviewId);
         if (!reviewOpt.isPresent()) {
             throw new NotFoundException("Đánh giá");
         }
         return reviewOpt.get();
     }
 
-    public List<Review> getReviewsByRoomID(Long roomID) {
-        return reviewRepository.findByRoomID(roomID);
+    public List<Review> getReviewsByRoomId(Long roomId) {
+        return reviewRepository.findByRoomId(roomId);
     }
 
     @Transactional
-    public void deleteByReviewID(Long reviewID) {
-        Review review = getReviewByID(reviewID);
+    public void deleteByReviewId(Long reviewId) {
+        Review review = getReviewById(reviewId);
         Booking booking = review.getBooking();
         if (booking != null) {
             booking.setReview(null);
             bookingRepository.save(booking);
         }
-        reviewRepository.deleteByReviewID(reviewID);
+        reviewRepository.deleteByReviewId(reviewId);
     }
 
     public List<Review> getAllFiveStarReviews() {
         return reviewRepository.findTop10ByRatingOrderByCreatedAtDesc(5);
     }
 
-    public Page<Review> searchReviews(Long branchID, String sortOrder, int page) {
+    public Page<Review> searchReviews(Long branchId, String sortOrder, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE,
                 "asc".equals(sortOrder) ? Sort.by("rating").ascending()
                         : "desc".equals(sortOrder) ? Sort.by("rating").descending() : Sort.unsorted());
-        if (branchID == null)
+        if (branchId == null)
             return reviewRepository
                     .findAll(pageable);
-        return (branchID == null)
+        return (branchId == null)
                 ? reviewRepository.findAll(pageable)
-                : reviewRepository.findByBranchID(branchID, pageable);
+                : reviewRepository.findByBranchId(branchId, pageable);
     }
 }

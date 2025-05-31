@@ -24,8 +24,6 @@
                     </div>
                     <div class="card-body p-4">
                         <form:form class="row g-4" action="/profile/update" method="POST" enctype="multipart/form-data" modelAttribute="user">
-                            
-
                             <c:set var="errorName">
                                 <form:errors path="fullName" cssClass="invalid-feedback" />
                             </c:set>

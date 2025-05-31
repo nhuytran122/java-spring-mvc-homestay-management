@@ -16,16 +16,16 @@ public interface RoomTypeRepository extends JpaRepository<RoomType, Long> {
 
     Page<RoomType> findAll(Pageable page);
 
-    Optional<RoomType> findByRoomTypeID(long roomTypeId);
+    Optional<RoomType> findByRoomTypeId(long roomTypeId);
 
     Page<RoomType> findByNameContainingIgnoreCase(String roomTypeName, Pageable page);
 
     RoomType save(RoomType roomType);
 
-    void deleteByRoomTypeID(long id);
+    void deleteByRoomTypeId(long id);
 
     boolean existsByNameIgnoreCase(String name);
 
-    boolean existsByNameIgnoreCaseAndRoomTypeIDNot(String name, Long roomTypeID);
+    boolean existsByNameIgnoreCaseAndRoomTypeIdNot(String name, Long roomTypeId);
 
 }

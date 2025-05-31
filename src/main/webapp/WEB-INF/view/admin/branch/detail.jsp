@@ -28,17 +28,17 @@
                                         </div>
                                         <div class="col-md-6 text-end">
                                             <div class="btn-group">
-                                                <a href="/admin/branch/update/${branch.branchID}" class="btn btn-warning btn-sm">
+                                                <a href="/admin/branch/update/${branch.branchId}" class="btn btn-warning btn-sm">
                                                     <i class="bi bi-pencil"></i> Sửa
                                                 </a>
                                                 <button class="btn btn-danger btn-sm" title="Xóa"
                                                     onclick="checkBeforeDelete(this)" 
-                                                        data-entity-id="${branch.branchID}" 
+                                                        data-entity-id="${branch.branchId}" 
                                                         data-entity-name="${branch.branchName}" 
                                                         data-entity-type="Chi nhánh" 
                                                         data-delete-url="/admin/branch/delete" 
                                                         data-check-url="/admin/branch/can-delete/" 
-                                                        data-id-name="branchID">
+                                                        data-id-name="branchId">
                                                     <i class="bi bi-trash"></i> Xóa
                                                 </button>
                                                 <a href="/admin/branch" class="btn btn-secondary btn-sm">

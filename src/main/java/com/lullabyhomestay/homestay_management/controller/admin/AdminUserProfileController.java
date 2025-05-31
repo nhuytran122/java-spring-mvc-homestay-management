@@ -32,8 +32,8 @@ public class AdminUserProfileController {
 
     @GetMapping("")
     public String getProfilePage(Model model, HttpSession session) {
-        Long userID = AuthUtils.getLoggedInUserID(session);
-        model.addAttribute("user", employeeService.getEmployeeDTOByUserID(userID));
+        Long userId = AuthUtils.getLoggedInUserID(session);
+        model.addAttribute("user", employeeService.getEmployeeDTOByUserId(userId));
         return "admin/profile/show";
     }
 
@@ -50,7 +50,7 @@ public class AdminUserProfileController {
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Long userID = AuthUtils.getLoggedInUserID(session);
+        Long userId = AuthUtils.getLoggedInUserID(session);
         if (result.hasErrors())
             return "admin/profile/update";
         String img;
@@ -58,7 +58,7 @@ public class AdminUserProfileController {
             img = this.uploadService.handleSaveUploadFile(file, "avatar");
             userDTO.setAvatar(img);
         }
-        userDTO = userService.updateProfile(userID, userDTO);
+        userDTO = userService.updateProfile(userId, userDTO);
         AuthUtils.handleUpdateUserSession(userDTO, session);
         return "redirect:/admin/profile";
     }
@@ -74,12 +74,12 @@ public class AdminUserProfileController {
             BindingResult result,
             HttpSession session,
             Model model) {
-        Long userID = AuthUtils.getLoggedInUserID(session);
+        Long userId = AuthUtils.getLoggedInUserID(session);
         if (result.hasErrors()) {
             return "admin/profile/change-password";
         }
         try {
-            userService.changePassword(userID, passwordForm.getNewPassword());
+            userService.changePassword(userId, passwordForm.getNewPassword());
         } catch (Exception e) {
             e.printStackTrace();
         }

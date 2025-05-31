@@ -15,7 +15,7 @@ public interface RuleRepository extends JpaRepository<Rule, Long> {
 
     List<Rule> findByIsHidden(Boolean isHidden);
 
-    Optional<Rule> findByRuleID(long ruleID);
+    Optional<Rule> findByRuleId(long ruleId);
 
-    Rule save(Rule rule);    
+    Rule save(Rule rule);
 }

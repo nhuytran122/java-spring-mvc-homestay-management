@@ -27,7 +27,7 @@
                                 <h4 class="card-title mb-4 text-center">Sửa loại phòng</h4>
                                 <form:form class="form-horizontal" action="/admin/room-type/update" method="post"
                                     modelAttribute="roomType" enctype="multipart/form-data">
-                                    <form:input type="hidden" path="roomTypeID" />
+                                    <form:input type="hidden" path="roomTypeId" />
                                     <c:set var="errorName">
                                         <form:errors path="name" cssClass="invalid-feedback" />
                                     </c:set>

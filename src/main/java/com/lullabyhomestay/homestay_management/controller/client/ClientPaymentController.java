@@ -37,9 +37,9 @@ public class ClientPaymentController {
 
     @GetMapping("/checkout")
     @ResponseBody
-    public ResponseEntity<ApiResponseDTO<String>> handlePay(@RequestParam Long bookingID,
+    public ResponseEntity<ApiResponseDTO<String>> handlePay(@RequestParam Long bookingId,
             @RequestParam PaymentPurpose paymentPurpose, HttpServletRequest request, Model model) {
-        String paymentUrl = paymentService.createVnPayPaymentURL(request, bookingID, paymentPurpose);
+        String paymentUrl = paymentService.createVnPayPaymentURL(request, bookingId, paymentPurpose);
         return ResponseEntity.ok(new ApiResponseDTO<>(paymentUrl, "Thực hiện thanh toán"));
     }
 
@@ -48,7 +48,7 @@ public class ClientPaymentController {
         String status = request.getParameter("vnp_ResponseCode");
         String orderInfo = request.getParameter("vnp_OrderInfo");
         String[] parts = orderInfo.split("_PURPOSE_");
-        Long bookingID = Long.parseLong(parts[0].replace("BOOKING_", ""));
+        Long bookingId = Long.parseLong(parts[0].replace("BOOKING_", ""));
         PaymentPurpose paymentPurpose = PaymentPurpose.valueOf(parts[1]);
         if (status.equals("00")) {
             Payment payment = new Payment();
@@ -70,7 +70,7 @@ public class ClientPaymentController {
                 session.setAttribute("bookingRequest", null);
             }
 
-            Booking booking = bookingService.getBookingByID(bookingID);
+            Booking booking = bookingService.getBookingById(bookingId);
             payment.setBooking(booking);
             String vnpAmountStr = request.getParameter("vnp_Amount");
             if (vnpAmountStr == null) {
@@ -80,10 +80,10 @@ public class ClientPaymentController {
             payment.setTotalAmount(totalAmount);
             paymentService.handleSavePaymentWhenCheckout(payment, paymentPurpose);
 
-            return "redirect:/booking/booking-history/" + bookingID;
+            return "redirect:/booking/booking-history/" + bookingId;
         } else if (status.equals("24")) {
             if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
-                bookingExtensionService.deleteLatestExtensionByBookingID(bookingID);
+                bookingExtensionService.deleteLatestExtensionByBookingId(bookingId);
                 redirectAttributes.addFlashAttribute("errorMessage", "Giao dịch của bạn đã bị hủy");
             }
         }

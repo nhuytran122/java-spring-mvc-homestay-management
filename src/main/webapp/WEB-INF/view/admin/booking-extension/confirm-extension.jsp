@@ -142,7 +142,7 @@ uri="http://lullabyhomestay.com/functions" %>
                     <input
                       type="hidden"
                       name="id"
-                      value="${extension.extensionID}"
+                      value="${extension.extensionId}"
                     />
                     <button
                       type="submit"
@@ -191,7 +191,7 @@ uri="http://lullabyhomestay.com/functions" %>
           }
 
           let requestData = {
-            extensionID: "${extension.extensionID}",
+            extensionId: "${extension.extensionId}",
             paymentMethod: paymentMethod,
           };
 

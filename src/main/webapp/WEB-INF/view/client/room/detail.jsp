@@ -46,7 +46,7 @@
                     
                     <div class="room-info my-4">
                         <h1 class="mb-3">Phòng ${room.roomNumber} - ${roomType.name}</h1>
-                        <input type="hidden" id="roomTypeID" value="${roomType.roomTypeID}" />
+                        <input type="hidden" id="roomTypeId" value="${roomType.roomTypeId}" />
                         <div class="d-flex align-items-center mb-3 ">
                             <span class="badge bg-primary me-2">${branch.branchName}</span>
                             <span class="text-muted">${branch.address}</span>
@@ -109,7 +109,7 @@
                                 <c:set var="errorGuestCount">
                                     <form:errors path="guestCount" cssClass="invalid-feedback" />
                                 </c:set>
-                                <form:input type="hidden" path="room.roomID" value="${room.roomID}" />
+                                <form:input type="hidden" path="room.roomId" value="${room.roomId}" />
                                 <form:input type="hidden" path="room.roomType.maxGuest" value="${roomType.maxGuest}" />
                                 <div class="row g-3 mb-4">
                                     <div class="col-6">
@@ -225,7 +225,7 @@
             
             let roomTypeName = "${roomType.name}".toLowerCase();
             let isDorm = roomTypeName.includes("dorm");
-            let roomTypeId = $('#roomTypeID').val();
+            let roomTypeId = $('#roomTypeId').val();
 
             function initPickers() {
                 $('#checkin, #checkout').daterangepicker({

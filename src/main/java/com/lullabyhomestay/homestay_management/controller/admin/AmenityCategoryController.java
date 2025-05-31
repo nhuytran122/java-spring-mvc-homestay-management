@@ -83,10 +83,10 @@ public class AmenityCategoryController {
             BindingResult newCategoryBindingResult,
             HttpServletRequest request) {
 
-        AmenityCategory currentCategory = this.amenityCategoryService.getAmenityCategoryByID(category.getCategoryID());
+        AmenityCategory currentCategory = this.amenityCategoryService.getAmenityCategoryByID(category.getCategoryId());
 
         if (amenityCategoryService.existsByNameAndNotId(currentCategory.getCategoryName(),
-                currentCategory.getCategoryID())) {
+                currentCategory.getCategoryId())) {
             newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
                     "Tên phân loại tiện nghi đã tồn tại!");
         }

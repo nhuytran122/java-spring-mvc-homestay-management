@@ -47,27 +47,27 @@ public class BranchService {
         this.branchRepository.save(branch);
     }
 
-    public Branch getBranchByID(long branchID) {
-        Optional<Branch> branchOpt = branchRepository.findByBranchID(branchID);
+    public Branch getBranchById(long branchId) {
+        Optional<Branch> branchOpt = branchRepository.findByBranchId(branchId);
         if (!branchOpt.isPresent()) {
             throw new NotFoundException("Chi nhánh");
         }
         return branchOpt.get();
     }
 
-    public boolean canDeleteBranch(long branchID) {
-        boolean hasRooms = roomRepository.existsByBranch_BranchID(branchID);
-        boolean hasTransactions = inventoryTransactionRepository.existsByBranch_BranchID(branchID);
-        boolean hasInventoryStock = inventoryStockRepository.existsByBranch_BranchID(branchID);
-        boolean hasMaintenance = maintenanceRequestRepository.existsByBranch_BranchID(branchID);
+    public boolean canDeleteBranch(long branchId) {
+        boolean hasRooms = roomRepository.existsByBranch_BranchId(branchId);
+        boolean hasTransactions = inventoryTransactionRepository.existsByBranch_BranchId(branchId);
+        boolean hasInventoryStock = inventoryStockRepository.existsByBranch_BranchId(branchId);
+        boolean hasMaintenance = maintenanceRequestRepository.existsByBranch_BranchId(branchId);
         return !(hasRooms || hasTransactions || hasInventoryStock || hasMaintenance);
     }
 
     @Transactional
-    public void deleteByBranchID(long branchID) {
-        if (!canDeleteBranch(branchID)) {
+    public void deleteByBranchId(long branchId) {
+        if (!canDeleteBranch(branchId)) {
             throw new CannotDeleteException("Chi nhánh");
         }
-        this.branchRepository.deleteByBranchID(branchID);
+        this.branchRepository.deleteByBranchId(branchId);
     }
 }

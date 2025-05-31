@@ -36,7 +36,7 @@ uri="http://www.springframework.org/tags/form" %>
                       method="post"
                       modelAttribute="newBookingService"
                     >
-                      <form:input type="hidden" path="booking.bookingID" />
+                      <form:input type="hidden" path="booking.bookingId" />
                       <input type="hidden" data-can-book="${canBook}">
                       <c:set var="errorQuantity">
                         <form:errors
@@ -59,7 +59,7 @@ uri="http://www.springframework.org/tags/form" %>
                           <form:input
                             disabled="true"
                             class="form-control"
-                            path="booking.bookingID"
+                            path="booking.bookingId"
                           />
                         </div>
                       </div>
@@ -76,7 +76,7 @@ uri="http://www.springframework.org/tags/form" %>
                             <form:option value="">Chọn dịch vụ</form:option>
                             <form:options
                               items="${listServices}"
-                              itemValue="serviceID"
+                              itemValue="serviceId"
                               itemLabel="serviceName"
                             />
                           </form:select>
@@ -142,11 +142,11 @@ uri="http://www.springframework.org/tags/form" %>
       $(document).ready(function () {
         let input = $("input[data-can-book]");
         let canBook = input.data("can-book");
-        let bookingID = $("input[name='booking.bookingID']").val();
+        let bookingId = $("input[name='booking.bookingId']").val();
         if (canBook === false) {
           showWarningModal("Đơn đặt phòng không đủ điều kiện để thêm dịch vụ.");
           $('#warningModal').on('hidden.bs.modal', function () {
-            window.location.href = '/admin/booking/' + bookingID;
+            window.location.href = '/admin/booking/' + bookingId;
           });
         }
       });

@@ -37,45 +37,36 @@ import lombok.Setter;
 @Entity
 @ValidBooking
 @DynamicUpdate
-@Table(name = "Bookings")
+@Table(name = "bookings")
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BookingID")
-    private Long bookingID;
+    private Long bookingId;
 
     @NotNull(message = "Vui lòng nhập giờ checkin")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
-    @Column(name = "CheckIn")
     private LocalDateTime checkIn;
 
     @NotNull(message = "Vui lòng nhập giờ checkout")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
-    @Column(name = "CheckOut")
     private LocalDateTime checkOut;
 
     @NotNull(message = "Vui lòng nhập số lượng khách")
     @Min(value = 1, message = "Số lượng khách phải lớn hơn hoặc bằng 1")
-    @Column(name = "GuestCount")
     private Integer guestCount;
 
-    @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING;
 
-    @Column(name = "CreatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt")
     private LocalDateTime updatedAt;
 
-    @Column(name = "TotalAmount")
     private Double totalAmount;
 
-    @Column(name = "PaidAmount")
     private Double paidAmount;
 
-    @Column(name = "HasSentReminder")
     private Boolean hasSentReminder = false;
 
     @OneToMany(mappedBy = "booking")
@@ -91,12 +82,12 @@ public class Booking {
     List<Payment> payments;
 
     @ManyToOne
-    @JoinColumn(name = "CustomerID")
+    @JoinColumn(name = "customer_id")
     @NotNull(message = "Vui lòng chọn khách hàng đặt phòng", groups = AdminValidation.class)
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "RoomID")
+    @JoinColumn(name = "room_id")
     @NotNull(message = "Vui lòng chọn phòng", groups = AdminValidation.class)
     private Room room;
 

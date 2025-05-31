@@ -28,8 +28,8 @@ public class RuleService {
         this.ruleRepository.save(rule);
     }
 
-    public Rule getRuleByRuleID(long ruleID) {
-        Optional<Rule> ruleOpt = ruleRepository.findByRuleID(ruleID);
+    public Rule getRuleByRuleId(long ruleId) {
+        Optional<Rule> ruleOpt = ruleRepository.findByRuleId(ruleId);
         if (!ruleOpt.isPresent()) {
             throw new NotFoundException("Quy tắc");
         }

@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import com.lullabyhomestay.homestay_management.domain.Customer;
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.DashboardStatisticsDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.statistics.ReportResultDTO;
@@ -84,16 +87,29 @@ public class StatisticsService {
         return countPending;
     }
 
+    // public List<Object[]> getTop5MostBookedRooms(LocalDateTime startDate,
+    // LocalDateTime endDate) {
+    // return roomRepository.findTop5RoomsWithCount(startDate, endDate);
+    // }
+
     public List<Object[]> getTop5MostBookedRooms(LocalDateTime startDate, LocalDateTime endDate) {
-        return roomRepository.findTop5RoomsWithCount(startDate, endDate);
+        Pageable pageable = PageRequest.of(0, 5);
+        return roomRepository.findTopRoomsWithCount(startDate, endDate, pageable);
     }
 
+    // public List<Object[]> getTop5MostUsedServices(LocalDateTime startDate,
+    // LocalDateTime endDate) {
+    // return serviceRepository.findTopServicesWithCount(startDate, endDate);
+    // }
+
     public List<Object[]> getTop5MostUsedServices(LocalDateTime startDate, LocalDateTime endDate) {
-        return serviceRepository.findTopServicesWithCount(startDate, endDate);
+        Pageable pageable = PageRequest.of(0, 5);
+        return serviceRepository.findTopServicesWithCount(startDate, endDate, pageable);
     }
 
     public List<Customer> getTop5CustomersByRewardPoints() {
-        return customerRepository.findTop5CustomersByRewardPoints();
+        Pageable pageable = PageRequest.of(0, 5);
+        return customerRepository.findTopCustomersByRewardPoints(pageable);
     }
 
     public BigDecimal getSumRevenue(Long branchID, PaymentPurpose purpose,
@@ -200,7 +216,7 @@ public class StatisticsService {
             LocalDateTime start,
             LocalDateTime end) {
         BigDecimal result = getSumRevenue(
-                criteria.getBranchID(),
+                criteria.getBranchId(),
                 criteria.getPurpose(),
                 start,
                 end);

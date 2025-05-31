@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EmployeeDTO extends UserDTO {
-    private Long employeeID;
+    private Long employeeId;
 
     @NotNull(message = "Vui lòng nhập mức lương")
     @Min(value = 1, message = "Mức lương phải lớn hơn 0")

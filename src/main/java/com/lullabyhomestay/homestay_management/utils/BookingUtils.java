@@ -24,7 +24,7 @@ public class BookingUtils {
         if (customerDTO == null) {
             throw new IllegalArgumentException("Vui lòng đăng nhập để xử dụng chức năng này");
         }
-        if (!booking.getCustomer().getCustomerID().equals(customerDTO.getCustomerID())) {
+        if (!booking.getCustomer().getCustomerId().equals(customerDTO.getCustomerId())) {
             throw new AccessDeniedException("Lịch đặt phòng này không thuộc quyền truy cập của bạn");
         }
     }

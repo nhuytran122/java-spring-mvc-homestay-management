@@ -16,7 +16,7 @@ public class BookingValidator implements ConstraintValidator<ValidBooking, Booki
         if (booking == null || booking.getCheckIn() == null || booking.getCheckOut() == null) {
             return false;
         }
-        if (booking.getRoom() == null || booking.getRoom().getRoomID() == null) {
+        if (booking.getRoom() == null || booking.getRoom().getRoomId() == null) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Thông tin phòng không hợp lệ.")
                     .addPropertyNode("room")
@@ -30,7 +30,7 @@ public class BookingValidator implements ConstraintValidator<ValidBooking, Booki
                     .addConstraintViolation();
             return false;
         }
-        if (booking.getRoom() != null && booking.getRoom().getRoomID() != null) {
+        if (booking.getRoom() != null && booking.getRoom().getRoomId() != null) {
             if (booking.getGuestCount() > booking.getRoom().getRoomType().getMaxGuest()) {
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(

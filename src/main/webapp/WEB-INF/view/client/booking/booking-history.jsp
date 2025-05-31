@@ -28,12 +28,12 @@
 
                 <div class="col-md-3">
                     <label class="form-label">Chi nhánh</label>
-                    <c:set var="cBranchID" value="${criteria.branchID}" />
-                    <select name="branchID" class="form-select">
+                    <c:set var="cBranchId" value="${criteria.branchId}" />
+                    <select name="branchId" class="form-select">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">
-                            <c:set var="fBranchID" value="${branch.branchID}" />
-                            <option value="${fBranchID}" ${fBranchID == cBranchID ? 'selected' : ''}>
+                            <c:set var="fBranchId" value="${branch.branchId}" />
+                            <option value="${fBranchId}" ${fBranchId == cBranchId ? 'selected' : ''}>
                                 ${branch.branchName}
                             </option>
                         </c:forEach>
@@ -41,12 +41,12 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Loại phòng</label>
-                    <c:set var="cRoomTypeID" value="${criteria.roomTypeID}" />
-                    <select name="roomTypeID" class="form-select">
+                    <c:set var="cRoomTypeId" value="${criteria.roomTypeId}" />
+                    <select name="roomTypeId" class="form-select">
                         <option value="">Chọn loại phòng</option>
                         <c:forEach var="roomType" items="${listRoomTypes}">
-                            <c:set var="rTypeID" value="${roomType.roomTypeID}"/>
-                            <option value="${rTypeID}" ${rTypeID == cRoomTypeID ? 'selected' : ''}>
+                            <c:set var="rTypeId" value="${roomType.roomTypeId}"/>
+                            <option value="${rTypeId}" ${rTypeId == cRoomTypeId ? 'selected' : ''}>
                                 ${roomType.name}
                             </option>
                         </c:forEach>
@@ -162,7 +162,7 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="booking" items="${listBookings}">   
-                        <c:set var="bookingID" value="${booking.bookingID}"/>         
+                        <c:set var="bookingId" value="${booking.bookingId}"/>         
                         <c:set var="bRoom" value="${booking.room}"/>  
                         <c:set var="totalAmount" value="${booking.totalAmount}"/>
                         <c:set var="paidAmount" value="${booking.paidAmount}"/>       
@@ -230,9 +230,9 @@
                                         </div>
                                     </c:if>
                                     <div class="booking-actions mt-3">
-                                        <a href="/booking/booking-history/${bookingID}" class="btn btn-outline-primary"><i class="bi bi-arrow-up-right-square"></i> Xem chi tiết</a>
+                                        <a href="/booking/booking-history/${bookingId}" class="btn btn-outline-primary"><i class="bi bi-arrow-up-right-square"></i> Xem chi tiết</a>
                                         <c:if test="${bStatus == 'PENDING'}">
-                                            <a onclick="handlePayment('${bookingID}', 'ROOM_BOOKING', true)" class="btn btn-primary ms-2">
+                                            <a onclick="handlePayment('${bookingId}', 'ROOM_BOOKING', true)" class="btn btn-primary ms-2">
                                                 <i class="bi bi-credit-card"></i> Thanh toán
                                             </a>
                                         </c:if>

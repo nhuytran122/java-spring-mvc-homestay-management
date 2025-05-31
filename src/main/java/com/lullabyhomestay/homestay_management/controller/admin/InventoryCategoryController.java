@@ -58,7 +58,7 @@ public class InventoryCategoryController {
             BindingResult newCategoryBindingResult,
             HttpServletRequest request) {
         if (inventoryCategoryService.existsByNameAndNotId(inventoryCategory.getCategoryName(),
-                inventoryCategory.getCategoryID())) {
+                inventoryCategory.getCategoryId())) {
             newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
                     "Tên phân loại đồ dùng đã tồn tại!");
         }
@@ -72,7 +72,7 @@ public class InventoryCategoryController {
 
     @GetMapping("/update/{id}")
     public String getUpdateCategoryPage(Model model, @PathVariable long id) {
-        InventoryCategory category = inventoryCategoryService.getInventoryCategoryByID(id);
+        InventoryCategory category = inventoryCategoryService.getInventoryCategoryById(id);
 
         model.addAttribute("category", category);
         return "admin/inventory-category/update";
@@ -87,9 +87,9 @@ public class InventoryCategoryController {
         // HttpSession session = request.getSession(false);
 
         InventoryCategory currentCategory = this.inventoryCategoryService
-                .getInventoryCategoryByID(category.getCategoryID());
+                .getInventoryCategoryById(category.getCategoryId());
 
-        if (inventoryCategoryService.existsByNameAndNotId(category.getCategoryName(), category.getCategoryID())) {
+        if (inventoryCategoryService.existsByNameAndNotId(category.getCategoryName(), category.getCategoryId())) {
             newCategoryBindingResult.rejectValue("categoryName", "error.categoryName",
                     "Tên phân loại đồ dùng đã tồn tại!");
         }
@@ -110,8 +110,8 @@ public class InventoryCategoryController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteBranch(@RequestParam("categoryID") long categoryID) {
-        this.inventoryCategoryService.deleteByCategoryID(categoryID);
+    public String postDeleteBranch(@RequestParam("categoryId") long categoryId) {
+        this.inventoryCategoryService.deleteByCategoryId(categoryId);
         return "redirect:/admin/inventory-category";
     }
 }

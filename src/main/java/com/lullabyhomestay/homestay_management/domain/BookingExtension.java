@@ -22,22 +22,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "BookingExtensions")
+@Table(name = "booking_extensions")
 public class BookingExtension {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ExtensionID")
-    private Long extensionID;
+    private Long extensionId;
 
-    @Column(name = "ExtendedHours")
     @NotNull(message = "Vui lòng nhập giờ muốn gia hạn")
     private Float extendedHours;
 
-    @Column(name = "CreatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "BookingID")
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
     @OneToOne(mappedBy = "bookingExtension")

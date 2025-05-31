@@ -78,7 +78,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                           ${faq.answer}
                           <div class="text-end mt-2">
                             <a
-                              href="/admin/homestay-infor/faq/update/${faq.faqID}"
+                              href="/admin/homestay-infor/faq/update/${faq.faqId}"
                               class="btn btn-warning btn-sm"
                             >
                               <i class="bi bi-pencil"></i> Sửa
@@ -87,11 +87,11 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                             <button
                               class="btn btn-danger btn-sm"
                               onclick="checkBeforeDelete(this)"
-                              data-entity-id="${faq.faqID}"
+                              data-entity-id="${faq.faqId}"
                               data-entity-name="${faq.question}"
                               data-entity-type="FAQ"
                               data-delete-url="/admin/homestay-infor/faq/delete"
-                              data-id-name="faqID"
+                              data-id-name="faqId"
                             >
                               <i class="bi bi-trash"></i> Xóa
                             </button>

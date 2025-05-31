@@ -34,7 +34,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
                           <a
-                            href="/admin/employee/update/${employee.employeeID}"
+                            href="/admin/employee/update/${employee.employeeId}"
                             class="btn btn-warning btn-sm"
                           >
                             <i class="bi bi-pencil"></i> Sửa
@@ -43,12 +43,12 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                             class="btn btn-danger btn-sm"
                             title="Xóa"
                             onclick="checkBeforeDelete(this)"
-                            data-entity-id="${employee.employeeID}"
+                            data-entity-id="${employee.employeeId}"
                             data-entity-name="${employee.fullName}"
                             data-entity-type="Nhân viên"
                             data-delete-url="/admin/employee/delete"
                             data-check-url="/admin/employee/can-delete/"
-                            data-id-name="employeeID"
+                            data-id-name="employeeId"
                           >
                             <i class="bi bi-trash"></i> Xóa
                           </button>

@@ -28,7 +28,7 @@
                         <form:form class="form-horizontal" action="/admin/inventory-item/update" method="post"
                             modelAttribute="item">
                             
-                            <form:hidden path="itemID" />
+                            <form:hidden path="itemId" />
                             <c:set var="errorName">
                                 <form:errors path="itemName" cssClass="invalid-feedback" />
                             </c:set>
@@ -55,7 +55,7 @@
                                 <div class="col-sm-10">
                                     <form:select class="form-select form-control ${not empty errorCategory ? 'is-invalid' : ''}" path="inventoryCategory">
                                         <form:option value="">Chọn phân loại</form:option>
-                                        <form:options items="${listCategories}" itemValue="categoryID" itemLabel="categoryName"/>
+                                        <form:options items="${listCategories}" itemValue="categoryId" itemLabel="categoryName"/>
                                     </form:select>
                                     ${errorCategory}
                                 </div>

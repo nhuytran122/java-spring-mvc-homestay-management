@@ -40,7 +40,7 @@
                                             <form:select class="form-select form-control ${not empty errorBranch ? 'is-invalid' : ''}" 
                                                 path="branch" id="branchSelect">
                                                 <form:option value="">Chọn chi nhánh</form:option>
-                                                <form:options items="${listBranches}" itemValue="branchID" itemLabel="branchName"/>
+                                                <form:options items="${listBranches}" itemValue="branchId" itemLabel="branchName"/>
                                             </form:select>
                                             ${errorBranch}
                                         </div>
@@ -52,7 +52,7 @@
                                             <form:select class="form-select form-control" 
                                                 path="room" id="roomSelect">
                                                 <form:option value="">Chọn phòng</form:option>
-                                                <form:options itemValue="roomID" itemLabel="roomNumber"/>
+                                                <form:options itemValue="roomId" itemLabel="roomNumber"/>
                                             </form:select>
                                         </div>
                                     </div>

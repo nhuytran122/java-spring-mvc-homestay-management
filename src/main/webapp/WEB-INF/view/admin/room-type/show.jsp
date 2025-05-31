@@ -59,7 +59,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="roomType" items="${roomTypes}">
-                                                        <c:set var="roomTypeID" value="${roomType.roomTypeID}"/>
+                                                        <c:set var="roomTypeId" value="${roomType.roomTypeId}"/>
                                                         <tr>
                                                             <td>
                                                                 <c:choose>
@@ -75,24 +75,24 @@
                                                             <td>${roomType.maxGuest}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/room-type/${roomTypeID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <a href="/admin/room-type/${roomTypeId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
-                                                                    <a href="/admin/room-type/update/${roomTypeID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/room-type/update/${roomTypeId}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <a href="/admin/room-pricing/create/${roomTypeID}" class="btn btn-info btn-sm" title="Thêm chính sách giá">
+                                                                    <a href="/admin/room-pricing/create/${roomTypeId}" class="btn btn-info btn-sm" title="Thêm chính sách giá">
                                                                         <i class="bi bi-plus-circle"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${roomTypeID}" 
+                                                                            data-entity-id="${roomTypeId}" 
                                                                             data-entity-name="${roomType.name}" 
                                                                             data-entity-type="Loại phòng" 
                                                                             data-delete-url="/admin/room-type/delete" 
                                                                             data-check-url="/admin/room-type/can-delete/" 
-                                                                            data-id-name="roomTypeID">
+                                                                            data-id-name="roomTypeId">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

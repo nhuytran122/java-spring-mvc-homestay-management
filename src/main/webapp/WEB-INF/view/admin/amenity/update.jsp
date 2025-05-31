@@ -27,7 +27,7 @@
                         <h4 class="card-title mb-4 text-center">Sửa tiện nghi</h4>
                         <form:form class="form-horizontal" action="/admin/amenity/update" method="post"
                             modelAttribute="amenity">
-                            <form:input type="hidden" path="amenityID" />
+                            <form:input type="hidden" path="amenityId" />
                             <c:set var="errorName">
                                 <form:errors path="amenityName" cssClass="invalid-feedback" />
                             </c:set>
@@ -49,7 +49,7 @@
                                 <div class="col-sm-10">
                                     <form:select class="form-select form-control ${not empty errorCategory ? 'is-invalid' : ''}" path="amenityCategory">
                                         <form:option value="">Chọn phân loại</form:option>
-                                        <form:options items="${listCategories}" itemValue="categoryID" itemLabel="categoryName"/>
+                                        <form:options items="${listCategories}" itemValue="categoryId" itemLabel="categoryName"/>
                                     </form:select>
                                     ${errorCategory}
                                 </div>

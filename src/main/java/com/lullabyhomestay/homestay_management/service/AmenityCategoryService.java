@@ -29,7 +29,7 @@ public class AmenityCategoryService {
     }
 
     public AmenityCategory getAmenityCategoryByID(long id) {
-        Optional<AmenityCategory> categoryOpt = amenityCategoryRepository.findByCategoryID(id);
+        Optional<AmenityCategory> categoryOpt = amenityCategoryRepository.findByCategoryId(id);
         if (!categoryOpt.isPresent()) {
             throw new NotFoundException("Phân loại tiện nghi");
         }
@@ -48,7 +48,7 @@ public class AmenityCategoryService {
     }
 
     public boolean canDeleteCategory(long categoryID) {
-        boolean hasAmenity = amenityRepository.existsByAmenityCategory_CategoryID(categoryID);
+        boolean hasAmenity = amenityRepository.existsByAmenityCategory_CategoryId(categoryID);
         return !hasAmenity;
     }
 
@@ -57,7 +57,7 @@ public class AmenityCategoryService {
         if (!canDeleteCategory(categoryID)) {
             throw new CannotDeleteException("Phân loại tiện nghi");
         }
-        this.amenityCategoryRepository.deleteByCategoryID(categoryID);
+        this.amenityCategoryRepository.deleteByCategoryId(categoryID);
     }
 
     public boolean existsByName(String name) {
@@ -65,7 +65,7 @@ public class AmenityCategoryService {
     }
 
     public boolean existsByNameAndNotId(String name, Long id) {
-        return amenityCategoryRepository.existsByCategoryNameIgnoreCaseAndCategoryIDNot(name.trim(), id);
+        return amenityCategoryRepository.existsByCategoryNameIgnoreCaseAndCategoryIdNot(name.trim(), id);
     }
 
 }

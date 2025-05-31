@@ -36,15 +36,15 @@ public class AmenityController {
     public String getAmenityPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(required = false) Long categoryID) {
+            @RequestParam(required = false) Long categoryId) {
         int validPage = Math.max(1, page);
 
-        Page<Amenity> amenities = amenityService.searchAmenities(keyword, categoryID, validPage);
+        Page<Amenity> amenities = amenityService.searchAmenities(keyword, categoryId, validPage);
         List<Amenity> listAmenities = amenities.getContent();
 
         StringBuilder extraParams = new StringBuilder();
-        if (categoryID != null) {
-            extraParams.append("&categoryID=").append(categoryID);
+        if (categoryId != null) {
+            extraParams.append("&categoryId=").append(categoryId);
         }
         if (keyword != null && !keyword.isEmpty()) {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
@@ -56,7 +56,7 @@ public class AmenityController {
 
         model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
         model.addAttribute("keyword", keyword);
-        model.addAttribute("categoryID", categoryID);
+        model.addAttribute("categoryId", categoryId);
         return "admin/amenity/show";
     }
 
@@ -82,7 +82,7 @@ public class AmenityController {
 
     @GetMapping("/update/{id}")
     public String getUpdateAmenityPage(Model model, @PathVariable long id) {
-        Amenity amenity = amenityService.getAmenityByID(id);
+        Amenity amenity = amenityService.getAmenityById(id);
 
         model.addAttribute("amenity", amenity);
         model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
@@ -94,7 +94,7 @@ public class AmenityController {
             @ModelAttribute("amenity") @Valid Amenity amenity,
             BindingResult newAmenityBindingResult) {
 
-        Amenity currentAmenity = this.amenityService.getAmenityByID(amenity.getAmenityID());
+        Amenity currentAmenity = this.amenityService.getAmenityById(amenity.getAmenityId());
         if (newAmenityBindingResult.hasErrors()) {
             model.addAttribute("listCategories", this.categoryService.getAllAmenityCategories());
             return "admin/amenity/update";
@@ -107,8 +107,8 @@ public class AmenityController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteAmenity(@RequestParam("amenityID") long amenityID) {
-        this.amenityService.deleteByAmenityID(amenityID);
+    public String postDeleteAmenity(@RequestParam("amenityId") long amenityId) {
+        this.amenityService.deleteByAmenityId(amenityId);
         return "redirect:/admin/amenity";
     }
 }

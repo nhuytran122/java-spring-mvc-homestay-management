@@ -22,10 +22,10 @@
         <div class="main-panel">
             <div class="search-form-container my-4">
                 <form action="/admin/review" method="get" class="search-form">
-                    <select name="branchID" class="form-select form-control form-select-sm">
+                    <select name="branchId" class="form-select form-control form-select-sm">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">
-                            <option value="${branch.branchID}" ${branch.branchID == branchID ? 'selected' : ''}>
+                            <option value="${branch.branchId}" ${branch.branchId == branchId ? 'selected' : ''}>
                                 ${branch.branchName}
                             </option>
                         </c:forEach>
@@ -96,11 +96,11 @@
 
                                                                     <button class="btn btn-danger btn-sm"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${review.reviewID}" 
+                                                                            data-entity-id="${review.reviewId}" 
                                                                             data-entity-name="${review.comment}" 
                                                                             data-entity-type="Đánh giá" 
                                                                             data-delete-url="/admin/review/delete" 
-                                                                            data-id-name="reviewID">
+                                                                            data-id-name="reviewId">
                                                                             <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

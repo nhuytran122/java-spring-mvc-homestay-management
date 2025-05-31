@@ -1,9 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <script>
     function showDetail(button) {
-        let amenityID = button.getAttribute("data-amenity-id");
+        let amenityId = button.getAttribute("data-amenity-id");
         $.ajax({
-            url: '/admin/amenity/' + amenityID,
+            url: '/admin/amenity/' + amenityId,
             type: 'GET',
             success: function(response) {
                 $('#amenityName').text(response.title);

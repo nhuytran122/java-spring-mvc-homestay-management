@@ -33,19 +33,19 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                   <div class="col-md-6 text-end">
                     <div class="btn-group">
                       <a
-                        href="/admin/room-type/update/${roomType.roomTypeID}"
+                        href="/admin/room-type/update/${roomType.roomTypeId}"
                         class="btn btn-warning btn-sm"
                       >
                         <i class="bi bi-pencil"></i> Sửa
                       </a>
                       <button class="btn btn-danger btn-sm" title="Xóa"
                             onclick="checkBeforeDelete(this)" 
-                                data-entity-id="${roomType.roomTypeID}" 
+                                data-entity-id="${roomType.roomTypeId}" 
                                 data-entity-name="${roomType.name}" 
                                 data-entity-type="Loại phòng" 
                                 data-delete-url="/admin/room-type/delete" 
                                 data-check-url="/admin/room-type/can-delete/" 
-                                data-id-name="roomTypeID">
+                                data-id-name="roomTypeId">
                             <i class="bi bi-trash"></i></i> Xóa
                       </button>
                       <a
@@ -83,7 +83,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                   <div class="mt-4">
                     <div class="my-3 d-flex justify-content-between align-items-center">
                       <h5>Chính sách giá áp dụng</h5>
-                      <a href="/admin/room-pricing/create/${roomType.roomTypeID}" class="btn btn-info btn-sm" title="Thêm chính sách giá">
+                      <a href="/admin/room-pricing/create/${roomType.roomTypeId}" class="btn btn-info btn-sm" title="Thêm chính sách giá">
                         <i class="bi bi-plus-circle"></i> Thêm chính sách giá
                       </a>
                     </div>
@@ -135,7 +135,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                                         <a
                                           class="btn btn-warning btn-sm"
                                           title="Sửa"
-                                          href="/admin/room-pricing/update/${pricing.roomPricingID}"
+                                          href="/admin/room-pricing/update/${pricing.roomPricingId}"
                                         >
                                           <i class="bi bi-pencil"></i>
                                         </a>
@@ -144,12 +144,12 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
                                           class="btn btn-danger btn-sm"
                                           title="Xóa"
                                           onclick="checkBeforeDelete(this)"
-                                          data-entity-id="${pricing.roomPricingID}"
+                                          data-entity-id="${pricing.roomPricingId}"
                                           data-entity-name="${room.roomNumber}" 
                                           data-entity-type="Chính sách giá của loại phòng"
                                           data-delete-url="/admin/room-pricing/delete"
                                           data-check-url="/admin/room-pricing/can-delete/"
-                                          data-id-name="roomPricingID"
+                                          data-id-name="roomPricingId"
                                           data-custom-message='Đây là chính sách giá mặc định, vui lòng chọn chính sách giá mặc định khác thay thế trước khi xóa'
                                         >
                                           <i class="bi bi-trash"></i>

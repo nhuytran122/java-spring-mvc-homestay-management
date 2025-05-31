@@ -24,19 +24,19 @@ public class PaymentDetailService {
     private final BookingExtensionService bookingExtensionService;
 
     public void handleSavePaymentDetail(Payment payment, PaymentPurpose paymentPurpose) {
-        Long bookingID = payment.getBooking().getBookingID();
+        Long bookingId = payment.getBooking().getBookingId();
 
         if (paymentPurpose == PaymentPurpose.ROOM_BOOKING) {
-            handleRoomBookingPayment(payment, bookingID);
+            handleRoomBookingPayment(payment, bookingId);
         } else if (paymentPurpose == PaymentPurpose.ADDITIONAL_SERVICE) {
-            handleAdditionalServicePayment(payment, bookingID);
+            handleAdditionalServicePayment(payment, bookingId);
         } else if (paymentPurpose == PaymentPurpose.EXTENDED_HOURS) {
-            handleExtendedHoursPayment(payment, bookingID);
+            handleExtendedHoursPayment(payment, bookingId);
         }
 
     }
 
-    private void handleRoomBookingPayment(Payment payment, Long bookingID) {
+    private void handleRoomBookingPayment(Payment payment, Long bookingId) {
         PaymentDetail paymentDetail = new PaymentDetail();
         paymentDetail.setPayment(payment);
         paymentDetail.setPaymentPurpose(PaymentPurpose.ROOM_BOOKING);
@@ -44,9 +44,9 @@ public class PaymentDetailService {
         paymentDetail.setFinalAmount(bookingService.calculateTotalAmountBookingRoom(payment.getBooking()));
         paymentDetailRepo.save(paymentDetail);
 
-        if (bookingServiceRepo.existsByBooking_BookingID(bookingID)) {
+        if (bookingServiceRepo.existsByBooking_BookingId(bookingId)) {
             List<BookingServices> listBookingServices = bookingServiceRepo
-                    .findBookingServicesWithoutPaymentDetail(bookingID);
+                    .findBookingServicesWithoutPaymentDetail(bookingId);
             for (BookingServices bService : listBookingServices) {
                 if (bService.getService().getIsPrepaid()) {
                     PaymentDetail paymentDetailOfService = new PaymentDetail();
@@ -65,10 +65,10 @@ public class PaymentDetailService {
         }
     }
 
-    private void handleAdditionalServicePayment(Payment payment, Long bookingID) {
-        if (bookingServiceRepo.existsByBooking_BookingID(bookingID)) {
+    private void handleAdditionalServicePayment(Payment payment, Long bookingId) {
+        if (bookingServiceRepo.existsByBooking_BookingId(bookingId)) {
             List<BookingServices> listBookingServices = bookingServiceRepo
-                    .findBookingServicesWithoutPaymentDetail(bookingID);
+                    .findBookingServicesWithoutPaymentDetail(bookingId);
             for (BookingServices bService : listBookingServices) {
                 PaymentDetail paymentDetail = new PaymentDetail();
                 paymentDetail.setPayment(payment);
@@ -85,8 +85,8 @@ public class PaymentDetailService {
         }
     }
 
-    private void handleExtendedHoursPayment(Payment payment, Long bookingID) {
-        BookingExtension bookingExtension = bookingExtensionService.getLatestBookingExtensionByBookingID(bookingID);
+    private void handleExtendedHoursPayment(Payment payment, Long bookingId) {
+        BookingExtension bookingExtension = bookingExtensionService.getLatestBookingExtensionByBookingId(bookingId);
         PaymentDetail paymentDetail = new PaymentDetail();
         paymentDetail.setPayment(payment);
         paymentDetail.setPaymentPurpose(PaymentPurpose.EXTENDED_HOURS);

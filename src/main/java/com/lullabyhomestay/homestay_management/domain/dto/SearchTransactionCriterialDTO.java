@@ -14,14 +14,14 @@ import lombok.Setter;
 @Setter
 public class SearchTransactionCriterialDTO {
     private String keyword;
-    private Long branchID;
+    private Long branchId;
     private String transactionType;
     private String sort;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
+        if (branchId != null) {
+            extraParams.append("&branchId=").append(branchId);
         }
         if (transactionType != null && !transactionType.isEmpty()) {
             extraParams.append("&transactionType=").append(transactionType);

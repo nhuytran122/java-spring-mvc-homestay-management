@@ -18,6 +18,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
+import com.lullabyhomestay.homestay_management.domain.Branch;
+import com.lullabyhomestay.homestay_management.domain.Room;
 import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.utils.ConvertDateToString;
 
@@ -47,9 +49,11 @@ public class EmailService {
                         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
                         String template = loadTemplate("/template-emails/reminder-email.html");
+                        Room room = booking.getRoom();
+                        Branch branch = room.getBranch();
 
                         Map<String, String> placeholders = new HashMap<>();
-                        placeholders.put("bookingId", String.valueOf(booking.getBookingID()));
+                        placeholders.put("bookingId", String.valueOf(booking.getBookingId()));
                         placeholders.put("customerName", booking.getCustomer().getUser().getFullName());
                         placeholders.put("createdAt", booking.getCreatedAt() != null
                                         ? booking.getCreatedAt().format(dateFormatter)
@@ -61,14 +65,14 @@ public class EmailService {
                                         .format(booking.getTotalAmount() != null ? booking.getTotalAmount() : 0));
                         placeholders.put("paidAmount", currencyFormat
                                         .format(booking.getPaidAmount() != null ? booking.getPaidAmount() : 0));
-                        placeholders.put("roomNumber", String.valueOf(booking.getRoom().getRoomNumber()));
-                        placeholders.put("roomType", booking.getRoom().getRoomType().getName());
-                        placeholders.put("branchName", booking.getRoom().getBranch().getBranchName());
-                        placeholders.put("branchAddress", booking.getRoom().getBranch().getAddress());
-                        placeholders.put("branchPhone", booking.getRoom().getBranch().getPhone());
-                        placeholders.put("branchPassword", booking.getRoom().getBranch().getGatePassword());
+                        placeholders.put("roomNumber", String.valueOf(room.getRoomNumber()));
+                        placeholders.put("roomType", room.getRoomType().getName());
+                        placeholders.put("branchName", branch.getBranchName());
+                        placeholders.put("branchAddress", branch.getAddress());
+                        placeholders.put("branchPhone", branch.getPhone());
+                        placeholders.put("branchPassword", branch.getGatePassword());
                         placeholders.put("bookingHistoryLink",
-                                        baseUrl + "/booking/booking-history/" + booking.getBookingID());
+                                        baseUrl + "/booking/booking-history/" + booking.getBookingId());
 
                         String content = renderTemplate(template, placeholders);
 
@@ -79,7 +83,7 @@ public class EmailService {
                                         content);
 
                 } catch (Exception e) {
-                        log.error("Gửi email nhắc nhở thất bại cho booking ID {}: {}", booking.getBookingID(),
+                        log.error("Gửi email nhắc nhở thất bại cho booking ID {}: {}", booking.getBookingId(),
                                         e.getMessage(), e);
                 }
         }

@@ -32,9 +32,9 @@ public class RoomPhotoController {
     private final RoomService roomService;
 
     @GetMapping("/create")
-    public String getCreateRoomPhotoPage(Model model, @RequestParam long roomID) {
+    public String getCreateRoomPhotoPage(Model model, @RequestParam long roomId) {
         model.addAttribute("newRoomPhoto", new RoomPhoto());
-        model.addAttribute("roomID", roomID);
+        model.addAttribute("roomId", roomId);
         return "admin/room/room-photo/create";
     }
 
@@ -43,7 +43,7 @@ public class RoomPhotoController {
             @ModelAttribute("newRoomPhoto") @Valid RoomPhoto roomPhoto,
             BindingResult newRoomPhotoBindingResult,
             @RequestParam("fileImg") MultipartFile file,
-            @RequestParam("roomID") long roomID,
+            @RequestParam("roomId") long roomId,
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
@@ -52,7 +52,7 @@ public class RoomPhotoController {
         }
 
         if (newRoomPhotoBindingResult.hasErrors()) {
-            model.addAttribute("roomID", roomID);
+            model.addAttribute("roomId", roomId);
             return "admin/room/room-photo/create";
         }
         String img;
@@ -60,15 +60,15 @@ public class RoomPhotoController {
             img = this.uploadService.handleSaveUploadFile(file, "room");
             roomPhoto.setPhoto(img);
         }
-        Room room = roomService.getRoomByID(roomID);
+        Room room = roomService.getRoomById(roomId);
         roomPhoto.setRoom(room);
         this.roomPhotoService.handleSaveRoomPhoto(roomPhoto);
-        return "redirect:/admin/room/update/" + roomID;
+        return "redirect:/admin/room/update/" + roomId;
     }
 
     @GetMapping("/update/{id}")
     public String getUpdateRoomPhotoPage(Model model, @PathVariable long id) {
-        RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoID(id);
+        RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoId(id);
         model.addAttribute("roomPhoto", roomPhoto);
         return "admin/room/room-photo/update";
     }
@@ -79,22 +79,22 @@ public class RoomPhotoController {
             @RequestParam("fileImg") MultipartFile file,
             HttpServletRequest request) {
         // HttpSession session = request.getSession(false);
-        Long roomPhotoID = roomPhoto.getPhotoID();
-        RoomPhoto currentRoomPhoto = this.roomPhotoService.getPhotoByPhotoID(roomPhotoID);
+        Long roomPhotoId = roomPhoto.getPhotoId();
+        RoomPhoto currentRoomPhoto = this.roomPhotoService.getPhotoByPhotoId(roomPhotoId);
         if (!file.isEmpty()) {
             String img = this.uploadService.handleSaveUploadFile(file, "room");
             currentRoomPhoto.setPhoto(img);
         }
-        currentRoomPhoto.setHidden(roomPhoto.isHidden());
+        currentRoomPhoto.setIsHidden(roomPhoto.getIsHidden());
         this.roomPhotoService.handleSaveRoomPhoto(currentRoomPhoto);
 
-        return "redirect:/admin/room/update/" + currentRoomPhoto.getRoom().getRoomID();
+        return "redirect:/admin/room/update/" + currentRoomPhoto.getRoom().getRoomId();
     }
 
     @PostMapping("/delete")
-    public String postDeleteRoomPhoto(@RequestParam("photoID") long roomPhotoID) {
-        RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoID(roomPhotoID);
-        this.roomPhotoService.deleteByPhotoID(roomPhotoID);
-        return "redirect:/admin/room/update/" + roomPhoto.getRoom().getRoomID();
+    public String postDeleteRoomPhoto(@RequestParam("photoId") long roomPhotoId) {
+        RoomPhoto roomPhoto = roomPhotoService.getPhotoByPhotoId(roomPhotoId);
+        this.roomPhotoService.deleteByPhotoId(roomPhotoId);
+        return "redirect:/admin/room/update/" + roomPhoto.getRoom().getRoomId();
     }
 }

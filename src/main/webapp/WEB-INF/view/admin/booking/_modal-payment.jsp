@@ -16,7 +16,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        <input type="hidden" name="bookingID" id="bookingID-input" />
+        <input type="hidden" name="bookingId" id="bookingId-input" />
         <input type="hidden" name="purpose" id="purpose-input" />
         <input type="hidden" name="paymentType" id="paymentType-input" />
         <input
@@ -58,13 +58,13 @@
 </div>
 
 <script>
-  function handlePayment(bookingID, purpose, canPayBServices) {
+  function handlePayment(bookingId, purpose, canPayBServices) {
     console.log(canPayBServices);
     if (!canPayBServices) {
       alert("Bạn không thể thanh toán dịch vụ khi chưa đủ điều kiện!");
       return;
     }
-    $("#bookingID-input").val(bookingID);
+    $("#bookingId-input").val(bookingId);
     $("#purpose-input").val(purpose);
     var modal = new bootstrap.Modal($("#choosePaymentTypeModal")[0]);
     modal.show();

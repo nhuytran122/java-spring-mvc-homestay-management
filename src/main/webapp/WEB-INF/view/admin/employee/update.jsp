@@ -28,7 +28,7 @@
                                 <form:form class="form-horizontal" action="/admin/employee/update" method="post"
                                     modelAttribute="employee" enctype="multipart/form-data">
                                     
-                                    <form:input type="hidden" path="employeeID"/>
+                                    <form:input type="hidden" path="employeeId"/>
                                     <form:input type="hidden" path="email"/>
 
                                     <c:set var="errorName">
@@ -87,7 +87,7 @@
                                         <div class="col-sm-10">
                                             <form:select class="form-select form-control ${not empty errorRole ? 'is-invalid' : ''}" path="role">
                                                 <form:option value="">Chọn vai trò</form:option>
-                                                <form:options items="${listRoles}" itemValue="roleID" itemLabel="description"/>
+                                                <form:options items="${listRoles}" itemValue="roleId" itemLabel="description"/>
                                             </form:select>
                                             ${errorRole}
                                         </div>

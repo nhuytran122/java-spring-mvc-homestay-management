@@ -32,7 +32,7 @@ public class RoomTypeService {
     }
 
     public RoomType getRoomTypeById(long id) {
-        Optional<RoomType> roomTypeOpt = roomTypeRepository.findByRoomTypeID(id);
+        Optional<RoomType> roomTypeOpt = roomTypeRepository.findByRoomTypeId(id);
         if (!roomTypeOpt.isPresent()) {
             throw new NotFoundException("Loại phòng");
         }
@@ -69,10 +69,10 @@ public class RoomTypeService {
 
     @Transactional
     public void updateRoomType(RoomType rType) {
-        RoomType roomType = getRoomTypeById(rType.getRoomTypeID());
+        RoomType roomType = getRoomTypeById(rType.getRoomTypeId());
 
         Optional<RoomPricing> existsPricingOpt = roomPricingRepository
-                .findFirstByRoomType_RoomTypeIDAndIsDefaultTrue(roomType.getRoomTypeID());
+                .findFirstByRoomType_RoomTypeIdAndIsDefaultTrue(roomType.getRoomTypeId());
 
         RoomPricing providedPricing = (rType.getRoomPricings() != null && !rType.getRoomPricings().isEmpty())
                 ? rType.getRoomPricings().get(0)
@@ -99,17 +99,17 @@ public class RoomTypeService {
         to.setOvernightPrice(from.getOvernightPrice());
     }
 
-    public boolean canDeleteRoomType(long typeID) {
-        boolean hasRooms = roomRepository.existsByRoomType_RoomTypeID(typeID);
+    public boolean canDeleteRoomType(long typeId) {
+        boolean hasRooms = roomRepository.existsByRoomType_RoomTypeId(typeId);
         return !(hasRooms);
     }
 
     @Transactional
-    public void deleteByRoomTypeID(long id) {
+    public void deleteByRoomTypeId(long id) {
         if (canDeleteRoomType(id)) {
             throw new CannotDeleteException("Loại phòng");
         }
-        roomTypeRepository.deleteByRoomTypeID(id);
+        roomTypeRepository.deleteByRoomTypeId(id);
     }
 
     public boolean existsByName(String name) {
@@ -117,7 +117,7 @@ public class RoomTypeService {
     }
 
     public boolean existsByNameAndNotId(String name, Long id) {
-        return roomTypeRepository.existsByNameIgnoreCaseAndRoomTypeIDNot(name.trim(), id);
+        return roomTypeRepository.existsByNameIgnoreCaseAndRoomTypeIdNot(name.trim(), id);
     }
 
 }

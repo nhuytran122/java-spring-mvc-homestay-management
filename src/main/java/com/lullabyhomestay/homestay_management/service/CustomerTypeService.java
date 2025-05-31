@@ -28,8 +28,8 @@ public class CustomerTypeService {
         return typeRepository.findAll();
     }
 
-    public CustomerType getCustomerTypeByID(Long id) {
-        Optional<CustomerType> typeOpt = typeRepository.findByCustomerTypeID(id);
+    public CustomerType getCustomerTypeById(Long id) {
+        Optional<CustomerType> typeOpt = typeRepository.findByCustomerTypeId(id);
         if (!typeOpt.isPresent())
             throw new NotFoundException("Phân loại khách hàng");
         return typeOpt.get();
@@ -55,15 +55,15 @@ public class CustomerTypeService {
     }
 
     public boolean canDeleteType(Long id) {
-        return !customerRepository.existsByCustomerType_CustomerTypeID(id);
+        return !customerRepository.existsByCustomerType_CustomerTypeId(id);
     }
 
     @Transactional
-    public void deleteByCustomerTypeID(Long id) {
+    public void deleteByCustomerTypeId(Long id) {
         if (!canDeleteType(id)) {
             throw new CannotDeleteException("Loại khách hàng đang được sử dụng, không thể xóa.");
         }
-        typeRepository.deleteByCustomerTypeID(id);
+        typeRepository.deleteByCustomerTypeId(id);
     }
 
     public boolean existsByName(String name) {
@@ -71,6 +71,6 @@ public class CustomerTypeService {
     }
 
     public boolean existsByNameAndNotId(String name, Long id) {
-        return typeRepository.existsByNameIgnoreCaseAndCustomerTypeIDNot(name.trim(), id);
+        return typeRepository.existsByNameIgnoreCaseAndCustomerTypeIdNot(name.trim(), id);
     }
 }

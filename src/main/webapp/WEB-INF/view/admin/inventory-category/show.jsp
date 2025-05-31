@@ -80,7 +80,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                                   <td>
                                     <div class="btn-group" role="group">
                                       <a
-                                        href="/admin/inventory-category/update/${category.categoryID}"
+                                        href="/admin/inventory-category/update/${category.categoryId}"
                                         class="btn btn-warning btn-sm"
                                         title="Sửa"
                                       >
@@ -91,12 +91,12 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                                         class="btn btn-danger btn-sm"
                                         title="Xóa"
                                         onclick="checkBeforeDelete(this)"
-                                        data-entity-id="${category.categoryID}"
+                                        data-entity-id="${category.categoryId}"
                                         data-entity-name="${category.categoryName}"
                                         data-entity-type="Phân loại"
                                         data-delete-url="/admin/inventory-category/delete"
                                         data-check-url="/admin/inventory-category/can-delete/"
-                                        data-id-name="categoryID"
+                                        data-id-name="categoryId"
                                       >
                                         <i class="bi bi-trash"></i>
                                       </button>

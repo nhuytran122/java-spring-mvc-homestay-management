@@ -33,8 +33,8 @@ public class InventoryTransactionService {
     private final InventoryStockRepository stockRepository;
     private final InventoryItemRepository itemRepository;
 
-    public InventoryTransaction getTransactionByID(Long transactionID) {
-        Optional<InventoryTransaction> transactionOpt = transactionRepository.findByTransactionID(transactionID);
+    public InventoryTransaction getTransactionById(Long transactionId) {
+        Optional<InventoryTransaction> transactionOpt = transactionRepository.findByTransactionId(transactionId);
         if (!transactionOpt.isPresent()) {
             throw new NotFoundException("Giao dịch");
         }
@@ -47,7 +47,7 @@ public class InventoryTransactionService {
                 "asc".equals(criteria.getSort()) ? Sort.by("CreatedAt").ascending()
                         : "desc".equals(criteria.getSort()) ? Sort.by("CreatedAt").descending() : Sort.unsorted());
 
-        if ((criteria.getKeyword() == null || criteria.getKeyword().isEmpty()) && criteria.getBranchID() == null
+        if ((criteria.getKeyword() == null || criteria.getKeyword().isEmpty()) && criteria.getBranchId() == null
                 && (criteria.getTransactionType() == null || criteria.getTransactionType().isEmpty()))
             return transactionRepository
                     .findAll(pageable);
@@ -60,7 +60,7 @@ public class InventoryTransactionService {
             }
         }
         Specification<InventoryTransaction> spec = Specification
-                .where(InventoryTransactionSpecifications.hasBranch(criteria.getBranchID()))
+                .where(InventoryTransactionSpecifications.hasBranch(criteria.getBranchId()))
                 .and(InventoryTransactionSpecifications.nameItemLike(criteria.getKeyword()))
                 .and(InventoryTransactionSpecifications.transactionTypeEqual(typeEnum));
         return transactionRepository.findAll(spec, pageable);
@@ -74,10 +74,10 @@ public class InventoryTransactionService {
 
     private boolean handleChangeStock(InventoryTransaction transaction) {
         Optional<InventoryItem> currentItem = this.itemRepository
-                .findByItemID(transaction.getInventoryItem().getItemID());
+                .findByItemId(transaction.getInventoryItem().getItemId());
 
-        Optional<InventoryStock> currentStockOpt = stockRepository.findByInventoryItem_ItemIDAndBranch_BranchID(
-                currentItem.get().getItemID(), transaction.getBranch().getBranchID());
+        Optional<InventoryStock> currentStockOpt = stockRepository.findByInventoryItem_ItemIdAndBranch_BranchId(
+                currentItem.get().getItemId(), transaction.getBranch().getBranchId());
         InventoryStock currentStock;
         if (!currentStockOpt.isPresent()) {
             if (transaction.getTransactionType() == TransactionType.EXPORT) {
@@ -106,8 +106,8 @@ public class InventoryTransactionService {
         return true;
     }
 
-    public boolean canUpdateTransaction(Long transactionID) {
-        InventoryTransaction transaction = this.getTransactionByID(transactionID);
+    public boolean canUpdateTransaction(Long transactionId) {
+        InventoryTransaction transaction = this.getTransactionById(transactionId);
         LocalDateTime transactionDate = transaction.getCreatedAt();
         LocalDateTime now = LocalDateTime.now();
 
@@ -117,10 +117,10 @@ public class InventoryTransactionService {
 
     @Transactional
     public void updateTransaction(InventoryTransaction updatedTransaction, int oldQuantity) {
-        if (!this.canUpdateTransaction(updatedTransaction.getTransactionID())) {
+        if (!this.canUpdateTransaction(updatedTransaction.getTransactionId())) {
             throw new IllegalStateException("Không thể cập nhật giao dịch vì đã quá thời gian cho phép");
         }
-        InventoryTransaction existingTransaction = transactionRepository.findById(updatedTransaction.getTransactionID())
+        InventoryTransaction existingTransaction = transactionRepository.findById(updatedTransaction.getTransactionId())
                 .orElseThrow(() -> new NotFoundException("Giao dịch kho", "Giao dịch không tồn tại"));
         int newQuantity = updatedTransaction.getQuantity();
 
@@ -132,11 +132,11 @@ public class InventoryTransactionService {
     }
 
     private void updateStockWithDifference(InventoryTransaction transaction, int quantityDifference) {
-        InventoryItem currentItem = itemRepository.findById(transaction.getInventoryItem().getItemID()).get();
+        InventoryItem currentItem = itemRepository.findById(transaction.getInventoryItem().getItemId()).get();
 
         InventoryStock currentStock = stockRepository
-                .findByInventoryItem_ItemIDAndBranch_BranchID(currentItem.getItemID(),
-                        transaction.getBranch().getBranchID())
+                .findByInventoryItem_ItemIdAndBranch_BranchId(currentItem.getItemId(),
+                        transaction.getBranch().getBranchId())
                 .get();
 
         int newStockQuantity;

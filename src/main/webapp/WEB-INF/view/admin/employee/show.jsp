@@ -24,10 +24,10 @@
                         name="keyword" 
                         placeholder="Tìm kiếm nhân viên..." 
                         value="${criteria.keyword}"/>
-                    <select name="roleID" class="form-select form-select-sm" >
+                    <select name="roleId" class="form-select form-select-sm" >
                         <option value="">Chọn vai trò</option>
                         <c:forEach var="role" items="${listRoles}">
-                            <option value="${role.roleID}" ${role.roleID == criteria.roleID ? 'selected' : ''}>
+                            <option value="${role.roleId}" ${role.roleId == criteria.roleId ? 'selected' : ''}>
                                 ${role.description}
                             </option>
                         </c:forEach>
@@ -72,7 +72,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="employee" items="${listEmployees}">
-                                                        <c:set var="employeeID" value="${employee.employeeID}"/>
+                                                        <c:set var="employeeId" value="${employee.employeeId}"/>
                                                         <tr>
                                                             <td>
                                                                 <img src="${not empty employee.avatar ? '/images/avatar/' + employee.avatar : '/images/avatar/default-img.jpg'}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
@@ -85,21 +85,21 @@
                                                                 value="${employee.salary}" /> đ</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/employee/${employeeID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <a href="/admin/employee/${employeeId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
-                                                                    <a href="/admin/employee/update/${employeeID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/employee/update/${employeeId}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${employeeID}" 
+                                                                            data-entity-id="${employeeId}" 
                                                                             data-entity-name="${employee.fullName}" 
                                                                             data-entity-type="Nhân viên" 
                                                                             data-delete-url="/admin/employee/delete" 
                                                                             data-check-url="/admin/employee/can-delete/" 
-                                                                            data-id-name="employeeID">
+                                                                            data-id-name="employeeId">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

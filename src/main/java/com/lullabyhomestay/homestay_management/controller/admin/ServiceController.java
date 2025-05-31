@@ -86,7 +86,7 @@ public class ServiceController {
 
     @GetMapping("/update/{id}")
     public String getUpdateServicePage(Model model, @PathVariable long id) {
-        Service currentService = service.getServiceByID(id);
+        Service currentService = service.getServiceById(id);
         model.addAttribute("iconList", iconService.getCachedIconList());
         model.addAttribute("service", currentService);
         return "admin/service/update";
@@ -98,8 +98,7 @@ public class ServiceController {
             BindingResult newServiceBindingResult,
             HttpServletRequest request) {
 
-        // HttpSession session = request.getSession(false);
-        Service currentService = this.service.getServiceByID(service.getServiceID());
+        Service currentService = this.service.getServiceById(service.getServiceId());
         if (newServiceBindingResult.hasErrors()) {
             model.addAttribute("iconList", iconService.getCachedIconList());
             return "admin/service/update";
@@ -122,8 +121,8 @@ public class ServiceController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteService(@RequestParam("serviceID") long serviceID) {
-        this.service.deleteByServiceID(serviceID);
+    public String postDeleteService(@RequestParam("serviceId") long serviceId) {
+        this.service.deleteByServiceId(serviceId);
         return "redirect:/admin/service";
     }
 }

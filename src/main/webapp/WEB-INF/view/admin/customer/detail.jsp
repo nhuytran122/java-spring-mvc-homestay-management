@@ -33,7 +33,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       <div class="col-md-6 text-end">
                         <div class="btn-group">
                           <a
-                            href="/admin/customer/update/${customer.customerID}"
+                            href="/admin/customer/update/${customer.customerId}"
                             class="btn btn-warning btn-sm"
                           >
                             <i class="bi bi-pencil"></i> Sửa
@@ -42,12 +42,12 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                             class="btn btn-danger btn-sm"
                             title="Xóa"
                             onclick="checkBeforeDelete(this)"
-                            data-entity-id="${customer.customerID}"
+                            data-entity-id="${customer.customerId}"
                             data-entity-name="${customer.fullName}"
                             data-entity-type="Khách hàng"
                             data-delete-url="/admin/customer/delete"
                             data-check-url="/admin/customer/can-delete/"
-                            data-id-name="customerID"
+                            data-id-name="customerId"
                           >
                             <i class="bi bi-trash"></i> Xóa
                           </button>

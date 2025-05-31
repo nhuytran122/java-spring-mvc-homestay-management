@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.lullabyhomestay.homestay_management.utils.RoomStatus;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,29 +23,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "RoomStatusHistories")
+@Table(name = "room_status_histories")
 public class RoomStatusHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RoomStatusID")
-    private Long roomStatusID;
+    private Long roomStatusId;
 
-    @Column(name = "StartedAt")
     private LocalDateTime startedAt;
 
-    @Column(name = "EndedAt")
     private LocalDateTime endedAt;
 
     @ManyToOne
-    @JoinColumn(name = "roomID")
+    @JoinColumn(name = "room_id")
     private Room room;
 
-    @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "bookingID")
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 }

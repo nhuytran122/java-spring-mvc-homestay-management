@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -21,11 +22,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 
         Page<Employee> findAll(Specification<Employee> spec, Pageable page);
 
-        Optional<Employee> findByEmployeeID(long employeeID);
+        @EntityGraph(attributePaths = { "user" })
+        Optional<Employee> findByEmployeeId(long employeeId);
 
-        Optional<Employee> findByUser_UserID(long userID);
+        Optional<Employee> findByUser_UserId(long userId);
 
         Employee save(Employee employee);
 
-        void deleteByEmployeeID(long employeeID);
+        void deleteByEmployeeId(long employeeId);
 }

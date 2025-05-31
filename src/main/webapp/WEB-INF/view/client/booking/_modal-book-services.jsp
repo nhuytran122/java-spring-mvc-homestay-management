@@ -26,8 +26,8 @@
                                 <tr>
                                     <td>
                                         <input type="checkbox" class="item-checkbox" 
-                                            data-service-id="${item.serviceID}"
-                                            data-booking-id="${booking.bookingID}">
+                                            data-service-id="${item.serviceId}"
+                                            data-booking-id="${booking.bookingId}">
                                     </td>
                                     <td>
                                         <span class="iconify" data-icon="${item.icon}"></span>
@@ -41,7 +41,7 @@
                                     </td>
                                     <td>
                                         <textarea type="text" class="form-control service-description"
-                                        data-service-id="${item.serviceID}"> </textarea>
+                                        data-service-id="${item.serviceId}"> </textarea>
                                     </td>
                                 </tr>
                             </c:forEach>

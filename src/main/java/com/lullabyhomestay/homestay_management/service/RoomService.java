@@ -43,18 +43,18 @@ public class RoomService {
 
     public Page<Room> searchRooms(SearchRoomCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
-        if (criteria.getRoomTypeID() == null && criteria.getBranchID() == null) {
+        if (criteria.getRoomTypeId() == null && criteria.getBranchId() == null) {
             return roomRepository.findAll(pageable);
         }
-        Specification<Room> spec = Specification.where(RoomSpecifications.hasBranch(criteria.getBranchID()))
-                .and(RoomSpecifications.hasRoomType(criteria.getRoomTypeID()));
+        Specification<Room> spec = Specification.where(RoomSpecifications.hasBranch(criteria.getBranchId()))
+                .and(RoomSpecifications.hasRoomType(criteria.getRoomTypeId()));
         return roomRepository.findAll(spec, pageable);
     }
 
     public Page<Room> searchRoomsForClient(SearchRoomCriteriaDTO criteria, int page) {
         Pageable pageable = PageRequest.of(page - 1, Constants.PAGE_SIZE);
 
-        return roomRepository.findAvailableRooms(criteria.getBranchID(), criteria.getRoomTypeID(),
+        return roomRepository.findAvailableRooms(criteria.getBranchId(), criteria.getRoomTypeId(),
                 pageable);
     }
 
@@ -62,42 +62,42 @@ public class RoomService {
         return this.roomRepository.save(room);
     }
 
-    public Room getRoomByID(long roomID) {
-        Optional<Room> roomOpt = this.roomRepository.findByRoomID(roomID);
+    public Room getRoomById(long roomId) {
+        Optional<Room> roomOpt = this.roomRepository.findByRoomId(roomId);
         if (!roomOpt.isPresent()) {
             throw new NotFoundException("Phòng");
         }
         return roomOpt.get();
     }
 
-    public List<Room> getRoomsByBranchID(long branchID) {
-        return roomRepository.findByBranch_BranchID(branchID);
+    public List<Room> getRoomsByBranchId(long branchId) {
+        return roomRepository.findByBranch_BranchId(branchId);
     }
 
-    public List<RoomDTO> getRoomDTOsByBranchID(Long branchID) {
-        List<Room> rooms = roomRepository.findByBranch_BranchID(branchID);
+    public List<RoomDTO> getRoomDTOsByBranchId(Long branchId) {
+        List<Room> rooms = roomRepository.findByBranch_BranchId(branchId);
         List<RoomDTO> roomDTOs = new ArrayList<>();
         for (Room room : rooms) {
-            RoomDTO roomDTO = new RoomDTO(room.getRoomID(), room.getRoomNumber());
+            RoomDTO roomDTO = new RoomDTO(room.getRoomId(), room.getRoomNumber());
             roomDTOs.add(roomDTO);
         }
         return roomDTOs;
     }
 
-    public boolean canDeleteRoom(long roomID) {
-        boolean hasMaintenanceRequest = maintenanceRequestRepository.existsByRoom_RoomID(roomID);
-        boolean hasBookings = bookingRepository.existsByRoom_RoomID(roomID);
+    public boolean canDeleteRoom(long roomId) {
+        boolean hasMaintenanceRequest = maintenanceRequestRepository.existsByRoom_RoomId(roomId);
+        boolean hasBookings = bookingRepository.existsByRoom_RoomId(roomId);
         return !(hasMaintenanceRequest || hasBookings);
     }
 
     @Transactional
-    public void deleteByRoomID(long roomID) {
-        if (!canDeleteRoom(roomID)) {
+    public void deleteByRoomId(long roomId) {
+        if (!canDeleteRoom(roomId)) {
             throw new CannotDeleteException("Phòng");
         }
-        this.roomRepository.deleteByRoomID(roomID);
-        this.roomAmenityRepository.deleteByRoom_RoomID(roomID);
-        this.roomStatusRepository.deleteByRoom_RoomID(roomID);
-        this.roomPhotoRepository.deleteByRoom_RoomID(roomID);
+        this.roomRepository.deleteByRoomId(roomId);
+        this.roomAmenityRepository.deleteByRoom_RoomId(roomId);
+        this.roomStatusRepository.deleteByRoom_RoomId(roomId);
+        this.roomPhotoRepository.deleteByRoom_RoomId(roomId);
     }
 }

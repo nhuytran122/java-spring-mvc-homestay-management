@@ -58,7 +58,7 @@ public class CustomerController {
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     public String getDetailCustomerPage(Model model, @PathVariable long id) {
-        CustomerDTO customerDTO = customerService.getCustomerDTOByID(id);
+        CustomerDTO customerDTO = customerService.getCustomerDTOById(id);
         model.addAttribute("customer", customerDTO);
         return "admin/customer/detail";
     }
@@ -82,7 +82,7 @@ public class CustomerController {
 
     @GetMapping("/update/{id}")
     public String getUpdateCustomerPage(Model model, @PathVariable long id) {
-        CustomerDTO customer = customerService.getCustomerDTOByID(id);
+        CustomerDTO customer = customerService.getCustomerDTOById(id);
         model.addAttribute("customer", customer);
         return "admin/customer/update";
     }
@@ -92,11 +92,11 @@ public class CustomerController {
             @ModelAttribute("customer") @Valid CustomerDTO customerDTO,
             BindingResult result) {
 
-        CustomerDTO customer = (customerService.getCustomerDTOByID(customerDTO.getCustomerID()));
+        CustomerDTO customer = (customerService.getCustomerDTOById(customerDTO.getCustomerId()));
         if (result.hasErrors()) {
             return "admin/customer/update";
         }
-        this.userService.updateProfile(customer.getUserID(), customerDTO);
+        this.userService.updateProfile(customer.getUserId(), customerDTO);
         return "redirect:/admin/customer";
     }
 
@@ -107,8 +107,8 @@ public class CustomerController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteCustomer(@RequestParam("customerID") long customerID) {
-        this.customerService.deleteByCustomerID(customerID);
+    public String postDeleteCustomer(@RequestParam("customerId") long customerId) {
+        this.customerService.deleteByCustomerId(customerId);
         return "redirect:/admin/customer";
     }
 }

@@ -33,9 +33,9 @@ public class RoomPricingController {
     private final RoomPricingService roomPricingService;
     private final RoomTypeService roomTypeService;
 
-    @GetMapping("/create/{roomTypeID}")
-    public String getCreateRoomTypePage(Model model, @PathVariable Long roomTypeID) {
-        RoomType roomType = roomTypeService.getRoomTypeById(roomTypeID);
+    @GetMapping("/create/{roomTypeId}")
+    public String getCreateRoomTypePage(Model model, @PathVariable Long roomTypeId) {
+        RoomType roomType = roomTypeService.getRoomTypeById(roomTypeId);
         RoomPricing newRoomPricing = new RoomPricing();
         newRoomPricing.setRoomType(roomType);
         model.addAttribute("newRoomPricing", newRoomPricing);
@@ -61,7 +61,7 @@ public class RoomPricingController {
             }
 
             if (startDate != null && endDate != null && roomPricingService.isOverlapping(startDate, endDate,
-                    newRoomPricing.getRoomType().getRoomTypeID(), newRoomPricing.getRoomPricingID())) {
+                    newRoomPricing.getRoomType().getRoomTypeId(), newRoomPricing.getRoomPricingId())) {
                 String duplicateMessage = "Thời gian áp dụng chính sách giá đang bị trùng lặp";
                 result.rejectValue("startDate", "error.startDate",
                         duplicateMessage);
@@ -73,12 +73,12 @@ public class RoomPricingController {
             return "admin/room-pricing/create";
         }
         roomPricingService.handleSaveRoomPricing(newRoomPricing);
-        return "redirect:/admin/room-type/" + newRoomPricing.getRoomType().getRoomTypeID();
+        return "redirect:/admin/room-type/" + newRoomPricing.getRoomType().getRoomTypeId();
     }
 
     @GetMapping("/update/{id}")
     public String getUpdateRoomTypePage(Model model, @PathVariable Long id) {
-        RoomPricing roomPricing = roomPricingService.getRoomPricingByID(id);
+        RoomPricing roomPricing = roomPricingService.getRoomPricingById(id);
         model.addAttribute("roomPricing", roomPricing);
         return "admin/room-pricing/update";
     }
@@ -101,7 +101,7 @@ public class RoomPricingController {
             }
 
             if (startDate != null && endDate != null && roomPricingService.isOverlapping(startDate, endDate,
-                    roomPricing.getRoomType().getRoomTypeID(), roomPricing.getRoomPricingID())) {
+                    roomPricing.getRoomType().getRoomTypeId(), roomPricing.getRoomPricingId())) {
                 String duplicateMessage = "Thời gian áp dụng chính sách giá đang bị trùng lặp";
                 result.rejectValue("startDate", "error.startDate",
                         duplicateMessage);
@@ -112,7 +112,7 @@ public class RoomPricingController {
             return "admin/room-pricing/update";
         }
         roomPricingService.handleSaveRoomPricing(roomPricing);
-        return "redirect:/admin/room-type/" + roomPricing.getRoomType().getRoomTypeID();
+        return "redirect:/admin/room-type/" + roomPricing.getRoomType().getRoomTypeId();
     }
 
     @GetMapping("/can-delete/{id}")
@@ -122,11 +122,11 @@ public class RoomPricingController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteRoomType(@RequestParam("roomPricingID") Long roomPricingID) {
-        RoomPricing roomPricing = roomPricingService.getRoomPricingByID(roomPricingID);
+    public String postDeleteRoomType(@RequestParam("roomPricingId") Long roomPricingId) {
+        RoomPricing roomPricing = roomPricingService.getRoomPricingById(roomPricingId);
 
-        roomPricingService.deleteRoomPricingByID(roomPricingID);
-        return "redirect:/admin/room-type/" + roomPricing.getRoomType().getRoomTypeID();
+        roomPricingService.deleteRoomPricingById(roomPricingId);
+        return "redirect:/admin/room-type/" + roomPricing.getRoomType().getRoomTypeId();
     }
 
 }

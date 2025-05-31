@@ -17,22 +17,22 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-        Optional<Review> findByReviewID(Long reviewID);
+        Optional<Review> findByReviewId(Long reviewId);
 
-        void deleteByReviewID(Long reviewID);
+        void deleteByReviewId(Long reviewId);
 
         // @Query(value = "SELECT r.* FROM Reviews r " +
-        // "JOIN Bookings b ON r.BookingID = b.BookingID " +
-        // "JOIN Rooms rm ON b.RoomID = rm.RoomID " +
-        // "WHERE rm.RoomID = :roomId",
+        // "JOIN Bookings b ON r.BookingId = b.BookingId " +
+        // "JOIN Rooms rm ON b.RoomId = rm.RoomId " +
+        // "WHERE rm.RoomId = :roomId",
         // nativeQuery = true)
         // List<Review> findByRoomId(@Param("roomId") Long roomId);
 
         @Query("SELECT rv FROM Review rv " +
                         "JOIN rv.booking b " +
                         "JOIN b.room r " +
-                        "WHERE r.roomID = :roomId")
-        List<Review> findByRoomID(@Param("roomId") Long roomId);
+                        "WHERE r.roomId = :roomId")
+        List<Review> findByRoomId(@Param("roomId") Long roomId);
 
         List<Review> findTop10ByRatingOrderByCreatedAtDesc(int rating);
 
@@ -42,8 +42,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                         "JOIN rv.booking b " +
                         "JOIN b.room r " +
                         "JOIN r.branch br " +
-                        "WHERE br.branchID = :branchId")
-        Page<Review> findByBranchID(@Param("branchId") Long branchId, Pageable pageable);
+                        "WHERE br.branchId = :branchId")
+        Page<Review> findByBranchId(@Param("branchId") Long branchId, Pageable pageable);
 
         @Query("SELECT COUNT(r) FROM Review r WHERE r.createdAt BETWEEN :startDate AND :endDate")
         Long countReviews(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);

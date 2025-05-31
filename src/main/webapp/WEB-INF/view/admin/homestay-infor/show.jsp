@@ -99,7 +99,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                                       </button>
 
                                       <a
-                                        href="/admin/homestay-infor/update/${infor.inforID}"
+                                        href="/admin/homestay-infor/update/${infor.inforId}"
                                         class="btn btn-warning btn-sm"
                                         title="Sửa"
                                       >
@@ -109,11 +109,11 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                                       <button
                                         class="btn btn-danger btn-sm"
                                         onclick="checkBeforeDelete(this)"
-                                        data-entity-id="${infor.inforID}"
+                                        data-entity-id="${infor.inforId}"
                                         data-entity-name="${infor.title}"
                                         data-entity-type="thông tin"
                                         data-delete-url="/admin/homestay-infor/delete"
-                                        data-id-name="inforID"
+                                        data-id-name="inforId"
                                       >
                                         <i class="bi bi-trash"></i>
                                       </button>

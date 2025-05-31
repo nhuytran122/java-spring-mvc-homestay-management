@@ -36,7 +36,7 @@ uri="http://www.springframework.org/tags/form" %>
                       method="post"
                       modelAttribute="type"
                     >
-                      <form:input type="hidden" path="customerTypeID" />
+                      <form:input type="hidden" path="customerTypeId" />
                       <c:set var="errorName">
                         <form:errors path="name" cssClass="invalid-feedback" />
                       </c:set>

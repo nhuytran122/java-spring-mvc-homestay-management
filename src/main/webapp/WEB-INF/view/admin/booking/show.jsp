@@ -24,41 +24,41 @@
                     <form action="/admin/booking" method="get" class="search-form" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px 15px; width:100%; align-items:center;">
                         
                         <c:set
-                            var="cBranchID"
-                            value="${criteria.branchID}"
+                            var="cBranchId"
+                            value="${criteria.branchId}"
                         />
                         <c:set
-                            var="cRoomTypeID"
-                            value="${criteria.roomTypeID}"
+                            var="cRoomTypeId"
+                            value="${criteria.roomTypeId}"
                         />
                         <input type="text" class="form-control form-control-sm"
                             name="keyword" 
                             placeholder="Tìm kiếm booking (tên khách hàng)..."
                             value="${criteria.keyword}"
                             style="width:100%; height:38px; box-sizing:border-box;"/>
-                        <select name="branchID" class="form-select form-control form-select-sm" 
+                        <select name="branchId" class="form-select form-control form-select-sm" 
                                 style="width:100%; height:38px; box-sizing:border-box;">
                             <option value="">Chọn chi nhánh</option>
                             <c:forEach var="branch" items="${listBranches}">
                                 <c:set
-                                    var="branchID"
-                                    value="${branch.branchID}"
+                                    var="branchId"
+                                    value="${branch.branchId}"
                                 />
-                                <option value="${branchID}" ${branchID == cBranchID ? 'selected' : ''}>
+                                <option value="${branchId}" ${branchId == cBranchId ? 'selected' : ''}>
                                     ${branch.branchName}
                                 </option>
                             </c:forEach>
                         </select>
 
-                        <select name="roomTypeID" class="form-select form-control form-select-sm" 
+                        <select name="roomTypeId" class="form-select form-control form-select-sm" 
                                 style="width:100%; height:38px; box-sizing:border-box;">
                             <option value="">Chọn loại phòng</option>
                             <c:forEach var="roomType" items="${listRoomTypes}">
                                 <c:set
-                                    var="roomTypeID"
-                                    value="${roomType.roomTypeID}"
+                                    var="roomTypeId"
+                                    value="${roomType.roomTypeId}"
                                 />
-                                <option value="${roomTypeID}" ${roomTypeID == cRoomTypeID ? 'selected' : ''}>
+                                <option value="${roomTypeId}" ${roomTypeId == cRoomTypeId ? 'selected' : ''}>
                                     ${roomType.name}
                                 </option>
                             </c:forEach>
@@ -112,7 +112,7 @@
                                         <table class="table table-hover">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>ID</th>
+                                                    <th>Id</th>
                                                     <th>Tên khách hàng</th>
                                                     <th>Chi nhánh</th>
                                                     <th>Phòng</th>
@@ -135,17 +135,17 @@
                                                     <c:otherwise>
                                                         <c:forEach var="booking" items="${listBookings}">
                                                             <c:set
-                                                                var="bookingID"
-                                                                value="${booking.bookingID}"
+                                                                var="bookingId"
+                                                                value="${booking.bookingId}"
                                                             />
                                                             <tr style="height: 70px;">
-                                                                <td>${bookingID}</td>
+                                                                <td>${bookingId}</td>
                                                                 <td>
                                                                     <c:set
                                                                         var="customer"
                                                                         value="${booking.customer}"
                                                                     />
-                                                                    <a href="/admin/customer/${customer.customerID}" 
+                                                                    <a href="/admin/customer/${customer.customerId}" 
                                                                        class="text-dark text-decoration-none" 
                                                                        title="Xem chi tiết">
                                                                         ${customer.user.fullName}
@@ -161,7 +161,7 @@
                                                                         var="branch"
                                                                         value="${room.branch}"
                                                                     />
-                                                                    <a href="/admin/branch/${branch.branchID}" 
+                                                                    <a href="/admin/branch/${branch.branchId}" 
                                                                        class="text-dark text-decoration-none" 
                                                                        title="Xem chi tiết">
                                                                         ${branch.branchName}
@@ -194,15 +194,15 @@
                                                                 <td>${f:formatLocalDateTime(booking.createdAt)}</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
-                                                                        <a href="/admin/booking/${bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <a href="/admin/booking/${bookingId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
                                                                         <button
                                                                             class="btn btn-danger btn-sm"
                                                                             title="Hủy đặt phòng"
                                                                             onclick="checkBeforeCancel(this)"
-                                                                            data-entity-id="${bookingID}"
-                                                                            data-id-name="bookingID"
+                                                                            data-entity-id="${bookingId}"
+                                                                            data-id-name="bookingId"
                                                                             data-role="admin"
                                                                             >
                                                                             <i class="bi bi-x-circle"></i>

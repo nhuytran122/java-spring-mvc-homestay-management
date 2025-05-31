@@ -42,8 +42,8 @@ public class FAQService {
         this.faqRepository.save(faq);
     }
 
-    public FAQ getFAQByFAQID(long faqID) {
-        Optional<FAQ> faqOpt = faqRepository.findByFaqID(faqID);
+    public FAQ getFAQByFAQId(long faqId) {
+        Optional<FAQ> faqOpt = faqRepository.findByFaqId(faqId);
         if (!faqOpt.isPresent()) {
             throw new NotFoundException("FAQ");
         }
@@ -51,7 +51,7 @@ public class FAQService {
     }
 
     @Transactional
-    public void deleteByFAQID(long faqID) {
-        this.faqRepository.deleteByFaqID(faqID);
+    public void deleteByFAQId(long faqId) {
+        this.faqRepository.deleteByFaqId(faqId);
     }
 }

@@ -19,30 +19,27 @@ import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
         Page<Booking> findAll(Pageable page);
 
-        // Page<Booking> findAll(Specification<Booking> spec, Pageable page);
-        @EntityGraph(attributePaths = { "room", "bookingServices", "room.roomType", "room.branch",
-                        "customer" })
-        Page<Booking> findAll(Specification<Booking> spec, Pageable pageable);
+        Page<Booking> findAll(Specification<Booking> spec, Pageable page);
 
         @EntityGraph(attributePaths = { "room", "room.roomType", "room.branch",
                         "customer", "payments" })
-        Optional<Booking> findByBookingID(long bookingID);
+        Optional<Booking> findByBookingId(long bookingId);
 
-        List<Booking> findByCustomer_CustomerID(Long customerID);
+        List<Booking> findByCustomer_CustomerId(Long customerId);
 
         Booking save(Booking booking);
 
-        void deleteByBookingID(long id);
+        void deleteByBookingId(long id);
 
-        boolean existsByRoom_RoomID(long roomID);
+        boolean existsByRoom_RoomId(long roomId);
 
-        boolean existsByCustomer_CustomerID(Long customerID);
+        boolean existsByCustomer_CustomerId(Long customerId);
 
-        Long countByStatusAndCustomer_CustomerID(BookingStatus bookingStatus, Long customerID);
+        Long countByStatusAndCustomer_CustomerId(BookingStatus bookingStatus, Long customerId);
 
-        Long countByCustomer_CustomerID(Long customerID);
+        Long countByCustomer_CustomerId(Long customerId);
 
-        // Double findSumTotalAmountByCustomer_CustomerID(Long customerID);
+        // Double findSumTotalAmountByCustomer_CustomerId(Long customerId);
         @Query("SELECT SUM(b.totalAmount) FROM Booking b " +
                         "WHERE b.customer.id = :customerId " +
                         "AND b.status = 'COMPLETED' ")
@@ -51,7 +48,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
 
         List<Booking> findByStatus(BookingStatus status);
 
-        @Query(value = "SELECT * FROM Bookings WHERE status = 'PENDING' AND CreatedAt < DATEADD(MINUTE, -:timeoutMinutes, GETDATE())", nativeQuery = true)
+        // @Query(value = "SELECT * FROM Bookings WHERE status = 'PENDING' AND CreatedAt
+        // < DATEADD(MINUTE, -:timeoutMinutes, GETDATE())", nativeQuery = true)
+        // List<Booking> findPendingBookingsBefore(@Param("timeoutMinutes") int
+        // timeoutMinutes);
+
+        @Query(value = "SELECT * FROM Bookings WHERE status = 'PENDING' AND created_at < DATE_SUB(NOW(), INTERVAL :timeoutMinutes MINUTE)", nativeQuery = true)
         List<Booking> findPendingBookingsBefore(@Param("timeoutMinutes") int timeoutMinutes);
 
         @Query("SELECT COUNT(b) FROM Booking b WHERE b.createdAt BETWEEN :startDate AND :endDate")

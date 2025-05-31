@@ -20,20 +20,17 @@ import lombok.Setter;
 public abstract class VerificationTokenBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TokenID")
-    protected Long tokenID;
+    protected Long tokenId;
 
     @Column(name = "Token")
     protected String token;
 
     @ManyToOne
-    @JoinColumn(name = "UserID")
+    @JoinColumn(name = "user_id")
     protected User user;
 
-    @Column(name = "ExpiryDate")
     protected LocalDateTime expiryDate;
 
-    @Column(name = "IsUsed")
     protected Boolean isUsed = false;
 
     public boolean isExpired() {

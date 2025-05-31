@@ -75,21 +75,21 @@
                                                             <td>${branch.phone}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/branch/${branch.branchID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                    <a href="/admin/branch/${branch.branchId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                         <i class="bi bi-eye"></i>
                                                                     </a>
-                                                                    <a href="/admin/branch/update/${branch.branchID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/branch/update/${branch.branchId}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
 
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${branch.branchID}" 
+                                                                            data-entity-id="${branch.branchId}" 
                                                                             data-entity-name="${branch.branchName}" 
                                                                             data-entity-type="Chi nhánh" 
                                                                             data-delete-url="/admin/branch/delete" 
                                                                             data-check-url="/admin/branch/can-delete/" 
-                                                                            data-id-name="branchID">
+                                                                            data-id-name="branchId">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

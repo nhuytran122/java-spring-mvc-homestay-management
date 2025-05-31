@@ -54,7 +54,7 @@ public class BranchController {
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     public String getDetailBranchPage(Model model, @PathVariable long id) {
-        Branch branch = branchService.getBranchByID(id);
+        Branch branch = branchService.getBranchById(id);
         model.addAttribute("branch", branch);
         return "admin/branch/detail";
     }
@@ -87,7 +87,7 @@ public class BranchController {
 
     @GetMapping("/update/{id}")
     public String getUpdateBranchPage(Model model, @PathVariable long id) {
-        Branch branch = branchService.getBranchByID(id);
+        Branch branch = branchService.getBranchById(id);
 
         model.addAttribute("branch", branch);
         return "admin/branch/update";
@@ -102,7 +102,7 @@ public class BranchController {
         if (newBranchBindingResult.hasErrors()) {
             return "admin/branch/update";
         }
-        Branch currentBranch = this.branchService.getBranchByID(branch.getBranchID());
+        Branch currentBranch = this.branchService.getBranchById(branch.getBranchId());
 
         if (!file.isEmpty()) {
             String img = this.uploadService.handleSaveUploadFile(file, "branch");
@@ -125,8 +125,8 @@ public class BranchController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteBranch(@RequestParam("branchID") long branchID) {
-        this.branchService.deleteByBranchID(branchID);
+    public String postDeleteBranch(@RequestParam("branchId") long branchId) {
+        this.branchService.deleteByBranchId(branchId);
         return "redirect:/admin/branch";
     }
 

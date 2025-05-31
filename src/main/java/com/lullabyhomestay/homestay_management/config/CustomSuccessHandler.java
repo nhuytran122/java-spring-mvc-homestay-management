@@ -68,7 +68,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         Role role = user.getRole();
         session.setAttribute("fullName", user.getFullName());
         session.setAttribute("avatar", user.getAvatar());
-        session.setAttribute("id", user.getUserID());
+        session.setAttribute("id", user.getUserId());
         session.setAttribute("email", user.getEmail());
         session.setAttribute("role", role != null ? role.getRoleName().name() : SystemRole.CUSTOMER.name());
     }

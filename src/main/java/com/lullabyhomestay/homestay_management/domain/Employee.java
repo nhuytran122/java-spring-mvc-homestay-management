@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Employees")
+@Table(name = "employees")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,15 +27,14 @@ public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EmployeeID")
-    private Long employeeID;
+    private Long employeeId;
 
     @NotNull(message = "Vui lòng nhập mức lương")
     @Column(name = "Salary")
     private Double salary;
 
     @OneToOne
-    @JoinColumn(name = "UserID")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "employee")

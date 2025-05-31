@@ -27,12 +27,12 @@
                                 <h4 class="card-title mb-4 text-center">Sửa yêu cầu bảo trì</h4>
                                 <form:form class="form-horizontal" action="/admin/maintenance/update" method="post"
                                     modelAttribute="request" enctype="multipart/form-data">
-                                    <form:input type="hidden" path="requestID" />
+                                    <form:input type="hidden" path="requestId" />
                                     <form:input type="hidden" path="status" />
                                     <c:set var="errorDescription">
                                         <form:errors path="description" cssClass="invalid-feedback" />
                                     </c:set>
-                                    <c:set var="errorBranchID">
+                                    <c:set var="errorBranchId">
                                         <form:errors path="branch" cssClass="invalid-feedback" />
                                     </c:set>
 
@@ -42,7 +42,7 @@
                                             <form:select class="form-select form-control ${not empty errorBranch ? 'is-invalid' : ''}" 
                                                 path="branch" id="branchSelect">
                                                 <form:option value="">Chọn chi nhánh</form:option>
-                                                <form:options items="${listBranches}" itemValue="branchID" itemLabel="branchName"/>
+                                                <form:options items="${listBranches}" itemValue="branchId" itemLabel="branchName"/>
                                             </form:select>
                                             ${errorBranch}
                                         </div>
@@ -52,9 +52,9 @@
                                         <label class="control-label col-sm-2">Phòng</label>
                                         <div class="col-sm-10">
                                             <form:select class="form-select form-control" 
-                                                path="room" id="roomSelect" data-selected="${request.room != null ? request.room.roomID : ''}">
+                                                path="room" id="roomSelect" data-selected="${request.room != null ? request.room.roomId : ''}">
                                                 <form:option value="">Chọn phòng</form:option>
-                                                <form:options items="${listRooms}" itemValue="roomID" itemLabel="roomNumber"/>
+                                                <form:options items="${listRooms}" itemValue="roomId" itemLabel="roomNumber"/>
                                             </form:select>
                                         </div>
                                     </div>

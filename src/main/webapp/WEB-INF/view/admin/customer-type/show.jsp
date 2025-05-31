@@ -84,7 +84,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                                   <td>
                                     <div class="btn-group" role="group">
                                       <a
-                                        href="/admin/customer/customer-type/update/${type.customerTypeID}"
+                                        href="/admin/customer/customer-type/update/${type.customerTypeId}"
                                         class="btn btn-warning btn-sm"
                                         title="Sửa"
                                       >
@@ -95,12 +95,12 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                                         class="btn btn-danger btn-sm"
                                         title="Xóa"
                                         onclick="checkBeforeDelete(this)"
-                                        data-entity-id="${type.customerTypeID}"
+                                        data-entity-id="${type.customerTypeId}"
                                         data-entity-name="${type.name}"
                                         data-entity-type="Phân loại khách hàng"
                                         data-delete-url="/admin/customer/customer-type/delete"
                                         data-check-url="/admin/customer/customer-type/can-delete/"
-                                        data-id-name="customerTypeID"
+                                        data-id-name="customerTypeId"
                                       >
                                         <i class="bi bi-trash"></i>
                                       </button>

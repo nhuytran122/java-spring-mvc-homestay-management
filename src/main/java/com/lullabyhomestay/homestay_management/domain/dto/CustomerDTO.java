@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class CustomerDTO extends UserDTO {
 
-    private Long customerID;
+    private Long customerId;
 
     private Double rewardPoints;
 

@@ -33,25 +33,25 @@
                                             <div class="btn-group">
                                                 <button class="btn btn-warning btn-sm" title="Sửa"
                                                     onclick="checkBeforeUpdate(this)" 
-                                                        data-request-id="${request.requestID}"
+                                                        data-request-id="${request.requestId}"
                                                         data-entity-type="Yêu cầu bảo trì"
                                                         data-current-status="${request.status}" 
                                                         data-check-url="/admin/maintenance/can-update/" >
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
                                                 <button class="btn btn-info btn-sm status-update-btn" 
-                                                        data-request-id="${request.requestID}" 
+                                                        data-request-id="${request.requestId}" 
                                                         data-current-status="${request.status}"
                                                         title="Cập nhật trạng thái">
                                                 <i class="bi bi-gear"></i>
                                                 </button>
                                                 <button class="btn btn-danger btn-sm"
                                                     onclick="checkBeforeDelete(this)" 
-                                                        data-entity-id="${request.requestID}" 
+                                                        data-entity-id="${request.requestId}" 
                                                         data-entity-name="${request.description}" 
                                                         data-entity-type="Yêu cầu bảo trì" 
                                                         data-delete-url="/admin/maintenance/delete" 
-                                                        data-id-name="requestID">
+                                                        data-id-name="requestId">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                                 <a href="/admin/maintenance" class="btn btn-secondary btn-sm">

@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PasswordResetTokens")
+@Table(name = "password_reset_tokens")
 @Getter
 @Setter
 public class PasswordResetToken extends VerificationTokenBase {

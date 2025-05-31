@@ -28,8 +28,8 @@ public class InventoryCategoryService {
         return this.inventoryCategoryRepository.findAll();
     }
 
-    public InventoryCategory getInventoryCategoryByID(long id) {
-        Optional<InventoryCategory> categoryOpt = inventoryCategoryRepository.findByCategoryID(id);
+    public InventoryCategory getInventoryCategoryById(long id) {
+        Optional<InventoryCategory> categoryOpt = inventoryCategoryRepository.findByCategoryId(id);
         if (!categoryOpt.isPresent()) {
             throw new NotFoundException("Phân loại đồ dùng");
         }
@@ -47,17 +47,17 @@ public class InventoryCategoryService {
                 : inventoryCategoryRepository.findAll(pageable);
     }
 
-    public boolean canDeleteCategory(long categoryID) {
-        boolean hasItem = itemRepository.existsByInventoryCategory_CategoryID(categoryID);
+    public boolean canDeleteCategory(long categoryId) {
+        boolean hasItem = itemRepository.existsByInventoryCategory_CategoryId(categoryId);
         return !hasItem;
     }
 
     @Transactional
-    public void deleteByCategoryID(long categoryID) {
-        if (!canDeleteCategory(categoryID)) {
+    public void deleteByCategoryId(long categoryId) {
+        if (!canDeleteCategory(categoryId)) {
             throw new CannotDeleteException("Phân loại đồ dùng");
         }
-        inventoryCategoryRepository.deleteByCategoryID(categoryID);
+        inventoryCategoryRepository.deleteByCategoryId(categoryId);
     }
 
     public boolean existsByName(String name) {
@@ -65,6 +65,6 @@ public class InventoryCategoryService {
     }
 
     public boolean existsByNameAndNotId(String name, Long id) {
-        return inventoryCategoryRepository.existsByCategoryNameIgnoreCaseAndCategoryIDNot(name.trim(), id);
+        return inventoryCategoryRepository.existsByCategoryNameIgnoreCaseAndCategoryIdNot(name.trim(), id);
     }
 }

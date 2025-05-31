@@ -23,10 +23,10 @@
                 <form action="/admin/inventory-item" method="get" class="search-form">
                     <input type="text" class="form-control form-control-sm" name="keyword" placeholder="Tìm kiếm đồ dùng..." 
                             value="${keyword}">
-                    <select name="categoryID" class="form-select form-control form-select-sm">
+                    <select name="categoryId" class="form-select form-control form-select-sm">
                         <option value="">Chọn phân loại</option>
                         <c:forEach var="category" items="${listCategories}">
-                            <option value="${category.categoryID}" ${category.categoryID == categoryID ? 'selected' : ''}>
+                            <option value="${category.categoryId}" ${category.categoryId == categoryId ? 'selected' : ''}>
                                 ${category.categoryName}
                             </option>
                         </c:forEach>
@@ -92,17 +92,17 @@
                                                             <td>${item.unit}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group">
-                                                                    <a href="/admin/inventory-item/update/${item.itemID}" class="btn btn-warning btn-sm" title="Sửa">
+                                                                    <a href="/admin/inventory-item/update/${item.itemId}" class="btn btn-warning btn-sm" title="Sửa">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
                                                                     <button class="btn btn-danger btn-sm" title="Xóa"
                                                                         onclick="checkBeforeDelete(this)" 
-                                                                            data-entity-id="${item.itemID}" 
+                                                                            data-entity-id="${item.itemId}" 
                                                                             data-entity-name="${item.itemName}" 
                                                                             data-entity-type="Đồ dùng" 
                                                                             data-delete-url="/admin/inventory-item/delete" 
                                                                             data-check-url="/admin/inventory-item/can-delete/" 
-                                                                            data-id-name="itemID">
+                                                                            data-id-name="itemId">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </div>

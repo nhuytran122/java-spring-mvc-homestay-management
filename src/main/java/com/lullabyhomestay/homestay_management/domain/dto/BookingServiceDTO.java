@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class BookingServiceDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Long serviceID;
+    private Long serviceId;
     private String description;
     private Float quantity;
 }

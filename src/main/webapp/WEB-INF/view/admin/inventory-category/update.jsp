@@ -32,7 +32,7 @@ uri="http://www.springframework.org/tags/form" %>
                       method="post"
                       modelAttribute="category"
                     >
-                      <form:hidden path="categoryID" />
+                      <form:hidden path="categoryId" />
                       <c:set var="errorName">
                         <form:errors
                           path="categoryName"

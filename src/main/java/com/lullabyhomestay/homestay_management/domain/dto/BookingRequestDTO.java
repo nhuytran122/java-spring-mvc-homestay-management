@@ -19,9 +19,9 @@ public class BookingRequestDTO implements Serializable {
     private LocalDateTime checkin;
     private LocalDateTime checkout;
     private Integer guestCount;
-    private Long roomID;
-    private Long customerID;
-    private Long bookingID;
+    private Long roomId;
+    private Long customerId;
+    private Long bookingId;
     private boolean createdFlag;
 
     private List<BookingServiceDTO> services;

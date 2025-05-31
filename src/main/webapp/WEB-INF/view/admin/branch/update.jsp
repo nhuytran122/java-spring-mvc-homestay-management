@@ -27,7 +27,7 @@
                                 <h4 class="card-title mb-4 text-center">Sửa chi nhánh</h4>
                                 <form:form class="form-horizontal" action="/admin/branch/update" method="post"
                                     modelAttribute="branch" enctype="multipart/form-data">
-                                    <form:input type="hidden" path="branchID" />
+                                    <form:input type="hidden" path="branchId" />
                                     <c:set var="errorName">
                                         <form:errors path="branchName" cssClass="invalid-feedback" />
                                     </c:set>

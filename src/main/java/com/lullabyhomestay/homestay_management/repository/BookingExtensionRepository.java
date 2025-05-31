@@ -14,15 +14,13 @@ import com.lullabyhomestay.homestay_management.domain.BookingExtension;
 public interface BookingExtensionRepository extends JpaRepository<BookingExtension, Long> {
     BookingExtension save(BookingExtension bookingExtension);
 
-    List<BookingExtension> findByBooking_BookingID(Long bookingID);
-
-    Optional<BookingExtension> findFirstByBooking_BookingIDOrderByCreatedAtDesc(Long bookingID);
+    Optional<BookingExtension> findFirstByBooking_BookingIdOrderByCreatedAtDesc(Long bookingId);
 
     @Query("""
                 SELECT be
                 FROM BookingExtension be
-                WHERE be.extensionID NOT IN (
-                    SELECT pd.bookingExtension.extensionID
+                WHERE be.extensionId NOT IN (
+                    SELECT pd.bookingExtension.extensionId
                     FROM PaymentDetail pd
                     WHERE pd.bookingExtension IS NOT NULL
                 )
@@ -35,8 +33,8 @@ public interface BookingExtensionRepository extends JpaRepository<BookingExtensi
     @Query("DELETE FROM BookingExtension b WHERE b.paymentDetail IS NULL")
     void deleteAllByPaymentDetailIsNull();
 
-    void deleteByExtensionID(Long extensionID);
+    void deleteByExtensionId(Long extensionId);
 
-    Optional<BookingExtension> findByExtensionID(Long id);
+    Optional<BookingExtension> findByExtensionId(Long id);
 
 }

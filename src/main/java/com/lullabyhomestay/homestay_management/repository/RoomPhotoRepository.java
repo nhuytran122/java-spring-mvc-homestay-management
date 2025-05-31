@@ -9,14 +9,14 @@ import com.lullabyhomestay.homestay_management.domain.RoomPhoto;
 
 public interface RoomPhotoRepository extends JpaRepository<RoomPhoto, Long> {
 
-    Optional<RoomPhoto> findByPhotoID(long photoId);
+    Optional<RoomPhoto> findByPhotoId(long photoId);
 
-    List<RoomPhoto> findByRoom_RoomID(long roomID);
+    List<RoomPhoto> findByRoom_RoomId(long roomId);
 
     RoomPhoto save(RoomPhoto RoomPhoto);
 
-    void deleteByPhotoID(long id);
+    void deleteByPhotoId(long id);
 
-    void deleteByRoom_RoomID(long roomID);
+    void deleteByRoom_RoomId(long roomId);
 
 }

@@ -27,7 +27,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title text-center">Gia hạn giờ thuê phòng</h4>
-                <c:set var="bookingID" value="${booking.bookingID}"/>
+                <c:set var="bookingId" value="${booking.bookingId}"/>
                 <c:set var="roomTypeName" value="${booking.room.roomType.name}"/>
 
                 <p><strong>Phòng:</strong> ${booking.room.roomNumber}</p>
@@ -49,8 +49,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   />
                   <input
                     type="hidden"
-                    name="bookingID"
-                    value="${bookingID}"
+                    name="bookingId"
+                    value="${bookingId}"
                   />
 
                   <div class="form-group">
@@ -107,7 +107,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 
                   <div class="text-center mt-4">
                     <a
-                      href="/admin/booking/${bookingID}"
+                      href="/admin/booking/${bookingId}"
                       class="btn btn-secondary"
                       >Hủy</a
                     >

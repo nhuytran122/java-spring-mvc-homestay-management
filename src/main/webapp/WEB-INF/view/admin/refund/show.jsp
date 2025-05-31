@@ -83,7 +83,7 @@
                                                     <c:otherwise>
                                                         <c:forEach var="refund" items="${listRefunds}">
                                                             <tr style="height: 70px;">
-                                                                <td>${refund.payment.booking.bookingID}</td>
+                                                                <td>${refund.payment.booking.bookingId}</td>
                                                                 <td>${refund.payment.booking.customer.user.fullName}</td>
                                                                 <td>
                                                                     <span class="badge ${refund.refundType == 'FULL' ? 'bg-success' : 
@@ -105,7 +105,7 @@
                                                                 <td>${refund.vnpTransactionNo}</td>
                                                                 <td>
                                                                     <div class="btn-group" role="group">
-                                                                        <a href="/admin/refund/${refund.refundID}" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                                        <a href="/admin/refund/${refund.refundId}" class="btn btn-success btn-sm" title="Xem chi tiết">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
                                                                     </div>

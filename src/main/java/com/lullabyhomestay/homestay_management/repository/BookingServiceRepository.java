@@ -21,53 +21,54 @@ import com.lullabyhomestay.homestay_management.utils.BookingServiceStatus;
 public interface BookingServiceRepository extends JpaRepository<BookingServices, Long> {
     Page<BookingServices> findAll(Pageable page);
 
-    @EntityGraph(attributePaths = { "booking", "booking.room", "booking.room.branch", "service", "paymentDetail",
-            "booking.customer" })
     Page<BookingServices> findAll(Specification<BookingServices> spec, Pageable page);
 
-    Optional<BookingServices> findByBookingServiceID(long bookingID);
+    @EntityGraph(attributePaths = { "booking", "service" })
+    Optional<BookingServices> findByBookingServiceId(long bookingId);
 
-    List<BookingServices> findByBooking_BookingID(Long bookingID);
+    List<BookingServices> findByBooking_BookingId(Long bookingId);
 
-    boolean existsByService_ServiceID(long serviceID);
+    boolean existsByService_ServiceId(long serviceId);
 
     BookingServices save(BookingServices bookingService);
 
-    boolean existsByBooking_BookingID(Long bookingID);
+    boolean existsByBooking_BookingId(Long bookingId);
 
-    void deleteByBookingServiceID(Long bookingServiceID);
+    void deleteByBookingServiceId(Long bookingServiceId);
 
-    void deleteByBooking_BookingID(Long bookingID);
+    void deleteByBooking_BookingId(Long bookingId);
 
-    @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingID = :bookingID AND bs.service.isPrepaid = true")
-    List<BookingServices> findPrepaidServicesByBookingID(@Param("bookingID") Long bookingID);
+    @EntityGraph(attributePaths = { "service" })
+    @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingId = :bookingId AND bs.service.isPrepaid = true")
+    List<BookingServices> findPrepaidServicesByBookingId(@Param("bookingId") Long bookingId);
 
-    @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingID = :bookingID AND bs.service.isPrepaid = false")
-    List<BookingServices> findPostpaidServicesByBookingID(@Param("bookingID") Long bookingID);
+    @EntityGraph(attributePaths = { "service" })
+    @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingId = :bookingId AND bs.service.isPrepaid = false")
+    List<BookingServices> findPostpaidServicesByBookingId(@Param("bookingId") Long bookingId);
 
-    @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingID = :bookingID " +
-            "AND NOT EXISTS (SELECT pd FROM PaymentDetail pd WHERE pd.bookingService.bookingServiceID = bs.bookingServiceID) "
+    @Query("SELECT bs FROM BookingServices bs WHERE bs.booking.bookingId = :bookingId " +
+            "AND NOT EXISTS (SELECT pd FROM PaymentDetail pd WHERE pd.bookingService.bookingServiceId = bs.bookingServiceId) "
             +
             "AND bs.booking.status != 'CANCELLED'")
-    List<BookingServices> findBookingServicesWithoutPaymentDetail(@Param("bookingID") Long bookingID);
+    List<BookingServices> findBookingServicesWithoutPaymentDetail(@Param("bookingId") Long bookingId);
 
     @Modifying
     @Query("UPDATE BookingServices bs SET bs.status = :status " +
-            "WHERE bs.booking.bookingID = :bookingId")
-    int bulkUpdateServiceStatusByBookingID(@Param("bookingId") Long bookingId,
+            "WHERE bs.booking.bookingId = :bookingId")
+    int bulkUpdateServiceStatusByBookingId(@Param("bookingId") Long bookingId,
             @Param("status") BookingServiceStatus status);
 
     @Query("""
                 SELECT COUNT(bs) > 0
                 FROM BookingServices bs
-                WHERE bs.booking.bookingID = :bookingID
+                WHERE bs.booking.bookingId = :bookingId
                   AND bs.service.isPrepaid = false
                   AND (bs.quantity IS NULL OR bs.quantity <= 0)
             """)
-    boolean existsPostpaidServiceWithoutQuantity(@Param("bookingID") Long bookingID);
+    boolean existsPostpaidServiceWithoutQuantity(@Param("bookingId") Long bookingId);
 
     @Query("""
-            SELECT s, COUNT(bs.bookingServiceID) AS serviceCount
+            SELECT s, COUNT(bs.bookingServiceId) AS serviceCount
             FROM Service s
             LEFT JOIN s.bookingServices bs
             WHERE bs.booking.checkIn BETWEEN :startDate AND :endDate

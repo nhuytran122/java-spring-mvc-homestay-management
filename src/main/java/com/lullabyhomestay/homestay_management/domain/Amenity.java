@@ -2,7 +2,6 @@ package com.lullabyhomestay.homestay_management.domain;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,21 +23,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Amenities")
+@Table(name = "amenities")
 public class Amenity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "AmenityID")
-    private Long amenityID;
+    private Long amenityId;
 
     @NotBlank(message = "Vui lòng nhập tên tiện nghi")
     @Size(max = 255, message = "Tên tiện nghi không được vượt quá 255 ký tự")
-    @Column(name = "AmenityName")
     private String amenityName;
 
     @ManyToOne
-    @JoinColumn(name = "CategoryID")
+    @JoinColumn(name = "category_id")
     @NotNull(message = "Vui lòng chọn danh mục tiện nghi")
     private AmenityCategory amenityCategory;
 

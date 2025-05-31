@@ -20,12 +20,12 @@
                             <c:forEach var="rule" items="${inactiveRules}">
                                 <tr>
                                     <td>
-                                        <input type="checkbox" class="rule-checkbox" data-rule-id="${rule.ruleID}">
+                                        <input type="checkbox" class="rule-checkbox" data-rule-id="${rule.ruleId}">
                                     </td>
                                     <td><i class="fas ${rule.icon} rule-icon me-2"></i> <b>${rule.ruleTitle}</b></td>
                                     <td>
                                         <input type="text" class="form-control rule-description"
-                                               data-rule-id="${rule.ruleID}" value="${rule.description}">
+                                               data-rule-id="${rule.ruleId}" value="${rule.description}">
                                     </td>
                                 </tr>
                             </c:forEach>

@@ -239,7 +239,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="/admin/report ">
+      <a class="nav-link" href="/admin/report">
         <i class="bi bi-clipboard2-data menu-icon"></i>
         <span class="menu-title">Thống kê</span>
       </a>

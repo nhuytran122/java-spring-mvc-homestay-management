@@ -2,7 +2,6 @@ package com.lullabyhomestay.homestay_management.domain;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,32 +21,26 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Branches")
+@Table(name = "branches")
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BranchID")
-    private Long branchID;
+    private Long branchId;
 
     @NotBlank(message = "Vui lòng nhập tên chi nhánh")
     @Size(max = 255, message = "Tên chi nhánh không được vượt quá 255 ký tự")
-    @Column(name = "BranchName")
     private String branchName;
 
     @NotBlank(message = "Vui lòng nhập địa chỉ")
     @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
-    @Column(name = "Address")
     private String address;
 
-    @Column(name = "Phone")
     @Pattern(message = "Số điện thoại không hợp lệ", regexp = "(?:\\+84|0084|0)[235789][0-9]{1,2}[0-9]{7}(?:[^\\d]+|$)")
     private String phone;
 
-    @Column(name = "Image")
     private String image;
 
     @NotBlank(message = "Vui lòng nhập mật khẩu cổng của chi nhánh")
-    @Column(name = "GatePassword")
     private String gatePassword;
 
     @OneToMany(mappedBy = "branch")

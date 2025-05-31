@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class BookingPriceDTO {
-    private Long roomPricingID;
+    private Long roomPricingId;
     private double totalPrice;
     private RoomPricingType pricingType;
     private double totalHours;

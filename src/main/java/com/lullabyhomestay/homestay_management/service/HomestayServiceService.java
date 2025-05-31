@@ -49,22 +49,22 @@ public class HomestayServiceService {
         this.serviceRepository.save(service);
     }
 
-    public Service getServiceByID(long serviceID) {
-        Optional<Service> serviceOpt = serviceRepository.findByServiceID(serviceID);
+    public Service getServiceById(long serviceId) {
+        Optional<Service> serviceOpt = serviceRepository.findByServiceId(serviceId);
         if (!serviceOpt.isPresent()) {
             throw new NotFoundException("Dịch vụ");
         }
         return serviceOpt.get();
     }
 
-    public boolean canDeleteService(long serviceID) {
-        return !bookingServiceRepository.existsByService_ServiceID(serviceID);
+    public boolean canDeleteService(long serviceId) {
+        return !bookingServiceRepository.existsByService_ServiceId(serviceId);
     }
 
     @Transactional
-    public void deleteByServiceID(long serviceID) {
-        if (canDeleteService(serviceID))
-            this.serviceRepository.deleteByServiceID(serviceID);
+    public void deleteByServiceId(long serviceId) {
+        if (canDeleteService(serviceId))
+            this.serviceRepository.deleteByServiceId(serviceId);
     }
 
 }

@@ -23,10 +23,10 @@
         <div class="main-panel">
             <div class="search-form-container my-4">
                 <form action="/admin/booking/schedule" method="get" class="search-form">
-                    <select name="branchID" class="form-select form-control form-select-sm">
+                    <select name="branchId" class="form-select form-control form-select-sm">
                         <option value="">Chọn chi nhánh</option>
                         <c:forEach var="branch" items="${listBranches}">
-                            <option value="${branch.branchID}" ${branch.branchID == branchID ? 'selected' : ''}>
+                            <option value="${branch.branchId}" ${branch.branchId == branchId ? 'selected' : ''}>
                                 ${branch.branchName}
                             </option>
                         </c:forEach>
@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="timeline">
                                     <div class="timeline-grid"></div>
-                                    <c:forEach var="statusEntry" items="${roomSchedules[room.roomID]}">
+                                    <c:forEach var="statusEntry" items="${roomSchedules[room.roomId]}">
                                         <c:set var="startHour" value="${statusEntry.startedAt.hour + statusEntry.startedAt.minute / 60.0}" />
                                         <c:set var="endHour" value="${statusEntry.endedAt.hour + statusEntry.endedAt.minute / 60.0}" />
                                         <div class="status-block ${statusEntry.status.cssClass}"
@@ -73,7 +73,7 @@
                                              title="${statusEntry.status.description} (${statusEntry.startedAt.hour}:${statusEntry.startedAt.minute < 10 ? '0' : ''}${statusEntry.startedAt.minute} - ${statusEntry.endedAt.hour}:${statusEntry.endedAt.minute < 10 ? '0' : ''}${statusEntry.endedAt.minute})">
                                             <c:choose>
                                                 <c:when test="${statusEntry.status.hasLink}">
-                                                    <a href="/admin/booking/${statusEntry.booking.bookingID}" style="color: inherit; text-decoration: none;">
+                                                    <a href="/admin/booking/${statusEntry.booking.bookingId}" style="color: inherit; text-decoration: none;">
                                                         ${statusEntry.status.description}
                                                     </a>
                                                 </c:when>

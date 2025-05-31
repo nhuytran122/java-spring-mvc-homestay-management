@@ -19,7 +19,7 @@
       </div>
       <div class="modal-body">
         <form id="statusForm">
-          <input type="hidden" id="bookingServiceID" />
+          <input type="hidden" id="bookingServiceId" />
           <input type="hidden" id="currentStatus" />
           <div class="mb-3">
             <label for="statusSelect" class="form-label">Trạng thái mới</label>
@@ -76,10 +76,10 @@
     });
 
     $(".status-update-btn").click(function () {
-      var bookingServiceID = $(this).data("booking-service-id");
+      var bookingServiceId = $(this).data("booking-service-id");
       var currentStatus = $(this).data("current-status");
       console.log(currentStatus);
-      $("#bookingServiceID").val(bookingServiceID);
+      $("#bookingServiceId").val(bookingServiceId);
       $("#currentStatus").val(currentStatus);
 
       var $select = $("#statusSelect");
@@ -110,13 +110,13 @@
     });
 
     $("#saveStatus").click(function () {
-      var bookingServiceID = $("#bookingServiceID").val();
+      var bookingServiceId = $("#bookingServiceId").val();
       var newStatus = $("#statusSelect").val();
       $.ajax({
         url: "/admin/booking-service/update-status",
         type: "POST",
         data: {
-          bookingServiceID: bookingServiceID,
+          bookingServiceId: bookingServiceId,
           status: newStatus,
         },
         success: function (response) {

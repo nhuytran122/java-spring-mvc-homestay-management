@@ -87,7 +87,7 @@
                                         <div class="col-sm-10">
                                             <form:select class="form-select form-control ${not empty errorRole ? 'is-invalid' : ''}" path="role">
                                                 <form:option value="">Chọn vai trò</form:option>
-                                                <form:options items="${listRoles}" itemValue="roleID" itemLabel="description"/>
+                                                <form:options items="${listRoles}" itemValue="roleId" itemLabel="description"/>
                                             </form:select>
                                             ${errorRole}
                                         </div>

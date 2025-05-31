@@ -74,23 +74,23 @@ public class ClientBookingController {
     public String postCreateBooking(@ModelAttribute("newBooking") @Valid Booking booking,
             BindingResult result,
             Model model, RedirectAttributes redirectAttributes, HttpServletRequest request) {
-        Long roomID = booking.getRoom().getRoomID();
-        Room room = roomService.getRoomByID(booking.getRoom().getRoomID());
+        Long roomId = booking.getRoom().getRoomId();
+        Room room = roomService.getRoomById(booking.getRoom().getRoomId());
         if (booking.getCheckIn() != null && !booking.getCheckIn().isAfter(LocalDateTime.now())) {
             result.rejectValue("checkIn", "error.newBooking", "Giờ check-in phải từ thời điểm hiện tại trở đi");
         }
         if (result.hasErrors()) {
             Optional<RoomPricing> roomPricingOpt = roomPricingService
-                    .getDefaultRoomPricing(room.getRoomType().getRoomTypeID());
+                    .getDefaultRoomPricing(room.getRoomType().getRoomTypeId());
             if (!roomPricingOpt.isPresent()) {
                 throw new NotFoundException("Giá phòng");
             }
             model.addAttribute("roomPricing", roomPricingOpt.get());
             model.addAttribute("room", room);
-            model.addAttribute("listReviews", reviewService.getReviewsByRoomID(roomID));
+            model.addAttribute("listReviews", reviewService.getReviewsByRoomId(roomId));
             return "client/room/detail";
         }
-        boolean hasOverlap = roomStatusHistoryService.existsOverlappingStatuses(roomID, booking.getCheckIn(),
+        boolean hasOverlap = roomStatusHistoryService.existsOverlappingStatuses(roomId, booking.getCheckIn(),
                 booking.getCheckOut());
         if (hasOverlap) {
             model.addAttribute("errorMessage",
@@ -109,12 +109,12 @@ public class ClientBookingController {
         bookingRequest.setCheckin(booking.getCheckIn());
         bookingRequest.setCheckout(booking.getCheckOut());
         bookingRequest.setGuestCount(booking.getGuestCount());
-        bookingRequest.setCustomerID(booking.getCustomer().getCustomerID());
-        bookingRequest.setRoomID(roomID);
+        bookingRequest.setCustomerId(booking.getCustomer().getCustomerId());
+        bookingRequest.setRoomId(roomId);
         session.setAttribute("bookingRequest", bookingRequest);
         // booking = bookingService.handleBooking(booking);
 
-        // redirectAttributes.addFlashAttribute("bookingID", booking.getBookingID());
+        // redirectAttributes.addFlashAttribute("bookingId", booking.getBookingId());
         return "redirect:/booking/booking-service";
     }
 
@@ -143,14 +143,14 @@ public class ClientBookingController {
                     .body(new ApiResponseDTO<>(null, "Không tìm thấy booking"));
         Booking booking = new Booking();
         if (bookingRequest.isCreatedFlag()) {
-            booking = bookingService.getBookingByID(bookingRequest.getBookingID());
-            bookingExtraService.deleteByBookingID(bookingRequest.getBookingID());
+            booking = bookingService.getBookingById(bookingRequest.getBookingId());
+            bookingExtraService.deleteByBookingId(bookingRequest.getBookingId());
         } else {
             bookingRequest.setCreatedFlag(true);
             booking.setCheckIn(bookingRequest.getCheckin());
             booking.setCheckOut(bookingRequest.getCheckout());
             booking.setGuestCount(bookingRequest.getGuestCount());
-            booking.setRoom(roomService.getRoomByID(bookingRequest.getRoomID()));
+            booking.setRoom(roomService.getRoomById(bookingRequest.getRoomId()));
             booking.setStatus(BookingStatus.PENDING);
             CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
             BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
@@ -161,11 +161,11 @@ public class ClientBookingController {
             for (BookingServiceDTO bService : listBookingServices) {
                 BookingServices newBookingService = new BookingServices();
 
-                Long serviceID = bService.getServiceID();
+                Long serviceId = bService.getServiceId();
                 Float quantity = bService.getQuantity();
                 String description = bService.getDescription();
 
-                newBookingService.setService(this.service.getServiceByID(serviceID));
+                newBookingService.setService(this.service.getServiceById(serviceId));
                 newBookingService.setQuantity(quantity);
 
                 newBookingService.setDescription(description);
@@ -173,16 +173,16 @@ public class ClientBookingController {
                 this.bookingExtraService.handleSaveBookingServiceExtra(newBookingService);
             }
         }
-        bookingRequest.setBookingID(booking.getBookingID());
+        bookingRequest.setBookingId(booking.getBookingId());
         bookingRequest.setServices(listBookingServices);
         session.setAttribute("bookingRequest", bookingRequest);
-        // redirectAttributes.addAttribute("bookingID", booking.getBookingID());
-        return ResponseEntity.ok(new ApiResponseDTO<>(booking.getBookingID(), "Xác nhận dịch vụ thành công"));
+        // redirectAttributes.addAttribute("bookingId", booking.getBookingId());
+        return ResponseEntity.ok(new ApiResponseDTO<>(booking.getBookingId(), "Xác nhận dịch vụ thành công"));
     }
 
     @GetMapping("/booking/booking-confirmation")
     public String getBookingConfirmationPage(
-            @RequestParam("bookingID") Long bookingID,
+            @RequestParam("bookingId") Long bookingId,
             HttpServletRequest request,
             Model model) {
         HttpSession session = request.getSession(false);
@@ -191,11 +191,11 @@ public class ClientBookingController {
         }
         BookingRequestDTO sessionDTO = (BookingRequestDTO) session.getAttribute("bookingRequest");
 
-        if (!bookingID.equals(sessionDTO.getBookingID())) {
+        if (!bookingId.equals(sessionDTO.getBookingId())) {
             return "redirect:/";
         }
 
-        Booking booking = bookingService.getBookingByID(bookingID);
+        Booking booking = bookingService.getBookingById(bookingId);
         model.addAttribute("booking", booking);
         double originalAmount = booking.getTotalAmount()
                 / (1 - booking.getCustomer().getCustomerType().getDiscountRate() / 100);
@@ -226,7 +226,7 @@ public class ClientBookingController {
             return prepareModelWithoutSearch(model, criteria, validPage);
         }
 
-        criteria.setCustomerID(customerDTO.getCustomerID());
+        criteria.setCustomerId(customerDTO.getCustomerId());
         Page<Booking> bookings = bookingService.searchBookings(criteria, validPage);
         List<Booking> listBookings = bookings.getContent();
         model.addAttribute("totalPages", bookings.getTotalPages());
@@ -237,7 +237,7 @@ public class ClientBookingController {
 
     @GetMapping("/booking/booking-history/{id}")
     public String getDetailBooking(Model model, @PathVariable long id) {
-        Booking booking = bookingService.getBookingByID(id);
+        Booking booking = bookingService.getBookingById(id);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
         BookingUtils.mapAndSetCustomerToBooking(booking, customerDTO, mapper);
@@ -255,13 +255,13 @@ public class ClientBookingController {
         return "client/booking/detail-booking-history";
     }
 
-    @GetMapping("/booking/check-refund/{bookingID}")
-    public ResponseEntity<?> checkRefundForBooking(@PathVariable Long bookingID) {
-        Booking booking = bookingService.getBookingByID(bookingID);
+    @GetMapping("/booking/check-refund/{bookingId}")
+    public ResponseEntity<?> checkRefundForBooking(@PathVariable Long bookingId) {
+        Booking booking = bookingService.getBookingById(bookingId);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
 
-        Cancelability result = bookingService.checkCancelability(bookingID);
+        Cancelability result = bookingService.checkCancelability(bookingId);
 
         switch (result) {
             case CANCELLED:
@@ -294,11 +294,11 @@ public class ClientBookingController {
     }
 
     @PostMapping("/booking/cancel")
-    public String postCancelBooking(@RequestParam("bookingID") long bookingID) {
-        Booking booking = bookingService.getBookingByID(bookingID);
+    public String postCancelBooking(@RequestParam("bookingId") long bookingId) {
+        Booking booking = bookingService.getBookingById(bookingId);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
-        this.bookingService.cancelBooking(bookingID);
+        this.bookingService.cancelBooking(bookingId);
         return "redirect:/booking/booking-history";
     }
 
@@ -306,10 +306,10 @@ public class ClientBookingController {
     public ResponseEntity<?> postCreateBookingServices(
             @RequestBody List<BookingServices> bookingServices) {
         for (BookingServices request : bookingServices) {
-            Long bookingID = request.getBooking().getBookingID();
-            Long serviceID = request.getService().getServiceID();
+            Long bookingId = request.getBooking().getBookingId();
+            Long serviceId = request.getService().getServiceId();
 
-            Booking booking = bookingService.getBookingByID(bookingID);
+            Booking booking = bookingService.getBookingById(bookingId);
             if (booking == null) {
                 return ResponseEntity.ok().body(new ApiResponseDTO<>(false, "Không tìm thấy đơn đặt phòng."));
             }
@@ -321,7 +321,7 @@ public class ClientBookingController {
 
             BookingServices newBookingService = new BookingServices();
             newBookingService.setBooking(booking);
-            newBookingService.setService(service.getServiceByID(serviceID));
+            newBookingService.setService(service.getServiceById(serviceId));
             newBookingService.setDescription(request.getDescription());
 
             bookingExtraService.handleSaveBookingServiceExtra(newBookingService);
@@ -331,7 +331,7 @@ public class ClientBookingController {
 
     @GetMapping("/booking/can-booking-extension/{id}")
     public ResponseEntity<?> canBookingExtension(@PathVariable long id) {
-        Booking booking = bookingService.getBookingByID(id);
+        Booking booking = bookingService.getBookingById(id);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
         if (booking == null) {
@@ -353,7 +353,7 @@ public class ClientBookingController {
 
     @GetMapping("/booking/booking-extension/{id}")
     public String getBookingExtensionPage(@PathVariable long id, Model model) {
-        Booking booking = bookingService.getBookingByID(id);
+        Booking booking = bookingService.getBookingById(id);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
         model.addAttribute("booking", booking);
@@ -361,10 +361,10 @@ public class ClientBookingController {
     }
 
     @PostMapping("/booking/booking-extension/create")
-    public String postBookingExtension(@RequestParam("bookingID") Long bookingID,
+    public String postBookingExtension(@RequestParam("bookingId") Long bookingId,
             @RequestParam("newCheckoutTime") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime newCheckout,
             Model model) {
-        Booking booking = bookingService.getBookingByID(bookingID);
+        Booking booking = bookingService.getBookingById(bookingId);
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
 
@@ -377,7 +377,7 @@ public class ClientBookingController {
         // Kiểm tra trùng lịch từ checkOutWithCleaningBuffer đến
         // newCheckoutWithCleaningBuffer
         boolean isOverlapping = roomStatusHistoryService.existsOverlappingStatuses(
-                booking.getRoom().getRoomID(),
+                booking.getRoom().getRoomId(),
                 checkOutWithCleaningBuffer,
                 newCheckoutWithCleaningBuffer);
         if (isOverlapping) {
@@ -413,32 +413,32 @@ public class ClientBookingController {
     @PostMapping("/booking/booking-extension/cancel")
     public String postCancelBookingExtension(@RequestParam("id") Long id, Model model) {
         Booking booking = bookingService
-                .getBookingByID(bookingExtensionService.getBookingExtensionByID(id).getBooking().getBookingID());
+                .getBookingById(bookingExtensionService.getBookingExtensionById(id).getBooking().getBookingId());
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         BookingUtils.validateBooking(booking, customerDTO);
 
-        bookingExtensionService.deleteByExtensionID(id);
-        return "redirect:/booking/booking-extension/" + booking.getBookingID();
+        bookingExtensionService.deleteByExtensionId(id);
+        return "redirect:/booking/booking-extension/" + booking.getBookingId();
     }
 
     private String prepareModelWithoutSearch(Model model, SearchBookingCriteriaDTO criteria, int validPage) {
         CustomerDTO customerDTO = AuthUtils.getLoggedInCustomer(userService, mapper);
         model.addAttribute("customer", customerDTO);
         addCriteriaAttributes(model, criteria, validPage);
-        addBookingStatistics(model, customerDTO.getCustomerID());
+        addBookingStatistics(model, customerDTO.getCustomerId());
         return "client/booking/booking-history";
     }
 
-    private void addBookingStatistics(Model model, Long customerID) {
+    private void addBookingStatistics(Model model, Long customerId) {
         model.addAttribute("countPending",
-                bookingService.countByBookingStatusAndCustomerID(BookingStatus.PENDING, customerID));
+                bookingService.countByBookingStatusAndCustomerId(BookingStatus.PENDING, customerId));
         model.addAttribute("countConfirmed",
-                bookingService.countByBookingStatusAndCustomerID(BookingStatus.CONFIRMED, customerID));
+                bookingService.countByBookingStatusAndCustomerId(BookingStatus.CONFIRMED, customerId));
         model.addAttribute("countCancelled",
-                bookingService.countByBookingStatusAndCustomerID(BookingStatus.CANCELLED, customerID));
+                bookingService.countByBookingStatusAndCustomerId(BookingStatus.CANCELLED, customerId));
         model.addAttribute("countCompleted",
-                bookingService.countByBookingStatusAndCustomerID(BookingStatus.COMPLETED, customerID));
-        model.addAttribute("countTotal", bookingService.countTotalBookingByCustomerID(customerID));
+                bookingService.countByBookingStatusAndCustomerId(BookingStatus.COMPLETED, customerId));
+        model.addAttribute("countTotal", bookingService.countTotalBookingByCustomerId(customerId));
     }
 
     private void addCriteriaAttributes(Model model, SearchBookingCriteriaDTO criteria, int validPage) {

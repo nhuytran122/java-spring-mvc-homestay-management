@@ -8,30 +8,24 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BookingPricingSnapshots")
+@Table(name = "booking_pricing_snapshots")
 public class BookingPricingSnapshot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SnapshotID")
-    private Long snapshotID;
+    private Long snapshotId;
 
     @OneToOne
-    @JoinColumn(name = "BookingID")
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @Column(name = "BaseDuration")
     private Integer baseDuration;
 
-    @Column(name = "BasePrice")
     private Double basePrice;
 
-    @Column(name = "ExtraHourPrice")
     private Double extraHourPrice;
 
-    @Column(name = "OvernightPrice")
     private Double overnightPrice;
 
-    @Column(name = "DailyPrice")
     private Double dailyPrice;
 }

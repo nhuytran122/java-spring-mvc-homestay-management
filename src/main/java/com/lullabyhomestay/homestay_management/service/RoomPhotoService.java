@@ -17,12 +17,12 @@ import lombok.AllArgsConstructor;
 public class RoomPhotoService {
     private final RoomPhotoRepository roomPhotoRepository;
 
-    public List<RoomPhoto> getRoomPhotosByRoomID(long roomID) {
-        return this.roomPhotoRepository.findByRoom_RoomID(roomID);
+    public List<RoomPhoto> getRoomPhotosByRoomId(long roomId) {
+        return this.roomPhotoRepository.findByRoom_RoomId(roomId);
     }
 
-    public RoomPhoto getPhotoByPhotoID(long photoID) {
-        Optional<RoomPhoto> roomPhotoOpt = roomPhotoRepository.findByPhotoID(photoID);
+    public RoomPhoto getPhotoByPhotoId(long photoId) {
+        Optional<RoomPhoto> roomPhotoOpt = roomPhotoRepository.findByPhotoId(photoId);
         if (!roomPhotoOpt.isPresent()) {
             throw new NotFoundException("Ảnh phòng");
         }
@@ -34,7 +34,7 @@ public class RoomPhotoService {
     }
 
     @Transactional
-    public void deleteByPhotoID(long photoID) {
-        this.roomPhotoRepository.deleteByPhotoID(photoID);
+    public void deleteByPhotoId(long photoId) {
+        this.roomPhotoRepository.deleteByPhotoId(photoId);
     }
 }

@@ -19,16 +19,16 @@
                     <div class="card-header bg-white">
                         <h5 class="mb-0">Tìm kiếm phòng</h5>
                     </div>
-                    <c:set var="cRoomTypeID" value="${criteria.roomTypeID}" />
-                    <c:set var="cBranchID" value="${criteria.branchID}" />
+                    <c:set var="cRoomTypeId" value="${criteria.roomTypeId}" />
+                    <c:set var="cBranchId" value="${criteria.branchId}" />
                     <form action="/room" method="get" class="search-form">
                         <div class="card-body">
                             <div class="mb-4">
                                 <h6 class="fw-bold mb-3">Loại phòng</h6>
-                                <select name="roomTypeID" class="form-select">
+                                <select name="roomTypeId" class="form-select">
                                     <option value="">Chọn loại phòng</option>
                                     <c:forEach var="type" items="${listRoomTypes}">
-                                        <option value="${type.roomTypeID}" ${type.roomTypeID == cRoomTypeID ? 'selected' : ''}>
+                                        <option value="${type.roomTypeId}" ${type.roomTypeId == cRoomTypeId ? 'selected' : ''}>
                                             ${type.name}
                                         </option>
                                     </c:forEach>
@@ -38,10 +38,10 @@
 
                             <div class="mb-4">
                                 <h6 class="fw-bold mb-3">Chi nhánh</h6>
-                                <select name="branchID" class="form-select">
+                                <select name="branchId" class="form-select">
                                     <option value="">Chọn chi nhánh</option>
                                     <c:forEach var="branch" items="${listBranches}">
-                                        <option value="${branch.branchID}" ${branch.branchID == cBranchID ? 'selected' : ''}>
+                                        <option value="${branch.branchId}" ${branch.branchId == cBranchId ? 'selected' : ''}>
                                             ${branch.branchName}
                                         </option>
                                     </c:forEach>
@@ -60,7 +60,7 @@
                 <div class="row">
                     <c:forEach var="room" items="${rooms}">
                         <div class="col-md-6 col-lg-6 mb-4">
-                            <a href="/room/${room.roomID}" class="text-decoration-none text-dark">
+                            <a href="/room/${room.roomId}" class="text-decoration-none text-dark">
                                 <div class="card h-100 border-0 shadow-sm">
                                     <div class="position-relative">
                                         <c:choose>
@@ -86,7 +86,7 @@
                                             <div>
                                                 
                                             </div>
-                                            <a href="/room/${room.roomID}" class="btn btn-primary">Đặt phòng</a>
+                                            <a href="/room/${room.roomId}" class="btn btn-primary">Đặt phòng</a>
                                         </div>
                                     </div>
                                     

@@ -37,7 +37,7 @@ public class RuleController {
     @ResponseBody
     public ResponseEntity<?> postCreateRules(@RequestBody List<Rule> listRules) {
         for (Rule request : listRules) {
-            Rule optionalRule = ruleService.getRuleByRuleID(request.getRuleID());
+            Rule optionalRule = ruleService.getRuleByRuleId(request.getRuleId());
             optionalRule.setIsHidden(false);
             optionalRule.setDescription(request.getDescription());
             ruleService.handleSaveRule(optionalRule);
@@ -47,7 +47,7 @@ public class RuleController {
 
     @PostMapping("/update")
     public String postUpdateRule(@RequestBody Rule rule) {
-        Rule currentRule = this.ruleService.getRuleByRuleID(rule.getRuleID());
+        Rule currentRule = this.ruleService.getRuleByRuleId(rule.getRuleId());
         currentRule.setDescription(rule.getDescription());
         this.ruleService.handleSaveRule(currentRule);
         return "redirect:/admin/homestay-infor/rule";
@@ -56,7 +56,7 @@ public class RuleController {
     @PostMapping("/delete")
     public String postHiddenRule(Model model,
             @ModelAttribute("rule") Rule rule) {
-        Rule currentRule = ruleService.getRuleByRuleID(rule.getRuleID());
+        Rule currentRule = ruleService.getRuleByRuleId(rule.getRuleId());
         currentRule.setIsHidden(true);
         currentRule.setDescription("");
         this.ruleService.handleSaveRule(currentRule);

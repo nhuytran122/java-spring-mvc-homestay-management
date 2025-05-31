@@ -42,7 +42,7 @@ uri="http://www.springframework.org/tags/form" %>
                       method="post"
                       modelAttribute="transaction"
                     >
-                      <form:hidden path="transactionID" />
+                      <form:hidden path="transactionId" />
                       <form:hidden path="transactionType" />
                       <c:set var="errorQuantity">
                         <form:errors
@@ -60,7 +60,7 @@ uri="http://www.springframework.org/tags/form" %>
                             value="${transaction.inventoryItem.itemName}"
                             disabled
                           />
-                          <form:hidden path="inventoryItem.itemID" />
+                          <form:hidden path="inventoryItem.itemId" />
                         </div>
                       </div>
 
@@ -73,7 +73,7 @@ uri="http://www.springframework.org/tags/form" %>
                             value="${transaction.branch.branchName}"
                             disabled
                           />
-                          <form:hidden path="branch.branchID" />
+                          <form:hidden path="branch.branchId" />
                         </div>
                       </div>
 

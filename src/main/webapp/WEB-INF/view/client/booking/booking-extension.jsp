@@ -31,7 +31,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
               </h2>
               <div class="booking-details mb-4">
                 <h5 class="text-muted">Thông tin đặt phòng hiện tại</h5>
-                <c:set var="bookingID" value="${booking.bookingID}" />
+                <c:set var="bookingId" value="${booking.bookingId}" />
                 <c:set var="roomType" value="${booking.room.roomType}" />
                 <c:set
                   var="pricingSnapshot"
@@ -66,7 +66,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   name="${_csrf.parameterName}"
                   value="${_csrf.token}"
                 />
-                <input type="hidden" name="bookingID" value="${bookingID}" />
+                <input type="hidden" name="bookingId" value="${bookingId}" />
                 <div class="mb-4">
                   <label class="form-label" for="newCheckoutTime"
                     >Chọn thời gian check-out mới</label
@@ -126,7 +126,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                     Xác nhận
                   </button>
                   <a
-                    href="/booking/booking-history/${bookingID}"
+                    href="/booking/booking-history/${bookingId}"
                     type="button"
                     class="btn btn-outline-secondary btn-lg"
                   >

@@ -39,8 +39,8 @@ public class EmployeeService {
         // UserDTO userDTO = mapFromEmployeeDTO(employeeDTO);
         UserDTO userDTO = mapper.map(employeeDTO, UserDTO.class);
 
-        Long roleID = employeeDTO.getRole().getRoleID();
-        User user = userService.createUserForPerson(userDTO, roleID, null);
+        Long roleId = employeeDTO.getRole().getRoleId();
+        User user = userService.createUserForPerson(userDTO, roleId, null);
         employee.setUser(user);
         Employee savedEmployee = employeeRepository.save(employee);
         return mapper.map(savedEmployee, EmployeeDTO.class);
@@ -52,10 +52,10 @@ public class EmployeeService {
         }
         User user = employee.getUser();
         EmployeeDTO dto = new EmployeeDTO();
-        dto.setEmployeeID(employee.getEmployeeID());
+        dto.setEmployeeId(employee.getEmployeeId());
         dto.setSalary(employee.getSalary());
 
-        dto.setUserID(user.getUserID());
+        dto.setUserId(user.getUserId());
         dto.setFullName(user.getFullName());
         dto.setPhone(user.getPhone());
         dto.setEmail(user.getEmail());
@@ -67,7 +67,7 @@ public class EmployeeService {
 
     public void handleUpdateEmployee(EmployeeDTO employeeDTO) {
         Employee employee = mapper.map(employeeDTO, Employee.class);
-        User user = userService.getUserByUserID(employee.getUser().getUserID());
+        User user = userService.getUserByUserId(employee.getUser().getUserId());
 
         user.setFullName(employeeDTO.getFullName());
         user.setAddress(employeeDTO.getAddress());
@@ -107,38 +107,38 @@ public class EmployeeService {
                     .or(EmployeeSpecifications.emailEqual(criteria.getKeyword()))
                     .or(EmployeeSpecifications.phoneEqual(criteria.getKeyword())));
         }
-        if (criteria.getRoleID() != null) {
-            spec = spec.and(EmployeeSpecifications.hasRole(criteria.getRoleID()));
+        if (criteria.getRoleId() != null) {
+            spec = spec.and(EmployeeSpecifications.hasRole(criteria.getRoleId()));
         }
         return employeeRepository.findAll(spec, pageable)
                 .map(this::mapToEmployeeDTO);
     }
 
-    public EmployeeDTO getEmployeeDTOByID(long employeeID) {
-        Employee employee = employeeRepository.findByEmployeeID(employeeID)
+    public EmployeeDTO getEmployeeDTOById(long employeeId) {
+        Employee employee = employeeRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new NotFoundException("Nhân viên"));
 
         return mapToEmployeeDTO(employee);
     }
 
-    public EmployeeDTO getEmployeeDTOByUserID(long userID) {
-        Employee employee = employeeRepository.findByUser_UserID(userID)
+    public EmployeeDTO getEmployeeDTOByUserId(long userId) {
+        Employee employee = employeeRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new NotFoundException("Nhân viên"));
 
         return mapToEmployeeDTO(employee);
     }
 
-    public boolean canDeleteEmployee(long employeeID) {
-        boolean hasMaintenanceRequest = maintenanceRequestRepository.existsByEmployee_EmployeeID(employeeID);
-        boolean hasInventoryTransaction = inventoryTransactionRepository.existsByEmployee_EmployeeID(employeeID);
+    public boolean canDeleteEmployee(long employeeId) {
+        boolean hasMaintenanceRequest = maintenanceRequestRepository.existsByEmployee_EmployeeId(employeeId);
+        boolean hasInventoryTransaction = inventoryTransactionRepository.existsByEmployee_EmployeeId(employeeId);
         return !(hasMaintenanceRequest || hasInventoryTransaction);
     }
 
     @Transactional
-    public void deleteByEmployeeID(long employeeID) {
-        if (!canDeleteEmployee(employeeID)) {
+    public void deleteByEmployeeId(long employeeId) {
+        if (!canDeleteEmployee(employeeId)) {
             throw new CannotDeleteException("Nhân viên");
         }
-        employeeRepository.deleteByEmployeeID(employeeID);
+        employeeRepository.deleteByEmployeeId(employeeId);
     }
 }

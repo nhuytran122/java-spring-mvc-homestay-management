@@ -30,7 +30,7 @@
                                 <h4 class="card-title mb-4 text-center">Sửa phòng</h4>
                                 <form:form class="form-horizontal" action="/admin/room/update" method="post"
                                     modelAttribute="room" enctype="multipart/form-data">
-                                    <form:input type="hidden" path="roomID" />
+                                    <form:input type="hidden" path="roomId" />
                                     <c:set var="errorRoomNumber">
                                         <form:errors path="roomNumber" cssClass="invalid-feedback" />
                                     </c:set>
@@ -55,7 +55,7 @@
                                         <div class="col-sm-10">
                                             <form:select class="form-select form-control ${not empty errorBranch ? 'is-invalid' : ''}" path="branch">
                                                 <form:option value="">Chọn chi nhánh</form:option>
-                                                <form:options items="${listBranches}" itemValue="branchID" itemLabel="branchName"/>
+                                                <form:options items="${listBranches}" itemValue="branchId" itemLabel="branchName"/>
                                             </form:select>
                                             ${errorBranch}
                                         </div>
@@ -66,7 +66,7 @@
                                         <div class="col-sm-10">
                                             <form:select class="form-select form-control ${not empty errorRoomType ? 'is-invalid' : ''}" path="roomType">
                                                 <form:option value="">Chọn loại phòng</form:option>
-                                                <form:options items="${listRoomTypes}" itemValue="roomTypeID" itemLabel="name"/>
+                                                <form:options items="${listRoomTypes}" itemValue="roomTypeId" itemLabel="name"/>
                                             </form:select>
                                             ${errorRoomType}
                                         </div>

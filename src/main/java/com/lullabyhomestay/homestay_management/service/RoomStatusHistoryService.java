@@ -28,8 +28,8 @@ public class RoomStatusHistoryService {
     private final RoomStatusHistoryRepository roomStatusHistoryRepo;
     private final RoomService roomService;
 
-    public boolean existsOverlappingStatuses(Long roomID, LocalDateTime startedAt, LocalDateTime endedAt) {
-        return roomStatusHistoryRepo.existsOverlappingStatuses(roomID, startedAt, endedAt);
+    public boolean existsOverlappingStatuses(Long roomId, LocalDateTime startedAt, LocalDateTime endedAt) {
+        return roomStatusHistoryRepo.existsOverlappingStatuses(roomId, startedAt, endedAt);
     }
 
     public void handleStatusWhenBooking(Booking booking) {
@@ -58,24 +58,24 @@ public class RoomStatusHistoryService {
         LocalDateTime newCheckout = booking.getCheckOut();
 
         // Tìm BUSY hiện tại
-        RoomStatusHistory busyStatus = getScheduleByBookingIDAndRoomStatusHistories(
-                booking.getBookingID(), RoomStatus.BUSY);
+        RoomStatusHistory busyStatus = getScheduleByBookingIdAndRoomStatusHistories(
+                booking.getBookingId(), RoomStatus.BUSY);
         busyStatus.setEndedAt(newCheckout);
         roomStatusHistoryRepo.save(busyStatus);
 
         // Tìm + set lại CLEANING
-        RoomStatusHistory cleanStatus = getScheduleByBookingIDAndRoomStatusHistories(booking.getBookingID(),
+        RoomStatusHistory cleanStatus = getScheduleByBookingIdAndRoomStatusHistories(booking.getBookingId(),
                 RoomStatus.CLEANING);
         cleanStatus.setStartedAt(newCheckout);
         cleanStatus.setEndedAt(newCheckout.plusHours(Constants.CLEANING_HOURS));
         roomStatusHistoryRepo.save(cleanStatus);
     }
 
-    public List<RoomStatusHistory> getScheduleRoomByRoomIDAndDate(Long roomID,
+    public List<RoomStatusHistory> getScheduleRoomByRoomIdAndDate(Long roomId,
             LocalDateTime date) {
         LocalDateTime startOfDate = date.toLocalDate().atStartOfDay();
         LocalDateTime endOfDate = date.toLocalDate().atTime(23, 59, 59);
-        return roomStatusHistoryRepo.findByRoom_RoomIDAndStartedAtBetween(roomID,
+        return roomStatusHistoryRepo.findByRoom_RoomIdAndStartedAtBetween(roomId,
                 startOfDate, endOfDate);
     }
 
@@ -91,17 +91,17 @@ public class RoomStatusHistoryService {
 
         List<Room> rooms;
         if (branchId != null) {
-            rooms = roomService.getRoomsByBranchID(branchId);
+            rooms = roomService.getRoomsByBranchId(branchId);
         } else {
             rooms = roomService.getAllRooms();
         }
 
         Map<Long, List<RoomStatusHistory>> roomSchedules = new HashMap<>();
         for (Room room : rooms) {
-            List<RoomStatusHistory> schedule = getScheduleRoomByRoomIDAndDate(
-                    room.getRoomID(), date);
+            List<RoomStatusHistory> schedule = getScheduleRoomByRoomIdAndDate(
+                    room.getRoomId(), date);
             if (schedule != null && !schedule.isEmpty()) {
-                roomSchedules.put(room.getRoomID(), schedule);
+                roomSchedules.put(room.getRoomId(), schedule);
             }
         }
 
@@ -111,13 +111,13 @@ public class RoomStatusHistoryService {
         return new BookingScheduleData(rooms, roomSchedules, date.toLocalDate(), dateFormatted);
     }
 
-    public void deleteByBookingID(Long bookingID) {
-        roomStatusHistoryRepo.deleteByBooking_BookingID(bookingID);
+    public void deleteByBookingId(Long bookingId) {
+        roomStatusHistoryRepo.deleteByBooking_BookingId(bookingId);
     }
 
-    public RoomStatusHistory getScheduleByBookingIDAndRoomStatusHistories(Long bookingID,
+    public RoomStatusHistory getScheduleByBookingIdAndRoomStatusHistories(Long bookingId,
             RoomStatus roomStatus) {
-        Optional<RoomStatusHistory> roomHistory = roomStatusHistoryRepo.findByBooking_BookingIDAndStatus(bookingID,
+        Optional<RoomStatusHistory> roomHistory = roomStatusHistoryRepo.findByBooking_BookingIdAndStatus(bookingId,
                 roomStatus);
         if (!roomHistory.isPresent()) {
             throw new NotFoundException("Lịch sử phòng");

@@ -74,8 +74,8 @@ public class CustomerService {
     }
 
     @Transactional
-    public void updateRewardPointsAndCustomerType(Long customerID, double amount) {
-        Customer customer = getCustomerByID(customerID);
+    public void updateRewardPointsAndCustomerType(Long customerId, double amount) {
+        Customer customer = getCustomerById(customerId);
 
         double points = (amount / 100000) * 10;
         double updatedPoints = customer.getRewardPoints() + points;
@@ -119,38 +119,38 @@ public class CustomerService {
                     .or(CustomerSpecifications.addressLike(criteria.getKeyword()))
                     .or(CustomerSpecifications.phoneEqual(criteria.getKeyword())));
         }
-        if (criteria.getCustomerTypeID() != null) {
-            spec = spec.and(CustomerSpecifications.hasType(criteria.getCustomerTypeID()));
+        if (criteria.getCustomerTypeId() != null) {
+            spec = spec.and(CustomerSpecifications.hasType(criteria.getCustomerTypeId()));
         }
 
         return customerRepository.findAll(spec, pageable).map(this::mapToCustomerDTO);
     }
 
-    public CustomerDTO getCustomerDTOByID(Long customerID) {
-        Customer customer = customerRepository.findByCustomerID(customerID)
+    public CustomerDTO getCustomerDTOById(Long customerId) {
+        Customer customer = customerRepository.findByCustomerId(customerId)
                 .orElseThrow(() -> new NotFoundException("Khách hàng"));
 
         return mapToCustomerDTO(customer);
     }
 
-    public Customer getCustomerByID(Long customerID) {
-        Optional<Customer> customerOpt = customerRepository.findByCustomerID(customerID);
+    public Customer getCustomerById(Long customerId) {
+        Optional<Customer> customerOpt = customerRepository.findByCustomerId(customerId);
         if (!customerOpt.isPresent()) {
             throw new NotFoundException("Khách hàng");
         }
         return customerOpt.get();
     }
 
-    public boolean canDeleteCustomer(Long customerID) {
-        return !bookingRepository.existsByCustomer_CustomerID(customerID);
+    public boolean canDeleteCustomer(Long customerId) {
+        return !bookingRepository.existsByCustomer_CustomerId(customerId);
     }
 
     @Transactional
-    public void deleteByCustomerID(Long customerID) {
-        if (!canDeleteCustomer(customerID)) {
+    public void deleteByCustomerId(Long customerId) {
+        if (!canDeleteCustomer(customerId)) {
             throw new CannotDeleteException("Khách hàng");
         }
-        customerRepository.deleteByCustomerID(customerID);
+        customerRepository.deleteByCustomerId(customerId);
     }
 
     public CustomerDTO mapToCustomerDTO(Customer customer) {
@@ -161,11 +161,11 @@ public class CustomerService {
         User user = customer.getUser();
 
         CustomerDTO dto = new CustomerDTO();
-        dto.setCustomerID(customer.getCustomerID());
+        dto.setCustomerId(customer.getCustomerId());
         dto.setRewardPoints(customer.getRewardPoints());
         dto.setCustomerType(customer.getCustomerType());
 
-        dto.setUserID(user.getUserID());
+        dto.setUserId(user.getUserId());
         dto.setFullName(user.getFullName());
         dto.setPhone(user.getPhone());
         dto.setEmail(user.getEmail());

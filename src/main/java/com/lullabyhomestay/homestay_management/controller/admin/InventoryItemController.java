@@ -36,15 +36,15 @@ public class InventoryItemController {
     public String getInventoryItemPage(Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(required = false) Long categoryID,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam(defaultValue = "") String sort) {
         int validPage = Math.max(1, page);
-        Page<InventoryItem> items = itemService.searchItems(keyword, categoryID, validPage, sort);
+        Page<InventoryItem> items = itemService.searchItems(keyword, categoryId, validPage, sort);
         List<InventoryItem> listItems = items.getContent();
 
         StringBuilder extraParams = new StringBuilder();
-        if (categoryID != null) {
-            extraParams.append("&categoryID=").append(categoryID);
+        if (categoryId != null) {
+            extraParams.append("&categoryId=").append(categoryId);
         }
         if (keyword != null && !keyword.isEmpty()) {
             extraParams.append("&keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8));
@@ -59,7 +59,7 @@ public class InventoryItemController {
 
         model.addAttribute("listCategories", this.categoryService.getAllInventoryCategories());
         model.addAttribute("keyword", keyword);
-        model.addAttribute("categoryID", categoryID);
+        model.addAttribute("categoryId", categoryId);
         model.addAttribute("sort", sort);
         return "admin/inventory-item/show";
     }
@@ -89,7 +89,7 @@ public class InventoryItemController {
 
     @GetMapping("/update/{id}")
     public String getUpdateInventoryItemPage(Model model, @PathVariable long id) {
-        InventoryItem item = itemService.getInventoryItemByID(id);
+        InventoryItem item = itemService.getInventoryItemById(id);
 
         model.addAttribute("item", item);
         model.addAttribute("listCategories", this.categoryService.getAllInventoryCategories());
@@ -103,7 +103,7 @@ public class InventoryItemController {
             HttpServletRequest request) {
 
         // HttpSession session = request.getSession(false);
-        InventoryItem currentItem = this.itemService.getInventoryItemByID(item.getItemID());
+        InventoryItem currentItem = this.itemService.getInventoryItemById(item.getItemId());
         if (newInventoryItemBindingResult.hasErrors()) {
             model.addAttribute("listCategories", this.categoryService.getAllInventoryCategories());
             return "admin/inventory-item/update";
@@ -124,8 +124,8 @@ public class InventoryItemController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteInventoryItem(@RequestParam("itemID") long itemID) {
-        this.itemService.deleteByInventoryItemID(itemID);
+    public String postDeleteInventoryItem(@RequestParam("itemId") long itemId) {
+        this.itemService.deleteByInventoryItemId(itemId);
         return "redirect:/admin/inventory-item";
     }
 }

@@ -26,41 +26,36 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "MaintenanceRequests")
+@Table(name = "maintenance_requests")
 public class MaintenanceRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RequestID")
-    private Long requestID;
+    private Long requestId;
 
-    @Column(name = "Description")
     @NotBlank(message = "Vui lòng nhập mô tả")
     private String description;
 
-    @Column(name = "Status")
     @Enumerated(EnumType.STRING)
     private MaintenanceStatus status = MaintenanceStatus.PENDING;
 
-    @Column(name = "Image")
     private String image;
 
-    @Column(name = "CreatedAt", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt")
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "RoomID")
+    @JoinColumn(name = "room_id")
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "EmployeeID")
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
     @ManyToOne
-    @JoinColumn(name = "BranchID")
+    @JoinColumn(name = "branch_id")
     @NotNull(message = "Vui lòng chọn chi nhánh")
     private Branch branch;
 }

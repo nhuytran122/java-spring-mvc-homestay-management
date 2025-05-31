@@ -17,10 +17,10 @@
     let hasError = false;
 
     $(".item-checkbox:checked").each(function () {
-      let roomID = $(this).data("room-id");
-      let amenityID = $(this).data("amenity-id");
+      let roomId = $(this).data("room-id");
+      let amenityId = $(this).data("amenity-id");
       let quantityInput = $(
-        ".amenity-quantity[data-amenity-id='" + amenityID + "']"
+        ".amenity-quantity[data-amenity-id='" + amenityId + "']"
       );
       let quantity = quantityInput.val().trim();
 
@@ -34,9 +34,9 @@
       }
 
       selectedItems.push({
-        roomAmenityID: {
-          roomID: roomID,
-          amenityID: amenityID,
+        roomAmenityId: {
+          roomId: roomId,
+          amenityId: amenityId,
         },
         quantity: quantity,
       });
@@ -72,13 +72,13 @@
   }
 
   function openEditModal(button) {
-    let amenityID = $(button).data("amenity-id");
-    let roomID = $(button).data("room-id");
+    let amenityId = $(button).data("amenity-id");
+    let roomId = $(button).data("room-id");
     let amenityTitle = $(button).data("amenity-name");
     let quantity = $(button).data("amenity-quantity");
 
-    $("#editAmenityId").val(amenityID);
-    $("#editRoomId").val(roomID);
+    $("#editAmenityId").val(amenityId);
+    $("#editRoomId").val(roomId);
     $("#editAmenityName").val(amenityTitle);
     $("#editAmenityQuantity").val(quantity);
 
@@ -86,8 +86,8 @@
   }
 
   function updateRoomAmenity() {
-    let amenityID = $("#editAmenityId").val();
-    let roomID = $("#editRoomId").val();
+    let amenityId = $("#editAmenityId").val();
+    let roomId = $("#editRoomId").val();
     let quantity = $("#editAmenityQuantity").val().trim();
     let $errorDiv = $("#quantityError");
 
@@ -104,9 +104,9 @@
       type: "POST",
       contentType: "application/json",
       data: JSON.stringify({
-        roomAmenityID: {
-          roomID: roomID,
-          amenityID: amenityID,
+        roomAmenityId: {
+          roomId: roomId,
+          amenityId: amenityId,
         },
         quantity: quantity,
       }),
@@ -123,13 +123,13 @@
   }
 
   function checkBeforeDeleteAmenity(button) {
-    let amenityID = $(button).data("amenity-id");
-    let roomID = $(button).data("room-id");
+    let amenityId = $(button).data("amenity-id");
+    let roomId = $(button).data("room-id");
     let title = $(button).data("amenity-name");
 
     $("#titleConfirm").text(title);
-    $("#amenityIdInput").val(amenityID);
-    $("#roomAmenityIdInput").val(roomID);
+    $("#amenityIdInput").val(amenityId);
+    $("#roomAmenityIdInput").val(roomId);
     $("#deleteAmenityConfirmModal").modal("show");
   }
 </script>

@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Hồ sơ nhân viên - Lullaby Homestay</title>
+    <title>Hồ sơ của tôi - Lullaby Homestay</title>
     <jsp:include page="../layout/import-css.jsp" />
 </head>
 

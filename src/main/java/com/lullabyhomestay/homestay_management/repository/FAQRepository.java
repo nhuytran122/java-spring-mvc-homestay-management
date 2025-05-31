@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,9 +17,9 @@ public interface FAQRepository extends JpaRepository<FAQ, Long> {
     Page<FAQ> findByQuestionContainingIgnoreCaseOrAnswerContainingIgnoreCase(
             String ques, String ans, Pageable pageable);
 
-    Optional<FAQ> findByFaqID(long faqID);
+    Optional<FAQ> findByFaqId(long faqId);
 
     FAQ save(FAQ faq);
 
-    void deleteByFaqID(long id);
+    void deleteByFaqId(long id);
 }

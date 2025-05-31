@@ -23,29 +23,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Reviews")
+@Table(name = "reviews")
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ReviewID")
-    private Long reviewID;
+    private Long reviewId;
 
-    @Min(value = 1, message = "Vui lòng chọn số sao (từ 1 đến 5)!")
-    @Max(value = 5, message = "Số sao không được lớn hơn 5!")
-    @Column(name = "Rating")
+    @Min(value = 1, message = "Vui lòng chọn số sao (từ 1 đến 5)")
+    @Max(value = 5, message = "Số sao không được lớn hơn 5")
     private Integer rating;
 
     @NotBlank(message = "Vui lòng nhập nội dung đánh giá")
-    @Column(name = "Comment")
     private String comment;
 
-    @Column(name = "CreatedAt", insertable = false)
+    @Column(insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "Image")
     private String image;
 
     @OneToOne
-    @JoinColumn(name = "BookingID")
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 }

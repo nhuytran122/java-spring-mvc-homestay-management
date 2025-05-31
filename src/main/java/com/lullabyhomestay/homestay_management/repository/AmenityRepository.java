@@ -20,17 +20,17 @@ public interface AmenityRepository extends JpaRepository<Amenity, Long>, JpaSpec
 
     Page<Amenity> findAll(Pageable page);
 
-    Optional<Amenity> findByAmenityID(long amenityID);
+    Optional<Amenity> findByAmenityId(long amenityId);
 
     Amenity save(Amenity amenity);
 
-    void deleteByAmenityID(long amenityID);
+    void deleteByAmenityId(long amenityId);
 
-    @Query("SELECT a FROM Amenity a WHERE a.amenityID NOT IN " +
-            "(SELECT ra.amenity.amenityID FROM RoomAmenity ra WHERE ra.room.roomID = :roomId)")
+    @Query("SELECT a FROM Amenity a WHERE a.amenityId NOT IN " +
+            "(SELECT ra.amenity.amenityId FROM RoomAmenity ra WHERE ra.room.roomId = :roomId)")
     List<Amenity> findAmenitiesNotInRoom(@Param("roomId") long roomId);
 
     Page<Amenity> findAll(Specification<Amenity> spec, Pageable page);
 
-    boolean existsByAmenityCategory_CategoryID(long categoryID);
+    boolean existsByAmenityCategory_CategoryId(long categoryId);
 }

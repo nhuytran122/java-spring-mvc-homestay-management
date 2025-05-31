@@ -4,17 +4,17 @@
     let selectedItems = [];
 
     $(".item-checkbox:checked").each(function () {
-      let bookingID = $(this).data("booking-id");
-      let serviceID = $(this).data("service-id");
+      let bookingId = $(this).data("booking-id");
+      let serviceId = $(this).data("service-id");
 
       let descriptionInput = $(
-        ".service-description[data-service-id='" + serviceID + "']"
+        ".service-description[data-service-id='" + serviceId + "']"
       );
       let description = descriptionInput.val();
 
       selectedItems.push({
-        booking: { bookingID },
-        service: { serviceID },
+        booking: { bookingId },
+        service: { serviceId },
         description: description,
       });
     });
@@ -57,17 +57,17 @@
   }
 
   function checkBeforeBookingExtension(button) {
-    let bookingID = $(button).data("booking-id");
+    let bookingId = $(button).data("booking-id");
 
     $.ajax({
-      url: "/booking/can-booking-extension/" + bookingID,
+      url: "/booking/can-booking-extension/" + bookingId,
       type: "GET",
       dataType: "json",
       success: function (response) {
         console.log("Response từ server:", response);
 
         if (response.data === true) {
-          window.location.href = "/booking/booking-extension/" + bookingID;
+          window.location.href = "/booking/booking-extension/" + bookingId;
         } else {
           let message =
             response.message || "Không thể thực hiện gia hạn giờ thuê.";

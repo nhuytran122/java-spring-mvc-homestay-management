@@ -27,7 +27,7 @@
                         <h4 class="card-title mb-4 text-center">Sửa thông tin homestay</h4>
                         <form:form class="form-horizontal" action="/admin/homestay-infor/update" method="post"
                             modelAttribute="infor">
-                            <form:input type="hidden" path="inforID" />
+                            <form:input type="hidden" path="inforId" />
                             <c:set var="errorTitle">
                                 <form:errors path="title" cssClass="invalid-feedback" />
                             </c:set>

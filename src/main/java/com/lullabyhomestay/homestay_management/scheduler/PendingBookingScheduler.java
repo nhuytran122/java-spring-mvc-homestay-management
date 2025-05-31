@@ -27,10 +27,10 @@ public class PendingBookingScheduler {
     public void cancelPendingBookings() {
         List<Booking> pendingBookings = bookingService.findPendingBookingsBefore(timeoutMinutes);
         for (Booking booking : pendingBookings) {
-            Long bookingID = booking.getBookingID();
+            Long bookingID = booking.getBookingId();
             booking.setStatus(BookingStatus.CANCELLED);
             bookingService.handleSaveBooking(booking);
-            roomStatusHistoryService.deleteByBookingID(bookingID);
+            roomStatusHistoryService.deleteByBookingId(bookingID);
         }
     }
 }

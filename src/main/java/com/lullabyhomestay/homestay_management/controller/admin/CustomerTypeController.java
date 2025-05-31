@@ -71,7 +71,7 @@ public class CustomerTypeController {
 
     @GetMapping("/update/{id}")
     public String getUpdateTypePage(Model model, @PathVariable long id) {
-        CustomerType type = customerTypeService.getCustomerTypeByID(id);
+        CustomerType type = customerTypeService.getCustomerTypeById(id);
 
         model.addAttribute("type", type);
         return "admin/customer-type/update";
@@ -83,8 +83,8 @@ public class CustomerTypeController {
             BindingResult result,
             HttpServletRequest request) {
 
-        CustomerType currentType = customerTypeService.getCustomerTypeByID(type.getCustomerTypeID());
-        if (customerTypeService.existsByNameAndNotId(type.getName(), type.getCustomerTypeID())) {
+        CustomerType currentType = customerTypeService.getCustomerTypeById(type.getCustomerTypeId());
+        if (customerTypeService.existsByNameAndNotId(type.getName(), type.getCustomerTypeId())) {
             result.rejectValue("name", "error.name",
                     "Tên phân loại khách hàng đã tồn tại!");
         }
@@ -107,8 +107,8 @@ public class CustomerTypeController {
     }
 
     @PostMapping("/delete")
-    public String postDeleteType(@RequestParam("customerTypeID") Long typeID) {
-        this.customerTypeService.deleteByCustomerTypeID(typeID);
+    public String postDeleteType(@RequestParam("customerTypeId") Long typeId) {
+        this.customerTypeService.deleteByCustomerTypeId(typeId);
         return "redirect:/admin/customer/customer-type";
     }
 

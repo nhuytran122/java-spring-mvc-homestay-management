@@ -36,7 +36,7 @@ public class MaintenanceRequestService {
                 "asc".equals(criteria.getSort()) ? Sort.by("CreatedAt").ascending()
                         : "desc".equals(criteria.getSort()) ? Sort.by("CreatedAt").descending() : Sort.unsorted());
 
-        if ((criteria.getKeyword() == null || criteria.getKeyword().isEmpty()) && criteria.getBranchID() == null
+        if ((criteria.getKeyword() == null || criteria.getKeyword().isEmpty()) && criteria.getBranchId() == null
                 && criteria.getStatus() == null || criteria.getStatus().isEmpty())
             return maintenanceRepository
                     .findAll(pageable);
@@ -49,14 +49,14 @@ public class MaintenanceRequestService {
             }
         }
         Specification<MaintenanceRequest> spec = Specification
-                .where(MaintenanceSpecifications.hasBranch(criteria.getBranchID()))
+                .where(MaintenanceSpecifications.hasBranch(criteria.getBranchId()))
                 .and(MaintenanceSpecifications.descriptionLike(criteria.getKeyword()))
                 .and(MaintenanceSpecifications.statusEqual(statusNum));
         return maintenanceRepository.findAll(spec, pageable);
     }
 
-    public boolean canUpdateAndDeleteRequest(Long requestID) {
-        Optional<MaintenanceRequest> requestOpt = maintenanceRepository.findByRequestID(requestID);
+    public boolean canUpdateAndDeleteRequest(Long requestId) {
+        Optional<MaintenanceRequest> requestOpt = maintenanceRepository.findByRequestId(requestId);
         if (!requestOpt.isPresent()) {
             throw new NotFoundException("Yêu cầu bảo trì");
         }
@@ -70,10 +70,10 @@ public class MaintenanceRequestService {
 
     public void handleSaveMaintenanceRequest(MaintenanceRequest request) {
         if (request.getRoom() != null) {
-            Long roomID = request.getRoom().getRoomID();
+            Long roomId = request.getRoom().getRoomId();
             Room room = new Room();
-            if (roomID != null) {
-                room = roomService.getRoomByID(roomID);
+            if (roomId != null) {
+                room = roomService.getRoomById(roomId);
             }
             if (request.getStatus() == MaintenanceStatus.IN_PROGRESS) {
                 room.setIsActive(false);
@@ -87,8 +87,8 @@ public class MaintenanceRequestService {
         this.maintenanceRepository.save(request);
     }
 
-    public MaintenanceRequest getMaintenanceRequestByID(long requestID) {
-        Optional<MaintenanceRequest> requestOpt = maintenanceRepository.findByRequestID(requestID);
+    public MaintenanceRequest getMaintenanceRequestById(long requestId) {
+        Optional<MaintenanceRequest> requestOpt = maintenanceRepository.findByRequestId(requestId);
         if (!requestOpt.isPresent()) {
             throw new NotFoundException("Yêu cầu bảo trì");
         }
@@ -96,20 +96,20 @@ public class MaintenanceRequestService {
     }
 
     @Transactional
-    public void deleteByMaintenanceRequestID(long requestID) {
-        if (!canUpdateAndDeleteRequest(requestID)) {
+    public void deleteByMaintenanceRequestId(long requestId) {
+        if (!canUpdateAndDeleteRequest(requestId)) {
             throw new IllegalStateException("Yêu cầu bảo trì không ở trạng thái cho phép xóa.");
         }
-        MaintenanceRequest request = getMaintenanceRequestByID(requestID);
-        Long roomID = request.getRoom().getRoomID();
+        MaintenanceRequest request = getMaintenanceRequestById(requestId);
+        Long roomId = request.getRoom().getRoomId();
         Room room = new Room();
-        if (roomID != null) {
-            room = roomService.getRoomByID(roomID);
+        if (roomId != null) {
+            room = roomService.getRoomById(roomId);
         }
         room.setIsActive(false);
         roomService.handleSaveRoom(room);
 
-        this.maintenanceRepository.deleteByRequestID(requestID);
+        this.maintenanceRepository.deleteByRequestId(requestId);
 
     }
 }

@@ -1,6 +1,5 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,18 +16,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "HomestayDetails")
+@Table(name = "homestay_details")
 public class HomestayDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "InforID")
-    private Long inforID;
+    private Long inforId;
 
     @NotBlank(message = "Vui lòng nhập tiêu đề thông tin")
-    @Column(name = "Title")
     private String title;
 
     @NotBlank(message = "Vui lòng nhập mô tả")
-    @Column(name = "Description")
     private String description;
 }

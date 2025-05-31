@@ -16,30 +16,30 @@ import com.lullabyhomestay.homestay_management.utils.RoomStatus;
 public interface RoomStatusHistoryRepository extends JpaRepository<RoomStatusHistory, Long> {
        Page<RoomStatusHistory> findAll(Pageable page);
 
-       Optional<RoomStatusHistory> findByRoomStatusID(long id);
+       Optional<RoomStatusHistory> findByRoomStatusId(long id);
 
        RoomStatusHistory save(RoomStatusHistory roomStatusHistory);
 
-       void deleteByRoom_RoomID(long id);
+       void deleteByRoom_RoomId(long id);
 
        @Query("SELECT CASE WHEN COUNT(rsh) > 0 THEN true ELSE false END " +
                      "FROM RoomStatusHistory rsh " +
-                     "WHERE rsh.room.roomID = :roomId " +
+                     "WHERE rsh.room.roomId = :roomId " +
                      "AND (rsh.startedAt < :checkOut AND rsh.endedAt > :checkIn)")
        boolean existsOverlappingStatuses(
                      @Param("roomId") Long roomId,
                      @Param("checkIn") LocalDateTime checkIn,
                      @Param("checkOut") LocalDateTime checkOut);
 
-       void deleteByBooking_BookingID(Long bookingID);
+       void deleteByBooking_BookingId(Long bookingId);
 
        // @Modifying
-       // @Query("DELETE FROM RoomStatusHistory rs WHERE rs.booking.bookingID =
-       // :bookingID")
-       // void deleteByBooking_BookingID(@Param("bookingID") Long bookingID);
+       // @Query("DELETE FROM RoomStatusHistory rs WHERE rs.booking.bookingId =
+       // :bookingId")
+       // void deleteByBooking_BookingId(@Param("bookingId") Long bookingId);
 
-       List<RoomStatusHistory> findByRoom_RoomIDAndStartedAtBetween(Long roomID, LocalDateTime startOfDate,
+       List<RoomStatusHistory> findByRoom_RoomIdAndStartedAtBetween(Long roomId, LocalDateTime startOfDate,
                      LocalDateTime endOfDate);
 
-       Optional<RoomStatusHistory> findByBooking_BookingIDAndStatus(Long bookingID, RoomStatus roomStatus);
+       Optional<RoomStatusHistory> findByBooking_BookingIdAndStatus(Long bookingId, RoomStatus roomStatus);
 }

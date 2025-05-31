@@ -48,7 +48,7 @@
                                 <div class="col-sm-10">
                                     <form:select class="form-select form-control ${not empty errorCategory ? 'is-invalid' : ''}" path="amenityCategory">
                                         <form:option value="">Chọn phân loại</form:option>
-                                        <form:options items="${listCategories}" itemValue="categoryID" itemLabel="categoryName"/>
+                                        <form:options items="${listCategories}" itemValue="categoryId" itemLabel="categoryName"/>
                                     </form:select>
                                     ${errorCategory}
                                 </div>

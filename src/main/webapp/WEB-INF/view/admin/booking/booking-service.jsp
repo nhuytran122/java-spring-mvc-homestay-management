@@ -91,20 +91,20 @@
                       <div class="col-12">
                         <c:forEach var="service" items="${listServices}" varStatus="loop">
                           <c:set
-                            var="serviceID"
-                            value="${service.serviceID}"
+                            var="serviceId"
+                            value="${service.serviceId}"
                           />
                           <c:set
                             var="index"
                             value="${loop.index}"
                           />
-                          <div class="service-item" id="service-${serviceID}">
+                          <div class="service-item" id="service-${serviceId}">
                             <div class="d-flex">
                               <div class="form-check d-flex align-items-center justify-content-center me-3" style="width: 46px; height: 46px;">
                             <input class="form-check-input service-checkbox" type="checkbox"
                               name="services[${index}].selected"
                               value="true"
-                              data-service-id="${serviceID}" data-price="${service.price}">
+                              data-service-id="${serviceId}" data-price="${service.price}">
                           </div>
 
 
@@ -124,19 +124,19 @@
                             
                             <div class="service-details">
                               <div class="form-group">
-                                <label for="quantity-${serviceID}" class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                <label for="quantity-${serviceId}" class="form-label">Số lượng <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control quantity-input"
-                                  id="quantity-${serviceID}" name="services[${index}].quantity"
+                                  id="quantity-${serviceId}" name="services[${index}].quantity"
                                   min="1" value="1"/>
-                                <div class="invalid-feedback" id="quantity-error-${serviceID}"></div>
+                                <div class="invalid-feedback" id="quantity-error-${serviceId}"></div>
                               </div>
                               <div class="form-group mt-2">
-                                <label for="note-${serviceID}" class="form-label">Mô tả yêu cầu</label>
+                                <label for="note-${serviceId}" class="form-label">Mô tả yêu cầu</label>
                                 <textarea class="form-control note-input"
-                                  id="note-${serviceID}" name="services[${index}].description"
+                                  id="note-${serviceId}" name="services[${index}].description"
                                   rows="2" placeholder="Nhập mô tả yêu cầu (ví dụ: thời gian phục vụ, yêu cầu đặc biệt,...)"></textarea>
                               </div>
-                              <input type="hidden" name="services[${index}].serviceID" value="${serviceID}"/>
+                              <input type="hidden" name="services[${index}].serviceId" value="${serviceId}"/>
                             </div>
                           </div>
 
@@ -241,7 +241,7 @@
           }
 
           selectedServices.push({
-            serviceID: serviceId,
+            serviceId: serviceId,
             quantity: quantity,
             description: description,
           });
@@ -262,7 +262,7 @@
           contentType: "application/json",
           data: JSON.stringify(requestData),
           success: function(response) {
-            window.location.href = "/admin/booking/booking-confirmation?bookingID=" + response.data;
+            window.location.href = "/admin/booking/booking-confirmation?bookingId=" + response.data;
           },
           error: function(xhr) {
             let errorMessage = xhr.responseJSON?.message || "Có lỗi xảy ra khi lưu dịch vụ. Vui lòng thử lại!";
@@ -282,7 +282,7 @@
           contentType: "application/json",
           data: JSON.stringify(requestData),
           success: function(response) {
-            window.location.href = "/admin/booking/booking-confirmation?bookingID=" + response.data;
+            window.location.href = "/admin/booking/booking-confirmation?bookingId=" + response.data;
           },
           error: function(xhr) {
             let errorMessage = xhr.responseJSON?.message || "Có lỗi xảy ra khi bỏ qua dịch vụ. Vui lòng thử lại!";

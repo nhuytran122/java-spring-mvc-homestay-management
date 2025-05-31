@@ -18,14 +18,14 @@ public interface InventoryTransactionRepository
 
     Page<InventoryTransaction> findAll(Specification<InventoryTransaction> spec, Pageable page);
 
-    boolean existsByBranch_BranchID(long branchID);
+    boolean existsByBranch_BranchId(long branchId);
 
-    boolean existsByInventoryItem_ItemID(long itemID);
+    boolean existsByInventoryItem_ItemId(long itemId);
 
     InventoryTransaction save(InventoryTransaction transaction);
 
-    Optional<InventoryTransaction> findByTransactionID(Long transactionID);
+    Optional<InventoryTransaction> findByTransactionId(Long transactionId);
 
-    boolean existsByEmployee_EmployeeID(long employeeID);
+    boolean existsByEmployee_EmployeeId(long employeeId);
 
 }

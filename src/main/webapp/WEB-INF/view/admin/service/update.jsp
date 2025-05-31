@@ -47,7 +47,7 @@ uri="http://www.springframework.org/tags/form" %>
                       method="post"
                       modelAttribute="service"
                     >
-                      <form:hidden path="serviceID" />
+                      <form:hidden path="serviceId" />
                       <c:set var="errorName">
                         <form:errors
                           path="serviceName"

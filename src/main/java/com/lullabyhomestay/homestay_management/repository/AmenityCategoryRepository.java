@@ -18,13 +18,13 @@ public interface AmenityCategoryRepository extends JpaRepository<AmenityCategory
 
     Page<AmenityCategory> findByCategoryNameContainingIgnoreCase(String keyword, Pageable page);
 
-    Optional<AmenityCategory> findByCategoryID(long categoryID);
+    Optional<AmenityCategory> findByCategoryId(long categoryId);
 
     AmenityCategory save(AmenityCategory category);
 
-    void deleteByCategoryID(long id);
+    void deleteByCategoryId(long id);
 
     boolean existsByCategoryNameIgnoreCase(String name);
 
-    boolean existsByCategoryNameIgnoreCaseAndCategoryIDNot(String name, Long categoryID);
+    boolean existsByCategoryNameIgnoreCaseAndCategoryIdNot(String name, Long categoryId);
 }

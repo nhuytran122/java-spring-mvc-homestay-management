@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Quản lý đặt dịch vụ</title>
+    <title>Quản lý đơn đặt dịch vụ</title>
     <jsp:include page="../layout/import-css.jsp" />
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
@@ -68,7 +68,7 @@
                             <div class="card position-relative">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="card-title">Danh sách đặt dịch vụ</h4>
+                                        <h4 class="card-title">Danh sách đơn đặt dịch vụ</h4>
                                     </div>
 
                                     <div class="table-responsive">
@@ -104,8 +104,8 @@
                                                                 <c:set var="booking" value="${bookingService.booking}"></c:set>
                                                                 <c:set var="room" value="${booking.room}"></c:set>
                                                                 <c:set var="bServiceName" value="${bookingService.service.serviceName}"></c:set>
-                                                                <c:set var="bookingServiceID" value="${bookingService.bookingServiceID}"></c:set>
-                                                                <td>${booking.bookingID}</td>
+                                                                <c:set var="bookingServiceId" value="${bookingService.bookingServiceId}"></c:set>
+                                                                <td>${booking.bookingId}</td>
                                                                 <td>${booking.customer.user.fullName}</td>
                                                                 <td>${room.branch.branchName}</td>
                                                                 <td>${room.roomNumber}</td>
@@ -145,18 +145,18 @@
                                                                 
                                                                 <td>
                                                                     <div class="btn-group" role="group">
-                                                                        <a href="/admin/booking/${booking.bookingID}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">
+                                                                        <a href="/admin/booking/${booking.bookingId}" class="btn btn-success btn-sm" title="Xem chi tiết đặt phòng liên quan">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
                                                                         <button class="btn btn-warning btn-sm" title="Sửa"
                                                                             onclick="checkBeforeUpdate(this)" 
-                                                                                data-booking-service-id="${bookingServiceID}"
+                                                                                data-booking-service-id="${bookingServiceId}"
                                                                                 data-entity-type="Đơn đặt dịch vụ"
                                                                                 data-check-url="/admin/booking-service/can-handle/" >
                                                                             <i class="bi bi-pencil"></i>
                                                                         </button>
                                                                         <button class="btn btn-info btn-sm status-update-btn" 
-                                                                            data-booking-service-id="${bookingServiceID}" 
+                                                                            data-booking-service-id="${bookingServiceId}" 
                                                                             data-current-status="${status}"
                                                                             title="Cập nhật trạng thái">
                                                                             <i class="bi bi-gear"></i>
@@ -165,12 +165,12 @@
                                                                             class="btn btn-danger btn-sm"
                                                                             title="Xóa"
                                                                             onclick="checkBeforeDelete(this)"
-                                                                            data-entity-id="${bookingServiceID}"
+                                                                            data-entity-id="${bookingServiceId}"
                                                                             data-entity-name="${bServiceName}"
                                                                             data-entity-type="Đơn đặt dịch vụ"
                                                                             data-delete-url="/admin/booking-service/delete"
                                                                             data-check-url="/admin/booking-service/can-handle/"
-                                                                            data-id-name="bookingServiceID"
+                                                                            data-id-name="bookingServiceId"
                                                                             >
                                                                             <i class="bi bi-trash"></i>
                                                                             </button>

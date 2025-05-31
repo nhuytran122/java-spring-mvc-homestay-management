@@ -2,7 +2,6 @@ package com.lullabyhomestay.homestay_management.domain;
 
 import com.lullabyhomestay.homestay_management.utils.PaymentPurpose;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,33 +22,29 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "PaymentDetails")
+@Table(name = "payment_details")
 public class PaymentDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PaymentDetailID")
-    private Long paymentDetailID;
+    private Long paymentDetailId;
 
-    @Column(name = "PaymentPurpose")
     @Enumerated(EnumType.STRING)
     private PaymentPurpose paymentPurpose;
 
-    @Column(name = "BaseAmount")
     private Double baseAmount;
 
-    @Column(name = "FinalAmount")
     private Double finalAmount;
 
     @ManyToOne
-    @JoinColumn(name = "PaymentID")
+    @JoinColumn(name = "payment_id")
     private Payment payment;
 
     @OneToOne
-    @JoinColumn(name = "ExtensionID")
+    @JoinColumn(name = "extension_id")
     private BookingExtension bookingExtension;
 
     @OneToOne
-    @JoinColumn(name = "BookingServiceID")
+    @JoinColumn(name = "booking_service_id")
     private BookingServices bookingService;
 }

@@ -8,14 +8,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lullabyhomestay.homestay_management.domain.EmailVerificationToken;
+import com.lullabyhomestay.homestay_management.domain.VerificationToken;
 import com.lullabyhomestay.homestay_management.domain.PasswordResetToken;
 import com.lullabyhomestay.homestay_management.domain.Role;
 import com.lullabyhomestay.homestay_management.domain.User;
 import com.lullabyhomestay.homestay_management.domain.dto.RegisterDTO;
 import com.lullabyhomestay.homestay_management.domain.dto.UserDTO;
 import com.lullabyhomestay.homestay_management.exception.NotFoundException;
-import com.lullabyhomestay.homestay_management.repository.EmailVerificationTokenRepository;
+import com.lullabyhomestay.homestay_management.repository.VerificationTokenRepository;
 import com.lullabyhomestay.homestay_management.repository.PasswordResetTokenRepository;
 import com.lullabyhomestay.homestay_management.repository.RoleRepository;
 import com.lullabyhomestay.homestay_management.repository.UserRepository;
@@ -34,14 +34,14 @@ public class UserService {
     private final EmailService emailService;
 
     private final PasswordResetTokenRepository tokenRepository;
-    private final EmailVerificationTokenRepository verificationTokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public User getUserByUserID(Long id) {
-        return userRepository.findByUserID(id)
+    public User getUserByUserId(Long id) {
+        return userRepository.findByUserId(id)
                 .orElseThrow(() -> new NotFoundException("Nguời dùng"));
     }
 
@@ -54,12 +54,12 @@ public class UserService {
     }
 
     @Transactional
-    public User createUserForPerson(UserDTO userDTO, Long roleID, String password) {
+    public User createUserForPerson(UserDTO userDTO, Long roleId, String password) {
         User user = new User();
         user.setEmail(userDTO.getEmail());
         user.setPassword(encodePasswordOrDefault(password));
         updateUserInfoFromDTO(user, userDTO);
-        user.setRole(resolveRole(roleID));
+        user.setRole(resolveRole(roleId));
         user.setIsEnabled(true);
         return handleSaveUser(user);
     }
@@ -92,7 +92,7 @@ public class UserService {
     private void createAndSendVerificationToken(User user) throws Exception {
         verificationTokenRepository.deleteByUser(user);
         String token = UUID.randomUUID().toString();
-        EmailVerificationToken verificationToken = new EmailVerificationToken(
+        VerificationToken verificationToken = new VerificationToken(
                 token,
                 user,
                 LocalDateTime.now().plusHours(24));
@@ -101,13 +101,13 @@ public class UserService {
     }
 
     public UserDTO updateProfile(Long id, UserDTO requestDTO) {
-        User user = getUserByUserID(id);
+        User user = getUserByUserId(id);
         updateUserInfoFromDTO(user, requestDTO);
         return mapper.map(handleSaveUser(user), UserDTO.class);
     }
 
-    public void changePassword(Long userID, String newPassword) throws Exception {
-        User user = getUserByUserID(userID);
+    public void changePassword(Long userId, String newPassword) throws Exception {
+        User user = getUserByUserId(userId);
         user.setPassword(passwordEncoder.encode(newPassword));
         handleSaveUser(user);
         emailService.sendPasswordChangedNotification(user);
@@ -121,10 +121,10 @@ public class UserService {
         return passwordEncoder.encode(password != null ? password : Constants.DEFAULT_PASSWORD);
     }
 
-    private Role resolveRole(Long roleID) {
-        if (roleID != null) {
-            return roleRepository.findById(roleID)
-                    .orElseThrow(() -> new NotFoundException("Không tìm thấy vai trò với ID: " + roleID));
+    private Role resolveRole(Long roleId) {
+        if (roleId != null) {
+            return roleRepository.findById(roleId)
+                    .orElseThrow(() -> new NotFoundException("Không tìm thấy vai trò với Id: " + roleId));
         }
         return roleRepository.findByRoleName(SystemRole.CUSTOMER);
     }
@@ -171,7 +171,7 @@ public class UserService {
 
     @Transactional
     public void verifyEmail(String token) throws Exception {
-        EmailVerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
         if (verificationToken == null) {
             throw new Exception("Liên kết xác nhận không hợp lệ.");
         }

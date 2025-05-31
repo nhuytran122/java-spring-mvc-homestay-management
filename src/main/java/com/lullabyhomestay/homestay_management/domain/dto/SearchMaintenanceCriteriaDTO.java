@@ -14,12 +14,12 @@ public class SearchMaintenanceCriteriaDTO {
     private String keyword;
     private String status;
     private String sort;
-    private Long branchID;
+    private Long branchId;
 
     public String convertToExtraParams() {
         StringBuilder extraParams = new StringBuilder();
-        if (branchID != null) {
-            extraParams.append("&branchID=").append(branchID);
+        if (branchId != null) {
+            extraParams.append("&branchId=").append(branchId);
         }
         if (status != null) {
             extraParams.append("&status=").append(status);

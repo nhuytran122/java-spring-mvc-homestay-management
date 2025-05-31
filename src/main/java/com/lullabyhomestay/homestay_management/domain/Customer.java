@@ -22,22 +22,21 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Customers")
+@Table(name = "customers")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CustomerID")
-    private Long customerID;
+    private Long customerId;
 
-    @Column(name = "RewardPoints", insertable = false)
+    @Column(insertable = false)
     private Double rewardPoints;
 
     @OneToOne
-    @JoinColumn(name = "UserID")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "CustomerTypeID")
+    @JoinColumn(name = "customer_type_id")
     private CustomerType customerType;
 
     @OneToMany(mappedBy = "customer")

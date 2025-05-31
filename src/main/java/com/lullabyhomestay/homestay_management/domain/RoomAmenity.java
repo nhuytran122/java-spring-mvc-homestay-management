@@ -1,8 +1,7 @@
 package com.lullabyhomestay.homestay_management.domain;
 
-import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityID;
+import com.lullabyhomestay.homestay_management.domain.id.RoomAmenityId;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -19,23 +18,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "RoomAmenities")
+@Table(name = "room_amenities")
 public class RoomAmenity {
 
     @EmbeddedId
-    private RoomAmenityID roomAmenityID;
+    private RoomAmenityId roomAmenityId;
 
-    @Column(name = "Quantity")
     private Integer quantity;
 
     @ManyToOne
-    @MapsId("amenityID")
-    @JoinColumn(name = "AmenityID")
+    @MapsId("amenityId")
+    @JoinColumn(name = "amenity_id")
     private Amenity amenity;
 
     @ManyToOne
-    @MapsId("roomID")
-    @JoinColumn(name = "RoomID")
+    @MapsId("roomId")
+    @JoinColumn(name = "room_id")
     private Room room;
 
 }
