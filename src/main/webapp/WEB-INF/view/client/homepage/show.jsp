@@ -314,7 +314,7 @@
                                 <div class="card h-100 border-0">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-3">
-                                            <img src="/images/avatar/${customer.avatar}" class="rounded-circle me-3" 
+                                            <img src="/images/avatar/${not empty customer.avatar ? customer.avatar : 'default-img.jpg'}" class="rounded-circle me-3" 
                                                  alt="Avatar" style="width: 50px; height: 50px;">
                                             <div>
                                                 <h6 class="mb-0">${customer.fullName}</h6>

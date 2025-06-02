@@ -293,7 +293,7 @@
 
                         if (isDorm) {
                             pricingDetailsHtml += "<div class='text-muted small'>(" +
-                                price.toLocaleString('vi-VN') + "đ x " + totalHours.toFixed(1) + " giờ x " + guestCount + " người)</div>";
+                                price.toLocaleString('vi-VN') + "đ x " + guestCount + " người)</div>";
                         }
 
                         $('#pricing-details').html(pricingDetailsHtml);
