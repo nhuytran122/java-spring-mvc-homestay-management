@@ -1,58 +1,213 @@
-# Homestay Management System
+# LullabyNest - Homestay Management System
 
-## Overview
+## 🏡 Overview
 
-**LullabyNest** is a web application currently under development using **Spring Boot** and **Spring MVC**. This platform is designed to  manage homestay bookings, providing an efficient solution for administrators to handle reservations, customer details, and branch operations. The system aims to improve the user experience for both administrators and customers by offering a centralized platform to manage bookings, search for reservations, and oversee branch activities.
+**LullabyNest** is a full-featured homestay management web application built with **Spring Boot** and **Spring MVC**, developed as part of a **graduation thesis** and for self-learning purposes. The system is designed to help administrators efficiently manage homestay operations, including booking, service management, inventory, staff, and customer interactions across multiple branches.
 
-The application allows administrators to:
+It also includes an integrated customer-facing platform where registered users can manage their bookings, request services, and provide reviews.
 
-- **Manage Bookings:** Create, read, update, and delete (CRUD) booking records, including check-in/check-out details, customer information, and payment status.
-- **Search and Filter Bookings:** Search bookings by customer name, branch, status, date range, and sort them by check-in date.
-- **Manage Branches and Rooms:** Oversee branch information and room.
-- **Handle Customer Interactions:** View and manage customer details linked to bookings.
+---
 
-In addition to administrative features, the system is being designed with future enhancements for customer-facing functionalities, such as online booking and profile management.
+## ✨ Features
 
-## Features
+### ✅ Admin Features
 
-- **Booking Management:** Administrators can perform CRUD operations on bookings, including detailed tracking of check-in, check-out, and total payment.
-- **Advanced Search:** Filter bookings by keyword, branch, status, date range (currently supporting `dd/MM/yyyy` format), and sorting options.
-- **Responsive Interface:** A user-friendly interface built with HTML, CSS, Bootstrap, and JSP for easy navigation and management.
-- **Admin Dashboard:** Centralized panel for managing all homestay operations (still in development).
+#### 🛏️ Booking Management
 
-**Note:** The project is currently in the development phase. Features like customer-facing booking, payment integration, and advanced reporting are planned but not yet implemented.
+- Create, and cancel room bookings.
+- Auto-cancel unpaid bookings after a set duration.
+- Auto-complete bookings after check-out time and award **Reward Points** based on value.
+- Booking extension management: create, delete unconfirmed requests.
+- Send key booking details to customer's email 30 minutes before check-in.
+- View full **transaction history**.
+- Automatically generate **refund requests** for paid bookings that are canceled (manual refund only, due to sandbox limitations).
 
-## Technologies Used
+#### 🛎️ Service Booking Management
 
-- **Backend:** Spring Boot (Spring MVC, Data JPA)
-- **Database:** SQL Server
-- **Frontend:** HTML, CSS, JavaScript, jQuery, Bootstrap, JSP
-- **Build Tool:** Maven
-- **Web Server:** Embedded Tomcat (via Spring Boot)
-- **IDE:** Visual Studio Code
+- Allow pre-paid and post-paid service booking.
+- Modify service quantity, update status, or remove booking services from bookings.
 
-## Development Progress
+#### 🏬 Homestay Information Management
 
-This project is an ongoing effort, building on the experience gained from implementing core functionalities such as:
-- Integration of Spring MVC for handling HTTP requests and responses.
-- Development of a search feature using JPA Specifications for dynamic filtering (e.g., by branch, status, and date range).
-- Implementation of `bootstrap-daterangepicker` for date range selection, with ongoing adjustments to support `dd/MM/yyyy` format.
-- Creation of a responsive admin interface using JSP and Bootstrap.
+- Manage general information and branch details.
+- Define rules and FAQs.
+- Handle rooms, room types, amenities, and amenity categories.
+- Manage services.
 
-**Current Status:**
-- The admin booking management page is partially functional, allowing search and display of bookings.
-- Date range filtering is implemented but requires further testing and refinement.
-- Database integration and full CRUD operations are in progress.
-- Customer-facing features (e.g., online booking) and security (e.g., authentication) are yet to be developed.
+#### 📦 Inventory Management
 
-## Future Plans
+- Track available inventory (e.g., appliances, supplies).
+- Manage inventory categories.
+- Record import/export transactions for stock movement history.
 
-- **Complete CRUD Operations:** Finalize create, update, and delete functionalities for bookings, branches, rooms, etc...
-- **Customer Interface:** Develop a front-end for customers to book homestays online.
-- **Payment Integration:** Add payment processing for bookings.
-- **Security:** Implement user authentication and authorization (Spring Security).
-- **Reporting:** Add reporting features for administrators to analyze booking trends.
+#### 🛠️ Maintenance Requests
 
-## Note
+- Submit, update, delete, and track maintenance requests.
+- Manage maintenance status (e.g., Pending, In Progress, Completed, Cancelled, On Hold).
 
-This project is a work in progress, developed as a graduation thesis and a self-learning project using Spring Boot and related technologies. It does not yet follow all best practices for production-ready applications. The goal is to create a robust homestay management system that enhances operational efficiency and user experience. Feedback and contributions are welcome as the project evolves!
+#### 👨‍💼 User & Staff Management
+
+- Manage roles and permissions via **Spring Security**.
+- Role types: Admin, Staff, Housekeeper, Registered Customer.
+- View and edit user profiles, categorize customers.
+
+#### 📊 Dashboard & Reporting
+
+- Revenue analysis by booking, services, and extensions.
+- Top-performing rooms and services.
+- Identify loyal customers by **Reward Points**.
+
+#### 🔐 Security & Scheduled Tasks
+
+- Role-based access control using **Spring Security**.
+- Scheduled jobs:
+
+  - Auto-complete bookings and assign reward points.
+  - Upgrade customer tier if points meet threshold.
+  - Cancel unpaid bookings automatically.
+  - Delete unpaid booking extensions.
+  - Send important emails before check-in.
+
+#### 📧 Email Integration
+
+- Send verification email on registration.
+- Forgot password and reset password flow.
+- Notify user of password change for added security.
+- Send booking confirmation and branch info via email.
+
+---
+
+### 🌐 Customer Features
+
+- **Register/Login** (email verification required).
+- **Book Rooms** and **Request Services** (prepaid or postpaid).
+- **Cancel Bookings** within allowed time.
+- **Extend Bookings** and view status.
+- **Make Payments** via **VNPAY (Sandbox Integration)**.
+- **Send Reviews** after completed stays.
+- **Earn Reward Points** based on completed bookings.
+
+---
+
+## 🛠️ Technologies Used
+
+| Layer      | Technology                                    |
+| ---------- | --------------------------------------------- |
+| Backend    | Spring Boot, Spring MVC, Spring Data JPA      |
+| Security   | Spring Security (role-based authentication)   |
+| Frontend   | JSP, Bootstrap, HTML, CSS, JavaScript, jQuery |
+| Database   | MySQL                                         |
+| Build Tool | Maven                                         |
+| Email      | JavaMailSender (SMTP)                         |
+| Payment    | VNPAY Sandbox                                 |
+| Server     | Embedded Tomcat                               |
+| IDE        | Visual Studio Code                            |
+
+---
+
+## 🚀 Current Status
+
+- ✅ Booking, room, branch, and customer management completed.
+- ✅ Full CRUD for services, inventory, maintenance, FAQs, and rules.
+- ✅ Customer features including booking, cancelation, review, and VNPAY payment completed.
+- ✅ Scheduled tasks and email integration implemented.
+- ✅ Spring Security with full role-based permission applied.
+
+---
+
+## 🔮 Future Improvements
+
+- Integrate **OAuth2 login via Google and Facebook**.
+- Use **JWT** for enhanced authentication and stateless APIs.
+- Build **real-time analytics dashboard** with live updates.
+- Add **WebSocket chat** between customers and homestay staff.
+- Develop **AI-powered chatbot** for instant response.
+- Optimize database queries and implement **caching** for performance improvements.
+- Add support for **multilingual interfaces** (EN/VI).
+- Improve frontend UI/UX, especially for customer module.
+
+---
+
+## ⚙️ Installation & Usage
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/nhuytran122/java-spring-mvc-homestaymanagement.git
+```
+
+### 2. Setup Database
+
+Open MySQL Workbench or HeidiSQL, and run the provided SQL script to initialize the database structure and seed data.
+
+### 3. Create `.env` File
+
+Create a `.env` file in the project root with the following (replace placeholders as needed):
+
+```
+PASSWORD_MYSQL=yourDatabasePassword
+PAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+TMN_CODE=yourVNPayTmnCode
+SECRET_KEY=yourVNPaySecretKey
+RETURN_URL=http://localhost:8080/checkout/vn-pay-callback
+VERSION=2.1.0
+COMMAND=pay
+ORDER_TYPE=170000
+APP_PASSWORD=yourAppPassword
+APP_EMAIL=yourAppEmail@example.com
+```
+
+### 4. Configure Application Properties
+
+Open `src/main/resources/application.properties` and set:
+
+```properties
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/homestay_management_db
+spring.datasource.username=root
+spring.datasource.password=${PASSWORD_MYSQL}
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+```
+
+### 5. Build the Project
+
+Use Maven to build:
+
+```bash
+mvn clean install
+```
+
+### 6. Run the Application
+
+- Option 1: Via Maven
+
+  ```bash
+  mvn spring-boot:run
+  ```
+
+- Option 2: In Visual Studio Code
+
+  - Install **Spring Boot Extension Pack**.
+  - Use the Spring Boot dashboard to start and manage the app.
+
+### 7. Access the Application
+
+Open browser at: `http://localhost:8080`
+
+### 🧪 Sample Test Accounts
+
+| Role          | Email                     | Password          |
+| ------------- | ------------------------- | ----------------- |
+| Customer      | `21t1020105@husc.edu.vn`  | `@Nhuy122`        |
+| Admin Manager | `nhuytran12223@gmail.com` | `@Nhuy122`        |
+| Staff Member  | `quocanh@gmail.com`       | `lullabyhomestay` |
+| Housekeeper   | `thaonguyen@gmail.com`    | `lullabyhomestay` |
+
+---
+
+## 📚 Notes
+
+This system was developed as a **graduation thesis** and a **self-study project**. While already feature-rich, the application may still lack production-level optimizations. The goal is to create a robust, scalable homestay management platform that supports real-world use.
+
+**Feedback and contributions are warmly welcome!**
+
+---
