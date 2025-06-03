@@ -151,6 +151,19 @@
                 </div>
             </div>
         </div>
+        <c:set var="customerType" value="${customer.customerType}"/>         
+        <c:if test="${customerType.discountRate > 0}">
+            <div class="special-offers mb-5">
+                <h2 class="section-title mb-4">Ưu đãi đặc biệt</h2>
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <i class="bi bi-gift-fill me-2"></i>
+                    <div>
+                        Bạn đang là thành viên hạng <strong>${customerType.name}</strong>, được giảm <strong>
+                        <fmt:formatNumber value="${customerType.discountRate}" pattern="#"/>%</strong> cho mỗi lần đặt phòng!
+                    </div>
+                </div>
+            </div> 
+        </c:if>       
 
         <div class="card booking-card mb-4">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
@@ -244,19 +257,7 @@
                 </c:otherwise>
             </c:choose>
         </div>
-        <c:set var="customerType" value="${customer.customerType}"/>         
-        <c:if test="${customerType.discountRate > 0}">
-            <div class="special-offers mb-5">
-                <h2 class="section-title mb-4">Ưu đãi đặc biệt</h2>
-                <div class="alert alert-info d-flex align-items-center" role="alert">
-                    <i class="bi bi-gift-fill me-2"></i>
-                    <div>
-                        Bạn đang là thành viên hạng <strong>${customerType.name}</strong>, được giảm <strong>
-                        <fmt:formatNumber value="${discountRate}" pattern="#"/>%</strong> cho mỗi lần đặt phòng!
-                    </div>
-                </div>
-            </div> 
-        </c:if>       
+        
     </div>
 
     <jsp:include page="../../admin/layout/partial/_pagination-with-param.jsp">

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.lullabyhomestay.homestay_management.domain.Booking;
 import com.lullabyhomestay.homestay_management.service.BookingService;
-import com.lullabyhomestay.homestay_management.service.RoomStatusHistoryService;
-import com.lullabyhomestay.homestay_management.utils.BookingStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 public class PendingBookingScheduler {
 
     private final BookingService bookingService;
-    private final RoomStatusHistoryService roomStatusHistoryService;
 
     @Value("${booking.pending.timeout.minutes}")
     private int timeoutMinutes;
@@ -28,9 +25,7 @@ public class PendingBookingScheduler {
         List<Booking> pendingBookings = bookingService.findPendingBookingsBefore(timeoutMinutes);
         for (Booking booking : pendingBookings) {
             Long bookingID = booking.getBookingId();
-            booking.setStatus(BookingStatus.CANCELLED);
-            bookingService.handleSaveBooking(booking);
-            roomStatusHistoryService.deleteByBookingId(bookingID);
+            bookingService.cancelBooking(bookingID);
         }
     }
 }
