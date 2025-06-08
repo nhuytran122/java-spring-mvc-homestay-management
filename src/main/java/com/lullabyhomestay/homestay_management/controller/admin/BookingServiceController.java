@@ -153,6 +153,10 @@ public class BookingServiceController {
                 (newStatus == BookingServiceStatus.PENDING || newStatus == BookingServiceStatus.IN_PROGRESS)) {
             return ResponseEntity.badRequest().body("Đang xử lý, không thể quay lại chờ hoặc giữ nguyên!");
         }
+
+        if (newStatus == BookingServiceStatus.COMPLETED && bService.getQuantity() == null) {
+            return ResponseEntity.badRequest().body("Không thể cập nhật sang hoàn thành vì chưa có số lượng yêu cầu!");
+        }
         bService.setStatus(newStatus);
         bookingExtraService.handleUpdateStatusBookingService(bService);
         return ResponseEntity.ok().build();

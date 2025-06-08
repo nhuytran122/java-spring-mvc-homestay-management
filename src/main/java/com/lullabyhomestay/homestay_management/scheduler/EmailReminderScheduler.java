@@ -19,7 +19,8 @@ public class EmailReminderScheduler {
     private final BookingService bookingService;
     private final EmailService emailService;
 
-    @Scheduled(fixedDelay = 900000) // 15'
+    // @Scheduled(fixedDelay = 900000) // 15'
+    @Scheduled(fixedDelay = 15000) // to demo
     public void sendReminderEmails() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime thirtyMinutesLater = now.plusMinutes(30);

@@ -158,6 +158,7 @@
                                                                         <button class="btn btn-info btn-sm status-update-btn" 
                                                                             data-booking-service-id="${bookingServiceId}" 
                                                                             data-current-status="${status}"
+                                                                            data-current-quantity="${bookingService.quantity}"
                                                                             title="Cập nhật trạng thái">
                                                                             <i class="bi bi-gear"></i>
                                                                         </button>

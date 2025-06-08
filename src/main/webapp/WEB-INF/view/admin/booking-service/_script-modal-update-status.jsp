@@ -78,7 +78,9 @@
     $(".status-update-btn").click(function () {
       var bookingServiceId = $(this).data("booking-service-id");
       var currentStatus = $(this).data("current-status");
-      console.log(currentStatus);
+      var quantity = $(this).data("current-quantity");
+      console.log(quantity);
+
       $("#bookingServiceId").val(bookingServiceId);
       $("#currentStatus").val(currentStatus);
 
@@ -96,9 +98,20 @@
       } else {
         if (currentStatus === "PENDING") {
           $select.append('<option value="IN_PROGRESS">Đang phục vụ</option>');
-          $select.append('<option value="COMPLETED">Hoàn thành</option>');
+
+          if (quantity != null && quantity !== "" && Number(quantity) > 0) {
+            $select.append('<option value="COMPLETED">Hoàn thành</option>');
+          }
         } else if (currentStatus === "IN_PROGRESS") {
-          $select.append('<option value="COMPLETED">Hoàn thành</option>');
+          if (quantity == null || quantity === "" || Number(quantity) <= 0) {
+            $("#infoModalBody").text(
+              "Vui lòng cập nhật số lượng trước khi cập nhật trạng thái mới cho đơn đặt dịch vụ này"
+            );
+            $("#infoModal").modal("show");
+            return false;
+          } else {
+            $select.append('<option value="COMPLETED">Hoàn thành</option>');
+          }
         }
       }
       if ($select.find("option").length === 0) {
